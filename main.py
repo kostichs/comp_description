@@ -58,6 +58,21 @@ def load_and_prepare_company_names(file_path: str, col_index: int = 0) -> list[s
         else: print(f" No valid names in first column of {file_path}."); return None
     else: print(f" Could not load data from first column of {file_path}."); return None
 
+def load_context_file(context_file_path: str) -> str | None:
+    """Loads the content of a context text file."""
+    if os.path.exists(context_file_path):
+        try:
+            with open(context_file_path, 'r', encoding='utf-8') as f:
+                context_text = f.read().strip()
+            print(f"Successfully loaded context from: {context_file_path}")
+            return context_text
+        except Exception as e:
+            print(f"Error reading context file {context_file_path}: {e}")
+            return None
+    else:
+        print(f"Context file not found: {context_file_path}")
+        return None
+
 def save_results_csv(data: list[dict], output_file_path: str) -> None:
     """Saves the processed data to a CSV file."""
     if not data: print(f"No data to save for {output_file_path}."); return
@@ -72,8 +87,8 @@ def save_results_csv(data: list[dict], output_file_path: str) -> None:
         print(f"Results saved to {output_file_path}")
     except Exception as e: print(f"Error saving CSV to {output_file_path}: {e}")
 
-async def find_urls_with_serper_async(session: aiohttp.ClientSession, company_name: str) -> tuple[str | None, str | None]:
-    """Async: Finds homepage and LinkedIn URL using Serper.dev via aiohttp."""
+async def find_urls_with_serper_async(session: aiohttp.ClientSession, company_name: str, context_text: str | None) -> tuple[str | None, str | None]:
+    """Async: Finds homepage and LinkedIn URL using Serper.dev, incorporating context_text."""
     if not SERPER_API_KEY: print("SERPER_API_KEY not found."); return None, None
     
     homepage_url, linkedin_url = None, None
@@ -81,9 +96,14 @@ async def find_urls_with_serper_async(session: aiohttp.ClientSession, company_na
     headers = {'X-API-KEY': SERPER_API_KEY, 'Content-Type': 'application/json'}
     # print(f"--- Async Serper.dev DEBUG for {company_name} ---") # Reduced logging
 
+    # Append context to search queries if available
+    context_query_part = f" {context_text}" if context_text else ""
+    # Limit context length to avoid overly long queries
+    if len(context_query_part) > 100: context_query_part = context_query_part[:100] + "..."
+
     try:
         # Find homepage
-        search_query_homepage = f'{company_name} official website'
+        search_query_homepage = f'{company_name}{context_query_part} official website'
         payload_homepage = json.dumps({"q": search_query_homepage, "num": 3})
         async with session.post(serper_search_url, headers=headers, data=payload_homepage, timeout=15) as resp_hp:
             if resp_hp.status != 200:
@@ -98,7 +118,7 @@ async def find_urls_with_serper_async(session: aiohttp.ClientSession, company_na
         await asyncio.sleep(0.3) # Short sleep between calls
         
         # Find LinkedIn URL
-        search_query_linkedin = f'{company_name} site:linkedin.com/company'
+        search_query_linkedin = f'{company_name}{context_query_part} site:linkedin.com/company'
         payload_linkedin = json.dumps({"q": search_query_linkedin, "num": 3})
         async with session.post(serper_search_url, headers=headers, data=payload_linkedin, timeout=15) as resp_li:
              if resp_li.status != 200:
@@ -236,8 +256,8 @@ def extract_text_for_description(html_content: str | None) -> str | None:
             elif el.name == 'p' and len(el.get_text(strip=True)) > 50: return el.get_text(strip=True)
     return None
 
-async def generate_description_openai_async(company_name: str, homepage_root: str | None, linkedin_url: str | None, about_snippet: str | None, llm_config: dict, openai_client: AsyncOpenAI) -> dict | str | None:
-    """Async: Generates LLM output. Returns dict if JSON mode successful, str otherwise, None on error."""
+async def generate_description_openai_async(company_name: str, homepage_root: str | None, linkedin_url: str | None, about_snippet: str | None, llm_config: dict, openai_client: AsyncOpenAI, context_text: str | None) -> dict | str | None:
+    """Async: Generates LLM output using config, also incorporating context_text."""
     if not about_snippet: print(f"No text for LLM input ({company_name})."); return None
     if not llm_config or not isinstance(llm_config, dict): print(f"Invalid LLM config ({company_name})."); return None
     model_name = llm_config.get('model')
@@ -246,7 +266,13 @@ async def generate_description_openai_async(company_name: str, homepage_root: st
     if not isinstance(messages_template, list):
         print(f"LLM config missing/invalid 'messages' list ({company_name})."); return None
     formatted_messages = []
-    format_data = {"company": company_name, "website_url": homepage_root or "N/A", "linkedin_url": linkedin_url or "N/A", "about_snippet": about_snippet[:4000]}
+    format_data = {
+        "company": company_name, 
+        "website_url": homepage_root or "N/A", 
+        "linkedin_url": linkedin_url or "N/A", 
+        "about_snippet": about_snippet[:4000],
+        "user_provided_context": context_text or "Not available" # Add context here
+    }
     try:
         for msg_template in messages_template:
             if isinstance(msg_template, dict) and 'role' in msg_template and 'content' in msg_template:
@@ -273,16 +299,16 @@ async def generate_description_openai_async(company_name: str, homepage_root: st
         else: print(f"OpenAI no choices ({company_name})."); return None # Indicate error
     except Exception as e: print(f"OpenAI API error ({company_name}): {type(e).__name__}"); return None # Indicate error
 
-async def process_company(company_name: str, aiohttp_session: aiohttp.ClientSession, sb_client: ScrapingBeeClient, llm_config: dict, openai_client: AsyncOpenAI) -> dict:
+async def process_company(company_name: str, aiohttp_session: aiohttp.ClientSession, sb_client: ScrapingBeeClient, llm_config: dict, openai_client: AsyncOpenAI, context_text: str | None) -> dict:
     """Async: Processes a single company. Returns a dictionary for the output row."""
-    print(f" Starting async process for: {company_name}")
+    print(f" Starting async process for: {company_name} (Context: {bool(context_text)})")
     start_time = time.time()
     result_data = {"name": company_name, "homepage": "Not found", "linkedin": "Not found", "description": ""} # Base result
     text_src = None
     manual_check_flag = False # Use a flag instead of modifying result_data["description"] mid-way
 
     try:
-        hp_url_found, li_url_found = await find_urls_with_serper_async(aiohttp_session, company_name)
+        hp_url_found, li_url_found = await find_urls_with_serper_async(aiohttp_session, company_name, context_text)
         result_data["linkedin"] = li_url_found or "Not found"
         if not sb_client: raise ValueError("ScrapingBee client error") 
 
@@ -327,7 +353,7 @@ async def process_company(company_name: str, aiohttp_session: aiohttp.ClientSess
         llm_generated_output = None
         if text_src:
              print(f" > {company_name}: Generating LLM output...")
-             llm_generated_output = await generate_description_openai_async(company_name, result_data["homepage"], result_data["linkedin"], text_src, llm_config, openai_client)
+             llm_generated_output = await generate_description_openai_async(company_name, result_data["homepage"], result_data["linkedin"], text_src, llm_config, openai_client, context_text)
         else:
             print(f" > {company_name}: No text found for LLM.")
             manual_check_flag = True # Ensure manual check if no text
@@ -422,10 +448,17 @@ async def main():
                     counter += 1
                 # --- --- --- --- --- --- ---
                 
+                # Attempt to load context for this data file
+                context_file_name = f"{base_name}_context.txt"
+                context_file_path = os.path.join(input_dir, context_file_name)
+                context_text = load_context_file(context_file_path)
+                if not context_text:
+                    print(f"Warning: No context found for {filename}. Proceeding without it.")
+                
                 company_names = load_and_prepare_company_names(original_input_path, company_col_index)
                 if not company_names: print(f"--- Skipping file {filename} due to loading issues or no valid names."); continue
                 print(f" Found {len(company_names)} companies. Creating async tasks...")
-                tasks = [asyncio.create_task(process_company(name, session, sb_client, llm_config, openai_client)) for name in company_names]
+                tasks = [asyncio.create_task(process_company(name, session, sb_client, llm_config, openai_client, context_text)) for name in company_names]
                 file_task_results = await asyncio.gather(*tasks, return_exceptions=True)
                 file_successful_results = []
                 exceptions_count = 0
