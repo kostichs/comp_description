@@ -58,18 +58,30 @@ def save_context_file(context_file_path: str, context_text: str) -> bool:
         return False
 
 def save_results_csv(data: list[dict], output_file_path: str) -> None:
-    """Saves the processed data to a CSV file."""
+    """Saves the processed data to a CSV file with a specific column order."""
     if not data: print(f"No data to save for {output_file_path}."); return
-    # Determine columns dynamically to handle variable JSON output
+    
+    # Define the desired column order
+    preferred_order = ['name', 'homepage', 'linkedin', 'description'] 
+    
+    # Get all unique keys present in the data dictionaries
     all_keys = set()
     for row in data:
         all_keys.update(row.keys())
-    # Optional: Define a preferred column order if needed
-    # preferred_order = ['name', 'homepage', 'linkedin', ...] 
-    # columns = [col for col in preferred_order if col in all_keys] + sorted([col for col in all_keys if col not in preferred_order])
-    columns = sorted(list(all_keys)) # Simple sorted list for now
+        
+    # Build the final column list
+    final_columns = []
+    # Add preferred columns first, if they exist
+    for col in preferred_order:
+        if col in all_keys:
+            final_columns.append(col)
+            
+    # Add remaining columns (e.g., llm_*) sorted alphabetically
+    remaining_columns = sorted([key for key in all_keys if key not in preferred_order])
+    final_columns.extend(remaining_columns)
     
-    df = pd.DataFrame(data, columns=columns)
+    # Create DataFrame with the specified column order
+    df = pd.DataFrame(data, columns=final_columns)
     try:
         output_dir = os.path.dirname(output_file_path)
         if output_dir and not os.path.exists(output_dir): os.makedirs(output_dir); print(f"Created output dir: {output_dir}")
