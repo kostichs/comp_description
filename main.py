@@ -4,8 +4,8 @@ import asyncio
 from bs4 import BeautifulSoup
 import tldextract
 from openai import AsyncOpenAI
-from scrapingbee import ScrapingBeeClient
 import os
+from scrapingbee import ScrapingBeeClient
 from dotenv import load_dotenv
 import json
 import time
@@ -64,14 +64,30 @@ def load_context_file(context_file_path: str) -> str | None:
         try:
             with open(context_file_path, 'r', encoding='utf-8') as f:
                 context_text = f.read().strip()
-            print(f"Successfully loaded context from: {context_file_path}")
-            return context_text
+            # Only print success if text is not empty
+            if context_text: 
+                print(f"Successfully loaded context from: {context_file_path}")
+                return context_text
+            else:
+                print(f"Context file found but empty: {context_file_path}")
+                return None
         except Exception as e:
             print(f"Error reading context file {context_file_path}: {e}")
             return None
     else:
-        print(f"Context file not found: {context_file_path}")
+        # print(f"Context file not found: {context_file_path}") # No need to print here, handled in main
         return None
+
+def save_context_file(context_file_path: str, context_text: str) -> bool:
+    """Saves the provided context text to a file."""
+    try:
+        with open(context_file_path, 'w', encoding='utf-8') as f:
+            f.write(context_text)
+        print(f"Context saved to: {context_file_path}")
+        return True
+    except Exception as e:
+        print(f"Error saving context file {context_file_path}: {e}")
+        return False
 
 def save_results_csv(data: list[dict], output_file_path: str) -> None:
     """Saves the processed data to a CSV file."""
@@ -245,7 +261,10 @@ def extract_text_for_description(html_content: str | None) -> str | None:
                 p_text = first_p.get_text(strip=True)
                 if len(p_text) > 50: return p_text
         except Exception: continue
-    for keyword_base in ['about', 'о компании', 'о нас']:
+    # Use only English keywords now
+    for keyword_base in ['about']: # Removed Russian keywords 
+        # Search elements containing the keyword (case-insensitive)
+        # Simplified lambda slightly
         elements = soup.find_all(lambda tag: tag.name in ['h1','h2','h3','p','div'] and keyword_base in tag.get_text(strip=True).lower())
         for el in elements:
             parent = el.find_parent(['section', 'div'])
@@ -253,7 +272,8 @@ def extract_text_for_description(html_content: str | None) -> str | None:
                 p_tags = parent.find_all('p', limit=3)
                 text_block = " ".join(p.get_text(strip=True) for p in p_tags)
                 if len(text_block) > 50: return text_block.strip()
-            elif el.name == 'p' and len(el.get_text(strip=True)) > 50: return el.get_text(strip=True)
+            elif el.name == 'p' and len(el.get_text(strip=True)) > 50: 
+                return el.get_text(strip=True)
     return None
 
 async def generate_description_openai_async(company_name: str, homepage_root: str | None, linkedin_url: str | None, about_snippet: str | None, llm_config: dict, openai_client: AsyncOpenAI, context_text: str | None) -> dict | str | None:
@@ -271,7 +291,7 @@ async def generate_description_openai_async(company_name: str, homepage_root: st
         "website_url": homepage_root or "N/A", 
         "linkedin_url": linkedin_url or "N/A", 
         "about_snippet": about_snippet[:4000],
-        "user_provided_context": context_text or "Not available" # Add context here
+        "user_provided_context": context_text or "Not provided" # Add context here
     }
     try:
         for msg_template in messages_template:
@@ -436,7 +456,7 @@ async def main():
         for filename in os.listdir(input_dir):
             original_input_path = os.path.join(input_dir, filename)
             if os.path.isfile(original_input_path) and filename.lower().endswith(supported_extensions):
-                print(f"\n>>> Processing file: {filename}")
+                print(f"\n>>> Found data file: {filename}")
                 base_name, _ = os.path.splitext(filename)
                 
                 # --- Generate Unique Output Filename --- 
@@ -446,17 +466,33 @@ async def main():
                 while os.path.exists(output_file_path):
                     output_file_path = f"{output_file_base}_{counter}.csv"
                     counter += 1
-                # --- --- --- --- --- --- ---
                 
-                # Attempt to load context for this data file
-                context_file_name = f"{base_name}_context.txt"
-                context_file_path = os.path.join(input_dir, context_file_name)
-                context_text = load_context_file(context_file_path)
-                if not context_text:
-                    print(f"Warning: No context found for {filename}. Proceeding without it.")
+                # --- Handle Context File --- 
+                context_file_path = os.path.join(input_dir, f"{base_name}_context.txt")
+                context_text = load_context_file(context_file_path) # Try loading existing
                 
+                if context_text is None: # If not found or error loading
+                    try:
+                        print(f"\n*** Context file for '{filename}' not found or empty. ***")
+                        user_input = input(f"Enter context (industry, region, source...) or press Enter to skip: ")
+                        context_text = user_input.strip()
+                        if context_text: # Save only if user provided something
+                            if save_context_file(context_file_path, context_text):
+                                print("Context saved.")
+                            else:
+                                print("Failed to save context, proceeding without it.")
+                                context_text = None # Ensure it's None if save failed
+                        else:
+                            print("Context not entered, proceeding without it.")
+                            context_text = None # Ensure it's None if skipped
+                    except EOFError: # Handle cases where input cannot be read (e.g., non-interactive script run)
+                         print("\nCannot read input. Proceeding without context.")
+                         context_text = None
+                         
+                # --- Load Companies and Process --- 
                 company_names = load_and_prepare_company_names(original_input_path, company_col_index)
                 if not company_names: print(f"--- Skipping file {filename} due to loading issues or no valid names."); continue
+                
                 print(f" Found {len(company_names)} companies. Creating async tasks...")
                 tasks = [asyncio.create_task(process_company(name, session, sb_client, llm_config, openai_client, context_text)) for name in company_names]
                 file_task_results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -468,11 +504,12 @@ async def main():
                     else: print(f"!! Unexpected result type: {type(result)}")
                 print(f"<<< Finished {filename}. Success: {len(file_successful_results)}, Failures: {exceptions_count}")
                 if file_successful_results:
-                    save_results_csv(file_successful_results, output_file_path) # Use unique path
+                    save_results_csv(file_successful_results, output_file_path) 
                     overall_results.extend(file_successful_results)
                     processed_files_count += 1
                 else: print(f" No successful results for {filename}.")
             else: print(f"Skipping non-supported/file item: {filename}")
+            
     # --- Final Summary --- 
     if processed_files_count > 0:
         print(f"\nSuccessfully processed {processed_files_count} file(s). Total successful results: {len(overall_results)}.")
