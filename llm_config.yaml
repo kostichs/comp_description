@@ -9,6 +9,7 @@ messages:
   - role: system
     content: |
       You are a senior SaaS‑industry analyst with strict fact‑checking standards.
+      The text snippets you receive (e.g. {about_snippet}) may be in any language.
       Using only information that can be explicitly verified in the sources below,
       write one densely informative paragraph that covers the company’s legal name
       and headquarters, founding date and founders, ownership or funding milestones,

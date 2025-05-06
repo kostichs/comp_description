@@ -39,3 +39,26 @@ def load_llm_config(config_path="llm_config.yaml") -> dict | None:
     except FileNotFoundError: print(f"Error: LLM config file {config_path} not found."); return None
     except yaml.YAMLError as e: print(f"Error parsing LLM config file {config_path}: {e}"); return None
     except Exception as e: print(f"Error loading LLM config {config_path}: {e}"); return None 
+
+SPECIAL_COMPANY_HANDLING = {
+    # Ключи - нормализованные имена компаний (нижний регистр, без спецсимволов если нужно)
+    "a1": {
+        # Ключи - ключевые слова из локации (нижний регистр)
+        "austria": "https://www.a1.at",
+        "österreich": "https://www.a1.at", # Alias for Austria
+        "bulgaria": "https://www.a1.bg",
+        "serbia": "https://www.a1.rs",
+        "croatia": "https://www.a1.hr",
+        "slovenia": "https://www.a1.si",
+        "macedonia": "https://www.a1.mk", # North Macedonia
+    },
+    "rte": {
+        "ireland": "https://www.rte.ie",
+        "éire": "https://www.rte.ie", # Alias for Ireland
+    },
+    "rthk": { # Example for RTHK if its TLD is consistent for a region
+        "hong kong": "https://www.rthk.hk",
+        "hk": "https://www.rthk.hk",
+    }
+    # Добавляйте другие компании по необходимости
+} 

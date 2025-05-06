@@ -58,7 +58,7 @@ def save_context_file(context_file_path: str, context_text: str) -> bool:
         return False
 
 def save_results_csv(data: list[dict], output_file_path: str) -> None:
-    """Saves the processed data to a CSV file with a specific column order."""
+    """Saves the processed data to a CSV file with a specific column order and UTF-8-SIG encoding."""
     if not data: print(f"No data to save for {output_file_path}."); return
     
     # Define the desired column order
@@ -85,6 +85,7 @@ def save_results_csv(data: list[dict], output_file_path: str) -> None:
     try:
         output_dir = os.path.dirname(output_file_path)
         if output_dir and not os.path.exists(output_dir): os.makedirs(output_dir); print(f"Created output dir: {output_dir}")
-        df.to_csv(output_file_path, index=False, encoding='utf-8')
+        # Use utf-8-sig for better Excel compatibility with non-ASCII characters
+        df.to_csv(output_file_path, index=False, encoding='utf-8-sig')
         print(f"Results saved to {output_file_path}")
     except Exception as e: print(f"Error saving CSV to {output_file_path}: {e}") 
