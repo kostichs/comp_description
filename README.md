@@ -70,7 +70,15 @@ This Python script automates the process of enriching a list of company names pr
     ```
 3.  **Provide Context:** Enter context when prompted if `_context.txt` files are missing.
 4.  **Monitor Output:** View progress and errors in the console.
-5.  **Check Results:** Output CSV files appear in `output/final_outputs/`. Columns adapt based on LLM output (description text or multiple `llm_*` columns for JSON). A final JSON summary is printed to the console.
+5.  **Check Results:**
+    *   Output CSV files appear in `output/final_outputs/` (e.g., `data_output.csv`, `data_output_1.csv`, etc.).
+    *   **Output Columns:** The CSV columns will typically be ordered as follows:
+        *   `name`
+        *   `homepage`
+        *   `linkedin`
+        *   `description` (Contains text output from LLM, error messages, or status like "Manual check required"). This column might be omitted if JSON mode successfully returned structured data.
+        *   If JSON mode was used successfully, additional columns prefixed with `llm_` (e.g., `llm_legal_name`, `llm_headquarters_location`, etc.) based on the keys returned by the LLM will follow, sorted alphabetically.
+    *   A final JSON summary of all successful results is printed to the console.
 
 ## Troubleshooting
 
