@@ -129,17 +129,16 @@ async def process_company(company_name: str,
             current_hp_to_validate = definitive_hp_url_from_meta or hp_url_found_serper
             is_hp_valid = validate_page(company_name, hp_title, hp_root, hp_html, original_url=current_hp_to_validate)
             if is_hp_valid:
-                # LLM Check for homepage relevance
-                logging.info(f"  > {company_name}: HP structurally valid, performing LLM check...")
-                first_few_text_nodes = " ".join(BeautifulSoup(hp_html, 'html.parser').stripped_strings)
-                is_hp_llm_confirmed = await is_url_company_page_llm(company_name, first_few_text_nodes[:2000], openai_client)
-                if is_hp_llm_confirmed:
+                # LLM Check for homepage relevance - COMMENTING OUT
+                logging.info(f"  > {company_name}: HP structurally valid. LLM check SKIPPED.")
+                # first_few_text_nodes = " ".join(BeautifulSoup(hp_html, 'html.parser').stripped_strings)
+                # is_hp_llm_confirmed = await is_url_company_page_llm(company_name, first_few_text_nodes[:2000], openai_client)
+                is_hp_llm_confirmed = True # Assume LLM confirmed if structural validation passed
+
+                if is_hp_llm_confirmed: # This will now always be true if is_hp_valid was true
                     text_src = extract_text_for_description(hp_html) 
-                    logging.info(f"  > {company_name}: HP validated by Structure & LLM. Text: {bool(text_src)}")
+                    logging.info(f"  > {company_name}: HP (LLM check skipped). Text: {bool(text_src)}")
                     page_validated_for_text_extraction = True
-                else:
-                    logging.warning(f"  > {company_name}: HP FAILED LLM relevance check.")
-                    manual_check_flag = True
             else: 
                 logging.warning(f"  > {company_name}: HP structural validation FAILED (URL: {current_hp_to_validate}).")
                 manual_check_flag = True
