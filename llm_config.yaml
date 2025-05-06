@@ -1,0 +1,44 @@
+# llm_config.yaml
+
+# 1) Параметры модели
+model: "gpt-4o-mini"
+temperature: 0.4
+max_tokens: 350
+top_p: 0.9
+
+# 2) Сообщения, которые отправляем в OpenAI
+messages:
+  - role: system
+    content: |
+      You are a senior SaaS‑industry analyst with strict fact‑checking standards.
+      Using only information that can be explicitly verified in the sources below,
+      write one densely informative paragraph that covers the company’s legal name
+      and headquarters, founding date and founders, ownership or funding milestones,
+      core products and services (with launch years if available), underlying technologies
+      and intellectual property, target customer segments and geographic markets,
+      business model and revenue streams, major clients and deployments,
+      key partnerships and distribution channels, recent strategic moves such as
+      acquisitions or product launches, headcount, publicly stated financial metrics (ARR, funding, valuation, revenue),
+      and any notable competitors or market‑share figures mentioned in the sources.
+
+  - role: user
+    content: |
+      Use only facts present in the sources below, write up to 15 full sentences.
+      Stop early if you run out of verified facts.
+      Do not invent or pad with filler content just to reach 15 sentences.
+
+      Sources:
+      – Name: {company}
+      – Official site: {website_url}
+      – LinkedIn: {linkedin_url}
+
+      Rules:
+      1. Use only facts present in the sources; omit anything unverified.
+      2. Write in neutral third‑person narrative, full sentences, varied length.
+      3. Output must be a single continuous paragraph: no markdown, bullet points, tabs, line breaks, headers, or extra whitespace.
+      4. Use digits for numbers, write out fractions, apply Oxford commas.
+      5. Spell out an acronym on first mention, place the acronym in parentheses, then use the acronym thereafter.
+      6. Do not speculate, inject opinion, or add qualifiers like "may," "might," or "appears."
+      7. If a data point is missing, skip it rather than guessing.
+      8. The paragraph is the only output.
+      9. The paragraph must contain at least 15 sentences.

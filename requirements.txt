@@ -1,0 +1,10 @@
+pandas
+# requests # Removed, using aiohttp now
+beautifulsoup4
+tldextract
+openai>=1.0.0 # Ensure modern version for async client
+python-dotenv
+scrapingbee
+openpyxl
+PyYAML
+aiohttp 

@@ -1,0 +1,27 @@
+# Виртуальное окружение
+venv/
+.venv/
+
+# Файлы PyCharm, VSCode
+.idea/
+.vscode/
+
+# Python‑кеши
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Логи и временные файлы
+*.log
+*.tmp
+
+# Файлы окружения
+.env
+.env.*
+
+# Папки пакетов, билд-артефакты
+build/
+dist/
+*.egg-info/
+
+.cursor/

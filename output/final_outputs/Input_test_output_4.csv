@@ -1,0 +1,49 @@
+name,homepage,linkedin,description
+1&1 Telecommunication SE,1und1.ag,https://de.linkedin.com/company/1und1de,"```json
+{
+  ""company_name"": ""1&1 Telecommunication SE"",
+  ""website"": ""1und1.ag"",
+  ""linkedin"": ""https://de.linkedin.com/company/1und1de"",
+  ""contact_information"": {
+    ""investor_relations"": ""Our contacts at 1&1 AG for investor relations will be happy to deal with your concerns quickly."",
+    ""press_inquiries"": ""Our contacts at 1&1 AG for press inquiries will be happy to deal with your concerns quickly.""
+  },
+  ""description"": null,
+  ""industry"": null,
+  ""founded"": null,
+  ""employees"": null,
+  ""revenue"": null,
+  ""location"": null
+}
+```"
+1+1 Media Group,1plus1.ua,https://www.linkedin.com/company/media1plus1,"```json
+{
+  ""company_name"": ""1+1 Media"",
+  ""industry"": ""Media"",
+  ""location"": null,
+  ""founded_year"": null,
+  ""number_of_employees"": null,
+  ""website"": ""1plus1.ua"",
+  ""linkedin"": ""https://www.linkedin.com/company/media1plus1"",
+  ""description"": ""1+1 Media is one of the biggest media companies in Eastern Europe, with over 25 years of history."",
+  ""services"": null,
+  ""social_media"": null
+}
+```"
+20th Century Studios,20thcenturystudios.com,https://www.linkedin.com/company/20th-century-studios,"```json
+{
+  ""company_name"": ""20th Century Studios"",
+  ""website"": ""20thcenturystudios.com"",
+  ""description"": ""The Official Website for all movies from 20th Century Studios. Shop for movies on Blu-ray, DVD, 4K Ultra HD, or Digital."",
+  ""industry"": null,
+  ""founded_year"": null,
+  ""headquarters"": null,
+  ""number_of_employees"": null,
+  ""social_media_links"": {
+    ""linkedin"": ""https://www.linkedin.com/company/20th-century-studios"",
+    ""facebook"": null,
+    ""twitter"": null,
+    ""instagram"": null
+  }
+}
+```"
