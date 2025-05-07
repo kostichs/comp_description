@@ -8,13 +8,13 @@ from sklearn.metrics.pairwise import cosine_similarity # For embeddings
 from openai import AsyncOpenAI # To pass the client for embeddings
 import logging # Added for logging
 from ..external_apis.openai_client import get_embedding_async, is_url_company_page_llm # Ensure this is imported
-from urllib.parse import urlparse # Added for path depth checking
+from urllib.parse import urlparse, unquote # Added for path depth checking and URL decoding
 from ..config import SPECIAL_COMPANY_HANDLING # Import the special handling rules
 
 # Global list of blacklisted domains (registered domain part)
-BLACKLISTED_DOMAINS = [
+BLACKLISTED_DOMAINS_FOR_HP = [ # More aggressive blacklist for HP
     "wikipedia.org", "wikimedia.org", "youtube.com", "facebook.com", "twitter.com", "x.com",
-    "instagram.com", # "linkedin.com", # LinkedIn is handled by prefer_linkedin_company logic
+    "instagram.com", "linkedin.com", # LinkedIn is never a homepage
     "leadiq.com", "zoominfo.com", "apollo.io", "crunchbase.com", "owler.com",
     "bloomberg.com", "reuters.com", "forbes.com", "wsj.com", "nytimes.com", "cnn.com",
     "bbc.com", "theguardian.com", "techcrunch.com", "thenextweb.com",
@@ -25,113 +25,80 @@ BLACKLISTED_DOMAINS = [
     "books.google.com", "patents.google.com", "policies.google.com",
     "developer.apple.com", "support.apple.com", "apps.apple.com",
     "developer.microsoft.com", "support.microsoft.com",
-    # "gov", "edu" # Re-evaluating gov/edu, some company-like orgs might use these
-    "nic.in", "righttoeducation.in", "rajpsp.nic.in"
+    "gov", "edu", # Gov/edu are usually not company HPs unless specifically part of name/context
+    "nic.in", "righttoeducation.in", "rajpsp.nic.in", "tiktok.com",
+    "telegram.org", "whatsapp.com", "vimeo.com", "dailymotion.com",
+    "yahoo.com", "bing.com", "duckduckgo.com", # Search engines
+    "archive.org", # Archive sites
+    # Common hosting/blog platforms if they are not the company's own
+    "wordpress.com", "blogspot.com", "wix.com", "squarespace.com", "godaddy.com",
+    # Job boards
+    "indeed.com", "glassdoor.com", "monster.com", "careerbuilder.com",
+    # App stores not directly linked to company product page (e.g. general store link)
+    "play.google.com/store/apps", "apps.apple.com/us/app"
 ]
 
-NEGATIVE_KEYWORDS_FOR_RANKING = [
-    "blog", "review", "pdf", "story", "article", "event", "stories", "press", "support", "forum", "wiki", 
-    "gallery", "price", "shop", "store", "download", "map", "directions", "manual",
-    "login", "register", "apply", "admission", "student", "terms", "privacy" # Added more specific non-core page terms
-    # Removed "news", "careers" - they can be on corporate sites
+NEGATIVE_KEYWORDS_FOR_HP_URL_PATH = [
+    "/blog/", "/news/", "/article/", "/story/", "/press/", "/event/", "/support/", "/forum/", "/wiki/",
+    "/gallery/", "/shop/", "/store/", "/download/", "/map/", "/directions/", "/manual/", "/login/",
+    "/register/", "/apply/", "/admission/", "/student/", "/terms/", "/privacy/", "/jobs/", "/careers/",
+    "/login", "/signin", "/auth", # Exact path segments
+    "wp-content", "wp-includes", # WordPress specific
+    "user=", "session=", "redirect=" # Query parameters
 ]
 
-PREFERRED_TLDS = ["com", "ru", "ie", "ag", "ua", "uk"] # UPDATED
 
-def normalize_company_name_for_domain_match(name: str) -> str:
+# Function to normalize company name for simple comparison (used in LI scoring)
+def normalize_name_for_domain_comparison(name: str) -> str:
     name = name.lower()
-    # Remove common suffixes and punctuation
-    suffixes_to_remove = [", inc.", " inc.", ", llc", " llc", ", ltd.", " ltd.", ", gmbh", " gmbh", ", s.a.", " s.a.", " co.", " co", " corporation", " company", " group", " holding", " solutions", " services", " technologies", " systems", " international", " se", " ag", " oyj", " plc", " ab", " as", " nv", " bv"]
-    for suffix in suffixes_to_remove:
+    common_suffixes = [
+        ', inc.', ' inc.', ', llc', ' llc', ', ltd.', ' ltd.', ' ltd', ', gmbh', ' gmbh',
+        ', s.a.', ' s.a.', ' plc', ' se', ' ag', ' oyj', ' ab', ' as', ' nv', ' bv', ' co.', ' co'
+        ' corporation', ' company', ' group', ' holding', ' solutions', ' services',
+        ' technologies', ' systems', ' international'
+    ]
+    for suffix in common_suffixes:
         if name.endswith(suffix):
             name = name[:-len(suffix)]
-    name = re.sub(r'[\s,&.-_\(\)\[\]\{\}]', '', name) # Remove spaces and common punctuation
-    return name
-
-def _prepare_company_name_for_strict_domain_check(name: str) -> str:
-    """Prepares company name for strict domain matching: lowercase, remove spaces/punctuation, remove leading 'www'."""
-    name = name.lower()
-    # Remove spaces and specific punctuation that typically separates words in a name but not part of a domain
-    # Hyphen is placed at the end of the character set to be treated as a literal.
-    name = re.sub(r'[\s\.,&\(\)\[\]\{\}-]', '', name) 
-    # Remove leading "www" if it exists after the above cleaning
-    if name.startswith("www"): #This handles cases where company name itself might be "www.companyname"
-        name = name[3:]
-    # Example: "R.T.E." -> "rte", "WWW.Company Group" -> "companygroup", "1+1 Media" -> "1+1media"
-    return name
-
-def extract_location_from_name(name: str) -> str | None:
-    """Extracts text from parentheses at the end of the name, assumed to be location."""
-    # Regex to find content within the last parentheses in the string
-    # It looks for content between ( and ) that are at the end of the string, or followed by spaces and then end.
-    match = re.search(r'\(([^)]+)\)\s*$', name)
-    if match:
-        return match.group(1).strip()
-    return None
-
-def parse_context_for_keywords(context_text: str | None, company_name_for_hint: str | None = None) -> dict:
-    """Extracts structured keywords like industry and location from context text or company name hint."""
-    keywords = {"industry": "", "location": "", "location_tld": "", "generic": ""}
-    
-    # Attempt to get location hint from company name itself if context_text is initially missing for location
-    if company_name_for_hint and (not context_text or not re.search(r"(?:location|region|country|city|area|market)[:\s]*", context_text, re.IGNORECASE)):
-        location_hint_from_name = extract_location_from_name(company_name_for_hint)
-        if location_hint_from_name:
-            keywords["location"] = location_hint_from_name.lower()
-            # Try to parse TLD from this hint as well
-            tld_match = re.search(r'[\(\[]?\.?([a-zA-Z]{2,3}(?:\.[a-zA-Z]{2,3})?)[\)\]]?$', keywords["location"]) 
-            if tld_match:
-                potential_tld = tld_match.group(1)
-                if not any(char.isdigit() for char in potential_tld) and len(potential_tld.replace(".","")) <=5 : 
-                     keywords["location_tld"] = potential_tld.replace(".","")
-
-    if context_text: # Process context_text if provided
-        industry_match = re.search(r"(?:industry|sector|field|branch|specialization|focus)[:\s]*(.+?)(?:\n|,|;|\.|and|$)", context_text, re.IGNORECASE)
-        if industry_match: keywords["industry"] = industry_match.group(1).strip().lower()
-        
-        location_match = re.search(r"(?:location|region|country|city|area|market)[:\s]*(.+?)(?:\n|,|;|\.|and|$)", context_text, re.IGNORECASE)
-        if location_match: # If context_text explicitly defines location, it overrides hint from name
-            location_str = location_match.group(1).strip().lower()
-            keywords["location"] = location_str
-            tld_match = re.search(r'[\(\[]?\.?([a-zA-Z]{2,3}(?:\.[a-zA-Z]{2,3})?)[\)\]]?$', location_str) 
-            if tld_match:
-                potential_tld = tld_match.group(1)
-                if not any(char.isdigit() for char in potential_tld) and len(potential_tld.replace(".","")) <=5 : 
-                     keywords["location_tld"] = potential_tld.replace(".","")
-    
-    # Generic keywords if others are not found from context_text
-    if context_text and not keywords["industry"] and not keywords["location"]:
-        words = re.findall(r'\b[a-zA-Z]{3,}\b', context_text.lower())
-        common_query_words = ["source", "event", "notes", "looking", "for", "companies"]
-        filtered_words = [word for word in words if word.lower() not in common_query_words]
-        keywords["generic"] = " ".join(filtered_words[:3])
-    # print(f"DEBUG Parsed Context for '{company_name_for_hint}': {keywords}")
-    return keywords
+    name = re.sub(r'[^\w-]', '', name)
+    return name.strip('-')
 
 async def _execute_serper_query(
     session: aiohttp.ClientSession,
     query: str,
     serper_api_key: str,
     headers: dict,
-    num_results: int = 30,  # Увеличиваем количество результатов
-    start_offset: int = 0   # Добавляем поддержку пагинации
+    num_results: int = 30,
+    start_offset: int = 0
 ) -> dict | None:
     """Helper to execute a single Serper query and return JSON response."""
     payload = json.dumps({
         "q": query,
         "num": num_results,
         "start": start_offset,
-        "gl": "us",  # Можно сделать параметром
-        "hl": "en",  # Можно сделать параметром
-        "filter": 0  # Не фильтровать дубликаты, чтобы не пропустить потенциально полезные результаты
+        "gl": "us", # Consider making this adaptable based on context_keywords_dict location
+        "hl": "en", # Consider making this adaptable
+        "filter": 0 # Get all results
     })
     
     try:
-        async with session.post("https://google.serper.dev/search", headers=headers, data=payload, timeout=15) as resp:
+        async with session.post("https://google.serper.dev/search", headers=headers, data=payload, timeout=20) as resp: # Increased timeout
             if resp.status == 200:
-                return await resp.json()
+                results = await resp.json()
+                logging.info(f"\\n{'='*80}")
+                logging.info(f"SERPER API RAW RESULTS FOR QUERY: {query}")
+                logging.info(f"{'='*80}")
+                if results and "organic" in results:
+                    logging.info(f"Found {len(results['organic'])} organic results:")
+                    for idx, res_item in enumerate(results["organic"], 1):
+                        logging.info(f"  Result #{idx}: Link: {res_item.get('link', 'N/A')}, Title: {res_item.get('title', 'N/A')}, Snippet: {res_item.get('snippet', 'N/A')[:100]}...")
+                else:
+                    logging.info("No organic results found in Serper response.")
+                logging.info(f"{'='*80}\\n")
+                return results
             else:
-                logging.error(f"Serper API Error for query '{query}': Status {resp.status}, Response: {await resp.text()[:200]}")
+                error_text = await resp.text()
+                logging.error(f"Serper API Error for query '{query}': Status {resp.status}, Response: {error_text[:300]}")
                 return None
     except asyncio.TimeoutError:
         logging.error(f"Timeout for Serper query: '{query}'")
@@ -143,360 +110,251 @@ async def _execute_serper_query(
         logging.error(f"Generic error for Serper query '{query}': {type(e).__name__} - {str(e)[:100]}")
         return None
 
-async def rank_serper_results_async(results: dict | None, company_name: str, company_embedding: list[float] | None, 
-                                  openai_client: AsyncOpenAI, 
-                                  context_keywords_dict: dict, 
-                                  scoring_logger: logging.Logger, 
-                                  prefer_linkedin_company: bool = False) -> str | None:
-    if not results or not results.get("organic"):
-        scoring_logger.debug(f"-- No organic results for '{company_name}'. Context: {context_keywords_dict} --")
-        return None
-
-    prepared_company_name_for_check = _prepare_company_name_for_strict_domain_check(company_name)
-    
-    scoring_logger.debug(f"-- Strict Ranking Pass 1 for '{company_name}' (Prepared: '{prepared_company_name_for_check}', LinkedIn Pref: {prefer_linkedin_company}) --")
-
-    # Strict Pass 1
-    for res in results["organic"]: 
-        link = res.get("link")
-        title = res.get("title", "").lower()
-        if not link: continue
-
-        try:
-            extracted_link_parts = tldextract.extract(link)
-            # domain_name_part is like 'a1' from 'jobs.a1.com' or 'a1' from 'a1.com'
-            domain_name_part = extracted_link_parts.domain.lower() 
-            link_suffix = extracted_link_parts.suffix.lower() 
-            parsed_url_path = urlparse(link).path
-            is_root_path = (not parsed_url_path or parsed_url_path == '/')
-            # registered_domain is like 'a1.com' from 'jobs.a1.com'
-            current_registered_domain = extracted_link_parts.registered_domain.lower() 
-            subdomain = extracted_link_parts.subdomain.lower() # e.g., 'jobs' or 'www' or ''
-
-            if current_registered_domain in BLACKLISTED_DOMAINS:
-                scoring_logger.debug(f"  L1 Candidate {link} SKIPPED (Blacklisted: {current_registered_domain})")
-                continue
-            
-            if prefer_linkedin_company:
-                match = re.search(r"linkedin\.com/company/([^/?]+)", link.lower())
-                if match:
-                    linkedin_slug = match.group(1).lower()
-                    normalized_company_for_li_slug = normalize_company_name_for_domain_match(company_name)
-                    score = 0
-                    log_details = []
-                    if normalized_company_for_li_slug == linkedin_slug: score += 20; log_details.append(f"li_exact_slug({linkedin_slug}):+20")
-                    elif linkedin_slug.startswith(normalized_company_for_li_slug): score += 10; log_details.append(f"li_slug_starts_with({linkedin_slug}):+10")
-                    elif normalized_company_for_li_slug in linkedin_slug: score += 7; log_details.append(f"li_slug_contains({linkedin_slug}):+7")
-                    else: score +=3; log_details.append(f"li_generic_company_page:+3")
-                    if company_name.lower() in title: score += 5; log_details.append(f"li_name_in_title:+5")
-                    
-                    LINKEDIN_STRICT_THRESHOLD = 10.0 
-                    if score >= LINKEDIN_STRICT_THRESHOLD:
-                        scoring_logger.info(f"  >> L1 Selected LinkedIn for '{company_name}': {link} (Score: {score}, Title: '{title[:60]}'). Details: {', '.join(log_details)}")
-                        return link
-                    else:
-                        scoring_logger.debug(f"  L1 LinkedIn Candidate {link} for '{company_name}' (Slug: {linkedin_slug}) did not meet LI threshold {LINKEDIN_STRICT_THRESHOLD}. Score: {score}. Details: {', '.join(log_details)}")
-                else:
-                    scoring_logger.debug(f"  L1 Candidate {link} SKIPPED (Not a LinkedIn company URL format when preferred).")
-                continue 
-
-            # Strict Check for Homepage (HP)
-            # 1. The `prepared_company_name_for_check` must be the `domain` part (e.g. 'a1' from 'a1.com' or 'a1' from 'jobs.a1.com')
-            # 2. Subdomain must be empty or 'www'. This filters out things like 'jobs.a1.com'.
-            # 3. TLD must be in the PREFERRED_TLDS list
-            # 4. Path must be root
-            
-            is_correct_domain_name = (domain_name_part == prepared_company_name_for_check)
-            is_valid_subdomain = (subdomain == "" or subdomain == "www")
-            is_preferred_tld = (link_suffix in PREFERRED_TLDS)
-            
-            scoring_logger.debug(f"  L1 Checking HP Candidate: {link} (PrepName: '{prepared_company_name_for_check}', DomainPart: '{domain_name_part}', Subdomain: '{subdomain}', Suffix: '{link_suffix}', IsRoot: {is_root_path})")
-
-            if is_correct_domain_name and is_valid_subdomain and is_preferred_tld and is_root_path:
-                scoring_logger.info(f"  >> L1 Selected HP (Strict) for '{company_name}': {link}")
-                return link
-            else:
-                log_reasons = []
-                if not is_correct_domain_name: log_reasons.append(f"DomainPartMismatch ('{domain_name_part}'!N='{prepared_company_name_for_check}')")
-                if not is_valid_subdomain: log_reasons.append(f"InvalidSubdomain ('{subdomain}')")
-                if not is_preferred_tld: log_reasons.append(f"SuffixNotInPreferred ('{link_suffix}' vs {PREFERRED_TLDS})")
-                if not is_root_path: log_reasons.append(f"NotRootPath ('{parsed_url_path}')")
-                if log_reasons: 
-                     scoring_logger.debug(f"  L1 Candidate {link} FAILED strict HP. Reasons: {', '.join(log_reasons)}")
-        except Exception as e:
-            scoring_logger.warning(f"  L1 Error processing link {link} for '{company_name}': {type(e).__name__} - {e}")
-            continue
-    
-    scoring_logger.info(f"  -- Strict Pass 1 for '{company_name}' did not yield a result. Proceeding to Pass 2 (flexible scoring). --")
-
-    # Pass 2: Flexible Scoring (Restoring previous logic with adjustments)
-    # This part will be added in the next step. For now, returning None if Pass 1 fails.
-    # --- START OF RESTORED FLEXIBLE SCORING (to be completed) ---
-    
-    # Placeholder for restored logic - for now, we just log and return None if strict pass fails
-    # This section will be filled with the previous scoring mechanism.
-
-    old_score_threshold = 7.0 # Default from previous general logic
-    non_preferred_tld_score_threshold = 5.0 # Default from previous general logic
-
-    processed_candidates_scores = []
-    # We need to re-iterate or store results from the first pass if we don't want to make another API call
-    # For now, let's assume we re-iterate for simplicity, though it's less efficient for embeddings.
-    # In a real scenario, you might collect all 'organic' results once.
-    
-    candidate_links_data = []
-    if results and results.get("organic"): # Ensure results are still available
-        for res in results["organic"]: # Iterate through all fetched results again for Pass 2
-            link = res.get("link")
-            title = res.get("title", "").lower()
-            snippet = res.get("snippet", "").lower() # Snippet is used in flexible scoring
-            if not link: continue
-            candidate_links_data.append({"link": link, "title": title, "snippet": snippet})
-
-    # Embedding generation (if needed by flexible scoring)
-    # This was part of the original flexible scoring
-    company_embedding_for_pass2 = None
-    if openai_client: # Check if embeddings are generally enabled
-         # We need to decide if we re-calculate or pass the original `company_embedding`
-         # Assuming `company_embedding` is the embedding of the company_name itself and can be reused.
-         company_embedding_for_pass2 = company_embedding
-
-    candidate_embeddings = [None] * len(candidate_links_data)
-    if company_embedding_for_pass2 and openai_client and candidate_links_data:
-        embedding_tasks = []
-        for candidate_data in candidate_links_data:
-            text_for_embedding = f"{candidate_data['title']} {candidate_data['snippet']}"
-            embedding_tasks.append(get_embedding_async(text_for_embedding, openai_client))
-        
-        if embedding_tasks:
-            gathered_embeddings = await asyncio.gather(*embedding_tasks, return_exceptions=True)
-            for i, emb_result in enumerate(gathered_embeddings):
-                if not isinstance(emb_result, Exception) and emb_result is not None:
-                    candidate_embeddings[i] = emb_result
-    
-    for i, data in enumerate(candidate_links_data):
-        link, title, snippet = data["link"], data["title"], data["snippet"]
-        score = 0
-        score_log_details = [] 
-        current_dynamic_threshold = old_score_threshold
-        
-        try:
-            extracted_link_parts = tldextract.extract(link)
-            current_registered_domain = extracted_link_parts.registered_domain.lower()
-            domain_name_part_pass2 = extracted_link_parts.domain.lower()
-            link_suffix_pass2 = extracted_link_parts.suffix.lower()
-
-            if link_suffix_pass2 not in PREFERRED_TLDS: # Using the updated PREFERRED_TLDS
-                current_dynamic_threshold = non_preferred_tld_score_threshold
-
-            if current_registered_domain in BLACKLISTED_DOMAINS or link_suffix_pass2 == "gov": # gov still generally blacklisted for HP
-                score = -200; score_log_details.append("BLACKLISTED_DOMAIN/TLD:-200")
-            else:
-                if prefer_linkedin_company: # If LI was preferred and not found in Pass 1, we don't re-evaluate here for LI
-                                        # This pass is primarily for HP fallback if LI preferred search failed.
-                                        # Or, if LI was not preferred, this is the main HP flexible search.
-                    pass # Handled in L1 for LI, or if not prefer_li, this is for HP
-                
-                # Flexible scoring for HP
-                normalized_company_name_for_domain = normalize_company_name_for_domain_match(company_name) # Old normalizer
-
-                # Exact domain (less strict than L1, considers old PREFERRED_TLDS or broader list if defined)
-                if normalized_company_name_for_domain == domain_name_part_pass2 and link_suffix_pass2 in PREFERRED_TLDS: # Check against current PREFERRED_TLDS
-                    score += 15; score_log_details.append(f"flex_exact_domain_pref_tld({link_suffix_pass2}):+15")
-                elif any(part in domain_name_part_pass2 for part in company_name.lower().split() if len(part)>2 and len(part) < len(domain_name_part_pass2)): 
-                    score += 3; score_log_details.append("flex_partial_domain_match:+3")
-                
-                parsed_url_path_pass2 = urlparse(link).path
-                if not parsed_url_path_pass2 or parsed_url_path_pass2 == '/': 
-                    score += 7; score_log_details.append("flex_root_path:+7") 
-                elif parsed_url_path_pass2.count('/') == 1 and not parsed_url_path_pass2.endswith('/'): 
-                     score += 1; score_log_details.append("flex_shallow_path:+1")
-
-                if company_name.lower() in title: score += 5; score_log_details.append("flex_company_in_title:+5")
-                if company_name.lower() in snippet: score += 3; score_log_details.append("flex_company_in_snippet:+3")
-                
-                name_parts = [p for p in company_name.lower().split() if len(p) > 2] 
-                if not name_parts and len(company_name.lower()) > 2: name_parts = [company_name.lower()]
-                for w in name_parts:
-                    if w in title: score += 1; score_log_details.append(f"flex_part({w})_in_title:+1")
-                    if w in snippet: score += 0.5; score_log_details.append(f"flex_part({w})_in_snippet:+0.5")
-                
-                if "official" in title or "official" in snippet: score += 4; score_log_details.append("flex_official_keyword:+4")
-                if "homepage" in title: score += 2; score_log_details.append("flex_homepage_keyword:+2")
-                
-                for neg_kw in NEGATIVE_KEYWORDS_FOR_RANKING:
-                    if neg_kw in title: score -= 3; score_log_details.append(f"flex_neg_kw({neg_kw})_in_title:-3") 
-                    if f"/{neg_kw}" in link.lower(): score -= 3; score_log_details.append(f"flex_neg_kw({neg_kw})_in_link:-3") 
-                    if neg_kw in snippet: score -= 1; score_log_details.append(f"flex_neg_kw({neg_kw})_in_snippet:-1") 
-                
-                context_tld = context_keywords_dict.get("location_tld", "")
-                # Strong context TLD match (using new PREFERRED_TLDS logic if context_tld is there)
-                if context_tld and link_suffix_pass2 == context_tld and domain_name_part_pass2.startswith(normalize_company_name_for_domain_match(company_name).split('&')[0]):
-                    score += 10; score_log_details.append(f"flex_strong_ctx_tld({context_tld}):+10")
-                elif context_tld and link_suffix_pass2 == context_tld:
-                    score += 4; score_log_details.append(f"flex_ctx_tld({context_tld}):+4")
-                elif link_suffix_pass2 in PREFERRED_TLDS : # General preferred TLD bonus
-                    score += 1; score_log_details.append(f"flex_preferred_tld({link_suffix_pass2}):+1")
-                # No penalty for non-preferred TLDs here unless current_dynamic_threshold handles it
-
-                for key_type in ["industry", "location", "generic"]:
-                    ctx_kw = context_keywords_dict.get(key_type, "")
-                    if ctx_kw:
-                        for word in ctx_kw.split():
-                            if len(word)>2: # Avoid very short context words
-                                if word in snippet: score += 0.5; score_log_details.append(f"flex_ctx_snip({word}):+0.5") # Reduced from 1.0
-                                if word in title: score += 0.25; score_log_details.append(f"flex_ctx_title({word}):+0.25") # Reduced from 0.5
-            
-                if company_embedding_for_pass2 and i < len(candidate_embeddings) and candidate_embeddings[i] and not isinstance(candidate_embeddings[i], Exception):
-                    snippet_embedding = candidate_embeddings[i]
-                    try:
-                        similarity = cosine_similarity(np.array(company_embedding_for_pass2).reshape(1, -1), np.array(snippet_embedding).reshape(1, -1))[0][0]
-                        if similarity > 0.60: # Slightly lower threshold for flex pass
-                             score += similarity * 2.5 # Slightly lower multiplier
-                             score_log_details.append(f"flex_embed_sim:{similarity*2.5:.1f}(raw:{similarity:.2f})")
-                    except Exception as e_cos: scoring_logger.warning(f"  L2 Cosine sim error for {link}: {e_cos}")
-            
-            processed_candidates_scores.append((score, link, current_dynamic_threshold, title, score_log_details))
-
-        except Exception as e:
-            scoring_logger.warning(f"  L2 Error processing link {link} for '{company_name}': {type(e).__name__} - {e}")
-            continue
-            
-    if processed_candidates_scores:
-        processed_candidates_scores.sort(key=lambda x: x[0], reverse=True)
-        for score, link, threshold, title, log_details in processed_candidates_scores:
-            scoring_logger.debug(f"  L2 Ranked Candidate: {link} | Title: '{title[:60]}...' | FINAL SCORE: {score:.1f} | Threshold: {threshold} | Factors: {', '.join(log_details)}")
-            if score >= threshold:
-                scoring_logger.info(f"  >> L2 Selected Link (Flexible) for '{company_name}': {link} (Score: {score:.1f}, Threshold: {threshold})")
-                return link
-        
-        best_score_overall = processed_candidates_scores[0][0]
-        best_link_overall = processed_candidates_scores[0][1]
-        scoring_logger.info(f"  L2 No link met flexible score threshold for '{company_name}'. Best flexible score: {best_score_overall:.1f} for {best_link_overall}")
-    else:
-        scoring_logger.info(f"  L2 No candidates processed for flexible scoring for '{company_name}'.")
-
-    # --- END OF RESTORED FLEXIBLE SCORING ---
-    scoring_logger.info(f"  >> No link met ANY criteria (Strict L1 or Flexible L2) for '{company_name}' (Prepared: '{prepared_company_name_for_check}').")
-    return None
-
-async def generate_search_query_async(
-    company_name: str,
-    context: str | None,
-    openai_client: AsyncOpenAI | None
-) -> str:
-    """
-    Генерирует оптимизированный поисковый запрос на основе контекста.
-    """
-    if not context or not openai_client:
-        return company_name
-
-    prompt = f"""
-    Given the following company name and context information, generate a concise search query 
-    that will help find the company's official website and LinkedIn profile.
-    The query should be specific enough to avoid ambiguity but not too long.
-    Focus on the most relevant keywords from the context.
-
-    Company Name: {company_name}
-    Context: {context}
-
-    Return ONLY the search query, nothing else. Keep it under 10 words.
-    """
-
-    try:
-        response = await openai_client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=50,
-            temperature=0.3
-        )
-        query = response.choices[0].message.content.strip()
-        return query
-    except Exception as e:
-        logging.error(f"Error generating search query: {e}")
-        return company_name  # fallback to just company name
-
 def normalize_linkedin_url(url: str) -> str | None:
     """
-    Нормализует URL LinkedIn до формата: https://www.linkedin.com/company/company-name/about/
+    Normalizes LinkedIn URL to the format: https://www.linkedin.com/company/company-slug/about/
+    Handles /company/, /school/, /showcase/ if they contain a clear slug.
+    Decodes URL-encoded characters in the slug.
     """
-    try:
-        # Извлекаем часть после /company/
-        match = re.search(r'linkedin\.com/company/([^/?]+)', url.lower())
-        if not match:
-            return None
-        
-        company_slug = match.group(1)
-        # Удаляем все после первого слеша или знака вопроса
-        company_slug = company_slug.split('/')[0].split('?')[0]
-        
-        # Формируем нормализованный URL
-        normalized_url = f"https://www.linkedin.com/company/{company_slug}/about/"
-        return normalized_url
-    except Exception as e:
-        logging.error(f"Error normalizing LinkedIn URL {url}: {e}")
+    if not url or not isinstance(url, str):
         return None
+    
+    url_lower = url.lower()
+    
+    # Try to match /company/, /school/, /showcase/
+    # Example: linkedin.com/company/example-inc%C3%A9
+    # Example: linkedin.com/school/university-of-example/
+    # Example: linkedin.com/showcase/example-product-line/
+    match = re.search(r"linkedin\.com/(company|school|showcase)/([^/?#]+)", url_lower)
+    
+    if not match:
+        # Fallback for less common but valid profile URLs if they somehow get here
+        # e.g. linkedin.com/in/profile-name (unlikely for company search but as a safeguard)
+        # or direct links like linkedin.com/company/example/ (without trailing slash or /about)
+        # This regex is broader but we are primarily interested in /company/ structure
+        if "linkedin.com/" in url_lower: # Basic check
+            # Try to find a slug-like part even without /company/ prefix if it looks like a profile
+            # This is less reliable and should ideally be caught by a good /company/ match first
+            pass # For now, if no company/school/showcase, don't normalize unless it's a perfect /about already
+        return None # If no clear company/school/showcase structure, cannot reliably normalize
+
+    profile_type = match.group(1) # company, school, or showcase
+    slug = match.group(2)
+
+    # Decode URL-encoded characters in the slug (e.g., %20 for space, %C3%A9 for é)
+    try:
+        decoded_slug = unquote(slug)
+    except Exception as e:
+        logging.warning(f"Error decoding LinkedIn slug '{slug}' from URL '{url}': {e}")
+        decoded_slug = slug # Use original slug if decoding fails
+
+    # Clean the slug further: remove extra slashes or query params mistakenly included
+    # The regex already handles ? and #, but trailing slashes might be part of slug
+    cleaned_slug = decoded_slug.strip('/')
+
+    if not cleaned_slug: # Empty slug after cleaning
+        logging.warning(f"Empty slug after cleaning for LinkedIn URL: {url}")
+        return None
+
+    # For 'showcase' and 'school', we still normalize to /about/ for consistency,
+    # though their actual "about" section might differ or not exist in the same way.
+    # The main goal is to have a consistent URL structure for scraping attempts.
+    return f"https://www.linkedin.com/{profile_type}/{cleaned_slug}/about/"
+
 
 async def find_urls_with_serper_async(
     session: aiohttp.ClientSession,
     company_name: str,
     context_text: str | None,
     serper_api_key: str | None,
-    openai_client: AsyncOpenAI | None,
+    openai_client: AsyncOpenAI | None, 
     scoring_logger_obj: logging.Logger
 ) -> tuple[str | None, str | None]:
+    
     if not serper_api_key:
-        scoring_logger_obj.warning(f"SERPER_API_KEY missing for {company_name}")
+        scoring_logger_obj.warning(f"SERPER_API_KEY missing for {company_name}. Cannot find URLs.")
         return None, None
 
-    homepage_url, linkedin_url = None, None
     headers = {'X-API-KEY': serper_api_key, 'Content-Type': 'application/json'}
+    
+    # 0. Prepare company name for LI matching (still needed for LI scoring)
+    normalized_company_name_for_li_match = normalize_name_for_domain_comparison(company_name)
+    scoring_logger_obj.info(f"Normalized name for LI scoring: '{normalized_company_name_for_li_match}'")
 
-    # Формируем поисковый запрос с фокусом на LinkedIn
-    search_query = f"{company_name} {context_text or ''} linkedin company profile".strip()
-    
-    # Запрашиваем больше результатов
-    results = await _execute_serper_query(
-        session,
-        search_query,
-        serper_api_key,
-        headers,
-        num_results=50  # Запрашиваем больше результатов
-    )
-    
-    if not results or not results.get("organic"):
-        scoring_logger_obj.info(f"No results found for {company_name}")
+    # 1. Serper Query (Simplified as requested)
+    search_query = f"company {company_name}" # Keep it simple
+    scoring_logger_obj.info(f"Executing Serper API query for '{company_name}': \"{search_query}\"")
+    # Request more results to have a better pool for selection, even with simpler query
+    serper_results_json = await _execute_serper_query(session, search_query, serper_api_key, headers, num_results=30)
+
+    if not serper_results_json or not serper_results_json.get("organic"):
+        scoring_logger_obj.warning(f"No organic results from Serper for '{company_name}' with query '{search_query}'.")
         return None, None
+    
+    organic_results = serper_results_json["organic"]
+    scoring_logger_obj.info(f"Received {len(organic_results)} organic results from Serper for '{company_name}'.")
 
-    # Ищем LinkedIn URL в результатах
-    for res in results["organic"]:
+    # --- Variables to store selected URLs ---
+    selected_linkedin_url: str | None = None
+    selected_homepage_url: str | None = None
+    
+    # --- 2. Find LinkedIn URL (Using the scoring logic - unchanged) ---
+    scoring_logger_obj.info(f"\n--- Searching for LinkedIn URL for '{company_name}' (Scoring Method) ---")
+    linkedin_candidates: list[tuple[str, str, int]] = []
+    for res in organic_results:
         link = res.get("link")
-        if not link:
-            continue
+        title = res.get("title", "").lower()
+        if not link or not isinstance(link, str) or "linkedin.com/" not in link.lower(): continue
+        normalized_li_url = normalize_linkedin_url(link)
+        if normalized_li_url:
+            slug_match = re.search(r"linkedin\.com/(?:company|school|showcase)/([^/]+)/about/?", normalized_li_url.lower())
+            slug = slug_match.group(1) if slug_match else ""
+            score = 0
+            reason = []
+            if "/company/" in normalized_li_url.lower(): score += 20; reason.append("/company/ link:+20")
+            elif "/showcase/" in normalized_li_url.lower(): score += 5; reason.append("/showcase/ link:+5")
+            elif "/school/" in normalized_li_url.lower(): score += 3; reason.append("/school/ link:+3")
+            if slug and normalized_company_name_for_li_match in slug.replace('-', ''): score += 15; reason.append(f"Name in slug ({slug}):+15")
+            elif normalized_company_name_for_li_match in title.replace('-', '').replace(' ', ''): score += 10; reason.append(f"Name in title ({title[:30]}...):+10")
+            elif any(part in slug.replace('-', '') for part in normalized_company_name_for_li_match.split('-') if len(part) > 2): score += 7; reason.append(f"Part of name in slug ({slug}):+7")
+            elif any(part in title.replace('-', '').replace(' ', '') for part in normalized_company_name_for_li_match.split('-') if len(part) > 2): score += 5; reason.append(f"Part of name in title ({title[:30]}...):+5")
+            if "jobs" in title or "careers" in title or "/jobs" in link.lower() or "/careers" in link.lower():
+                if not ("/company/" in normalized_li_url.lower() and score > 20): score -= 5; reason.append("Jobs/careers term:-5")
+            if score > 0:
+                linkedin_candidates.append((normalized_li_url, slug or title, score))
+                scoring_logger_obj.debug(f"  LI Candidate: {normalized_li_url}, Score: {score}, Slug/Title: '{slug or title}', Reason: {', '.join(reason)}")
+        else: scoring_logger_obj.debug(f"  Skipped non-normalizable LinkedIn-like URL: {link}")
+    if linkedin_candidates:
+        linkedin_candidates.sort(key=lambda x: x[2], reverse=True)
+        selected_linkedin_url = linkedin_candidates[0][0]
+        scoring_logger_obj.info(f"Selected LinkedIn URL (by score): {selected_linkedin_url} (Score: {linkedin_candidates[0][2]}, Slug/Title: '{linkedin_candidates[0][1]}')")
+    else: scoring_logger_obj.warning(f"No suitable LinkedIn URL found for '{company_name}'.")
 
+    # --- 3. Find Homepage URL (Using LLM with LESS strict pre-filtering) ---
+    scoring_logger_obj.info(f"\n--- Searching for Homepage URL for '{company_name}' (LLM Method with relaxed pre-filtering) ---")
+    
+    homepage_candidates_for_llm: list[dict] = []
+    # Define a smaller, core blacklist for pre-filtering - LLM should handle the rest based on prompt
+    CORE_BLACKLIST = [
+        "linkedin.com", "youtube.com", "facebook.com", "twitter.com", "x.com",
+        "instagram.com", "pinterest.com", "reddit.com", "tiktok.com",
+        "wikipedia.org", "wikimedia.org" # Keep the most obvious non-HP sites out
+    ]
+    
+    for res in organic_results:
+        link = res.get("link")
+        title = res.get("title", "")
+        snippet = res.get("snippet", "")
+        
+        if not link or not isinstance(link, str):
+            continue 
+        
         try:
-            # Проверяем, является ли ссылка LinkedIn
-            if "linkedin.com/company/" in link.lower():
-                normalized_linkedin_url = normalize_linkedin_url(link)
-                if normalized_linkedin_url:
-                    linkedin_url = normalized_linkedin_url
-                    scoring_logger_obj.info(f"Found and normalized LinkedIn URL for {company_name}: {linkedin_url}")
-                    break
-        except Exception as e:
-            scoring_logger_obj.warning(f"Error processing LinkedIn link {link}: {e}")
-            continue
-
-    # Если нашли LinkedIn URL, пробуем извлечь информацию о компании
-    if linkedin_url:
-        try:
-            # Здесь можно добавить логику для извлечения информации о компании из LinkedIn
-            # Например, получить описание компании, которое может содержать ссылку на домашнюю страницу
-            # Или использовать другие методы для поиска домашней страницы на основе информации из LinkedIn
+            parsed_url = urlparse(link)
+            if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"]:
+                 scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Invalid scheme")
+                 continue
+            if not parsed_url.netloc:
+                 scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Missing domain")
+                 continue
+                 
+            # Simplified pre-filtering: only check core blacklist
+            extracted_parts = tldextract.extract(link)
+            registered_domain = extracted_parts.registered_domain.lower()
+            is_core_blacklisted = False
+            for blacklisted in CORE_BLACKLIST:
+                if blacklisted in registered_domain:
+                     is_core_blacklisted = True
+                     break
             
-            # Временная заглушка - просто возвращаем найденный LinkedIn URL
-            homepage_url = linkedin_url
-            scoring_logger_obj.info(f"Using LinkedIn URL as homepage for {company_name}: {linkedin_url}")
+            if is_core_blacklisted:
+                scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Domain '{registered_domain}' is in CORE blacklist.")
+                continue
+            
+            # REMOVED check for NEGATIVE_KEYWORDS_FOR_HP_URL_PATH before LLM call
+            # Trust LLM to evaluate path relevance based on prompt
+                 
+            # If passed basic scheme/domain checks and CORE blacklist, add to list for LLM
+            homepage_candidates_for_llm.append({
+                "link": link,
+                "title": title,
+                "snippet": snippet
+            })
+            
         except Exception as e:
-            scoring_logger_obj.error(f"Error extracting company info from LinkedIn: {e}")
+            scoring_logger_obj.warning(f"Error filtering HP candidate link {link} for LLM: {type(e).__name__} - {e}")
+            continue
 
-    return homepage_url, linkedin_url 
+    if not homepage_candidates_for_llm:
+        scoring_logger_obj.warning(f"No suitable homepage candidates found to send to LLM for '{company_name}' after relaxed pre-filtering.")
+    elif not openai_client:
+        scoring_logger_obj.warning(f"OpenAI client not available, cannot use LLM to select homepage for '{company_name}'.")
+    else:
+        # Prepare context for LLM prompt (limit candidate list size if needed)
+        MAX_CANDIDATES_FOR_LLM = 15 
+        if len(homepage_candidates_for_llm) > MAX_CANDIDATES_FOR_LLM:
+             scoring_logger_obj.debug(f"Trimming homepage candidates for LLM from {len(homepage_candidates_for_llm)} to {MAX_CANDIDATES_FOR_LLM}")
+             homepage_candidates_for_llm = homepage_candidates_for_llm[:MAX_CANDIDATES_FOR_LLM]
+             
+        candidates_str = "\n".join([f"- URL: {c['link']}\n  Title: {c['title']}\n  Snippet: {c['snippet']}" for c in homepage_candidates_for_llm])
+        
+        # Using the same robust prompt as before
+        prompt = f"""
+Analyze the list of URLs below for the company named '{company_name}'. 
+Company context: {context_text or 'Not provided'}
+
+Your task is to identify the single, most likely *official homepage URL* for this specific company. 
+
+Consider these criteria:
+- It must be the main corporate website, not a specific product page (unless it's the only site), blog, news article, login page, or profile on another platform.
+- Avoid parent companies or subsidiaries if they seem distinct from '{company_name}', unless the context suggests otherwise.
+- Prefer root domains (e.g., example.com) or primary regional domains (e.g., example.co.uk).
+- Critically evaluate sites like Crunchbase, ZoomInfo, Bloomberg, Forbes, news sites, PDF links, general directories - these are almost never the official homepage.
+
+Candidate URLs:
+{candidates_str}
+
+Based on your analysis, return ONLY the single best official homepage URL from the list above. If absolutely none of the candidates seem suitable as the official homepage according to the criteria, return the exact word 'None'.
+"""
+        
+        scoring_logger_obj.info(f"Calling LLM to select homepage from {len(homepage_candidates_for_llm)} candidates (using relaxed pre-filtering) for '{company_name}'.")
+        try:
+            response = await openai_client.chat.completions.create(
+                model="gpt-4o-mini", 
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=200, 
+                temperature=0.1, 
+                n=1,
+                stop=None
+            )
+            llm_choice = response.choices[0].message.content.strip()
+            scoring_logger_obj.info(f"LLM choice for homepage: '{llm_choice}'")
+            
+            if llm_choice and llm_choice.lower() != 'none' and (llm_choice.startswith('http://') or llm_choice.startswith('https://')):
+                is_candidate = False
+                for candidate in homepage_candidates_for_llm:
+                     if candidate['link'] == llm_choice:
+                         is_candidate = True
+                         break
+                if is_candidate:
+                    selected_homepage_url = llm_choice
+                    scoring_logger_obj.info(f"Selected Homepage URL (LLM Choice): {selected_homepage_url}")
+                else:
+                     scoring_logger_obj.warning(f"LLM returned a URL '{llm_choice}' which was not in the candidate list for '{company_name}'. Ignoring.")
+            elif llm_choice.lower() == 'none':
+                 scoring_logger_obj.info(f"LLM indicated no suitable homepage found for '{company_name}'.")
+            else:
+                 scoring_logger_obj.warning(f"LLM returned unexpected response for homepage selection for '{company_name}': '{llm_choice}'. Treating as no selection.")
+                 
+        except Exception as e:
+            scoring_logger_obj.error(f"Error calling LLM for homepage selection for '{company_name}': {type(e).__name__} - {e}")
+            # selected_homepage_url remains None
+
+    # --- 4. Final Logging ---
+    scoring_logger_obj.info(f"\n{'='*50}")
+    scoring_logger_obj.info(f"FINAL URLs determined for '{company_name}':")
+    scoring_logger_obj.info(f"  Homepage: {selected_homepage_url}")
+    scoring_logger_obj.info(f"  LinkedIn: {selected_linkedin_url}")
+    scoring_logger_obj.info(f"{'='*50}\n")
+
+    return selected_homepage_url, selected_linkedin_url 

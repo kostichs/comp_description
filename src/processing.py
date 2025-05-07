@@ -4,6 +4,11 @@ import re # For finding copyright or specific patterns
 import time
 from urllib.parse import urlparse, urljoin
 import json # For parsing JSON-LD
+import logging
+import os
+
+# Настройка логгера
+logger = logging.getLogger(__name__)
 
 def validate_page(company_name: str, title: str | None, domain: str | None, html_content: str | None, original_url: str | None = None) -> bool:
     """Validates if the page content is relevant, checking title, domain, content signals, and basic URL structure."""
@@ -255,27 +260,78 @@ def parse_linkedin_about_section_flexible(html_content: str) -> tuple[str | None
     Returns (description, homepage_url).
     """
     if not html_content:
+        logger.info("[LinkedIn Parser] Empty HTML content received")
         return None, None
+        
+    # Сохраняем HTML в файл для анализа
+    timestamp = time.strftime("%Y%m%d_%H%M%S")
+    debug_file = f"output/debug/linkedin_html_{timestamp}.html"
+    os.makedirs("output/debug", exist_ok=True)
+    
+    with open(debug_file, "w", encoding="utf-8") as f:
+        f.write(html_content)
+    
+    logger.info(f"[LinkedIn Parser] Saved raw HTML to {debug_file}")
+    
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # 1. Многоязычные ключевые слова для about
+    # Проверка на страницу логина
+    login_indicators = [
+        "Sign in to LinkedIn",
+        "Войти в LinkedIn",
+        "Sign in",
+        "Log in",
+        "Войти",
+        "login-form",
+        "sign-in-form",
+        "auth-wall"
+    ]
+    
+    for indicator in login_indicators:
+        if indicator.lower() in html_content.lower():
+            logger.error(f"[LinkedIn Parser] Detected LinkedIn login page! Indicator found: {indicator}")
+            logger.error("[LinkedIn Parser] Cannot parse company page - authentication required")
+            return None, None
+
+    # 1. Попытка взять данные из JSON-LD
+    script_tag = soup.find('script', type='application/ld+json')
+    if script_tag:
+        try:
+            data = json.loads(script_tag.string)
+            logger.info(f"[LinkedIn Parser] Found JSON-LD data structure: {list(data.keys()) if isinstance(data, dict) else 'List of objects'}")
+            homepage_url = data.get('url')
+            if homepage_url and 'linkedin.com' in homepage_url:
+                logger.info(f"[LinkedIn Parser] Skipping LinkedIn URL: {homepage_url}")
+                homepage_url = None
+            description = data.get('description')
+            if description or homepage_url:
+                logger.info(f"[LinkedIn Parser] Successfully extracted from JSON-LD - Description length: {len(description) if description else 0}, Homepage: {homepage_url}")
+                return description, homepage_url
+        except Exception as e:
+            logger.error(f"[LinkedIn Parser] Failed to parse JSON-LD: {str(e)}")
+            pass
+
+    # 2. Многоязычные ключевые слова для about
     about_keywords = [
         "about", "обзор", "présentation", "a propos", "über", "acerca", "会社概要", "informazioni", "tietoja", "om", "소개", "소개글", "소개란"
     ]
     about_keywords = [k.lower() for k in about_keywords]
+    logger.debug(f"[LinkedIn Parser] Searching for about sections with keywords: {about_keywords}")
 
-    # 2. Найти секцию, где есть <h2>/<h3> с любым из ключевых слов, либо <dl> с Website/Веб-сайт
+    # 3. Найти секцию, где есть <h2>/<h3> с любым из ключевых слов, либо <dl> с Website/Веб-сайт
     about_section = None
     for section in soup.find_all('section'):
         header = section.find(['h2', 'h3'])
         header_text = header.get_text(strip=True).lower() if header else ""
         if any(kw in header_text for kw in about_keywords):
+            logger.info(f"[LinkedIn Parser] Found about section with header: {header_text}")
             about_section = section
             break
         # Структурная эвристика: ищем <dl> с Website
         if section.find('dl'):
             dt_texts = [dt.get_text(strip=True).lower() for dt in section.find_all('dt')]
             if any("website" in t or "веб-сайт" in t for t in dt_texts):
+                logger.info(f"[LinkedIn Parser] Found about section with website in dt: {dt_texts}")
                 about_section = section
                 break
 
@@ -283,12 +339,14 @@ def parse_linkedin_about_section_flexible(html_content: str) -> tuple[str | None
     homepage_url = None
 
     if about_section:
+        logger.info("[LinkedIn Parser] Processing found about section...")
         # Описание — первый длинный <p>
         desc_p = None
         for p in about_section.find_all('p'):
             text = p.get_text(strip=True)
             if len(text) > 80:
                 desc_p = p
+                logger.info(f"[LinkedIn Parser] Found description paragraph (first 100 chars): {text[:100]}...")
                 break
         if desc_p:
             description = desc_p.get_text(strip=True)
@@ -300,22 +358,36 @@ def parse_linkedin_about_section_flexible(html_content: str) -> tuple[str | None
                 dd = dt.find_next_sibling('dd')
                 if dd:
                     a = dd.find('a', href=True)
-                    if a and a['href'].startswith('http'):
+                    if a and a['href'].startswith('http') and 'linkedin.com' not in a['href']:
                         homepage_url = a['href']
+                        logger.info(f"[LinkedIn Parser] Found homepage URL in dt/dd: {homepage_url}")
                         break
+        # Fallback: ищем первую внешнюю ссылку в about_section
+        if not homepage_url:
+            for a in about_section.find_all('a', href=True):
+                href = a['href']
+                if href.startswith('http') and 'linkedin.com' not in href:
+                    homepage_url = href
+                    logger.info(f"[LinkedIn Parser] Found homepage URL in fallback: {homepage_url}")
+                    break
 
     # Fallback: если не нашли секцию, ищем первый длинный <p> на странице
     if not description:
+        logger.info("[LinkedIn Parser] No about section found, trying to find first long paragraph...")
         for p in soup.find_all('p'):
             text = p.get_text(strip=True)
             if len(text) > 100:
                 description = text
+                logger.info(f"[LinkedIn Parser] Found description in fallback paragraph (first 100 chars): {text[:100]}...")
                 break
 
-    # Last fallback: если ничего не нашли, возвращаем весь текст страницы (обрезаем до 4000 символов)
+    # Last fallback: если ничего не нашли, возвращаем весь текст страницы
     if not description:
+        logger.info("[LinkedIn Parser] No suitable paragraphs found, using full page text as fallback...")
         all_text = soup.get_text(separator=' ', strip=True)
         if all_text:
             description = all_text[:4000]
+            logger.info(f"[LinkedIn Parser] Using full page text as fallback (length: {len(description)})")
 
+    logger.info(f"[LinkedIn Parser] Final result - Description length: {len(description) if description else 0}, Homepage: {homepage_url}")
     return description, homepage_url 

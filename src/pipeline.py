@@ -90,145 +90,120 @@ async def process_company(company_name: str,
     hp_url_found_serper = None # Store URL from Serper separately
     li_url_found_serper = None
     definitive_hp_url_from_meta = None
-    page_validated_for_text_extraction = False # Flag to see if any page passed all checks
+    page_validated_for_text_extraction = False
 
     try:
+        # --- 1. Find URLs using Serper ---
         # Pass scoring_logger to find_urls
         hp_url_found_serper, li_url_found_serper = await find_urls_with_serper_async(
             aiohttp_session, company_name, context_text, serper_api_key, openai_client, scoring_logger
         )
-        result_data["linkedin"] = li_url_found_serper or "Not found"
+        result_data["linkedin"] = li_url_found_serper or "Not found" # Store the found LI URL, but we won't parse it
         
-        # Set homepage URL in result_data based on the found URL
-        if hp_url_found_serper:
+        # Set homepage URL in result_data based on the found URL (even if None initially)
+        result_data["homepage"] = hp_url_found_serper or "Not found" 
+        
+        if not hp_url_found_serper:
+             logging.warning(f"  > {company_name}: No Homepage URL found by Serper/LLM.")
+             # No point continuing if no HP URL
+             # We still return the result_data with "Not found" for HP and the found LinkedIn URL
+        
+        # --- 2. Scrape Homepage (if URL found) ---
+        hp_data = None
+        if hp_url_found_serper and sb_client:
+            logging.info(f"  > {company_name}: Attempting to scrape Homepage URL: {hp_url_found_serper}")
             try:
-                parsed_url = urlparse(hp_url_found_serper)
-                scheme = parsed_url.scheme; netloc = parsed_url.netloc; path = parsed_url.path
-                if scheme and netloc: result_data["homepage"] = f"{scheme}://{netloc}"
-                elif not scheme and (netloc or (path and '.' in path and '/' not in path)):
-                     result_data["homepage"] = f"https://{netloc if netloc else path}"
-                else: result_data["homepage"] = hp_url_found_serper
-            except: result_data["homepage"] = hp_url_found_serper
-        
-        if not sb_client: 
-            logging.error(f"ScrapingBee client not available for {company_name}.")
-            raise ValueError("ScrapingBee client error")
+                # Only scrape homepage, removed LinkedIn scraping task
+                scrape_task = asyncio.create_task(scrape_page_data_async(hp_url_found_serper, sb_client))
+                done, _ = await asyncio.wait({scrape_task}, timeout=60)
+                if scrape_task in done and not scrape_task.cancelled() and scrape_task.exception() is None:
+                    hp_data = scrape_task.result()
+                    logging.info(f"  > {company_name}: Homepage scrape task completed.")
+                elif scrape_task.exception():
+                    logging.warning(f"  > {company_name}: Homepage scrape task failed: {scrape_task.exception()}")
+                else: # Timeout
+                    logging.warning(f"  > {company_name}: Homepage scrape task timed out.")
+            except Exception as e:
+                 logging.error(f"  > {company_name}: Error during HP scrape setup/wait: {e}")
 
-        # Scrape concurrently
-        scrape_tasks = {}
-        if hp_url_found_serper: scrape_tasks['homepage'] = asyncio.create_task(scrape_page_data_async(hp_url_found_serper, sb_client))
-        if li_url_found_serper and "linkedin.com/company/" in li_url_found_serper: 
-            scrape_tasks['linkedin'] = asyncio.create_task(scrape_page_data_async(li_url_found_serper, sb_client))
-        scraped_results = {}
-        if scrape_tasks:
-            done, _ = await asyncio.wait(scrape_tasks.values(), timeout=60) 
-            for task_name, task in scrape_tasks.items():
-                if task in done and not task.cancelled() and task.exception() is None: scraped_results[task_name] = task.result()
-                elif task.exception(): logging.warning(f"Scrape task {task_name}({company_name}) failed: {task.exception()}")
-                else: logging.warning(f"Scrape task {task_name}({company_name}) timed out.")
-        hp_data = scraped_results.get('homepage')
-        li_data = scraped_results.get('linkedin')
-
-        # Process Homepage Result (using original URL for validation)
+        # --- 3. Process Homepage Result (if data received) ---
         if hp_data:
             hp_title, hp_root, hp_html = hp_data
             
-            # Attempt to extract definitive URL from HTML meta tags
-            if hp_html and hp_url_found_serper: # Need original URL for base in urljoin
+            if not hp_html:
+                 logging.warning(f"  > {company_name}: Homepage scrape returned NO HTML content despite successful task completion (hp_data exists but html is None/empty).")
+            else:
+                logging.info(f"  > {company_name}: Processing scraped homepage content (Title: {hp_title[:60] if hp_title else 'N/A'}, HTML length: {len(hp_html)}).")
+                # Attempt to extract definitive URL from HTML meta tags
                 definitive_hp_url_from_meta = extract_definitive_url_from_html(hp_html, hp_url_found_serper)
                 if definitive_hp_url_from_meta:
                     logging.info(f"  > {company_name}: Definitive HP URL found from meta/JSON-LD: {definitive_hp_url_from_meta}")
                     result_data["homepage"] = definitive_hp_url_from_meta # Override with this one
-                    # If we trust this definitive URL, we might even skip some validation or LLM check
-                    # For now, we continue with validation on this new URL's content
-            
-            # Validate using the (potentially updated) homepage URL and its content
-            current_hp_to_validate = definitive_hp_url_from_meta or hp_url_found_serper
-            is_hp_valid = validate_page(company_name, hp_title, hp_root, hp_html, original_url=current_hp_to_validate)
-            if is_hp_valid:
-                # LLM Check for homepage relevance - COMMENTING OUT
-                logging.info(f"  > {company_name}: HP structurally valid. LLM check SKIPPED.")
-                # first_few_text_nodes = " ".join(BeautifulSoup(hp_html, 'html.parser').stripped_strings)
-                # is_hp_llm_confirmed = await is_url_company_page_llm(company_name, first_few_text_nodes[:2000], openai_client)
-                is_hp_llm_confirmed = True # Assume LLM confirmed if structural validation passed
+                
+                # Validate using the (potentially updated) homepage URL and its content
+                current_hp_to_validate = definitive_hp_url_from_meta or hp_url_found_serper
+                is_hp_valid = validate_page(company_name, hp_title, hp_root, hp_html, original_url=current_hp_to_validate)
+                
+                if is_hp_valid:
+                    logging.info(f"  > {company_name}: HP structural validation PASSED (URL: {current_hp_to_validate}).")
+                    # If HP is valid, try to extract text from it
+                    text_from_hp = extract_text_for_description(hp_html)
+                    if text_from_hp:
+                         logging.info(f"  > {company_name}: Text successfully extracted from valid HP (length: {len(text_from_hp)}).")
+                         text_src = text_from_hp
+                         page_validated_for_text_extraction = True # Mark success
+                    else:
+                         logging.warning(f"  > {company_name}: HP was valid, but failed to extract text for description.")
+                         manual_check_flag = True
+                else:
+                    logging.warning(f"  > {company_name}: HP structural validation FAILED (URL: {current_hp_to_validate}).")
+                    manual_check_flag = True # Flag for check if validation fails
+        elif hp_url_found_serper: # If we had a URL but scrape failed/timed out
+             logging.warning(f"  > {company_name}: Homepage scrape failed or timed out, cannot process HP.")
+             manual_check_flag = True
 
-                if is_hp_llm_confirmed: # This will now always be true if is_hp_valid was true
-                    text_src = extract_text_for_description(hp_html) 
-                    logging.info(f"  > {company_name}: HP (LLM check skipped). Text: {bool(text_src)}")
-                    page_validated_for_text_extraction = True
-            else: 
-                logging.warning(f"  > {company_name}: HP structural validation FAILED (URL: {current_hp_to_validate}).")
-                manual_check_flag = True
-        elif hp_url_found_serper: 
-             logging.warning(f"  > {company_name}: HP scrape failed/timed out for {hp_url_found_serper}.")
-             manual_check_flag = True 
-        else: 
-             logging.info(f"  > {company_name}: HP URL not initially found."); 
-             manual_check_flag = True 
-        
-        # LinkedIn Website Cross-Validation
-        if hp_url_found_serper and li_data: 
-            _, _, li_html_scraped = li_data 
-            if li_html_scraped:
-                soup_li = BeautifulSoup(li_html_scraped, 'html.parser')
-                website_link_tag = None
-                possible_selectors = ['a[data-tracking-control-name="org-about_website_button"]', 'a[href*="http"]:not([href*="linkedin.com"])']
-                for selector in possible_selectors:
-                    link_tag = soup_li.select_one(selector)
-                    if link_tag and link_tag.get('href'): website_link_tag = link_tag; break
-                if website_link_tag and website_link_tag.get('href'):
-                    linkedin_site_url_raw = website_link_tag.get('href')
-                    try:
-                        parsed_linkedin_site_url = urlparse(linkedin_site_url_raw)
-                        parsed_hp_url_found_to_compare = urlparse(hp_url_found_serper)
-                        li_netloc = parsed_linkedin_site_url.netloc.replace("www.", "").strip('/')
-                        hp_netloc = parsed_hp_url_found_to_compare.netloc.replace("www.", "").strip('/')
-                        if li_netloc and hp_netloc and li_netloc != hp_netloc:
-                            logging.warning(f"  > WARNING ({company_name}): LI website ({li_netloc}) != Serper HP ({hp_netloc}).")
-                    except Exception as e_parse_compare: logging.warning(f"  > Error comparing LI site link ({linkedin_site_url_raw}): {e_parse_compare}")
-
-        # Process LinkedIn Scraped Data (if needed & available)
-        if li_data and (not text_src or manual_check_flag):
-            li_title, li_domain, li_html = li_data # Use actual li_domain if needed, though often just linkedin.com
-            # Всегда пробуем парсить LinkedIn, даже если валидация не прошла
-            li_description, li_homepage = parse_linkedin_about_section_flexible(li_html)
-            if li_description:
-                text_src = li_description
-                if li_homepage and li_homepage.startswith("http"):
-                    result_data["homepage"] = li_homepage
-                logging.info(f"  > {company_name}: LI validated for text (flexible parser, no validation). Text: {bool(text_src)}; Homepage: {li_homepage}")
-                page_validated_for_text_extraction = True
-                manual_check_flag = False
-            else:
-                logging.warning(f"  > {company_name}: LI flexible parser found no description.")
-                manual_check_flag = True
-        elif li_url_found_serper and (not text_src or manual_check_flag):
-             logging.warning(f"  > {company_name}: LI scrape failed/timed out.")
-             if not text_src: manual_check_flag = True
-
+        # --- 4. Generate Description using LLM (if validated text source exists) ---
         llm_generated_output = None
         if text_src and page_validated_for_text_extraction:
-             logging.info(f" > {company_name}: Validated text source found, generating LLM description...")
-             llm_generated_output = await generate_description_openai_async(company_name, result_data["homepage"], result_data["linkedin"], text_src, llm_config, openai_client, context_text)
-        else:
-            logging.info(f" > {company_name}: No validated text source for LLM."); manual_check_flag = True 
-        
-        if isinstance(llm_generated_output, dict):
-            logging.info(f" > {company_name}: LLM OK (JSON).")
-            result_data.pop('description', None) 
-            result_data.update({f"llm_{k}": v for k, v in llm_generated_output.items() if k != 'error'}) 
-            if "error" in llm_generated_output: 
-                result_data['description'] = f"LLM Error: {llm_generated_output['error']}"; manual_check_flag = True 
-        elif isinstance(llm_generated_output, str):
-            logging.info(f" > {company_name}: LLM OK (Text).")
-            result_data['description'] = llm_generated_output
-            if isinstance(llm_config.get("response_format"), dict) and llm_config["response_format"].get("type") == "json_object":
-                logging.warning(" > Warning: Expected JSON, got Text."); manual_check_flag = True
-        elif llm_generated_output is None and text_src and page_validated_for_text_extraction:
-            logging.warning(f" > {company_name}: LLM generation returned None despite validated text source.")
-            result_data['description'] = "Generation Error"; manual_check_flag = True
-            
+            logging.info(f"  > {company_name}: Validated text source found (from Homepage), generating LLM description...")
+            try:
+                 llm_generated_output = await generate_description_openai_async(
+                     openai_client=openai_client, 
+                     llm_config=llm_config, 
+                     company_name=company_name, 
+                     about_snippet=text_src,
+                     homepage_root=hp_root if hp_data else None,
+                     linkedin_url=result_data.get("linkedin"),
+                     context_text=context_text
+                 )
+            except Exception as e_llm:
+                 logging.error(f"  > {company_name}: Error during LLM description generation: {type(e_llm).__name__} - {e_llm}")
+                 llm_generated_output = None # Ensure it's None on error
+                 manual_check_flag = True
+
+            # Process LLM output (same logic as before)
+            if isinstance(llm_generated_output, dict):
+                 logging.info(f"  > {company_name}: LLM OK (JSON).")
+                 result_data.pop('description', None) 
+                 result_data.update({f"llm_{k}": v for k, v in llm_generated_output.items() if k != 'error'}) 
+                 if "error" in llm_generated_output: 
+                     result_data['description'] = f"LLM Error: {llm_generated_output['error']}"; manual_check_flag = True 
+            elif isinstance(llm_generated_output, str):
+                 logging.info(f"  > {company_name}: LLM OK (Text).")
+                 result_data['description'] = llm_generated_output
+                 if isinstance(llm_config.get("response_format"), dict) and llm_config["response_format"].get("type") == "json_object":
+                     logging.warning(" > Warning: Expected JSON, got Text."); manual_check_flag = True
+            elif llm_generated_output is None: # If LLM explicitly returned None or errored out
+                 logging.warning(f"  > {company_name}: LLM generation returned None or failed despite validated text source.")
+                 result_data['description'] = "Generation Error"; manual_check_flag = True
+
+        else: # No validated text source
+             logging.info(f"  > {company_name}: No validated text source for LLM description generation.")
+             # Ensure description is empty or marked for check if no source text
+             if result_data.get('description',"") == "": result_data['description'] = "Manual check required"; manual_check_flag = True
+
         if manual_check_flag and result_data.get('description',"") == "":
+            # If flagged and description still empty, ensure it says check required
             result_data['description'] = "Manual check required"
             
     except Exception as e:
