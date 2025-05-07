@@ -364,22 +364,128 @@ Answer:
 
                     if is_candidate and matching_candidate_url:
                         selected_homepage_url = matching_candidate_url # Assign the original candidate URL
-                        scoring_logger_obj.info(f"Selected Homepage URL (LLM Choice, Validated): {selected_homepage_url}")
+                        scoring_logger_obj.info(f"Selected Homepage URL (LLM Attempt 1, Validated): {selected_homepage_url}")
                     else:
-                        scoring_logger_obj.warning(f"LLM returned URL '{llm_choice_content}' which did NOT EXACTLY match (after normalization) any candidate link for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
+                        scoring_logger_obj.warning(f"LLM Attempt 1 returned URL '{llm_choice_content}' which did NOT EXACTLY match (after normalization) any candidate link for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
                 else:
-                    scoring_logger_obj.warning(f"LLM returned NON-URL choice '{llm_choice_content}' for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
+                    scoring_logger_obj.warning(f"LLM Attempt 1 returned NON-URL choice '{llm_choice_content}' for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
             elif llm_choice_content.lower() == 'none':
-                 scoring_logger_obj.info(f"LLM explicitly returned 'None' - no suitable homepage found for '{company_name}'. Full LLM Message: {full_message_object_str}")
+                 scoring_logger_obj.info(f"LLM Attempt 1 explicitly returned 'None' - no suitable homepage found for '{company_name}'. Full LLM Message: {full_message_object_str}")
             elif not llm_choice_content: 
-                 scoring_logger_obj.warning(f"LLM returned an EMPTY string response for '{company_name}'. Finish Reason: {finish_reason}. Full LLM Message: {full_message_object_str}. Treating as no selection.")
+                 scoring_logger_obj.warning(f"LLM Attempt 1 returned an EMPTY string response for '{company_name}'. Finish Reason: {finish_reason}. Full LLM Message: {full_message_object_str}. Treating as no selection.")
             else: # Other unexpected content
-                 scoring_logger_obj.warning(f"LLM returned UNEXPECTED response for '{company_name}': '{llm_choice_content}'. Finish Reason: {finish_reason}. Full LLM Message: {full_message_object_str}. Treating as no selection.")
+                 scoring_logger_obj.warning(f"LLM Attempt 1 returned UNEXPECTED response for '{company_name}': '{llm_choice_content}'. Finish Reason: {finish_reason}. Full LLM Message: {full_message_object_str}. Treating as no selection.")
                  
         except Exception as e:
-            scoring_logger_obj.error(f"Error calling LLM for homepage selection for '{company_name}': {type(e).__name__} - {str(e)}")
+            scoring_logger_obj.error(f"Error during LLM Attempt 1 for homepage selection for '{company_name}': {type(e).__name__} - {str(e)}")
 
-    scoring_logger_obj.info(f"\n--- Attempting to return URLs for '{company_name}' ---")
+        # --- LLM Retry Logic --- 
+        if not selected_homepage_url and homepage_candidates_for_llm:
+            scoring_logger_obj.warning(f"LLM Attempt 1 failed to select a valid homepage for '{company_name}'. Trying LLM Attempt 2 with a more direct prompt.")
+            
+            # New, more forceful prompt
+            retry_system_prompt_content = f"""You are an assistant that MUST select the single most likely official homepage URL for the company {company_name} from the provided list. 
+Output ONLY the URL itself, nothing else. Do NOT output 'None'."""
+            
+            # Re-use the same few-shot examples structure but without the option for 'None' in the final answer instruction
+            retry_user_content = f"""
+Example 1:
+Company: Acme Corp
+Context: Technology solutions provider
+Candidates:
+- https://acme.com
+  Title: Acme Corp - Innovative Solutions
+  Snippet: Acme Corp provides cutting-edge technology solutions for businesses全球.
+- https://acme.blog.com
+  Title: Acme Blog
+  Snippet: Latest news and updates from Acme Corp.
+- https://linkedin.com/company/acme/about/
+  Title: Acme Corp | LinkedIn
+  Snippet: About Acme Corp on LinkedIn.
+Answer: https://acme.com
+
+Example 2:
+Company: Foo Bar Inc.
+Context: Local bakery
+Candidates:
+- https://linkedin.com/company/foo-bar-inc/about/
+  Title: Foo Bar Inc. | LinkedIn
+  Snippet: Foo Bar Inc. LinkedIn page.
+- https://en.wikipedia.org/wiki/Foo_Bar_Inc
+  Title: Foo Bar Inc. - Wikipedia
+  Snippet: Wikipedia article about Foo Bar Inc.
+- https://www.some_directory.com/foo-bar-inc
+  Title: Foo Bar Inc. - Business Directory
+  Snippet: Foo Bar Inc. listed in Some Directory.
+Answer: https://www.some_directory.com/foo-bar-inc # Example adjustment: Force a choice even if weak
+
+Now:
+Company: {company_name}
+Context: {context_text or 'Not provided'}
+Candidates:
+{candidates_str}
+Instruction: Select the single most likely official homepage from the list above.
+Answer:""" # Removed the final Answer: prompt to let model complete
+            
+            retry_messages = [
+                 {"role": "system", "content": retry_system_prompt_content},
+                 {"role": "user", "content": retry_user_content}
+            ]
+            
+            scoring_logger_obj.info(f"Calling LLM Attempt 2 with forceful prompt for '{company_name}'.")
+            scoring_logger_obj.debug(f"LLM Retry User Prompt for '{company_name}':\n{retry_user_content}")
+            
+            try:
+                retry_response = await openai_client.chat.completions.create(
+                    model="gpt-4o-mini", 
+                    messages=retry_messages,
+                    max_tokens=150, 
+                    temperature=0.0, # Keep deterministic
+                    top_p=1.0,
+                    n=1,
+                    stop=None
+                )
+                
+                retry_choice_content = ""
+                retry_finish_reason = "unknown"
+                retry_full_message_object_str = "N/A"
+
+                if retry_response.choices and len(retry_response.choices) > 0:
+                    retry_choice = retry_response.choices[0]
+                    retry_choice_content = retry_choice.message.content.strip() if retry_choice.message and retry_choice.message.content else ""
+                    retry_finish_reason = retry_choice.finish_reason
+                    retry_full_message_object_str = str(retry_choice.message)
+                    scoring_logger_obj.info(f"LLM Attempt 2 raw choice for '{company_name}': '{retry_choice_content}', Finish Reason: {retry_finish_reason}")
+                    scoring_logger_obj.debug(f"LLM Attempt 2 full message object for '{company_name}': {retry_full_message_object_str}")
+                else:
+                    scoring_logger_obj.warning(f"LLM Attempt 2 response for '{company_name}' had no choices or empty choice.")
+
+                # Validate Retry LLM's choice (still needs validation)
+                if retry_choice_content and retry_choice_content.lower() != 'none': # Should ideally not output None, but check anyway
+                    if re.match(r'^https?://', retry_choice_content):
+                        normalized_retry_choice = retry_choice_content.strip().lower()
+                        is_retry_candidate = False
+                        matching_retry_candidate_url = None
+                        for candidate in homepage_candidates_for_llm:
+                            if candidate['link'].strip().lower() == normalized_retry_choice:
+                                is_retry_candidate = True
+                                matching_retry_candidate_url = candidate['link']
+                                break
+                        
+                        if is_retry_candidate and matching_retry_candidate_url:
+                            selected_homepage_url = matching_retry_candidate_url # Assign the validated URL
+                            scoring_logger_obj.info(f"Selected Homepage URL (LLM Attempt 2, Validated): {selected_homepage_url}")
+                        else:
+                             scoring_logger_obj.error(f"LLM Attempt 2 returned URL '{retry_choice_content}' which was NOT in candidate list for '{company_name}'. Cannot use. Full LLM Message: {retry_full_message_object_str}")
+                    else:
+                        scoring_logger_obj.error(f"LLM Attempt 2 returned NON-URL choice '{retry_choice_content}' for '{company_name}'. Cannot use. Full LLM Message: {retry_full_message_object_str}")
+                else: # Includes None or empty string
+                    scoring_logger_obj.error(f"LLM Attempt 2 FAILED to provide a usable URL choice for '{company_name}', despite forceful prompt. Response: '{retry_choice_content}'. Full LLM Message: {retry_full_message_object_str}")
+
+            except Exception as e_retry:
+                scoring_logger_obj.error(f"Error during LLM Attempt 2 for homepage selection for '{company_name}': {type(e_retry).__name__} - {str(e_retry)}")
+
+    scoring_logger_obj.info(f"\\n--- Final URL Selection for '{company_name}' ---") # Changed header for clarity
     scoring_logger_obj.info(f"  > find_urls_with_serper_async is returning HP: '{selected_homepage_url}', LI: '{selected_linkedin_url}' for '{company_name}'")
 
     return selected_homepage_url, selected_linkedin_url 
