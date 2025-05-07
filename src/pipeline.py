@@ -51,7 +51,7 @@ scoring_log_file_path = os.path.join(logs_base_dir, f"scoring_details_{run_times
 # For simplicity, the main basicConfig will handle subsequent logging.
 
 logging.basicConfig( # This might reconfigure if called after another basicConfig, ensure it's the primary one or handle carefully.
-    level=logging.INFO, # Main log level for console and general file logging
+    level=logging.DEBUG, # Main log level for console and general file logging
     format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
     handlers=[
         logging.FileHandler(log_file_path, mode='w', encoding='utf-8'), # mode='w' to create new file each run

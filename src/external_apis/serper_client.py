@@ -177,14 +177,11 @@ async def find_urls_with_serper_async(
 
     headers = {'X-API-KEY': serper_api_key, 'Content-Type': 'application/json'}
     
-    # 0. Prepare company name for LI matching (still needed for LI scoring)
     normalized_company_name_for_li_match = normalize_name_for_domain_comparison(company_name)
     scoring_logger_obj.info(f"Normalized name for LI scoring: '{normalized_company_name_for_li_match}'")
 
-    # 1. Serper Query (Simplified as requested)
-    search_query = f"company {company_name}" # Keep it simple
+    search_query = f"{company_name} official website"
     scoring_logger_obj.info(f"Executing Serper API query for '{company_name}': \"{search_query}\"")
-    # Request more results to have a better pool for selection, even with simpler query
     serper_results_json = await _execute_serper_query(session, search_query, serper_api_key, headers, num_results=30)
 
     if not serper_results_json or not serper_results_json.get("organic"):
@@ -194,61 +191,53 @@ async def find_urls_with_serper_async(
     organic_results = serper_results_json["organic"]
     scoring_logger_obj.info(f"Received {len(organic_results)} organic results from Serper for '{company_name}'.")
 
-    # --- Variables to store selected URLs ---
     selected_linkedin_url: str | None = None
     selected_homepage_url: str | None = None
     
-    # --- 2. Find LinkedIn URL (Using the scoring logic - unchanged) ---
     scoring_logger_obj.info(f"\n--- Searching for LinkedIn URL for '{company_name}' (Scoring Method) ---")
     linkedin_candidates: list[tuple[str, str, int]] = []
-    for res in organic_results:
-        link = res.get("link")
-        title = res.get("title", "").lower()
-        if not link or not isinstance(link, str) or "linkedin.com/" not in link.lower(): continue
-        normalized_li_url = normalize_linkedin_url(link)
+    for res_li in organic_results:
+        link_li = res_li.get("link")
+        title_li = res_li.get("title", "").lower()
+        if not link_li or not isinstance(link_li, str) or "linkedin.com/" not in link_li.lower(): continue
+        normalized_li_url = normalize_linkedin_url(link_li)
         if normalized_li_url:
-            slug_match = re.search(r"linkedin\.com/(?:company|school|showcase)/([^/]+)/about/?", normalized_li_url.lower())
-            slug = slug_match.group(1) if slug_match else ""
-            score = 0
-            reason = []
-            if "/company/" in normalized_li_url.lower(): score += 20; reason.append("/company/ link:+20")
-            elif "/showcase/" in normalized_li_url.lower(): score += 5; reason.append("/showcase/ link:+5")
-            elif "/school/" in normalized_li_url.lower(): score += 3; reason.append("/school/ link:+3")
-            if slug and normalized_company_name_for_li_match in slug.replace('-', ''): score += 15; reason.append(f"Name in slug ({slug}):+15")
-            elif normalized_company_name_for_li_match in title.replace('-', '').replace(' ', ''): score += 10; reason.append(f"Name in title ({title[:30]}...):+10")
-            elif any(part in slug.replace('-', '') for part in normalized_company_name_for_li_match.split('-') if len(part) > 2): score += 7; reason.append(f"Part of name in slug ({slug}):+7")
-            elif any(part in title.replace('-', '').replace(' ', '') for part in normalized_company_name_for_li_match.split('-') if len(part) > 2): score += 5; reason.append(f"Part of name in title ({title[:30]}...):+5")
-            if "jobs" in title or "careers" in title or "/jobs" in link.lower() or "/careers" in link.lower():
-                if not ("/company/" in normalized_li_url.lower() and score > 20): score -= 5; reason.append("Jobs/careers term:-5")
-            if score > 0:
-                linkedin_candidates.append((normalized_li_url, slug or title, score))
-                scoring_logger_obj.debug(f"  LI Candidate: {normalized_li_url}, Score: {score}, Slug/Title: '{slug or title}', Reason: {', '.join(reason)}")
-        else: scoring_logger_obj.debug(f"  Skipped non-normalizable LinkedIn-like URL: {link}")
+            slug_match_li = re.search(r"linkedin\.com/(?:company|school|showcase)/([^/]+)/about/?", normalized_li_url.lower())
+            slug_li = slug_match_li.group(1) if slug_match_li else ""
+            score_li = 0
+            reason_li = []
+            if "/company/" in normalized_li_url.lower(): score_li += 20; reason_li.append("/company/ link:+20")
+            elif "/showcase/" in normalized_li_url.lower(): score_li += 5; reason_li.append("/showcase/ link:+5")
+            elif "/school/" in normalized_li_url.lower(): score_li += 3; reason_li.append("/school/ link:+3")
+            if slug_li and normalized_company_name_for_li_match in slug_li.replace('-', ''): score_li += 15; reason_li.append(f"Name in slug ({slug_li}):+15")
+            elif normalized_company_name_for_li_match in title_li.replace('-', '').replace(' ', ''): score_li += 10; reason_li.append(f"Name in title ({title_li[:30]}...):+10")
+            elif any(part_li in slug_li.replace('-', '') for part_li in normalized_company_name_for_li_match.split('-') if len(part_li) > 2): score_li += 7; reason_li.append(f"Part of name in slug ({slug_li}):+7")
+            elif any(part_li in title_li.replace('-', '').replace(' ', '') for part_li in normalized_company_name_for_li_match.split('-') if len(part_li) > 2): score_li += 5; reason_li.append(f"Part of name in title ({title_li[:30]}...):+5")
+            if "jobs" in title_li or "careers" in title_li or "/jobs" in link_li.lower() or "/careers" in link_li.lower():
+                if not ("/company/" in normalized_li_url.lower() and score_li > 20): score_li -= 5; reason_li.append("Jobs/careers term:-5")
+            if score_li > 0:
+                linkedin_candidates.append((normalized_li_url, slug_li or title_li, score_li))
+                scoring_logger_obj.debug(f"  LI Candidate: {normalized_li_url}, Score: {score_li}, Slug/Title: '{slug_li or title_li}', Reason: {', '.join(reason_li)}")
+        else: scoring_logger_obj.debug(f"  Skipped non-normalizable LinkedIn-like URL: {link_li}")
     if linkedin_candidates:
         linkedin_candidates.sort(key=lambda x: x[2], reverse=True)
         selected_linkedin_url = linkedin_candidates[0][0]
         scoring_logger_obj.info(f"Selected LinkedIn URL (by score): {selected_linkedin_url} (Score: {linkedin_candidates[0][2]}, Slug/Title: '{linkedin_candidates[0][1]}')")
     else: scoring_logger_obj.warning(f"No suitable LinkedIn URL found for '{company_name}'.")
 
-    # --- 3. Find Homepage URL (Using LLM with LESS strict pre-filtering) ---
-    scoring_logger_obj.info(f"\n--- Searching for Homepage URL for '{company_name}' (LLM Method with relaxed pre-filtering) ---")
+    scoring_logger_obj.info(f"\n--- Searching for Homepage URL for '{company_name}' (LLM Method with Few-Shot) ---")
     
     homepage_candidates_for_llm: list[dict] = []
-    # Define a smaller, core blacklist for pre-filtering - LLM should handle the rest based on prompt
     CORE_BLACKLIST = [
         "linkedin.com", "youtube.com", "facebook.com", "twitter.com", "x.com",
         "instagram.com", "pinterest.com", "reddit.com", "tiktok.com",
-        "wikipedia.org", "wikimedia.org" # Keep the most obvious non-HP sites out
+        "wikipedia.org", "wikimedia.org" 
     ]
-    
     for res in organic_results:
         link = res.get("link")
         title = res.get("title", "")
         snippet = res.get("snippet", "")
-        
-        if not link or not isinstance(link, str):
-            continue 
-        
+        if not link or not isinstance(link, str): continue 
         try:
             parsed_url = urlparse(link)
             if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"]:
@@ -257,104 +246,140 @@ async def find_urls_with_serper_async(
             if not parsed_url.netloc:
                  scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Missing domain")
                  continue
-                 
-            # Simplified pre-filtering: only check core blacklist
             extracted_parts = tldextract.extract(link)
             registered_domain = extracted_parts.registered_domain.lower()
-            is_core_blacklisted = False
-            for blacklisted in CORE_BLACKLIST:
-                if blacklisted in registered_domain:
-                     is_core_blacklisted = True
-                     break
-            
+            is_core_blacklisted = any(blacklisted in registered_domain for blacklisted in CORE_BLACKLIST)
             if is_core_blacklisted:
                 scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Domain '{registered_domain}' is in CORE blacklist.")
                 continue
-            
-            # REMOVED check for NEGATIVE_KEYWORDS_FOR_HP_URL_PATH before LLM call
-            # Trust LLM to evaluate path relevance based on prompt
-                 
-            # If passed basic scheme/domain checks and CORE blacklist, add to list for LLM
-            homepage_candidates_for_llm.append({
-                "link": link,
-                "title": title,
-                "snippet": snippet
-            })
-            
+            homepage_candidates_for_llm.append({"link": link, "title": title, "snippet": snippet})
         except Exception as e:
-            scoring_logger_obj.warning(f"Error filtering HP candidate link {link} for LLM: {type(e).__name__} - {e}")
+            scoring_logger_obj.warning(f"Error pre-filtering HP candidate link {link} for LLM: {type(e).__name__} - {e}")
             continue
 
     if not homepage_candidates_for_llm:
-        scoring_logger_obj.warning(f"No suitable homepage candidates found to send to LLM for '{company_name}' after relaxed pre-filtering.")
+        scoring_logger_obj.warning(f"No suitable homepage candidates found to send to LLM for '{company_name}' after pre-filtering.")
     elif not openai_client:
         scoring_logger_obj.warning(f"OpenAI client not available, cannot use LLM to select homepage for '{company_name}'.")
     else:
-        # Prepare context for LLM prompt (limit candidate list size if needed)
         MAX_CANDIDATES_FOR_LLM = 15 
         if len(homepage_candidates_for_llm) > MAX_CANDIDATES_FOR_LLM:
              scoring_logger_obj.debug(f"Trimming homepage candidates for LLM from {len(homepage_candidates_for_llm)} to {MAX_CANDIDATES_FOR_LLM}")
              homepage_candidates_for_llm = homepage_candidates_for_llm[:MAX_CANDIDATES_FOR_LLM]
-             
-        candidates_str = "\n".join([f"- URL: {c['link']}\n  Title: {c['title']}\n  Snippet: {c['snippet']}" for c in homepage_candidates_for_llm])
         
-        # Using the same robust prompt as before
-        prompt = f"""
-Analyze the list of URLs below for the company named '{company_name}'. 
-Company context: {context_text or 'Not provided'}
+        scoring_logger_obj.info(f"Homepage candidates for LLM for '{company_name}' ({len(homepage_candidates_for_llm)} total):")
+        for idx, cand_item in enumerate(homepage_candidates_for_llm):
+            scoring_logger_obj.info(f"  #{idx+1}: URL: {cand_item['link']}, Title: {cand_item['title'][:70]}..., Snippet: {cand_item['snippet'][:100]}...")
+             
+        candidates_str = "\n".join([f"- {c['link']}\n  Title: {c['title']}\n  Snippet: {c['snippet']}" for c in homepage_candidates_for_llm])
+        
+        system_prompt_content = f"""You are a reliable assistant that, given a list of URLs for a single company, name the one official homepage for the company {company_name}. 
+Always output EXACTLY the URL on a single line, without any extra commentary."""
+        
+        few_shot_user_content = f"""
+Example 1:
+Company: Acme Corp
+Context: Technology solutions provider
+Candidates:
+- https://acme.com
+  Title: Acme Corp - Innovative Solutions
+  Snippet: Acme Corp provides cutting-edge technology solutions for businesses全球.
+- https://acme.blog.com
+  Title: Acme Blog
+  Snippet: Latest news and updates from Acme Corp.
+- https://linkedin.com/company/acme/about/
+  Title: Acme Corp | LinkedIn
+  Snippet: About Acme Corp on LinkedIn.
+Answer: https://acme.com
 
-Your task is to identify the single, most likely *official homepage URL* for this specific company. 
+Example 2:
+Company: Foo Bar Inc.
+Context: Local bakery
+Candidates:
+- https://linkedin.com/company/foo-bar-inc/about/
+  Title: Foo Bar Inc. | LinkedIn
+  Snippet: Foo Bar Inc. LinkedIn page.
+- https://en.wikipedia.org/wiki/Foo_Bar_Inc
+  Title: Foo Bar Inc. - Wikipedia
+  Snippet: Wikipedia article about Foo Bar Inc.
+- https://www.some_directory.com/foo-bar-inc
+  Title: Foo Bar Inc. - Business Directory
+  Snippet: Foo Bar Inc. listed in Some Directory.
+Answer: None
 
-Consider these criteria:
-- It must be the main corporate website, not a specific product page (unless it's the only site), blog, news article, login page, or profile on another platform.
-- Avoid parent companies or subsidiaries if they seem distinct from '{company_name}', unless the context suggests otherwise.
-- Prefer root domains (e.g., example.com) or primary regional domains (e.g., example.co.uk).
-- Critically evaluate sites like Crunchbase, ZoomInfo, Bloomberg, Forbes, news sites, PDF links, general directories - these are almost never the official homepage.
-
-Candidate URLs:
+Now:
+Company: {company_name}
+Context: {context_text or 'Not provided'}
+Candidates:
 {candidates_str}
-
-Based on your analysis, return ONLY the single best official homepage URL from the list above. If absolutely none of the candidates seem suitable as the official homepage according to the criteria, return the exact word 'None'.
+Answer:
 """
         
-        scoring_logger_obj.info(f"Calling LLM to select homepage from {len(homepage_candidates_for_llm)} candidates (using relaxed pre-filtering) for '{company_name}'.")
+        messages_for_llm = [
+            {"role": "system", "content": system_prompt_content},
+            {"role": "user", "content": few_shot_user_content}
+        ]
+        
+        scoring_logger_obj.info(f"Calling LLM with few-shot prompt to select homepage from {len(homepage_candidates_for_llm)} candidates for '{company_name}'.")
+        scoring_logger_obj.debug(f"LLM User Prompt for '{company_name}':\n{few_shot_user_content}")
+
         try:
             response = await openai_client.chat.completions.create(
                 model="gpt-4o-mini", 
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=200, 
-                temperature=0.1, 
+                messages=messages_for_llm,
+                max_tokens=150,
+                temperature=0.0,
+                top_p=1.0,
                 n=1,
                 stop=None
             )
-            llm_choice = response.choices[0].message.content.strip()
-            scoring_logger_obj.info(f"LLM choice for homepage: '{llm_choice}'")
             
-            if llm_choice and llm_choice.lower() != 'none' and (llm_choice.startswith('http://') or llm_choice.startswith('https://')):
-                is_candidate = False
-                for candidate in homepage_candidates_for_llm:
-                     if candidate['link'] == llm_choice:
-                         is_candidate = True
-                         break
-                if is_candidate:
-                    selected_homepage_url = llm_choice
-                    scoring_logger_obj.info(f"Selected Homepage URL (LLM Choice): {selected_homepage_url}")
-                else:
-                     scoring_logger_obj.warning(f"LLM returned a URL '{llm_choice}' which was not in the candidate list for '{company_name}'. Ignoring.")
-            elif llm_choice.lower() == 'none':
-                 scoring_logger_obj.info(f"LLM indicated no suitable homepage found for '{company_name}'.")
+            llm_choice_content = ""
+            finish_reason = "unknown"
+            full_message_object_str = "N/A"
+
+            if response.choices and len(response.choices) > 0:
+                choice = response.choices[0]
+                llm_choice_content = choice.message.content.strip() if choice.message and choice.message.content else ""
+                finish_reason = choice.finish_reason
+                full_message_object_str = str(choice.message) 
+                scoring_logger_obj.info(f"LLM raw choice for '{company_name}': '{llm_choice_content}', Finish Reason: {finish_reason}")
+                scoring_logger_obj.debug(f"LLM full message object for '{company_name}': {full_message_object_str}")
             else:
-                 scoring_logger_obj.warning(f"LLM returned unexpected response for homepage selection for '{company_name}': '{llm_choice}'. Treating as no selection.")
+                scoring_logger_obj.warning(f"LLM response for '{company_name}' had no choices or empty choice.")
+
+            # Validate LLM's choice (Relaxed validation)
+            if llm_choice_content and llm_choice_content.lower() != 'none':
+                # Check if it's a valid URL format
+                if re.match(r'^https?://', llm_choice_content):
+                    # Check if it was one of the candidates (case-insensitive, whitespace stripped)
+                    normalized_llm_choice = llm_choice_content.strip().lower()
+                    is_candidate = False
+                    matching_candidate_url = None
+                    for candidate in homepage_candidates_for_llm:
+                         if candidate['link'].strip().lower() == normalized_llm_choice:
+                             is_candidate = True
+                             matching_candidate_url = candidate['link'] # Use the original candidate URL
+                             break # Found a match
+
+                    if is_candidate and matching_candidate_url:
+                        selected_homepage_url = matching_candidate_url # Assign the original candidate URL
+                        scoring_logger_obj.info(f"Selected Homepage URL (LLM Choice, Validated): {selected_homepage_url}")
+                    else:
+                        scoring_logger_obj.warning(f"LLM returned URL '{llm_choice_content}' which did NOT EXACTLY match (after normalization) any candidate link for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
+                else:
+                    scoring_logger_obj.warning(f"LLM returned NON-URL choice '{llm_choice_content}' for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
+            elif llm_choice_content.lower() == 'none':
+                 scoring_logger_obj.info(f"LLM explicitly returned 'None' - no suitable homepage found for '{company_name}'. Full LLM Message: {full_message_object_str}")
+            elif not llm_choice_content: 
+                 scoring_logger_obj.warning(f"LLM returned an EMPTY string response for '{company_name}'. Finish Reason: {finish_reason}. Full LLM Message: {full_message_object_str}. Treating as no selection.")
+            else: # Other unexpected content
+                 scoring_logger_obj.warning(f"LLM returned UNEXPECTED response for '{company_name}': '{llm_choice_content}'. Finish Reason: {finish_reason}. Full LLM Message: {full_message_object_str}. Treating as no selection.")
                  
         except Exception as e:
-            scoring_logger_obj.error(f"Error calling LLM for homepage selection for '{company_name}': {type(e).__name__} - {e}")
-            # selected_homepage_url remains None
+            scoring_logger_obj.error(f"Error calling LLM for homepage selection for '{company_name}': {type(e).__name__} - {str(e)}")
 
-    # --- 4. Final Logging ---
-    scoring_logger_obj.info(f"\n{'='*50}")
-    scoring_logger_obj.info(f"FINAL URLs determined for '{company_name}':")
-    scoring_logger_obj.info(f"  Homepage: {selected_homepage_url}")
-    scoring_logger_obj.info(f"  LinkedIn: {selected_linkedin_url}")
-    scoring_logger_obj.info(f"{'='*50}\n")
+    scoring_logger_obj.info(f"\n--- Attempting to return URLs for '{company_name}' ---")
+    scoring_logger_obj.info(f"  > find_urls_with_serper_async is returning HP: '{selected_homepage_url}', LI: '{selected_linkedin_url}' for '{company_name}'")
 
     return selected_homepage_url, selected_linkedin_url 
