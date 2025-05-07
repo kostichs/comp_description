@@ -57,35 +57,50 @@ def save_context_file(context_file_path: str, context_text: str) -> bool:
         print(f"Error saving context file {context_file_path}: {e}")
         return False
 
-def save_results_csv(data: list[dict], output_file_path: str) -> None:
-    """Saves the processed data to a CSV file with a specific column order and UTF-8-SIG encoding."""
-    if not data: print(f"No data to save for {output_file_path}."); return
+# В src/data_io.py
+
+import csv
+import os # Потребуется для проверки существования файла
+
+def save_results_csv(results: list[dict], output_file_path: str, append_mode: bool = False, fieldnames: list[str] | None = None):
+    """
+    Saves a list of dictionaries to a CSV file.
+    Can append to an existing file or create a new one.
+    """
+    if not results:
+        print(f"No results to save to {output_file_path}")
+        return
+
+    # Определяем заголовки (поля)
+    # Если fieldnames не предоставлены, берем ключи из первой записи
+    # Важно: при дозаписи все словари должны иметь одинаковый набор ключей, соответствующий исходным заголовкам
+    if not fieldnames:
+        fieldnames = list(results[0].keys()) # ['name', 'homepage', 'linkedin', 'description', 'llm_summary', ...]
+
+    file_exists = os.path.isfile(output_file_path)
     
-    # Define the desired column order
-    preferred_order = ['name', 'homepage', 'linkedin', 'description'] 
-    
-    # Get all unique keys present in the data dictionaries
-    all_keys = set()
-    for row in data:
-        all_keys.update(row.keys())
-        
-    # Build the final column list
-    final_columns = []
-    # Add preferred columns first, if they exist
-    for col in preferred_order:
-        if col in all_keys:
-            final_columns.append(col)
-            
-    # Add remaining columns (e.g., llm_*) sorted alphabetically
-    remaining_columns = sorted([key for key in all_keys if key not in preferred_order])
-    final_columns.extend(remaining_columns)
-    
-    # Create DataFrame with the specified column order
-    df = pd.DataFrame(data, columns=final_columns)
+    # Определяем, нужно ли писать заголовки
+    # Заголовки пишутся, если файл не существует ИЛИ если это не режим дозаписи (т.е. перезапись)
+    write_header = not file_exists or not append_mode
+
     try:
-        output_dir = os.path.dirname(output_file_path)
-        if output_dir and not os.path.exists(output_dir): os.makedirs(output_dir); print(f"Created output dir: {output_dir}")
-        # Use utf-8-sig for better Excel compatibility with non-ASCII characters
-        df.to_csv(output_file_path, index=False, encoding='utf-8-sig')
-        print(f"Results saved to {output_file_path}")
-    except Exception as e: print(f"Error saving CSV to {output_file_path}: {e}") 
+        # Используем 'a' (append) если append_mode и файл существует, иначе 'w' (write)
+        mode = 'a' if append_mode and file_exists else 'w'
+        
+        with open(output_file_path, mode, newline='', encoding='utf-8-sig') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore') # ignore extra fields in dict
+            
+            if write_header:
+                writer.writeheader()
+            
+            for row_data in results:
+                writer.writerow(row_data)
+        
+        action = "Appended" if mode == 'a' else "Saved"
+        print(f"{action} {len(results)} result(s) to {output_file_path}")
+
+    except IOError as e:
+        print(f"Error writing to CSV file {output_file_path}: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred during CSV writing to {output_file_path}: {e}")
+ 
