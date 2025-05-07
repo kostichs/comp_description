@@ -108,20 +108,40 @@ def parse_context_for_keywords(context_text: str | None, company_name_for_hint: 
     # print(f"DEBUG Parsed Context for '{company_name_for_hint}': {keywords}")
     return keywords
 
-async def _execute_serper_query(session: aiohttp.ClientSession, query: str, serper_api_key: str, headers: dict) -> dict | None:
+async def _execute_serper_query(
+    session: aiohttp.ClientSession,
+    query: str,
+    serper_api_key: str,
+    headers: dict,
+    num_results: int = 30,  # Увеличиваем количество результатов
+    start_offset: int = 0   # Добавляем поддержку пагинации
+) -> dict | None:
     """Helper to execute a single Serper query and return JSON response."""
-    payload = json.dumps({"q": query, "num": 20}) # MODIFIED: Request more results (e.g., 20)
-    # print(f"  DEBUG Serper Query: {query}")
+    payload = json.dumps({
+        "q": query,
+        "num": num_results,
+        "start": start_offset,
+        "gl": "us",  # Можно сделать параметром
+        "hl": "en",  # Можно сделать параметром
+        "filter": 0  # Не фильтровать дубликаты, чтобы не пропустить потенциально полезные результаты
+    })
+    
     try:
         async with session.post("https://google.serper.dev/search", headers=headers, data=payload, timeout=15) as resp:
             if resp.status == 200:
                 return await resp.json()
             else:
-                # print(f"  Serper API Error for query '{query}': Status {resp.status}, Response: {await resp.text()[:200]}")
+                logging.error(f"Serper API Error for query '{query}': Status {resp.status}, Response: {await resp.text()[:200]}")
                 return None
-    except asyncio.TimeoutError: print(f"  Timeout for Serper query: '{query}'"); return None
-    except aiohttp.ClientError as e: print(f"  AIOHttp error for Serper query '{query}': {e}"); return None
-    except Exception as e: print(f"  Generic error for Serper query '{query}': {type(e).__name__} - {str(e)[:100]}"); return None
+    except asyncio.TimeoutError:
+        logging.error(f"Timeout for Serper query: '{query}'")
+        return None
+    except aiohttp.ClientError as e:
+        logging.error(f"AIOHttp error for Serper query '{query}': {e}")
+        return None
+    except Exception as e:
+        logging.error(f"Generic error for Serper query '{query}': {type(e).__name__} - {str(e)[:100]}")
+        return None
 
 async def rank_serper_results_async(results: dict | None, company_name: str, company_embedding: list[float] | None, 
                                   openai_client: AsyncOpenAI, 
@@ -360,44 +380,123 @@ async def rank_serper_results_async(results: dict | None, company_name: str, com
     scoring_logger.info(f"  >> No link met ANY criteria (Strict L1 or Flexible L2) for '{company_name}' (Prepared: '{prepared_company_name_for_check}').")
     return None
 
-async def find_urls_with_serper_async(session: aiohttp.ClientSession, company_name: str, context_text: str | None, serper_api_key: str | None, openai_client: AsyncOpenAI | None, scoring_logger_obj: logging.Logger) -> tuple[str | None, str | None]:
-    if not serper_api_key: scoring_logger_obj.warning(f"SERPER_API_KEY missing for {company_name}"); return None, None
+async def generate_search_query_async(
+    company_name: str,
+    context: str | None,
+    openai_client: AsyncOpenAI | None
+) -> str:
+    """
+    Генерирует оптимизированный поисковый запрос на основе контекста.
+    """
+    if not context or not openai_client:
+        return company_name
+
+    prompt = f"""
+    Given the following company name and context information, generate a concise search query 
+    that will help find the company's official website and LinkedIn profile.
+    The query should be specific enough to avoid ambiguity but not too long.
+    Focus on the most relevant keywords from the context.
+
+    Company Name: {company_name}
+    Context: {context}
+
+    Return ONLY the search query, nothing else. Keep it under 10 words.
+    """
+
+    try:
+        response = await openai_client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=50,
+            temperature=0.3
+        )
+        query = response.choices[0].message.content.strip()
+        return query
+    except Exception as e:
+        logging.error(f"Error generating search query: {e}")
+        return company_name  # fallback to just company name
+
+def normalize_linkedin_url(url: str) -> str | None:
+    """
+    Нормализует URL LinkedIn до формата: https://www.linkedin.com/company/company-name/about/
+    """
+    try:
+        # Извлекаем часть после /company/
+        match = re.search(r'linkedin\.com/company/([^/?]+)', url.lower())
+        if not match:
+            return None
+        
+        company_slug = match.group(1)
+        # Удаляем все после первого слеша или знака вопроса
+        company_slug = company_slug.split('/')[0].split('?')[0]
+        
+        # Формируем нормализованный URL
+        normalized_url = f"https://www.linkedin.com/company/{company_slug}/about/"
+        return normalized_url
+    except Exception as e:
+        logging.error(f"Error normalizing LinkedIn URL {url}: {e}")
+        return None
+
+async def find_urls_with_serper_async(
+    session: aiohttp.ClientSession,
+    company_name: str,
+    context_text: str | None,
+    serper_api_key: str | None,
+    openai_client: AsyncOpenAI | None,
+    scoring_logger_obj: logging.Logger
+) -> tuple[str | None, str | None]:
+    if not serper_api_key:
+        scoring_logger_obj.warning(f"SERPER_API_KEY missing for {company_name}")
+        return None, None
+
     homepage_url, linkedin_url = None, None
     headers = {'X-API-KEY': serper_api_key, 'Content-Type': 'application/json'}
-    context_keywords_dict = parse_context_for_keywords(context_text, company_name_for_hint=company_name)
-    industry_ctx = context_keywords_dict.get("industry", "")
-    location_ctx = context_keywords_dict.get("location", "")
-    generic_ctx = context_keywords_dict.get("generic", "")
-    company_name_embedding = None
-    if openai_client: company_name_embedding = await get_embedding_async(company_name, openai_client) # For ranker
 
-    queries_hp = [
-        f'{company_name} {industry_ctx} {location_ctx} official website'.strip().replace("  ", " "),
-        f'{company_name} official site {generic_ctx}'.strip().replace("  ", " "),
-        f'{company_name} homepage'.strip()
-    ]
-    for query in queries_hp:
-        if homepage_url: break 
-        results = await _execute_serper_query(session, query, serper_api_key, headers)
-        # Pass openai_client to ranker for embeddings, not for LLM check on snippet
-        homepage_url = await rank_serper_results_async(results, company_name, company_name_embedding, openai_client, context_keywords_dict, scoring_logger_obj)
+    # Формируем поисковый запрос с фокусом на LinkedIn
+    search_query = f"{company_name} {context_text or ''} linkedin company profile".strip()
     
-    await asyncio.sleep(0.2) 
-    queries_li = [
-        f'{company_name} {industry_ctx} {location_ctx} site:linkedin.com/company'.strip().replace("  ", " "),
-        f'{company_name} site:linkedin.com/company {generic_ctx}'.strip().replace("  ", " "),
-        f'{company_name} LinkedIn company profile'.strip()
-    ]
-    for query in queries_li:
-        if linkedin_url: break
-        results = await _execute_serper_query(session, query, serper_api_key, headers)
-        linkedin_url = await rank_serper_results_async(results, company_name, company_name_embedding, openai_client, context_keywords_dict, scoring_logger_obj, prefer_linkedin_company=True)
+    # Запрашиваем больше результатов
+    results = await _execute_serper_query(
+        session,
+        search_query,
+        serper_api_key,
+        headers,
+        num_results=50  # Запрашиваем больше результатов
+    )
     
-    if not homepage_url and linkedin_url:
-        homepage_url = linkedin_url 
-        scoring_logger_obj.info(f"  >> Fallback: Using LinkedIn URL as homepage for '{company_name}': {linkedin_url}")
-    elif not homepage_url:
-        scoring_logger_obj.info(f"  > Serper: HP not found for {company_name} and no LI fallback.")
-    if not linkedin_url: 
-        scoring_logger_obj.info(f"  > Serper: LI not found for {company_name} after {len(queries_li)} attempts.")
+    if not results or not results.get("organic"):
+        scoring_logger_obj.info(f"No results found for {company_name}")
+        return None, None
+
+    # Ищем LinkedIn URL в результатах
+    for res in results["organic"]:
+        link = res.get("link")
+        if not link:
+            continue
+
+        try:
+            # Проверяем, является ли ссылка LinkedIn
+            if "linkedin.com/company/" in link.lower():
+                normalized_linkedin_url = normalize_linkedin_url(link)
+                if normalized_linkedin_url:
+                    linkedin_url = normalized_linkedin_url
+                    scoring_logger_obj.info(f"Found and normalized LinkedIn URL for {company_name}: {linkedin_url}")
+                    break
+        except Exception as e:
+            scoring_logger_obj.warning(f"Error processing LinkedIn link {link}: {e}")
+            continue
+
+    # Если нашли LinkedIn URL, пробуем извлечь информацию о компании
+    if linkedin_url:
+        try:
+            # Здесь можно добавить логику для извлечения информации о компании из LinkedIn
+            # Например, получить описание компании, которое может содержать ссылку на домашнюю страницу
+            # Или использовать другие методы для поиска домашней страницы на основе информации из LinkedIn
+            
+            # Временная заглушка - просто возвращаем найденный LinkedIn URL
+            homepage_url = linkedin_url
+            scoring_logger_obj.info(f"Using LinkedIn URL as homepage for {company_name}: {linkedin_url}")
+        except Exception as e:
+            scoring_logger_obj.error(f"Error extracting company info from LinkedIn: {e}")
+
     return homepage_url, linkedin_url 

@@ -22,7 +22,7 @@ from .data_io import (load_and_prepare_company_names,
 from .external_apis.serper_client import find_urls_with_serper_async
 from .external_apis.scrapingbee_client import scrape_page_data_async # Use the async wrapper
 from .external_apis.openai_client import generate_description_openai_async, get_embedding_async, is_url_company_page_llm # Added is_url_company_page_llm
-from .processing import validate_page, extract_text_for_description, extract_definitive_url_from_html # Added extract_definitive_url_from_html
+from .processing import validate_page, extract_text_for_description, extract_definitive_url_from_html, parse_linkedin_about_section_flexible # Added parse_linkedin_about_section_flexible
 
 # --- Setup Logging --- 
 # Remove any existing handlers for the root logger
@@ -190,28 +190,22 @@ async def process_company(company_name: str,
         # Process LinkedIn Scraped Data (if needed & available)
         if li_data and (not text_src or manual_check_flag):
             li_title, li_domain, li_html = li_data # Use actual li_domain if needed, though often just linkedin.com
-            is_li_structurally_valid = validate_page(company_name, li_title, li_domain, li_html, original_url=li_url_found_serper)
-            if is_li_structurally_valid:
-                # Optional: LLM Check for LinkedIn page relevance (might be overkill if title check is good)
-                # print(f"  > {company_name}: LI structurally valid, (optional LLM check)...") 
-                # first_few_li_text = " ".join(BeautifulSoup(li_html, 'html.parser').stripped_strings)
-                # is_li_llm_confirmed = await is_url_company_page_llm(company_name, first_few_li_text[:1500], openai_client)
-                # if is_li_llm_confirmed:
-                if not text_src: 
-                    text_src = extract_text_for_description(li_html)
-                    logging.info(f"  > {company_name}: LI validated for text. Text: {bool(text_src)}")
-                    page_validated_for_text_extraction = True
-                if text_src: manual_check_flag = False 
-                # else: # LI LLM check failed
-                #     print(f"  > {company_name}: LI FAILED LLM relevance check.")
-                #     if not text_src : manual_check_flag = True # If we still have no text from HP
-            elif not text_src: 
-                logging.warning(f"  > {company_name}: LI structural validation/text FAILED.")
-                manual_check_flag = True 
+            # Всегда пробуем парсить LinkedIn, даже если валидация не прошла
+            li_description, li_homepage = parse_linkedin_about_section_flexible(li_html)
+            if li_description:
+                text_src = li_description
+                if li_homepage and li_homepage.startswith("http"):
+                    result_data["homepage"] = li_homepage
+                logging.info(f"  > {company_name}: LI validated for text (flexible parser, no validation). Text: {bool(text_src)}; Homepage: {li_homepage}")
+                page_validated_for_text_extraction = True
+                manual_check_flag = False
+            else:
+                logging.warning(f"  > {company_name}: LI flexible parser found no description.")
+                manual_check_flag = True
         elif li_url_found_serper and (not text_src or manual_check_flag):
              logging.warning(f"  > {company_name}: LI scrape failed/timed out.")
-             if not text_src: manual_check_flag = True 
-             
+             if not text_src: manual_check_flag = True
+
         llm_generated_output = None
         if text_src and page_validated_for_text_extraction:
              logging.info(f" > {company_name}: Validated text source found, generating LLM description...")

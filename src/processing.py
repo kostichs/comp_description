@@ -129,11 +129,33 @@ def extract_text_for_description(html_content: str | None) -> str | None:
     # 1. Meta description
     meta_desc = soup.find('meta', attrs={'name': 'description'})
     if meta_desc and meta_desc.get('content'): 
-        # Basic check to avoid short/generic meta descriptions if needed
-        # if len(meta_desc['content'].strip()) > 30: 
         return meta_desc['content'].strip()
+    
+    # 2. LinkedIn specific selectors
+    linkedin_selectors = [
+        'div[data-test-id="about-us__description"]',  # Основное описание компании
+        'div[data-test-id="about-us__overview"]',     # Обзор компании
+        'div[data-test-id="about-us__mission"]',      # Миссия компании
+        'div[data-test-id="about-us__specialties"]',  # Специализация
+        'div[data-test-id="about-us__company-size"]', # Размер компании
+        'div[data-test-id="about-us__industry"]',     # Отрасль
+        'div[data-test-id="about-us__founded"]',      # Год основания
+        'div[data-test-id="about-us__headquarters"]'  # Штаб-квартира
+    ]
+    
+    # Собираем все тексты из LinkedIn селекторов
+    linkedin_texts = []
+    for selector in linkedin_selectors:
+        element = soup.select_one(selector)
+        if element:
+            text = element.get_text(strip=True)
+            if text and len(text) > 10:  # Минимальная длина для значимого текста
+                linkedin_texts.append(text)
+    
+    if linkedin_texts:
+        return " ".join(linkedin_texts)
         
-    # 2. First meaningful paragraph (improved search)
+    # 3. First meaningful paragraph (improved search)
     for selector in ['main p', 'article p', 'div[role="main"] p', 'body > div p', 'body > p']: 
         try:
             first_p = soup.select_one(selector)
@@ -142,7 +164,7 @@ def extract_text_for_description(html_content: str | None) -> str | None:
                 if len(p_text) > 50: return p_text # Check length
         except Exception: continue # Ignore errors from invalid selectors
             
-    # 3. About section (simplified search)
+    # 4. About section (simplified search)
     for keyword_base in ['about']: # Only English keyword
         elements = soup.find_all(lambda tag: tag.name in ['h1','h2','h3','p','div'] and keyword_base in tag.get_text(strip=True).lower())
         for el in elements:
@@ -156,7 +178,7 @@ def extract_text_for_description(html_content: str | None) -> str | None:
                  
             if len(text_block) > 50: return text_block.strip()
             
-    return None # Return None if nothing suitable is found 
+    return None # Return None if nothing suitable is found
 
 def extract_definitive_url_from_html(html_content: str, original_url: str) -> str | None:
     """Extracts a definitive (canonical, og:url, or JSON-LD organization) URL from HTML content.
@@ -226,3 +248,74 @@ def extract_definitive_url_from_html(html_content: str, original_url: str) -> st
             continue
            
     return None 
+
+def parse_linkedin_about_section_flexible(html_content: str) -> tuple[str | None, str | None]:
+    """
+    Flexible parsing of LinkedIn about section: works for different languages and structures.
+    Returns (description, homepage_url).
+    """
+    if not html_content:
+        return None, None
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    # 1. Многоязычные ключевые слова для about
+    about_keywords = [
+        "about", "обзор", "présentation", "a propos", "über", "acerca", "会社概要", "informazioni", "tietoja", "om", "소개", "소개글", "소개란"
+    ]
+    about_keywords = [k.lower() for k in about_keywords]
+
+    # 2. Найти секцию, где есть <h2>/<h3> с любым из ключевых слов, либо <dl> с Website/Веб-сайт
+    about_section = None
+    for section in soup.find_all('section'):
+        header = section.find(['h2', 'h3'])
+        header_text = header.get_text(strip=True).lower() if header else ""
+        if any(kw in header_text for kw in about_keywords):
+            about_section = section
+            break
+        # Структурная эвристика: ищем <dl> с Website
+        if section.find('dl'):
+            dt_texts = [dt.get_text(strip=True).lower() for dt in section.find_all('dt')]
+            if any("website" in t or "веб-сайт" in t for t in dt_texts):
+                about_section = section
+                break
+
+    description = None
+    homepage_url = None
+
+    if about_section:
+        # Описание — первый длинный <p>
+        desc_p = None
+        for p in about_section.find_all('p'):
+            text = p.get_text(strip=True)
+            if len(text) > 80:
+                desc_p = p
+                break
+        if desc_p:
+            description = desc_p.get_text(strip=True)
+
+        # Сайт — ищем <dt>/<dd> с Website/Веб-сайт
+        for dt in about_section.find_all('dt'):
+            dt_text = dt.get_text(strip=True).lower()
+            if "website" in dt_text or "веб-сайт" in dt_text:
+                dd = dt.find_next_sibling('dd')
+                if dd:
+                    a = dd.find('a', href=True)
+                    if a and a['href'].startswith('http'):
+                        homepage_url = a['href']
+                        break
+
+    # Fallback: если не нашли секцию, ищем первый длинный <p> на странице
+    if not description:
+        for p in soup.find_all('p'):
+            text = p.get_text(strip=True)
+            if len(text) > 100:
+                description = text
+                break
+
+    # Last fallback: если ничего не нашли, возвращаем весь текст страницы (обрезаем до 4000 символов)
+    if not description:
+        all_text = soup.get_text(separator=' ', strip=True)
+        if all_text:
+            description = all_text[:4000]
+
+    return description, homepage_url 
