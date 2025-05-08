@@ -94,145 +94,169 @@ async def process_company(company_name: str,
     # --- Variables to store collected data ---
     hp_url_found_serper: str | None = None
     li_url_found_serper: str | None = None
+    li_snippet_serper: str | None = None
     wiki_url_found_serper: str | None = None
     hp_html_content: str | None = None
     hp_title: str | None = None
     hp_root: str | None = None
     about_page_text: str | None = None
     wiki_summary: str | None = None
-    homepage_text_extract: str | None = None
-    homepage_validated: bool = False
-    
-    # Flags
-    manual_check_flag = False 
-    text_available_for_llm = False # New flag: True if any usable text is found
+    text_src: str | None = None
+    page_validated_for_text_extraction: bool = False
+    manual_check_flag: bool = False
+    pipeline_logger = logging.getLogger(__name__)
 
     try:
         # --- 1. Find URLs using Serper API ---
-        logging.info(f"  > {company_name}: Finding URLs via Serper...")
-        hp_url_found_serper, li_url_found_serper, wiki_url_found_serper = await find_urls_with_serper_async(
-            aiohttp_session, company_name, context_text, serper_api_key, openai_client, logging.getLogger(__name__)
+        pipeline_logger.info(f"  > {company_name}: Finding URLs via Serper...")
+        hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = await find_urls_with_serper_async(
+            aiohttp_session, company_name, context_text, serper_api_key, openai_client, pipeline_logger
         )
         result_data["homepage"] = hp_url_found_serper if hp_url_found_serper else "Not found"
         result_data["linkedin"] = li_url_found_serper if li_url_found_serper else "Not found"
-
-        # --- 2. Scrape Homepage and Find/Scrape About Page (if Homepage URL exists) ---
+        
+        # Store initial homepage data if found
         if hp_url_found_serper:
-            logging.info(f"  > {company_name}: Homepage URL found: {hp_url_found_serper}")
-            try:
-                logging.info(f"  > {company_name}: Scraping homepage: {hp_url_found_serper}")
-                hp_data_tuple = await scrape_page_data_async(hp_url_found_serper, sb_client)
-                if hp_data_tuple and hp_data_tuple[2]: 
-                    hp_title, hp_root, hp_html_content = hp_data_tuple
-                    logging.info(f"  > {company_name}: Homepage scraped. Title: '{hp_title}', Root: {hp_root}, HTML len: {len(hp_html_content)}")
-                    
-                    # Attempt to find and scrape 'About Us' page
-                    logging.info(f"  > {company_name}: Attempting to find and scrape 'About Us' page...")
-                    about_page_text = await find_and_scrape_about_page_async(
-                        main_page_html=hp_html_content, 
-                        main_page_url=hp_url_found_serper, 
-                        company_name=company_name, 
-                        session=aiohttp_session, 
-                        sb_client=sb_client, 
-                        openai_client=openai_client, 
-                        logger_obj=logging.getLogger(__name__)
-                    )
-                    if about_page_text and len(about_page_text) > 50: # Use a smaller threshold here
-                        logging.info(f"  > {company_name}: Found text from 'About Us' page (length: {len(about_page_text)}).")
-                    else:
-                        logging.info(f"  > {company_name}: No meaningful text from 'About Us' page (or page not found).")
-                        about_page_text = None # Ensure it's None if too short
-                        
-                    # Also, attempt to extract text from the homepage itself for potential use
-                    logging.info(f"  > {company_name}: Extracting text from homepage for potential use...")
-                    homepage_text_extract = extract_text_for_description(hp_html_content)
-                    if homepage_text_extract:
-                        logging.info(f"  > {company_name}: Text extracted from homepage (length: {len(homepage_text_extract)}). Validating homepage...")
-                        homepage_validated = validate_page(company_name, hp_title, hp_root, hp_html_content, original_url=hp_url_found_serper)
-                        if homepage_validated:
-                            logging.info(f"  > {company_name}: Homepage content IS validated.")
-                        else:
-                            logging.warning(f"  > {company_name}: Homepage content validation FAILED. Will not use homepage text.")
-                            homepage_text_extract = None # Discard if not validated
-                    else:
-                        logging.warning(f"  > {company_name}: No description-like text extracted from homepage.")
-                        
-                else:
-                    logging.warning(f"  > {company_name}: Failed to scrape homepage or no HTML content found.")
-                    # Keep manual_check_flag = False for now, let Wikipedia be the savior
-            except Exception as e_scrape:
-                logging.error(f"  > {company_name}: CRITICAL - Error during homepage/About Us processing: {type(e_scrape).__name__} - {e_scrape}")
-                logging.debug(traceback.format_exc())
-                # Keep manual_check_flag = False for now, let Wikipedia be the savior
+            pipeline_logger.info(f"  > {company_name}: Homepage URL found: {hp_url_found_serper}")
         else:
-            logging.warning(f"  > {company_name}: No homepage URL found by Serper. Cannot scrape website.")
+            pipeline_logger.warning(f"  > {company_name}: Homepage URL NOT found by Serper/LLM.")
+            manual_check_flag = True
+            
+        if li_url_found_serper:
+            pipeline_logger.info(f"  > {company_name}: LinkedIn URL found: {li_url_found_serper}")
+            if li_snippet_serper:
+                pipeline_logger.info(f"  > {company_name}: LinkedIn Snippet found (Serper): '{li_snippet_serper[:100]}...'")
+        else:
+            pipeline_logger.warning(f"  > {company_name}: LinkedIn URL NOT found.")
+            
+        if wiki_url_found_serper:
+            pipeline_logger.info(f"  > {company_name}: Wikipedia URL found: {wiki_url_found_serper}")
+        else:
+            pipeline_logger.info(f"  > {company_name}: Wikipedia URL NOT found by Serper.")
 
-        # --- 3. Attempt to fetch Wikipedia Summary --- 
+        # --- 2. Scrape Homepage (if URL found) ---
+        if hp_url_found_serper:
+            try:
+                pipeline_logger.info(f"  > {company_name}: Scraping homepage: {hp_url_found_serper}")
+                # Use the async wrapper for ScrapingBee
+                hp_data = await scrape_page_data_async(hp_url_found_serper, sb_client)
+                if hp_data and hp_data[2]: # Check if HTML content exists
+                    hp_title = hp_data[0]
+                    hp_root = hp_data[1]
+                    hp_html_content = hp_data[2]
+                    pipeline_logger.info(f"  > {company_name}: Homepage scraped. Title: '{hp_title}', Root: {hp_root}, HTML len: {len(hp_html_content)}")
+                else:
+                    pipeline_logger.warning(f"  > {company_name}: Scraping homepage returned no HTML content.")
+                    manual_check_flag = True
+            except Exception as e_scrape_hp:
+                pipeline_logger.error(f"  > {company_name}: Error scraping homepage {hp_url_found_serper}: {e_scrape_hp}")
+                manual_check_flag = True
+
+        # --- 3. Find and Scrape 'About Us' page (if homepage HTML available) ---
+        if hp_html_content and hp_url_found_serper:
+            try:
+                pipeline_logger.info(f"  > {company_name}: Attempting to find and scrape 'About Us' page...")
+                about_page_text = await find_and_scrape_about_page_async(
+                    hp_html_content, 
+                    hp_url_found_serper, 
+                    company_name, 
+                    aiohttp_session, 
+                    sb_client, 
+                    openai_client, # Pass the client
+                    pipeline_logger
+                )
+                if about_page_text:
+                    pipeline_logger.info(f"  > {company_name}: Found text from 'About Us' page (length: {len(about_page_text)}).")
+                else:
+                     pipeline_logger.info(f"  > {company_name}: No meaningful text from 'About Us' page (or page not found).")
+            except Exception as e_about:
+                pipeline_logger.error(f"  > {company_name}: Error in find_and_scrape_about_page_async: {e_about}")
+                # Continue, fallback to other sources
+                
+        # --- 4. Fetch Wikipedia Summary (if URL found) ---
         if wiki_url_found_serper:
             try:
-                parsed_wiki_url = urlparse(wiki_url_found_serper)
-                page_title_encoded = parsed_wiki_url.path.split('/')[-1]
-                page_title = unquote(page_title_encoded).replace('_', ' ')
-                logging.info(f"  > {company_name}: Found Wikipedia URL: {wiki_url_found_serper}. Fetching summary for title: '{page_title}'...")
-                wiki_summary = await get_wikipedia_summary_async(page_title, logging.getLogger(__name__))
-                if wiki_summary:
-                    logging.info(f"  > {company_name}: Wikipedia summary found (length: {len(wiki_summary)}).")
+                # Extract title from URL (last part after '/')
+                wiki_page_title = unquote(urlparse(wiki_url_found_serper).path.split('/')[-1])
+                if wiki_page_title:
+                    pipeline_logger.info(f"  > {company_name}: Attempting to fetch Wikipedia summary for page title: '{wiki_page_title}'")
+                    wiki_summary = await get_wikipedia_summary_async(wiki_page_title, pipeline_logger)
+                    if wiki_summary:
+                        pipeline_logger.info(f"  > {company_name}: Wikipedia summary fetched successfully (length: {len(wiki_summary)}).")
+                    else:
+                        pipeline_logger.warning(f"  > {company_name}: Wikipedia summary fetch failed or summary was empty.")
                 else:
-                    logging.info(f"  > {company_name}: No Wikipedia summary found for title '{page_title}'.")
+                    pipeline_logger.warning(f"  > {company_name}: Could not extract page title from Wikipedia URL: {wiki_url_found_serper}")
             except Exception as e_wiki:
-                logging.error(f"  > {company_name}: Error processing Wikipedia URL {wiki_url_found_serper}: {type(e_wiki).__name__} - {e_wiki}")
-                logging.debug(traceback.format_exc())
-        else:
-             logging.info(f"  > {company_name}: No Wikipedia URL found by Serper.")
+                 pipeline_logger.error(f"  > {company_name}: Error fetching Wikipedia summary: {e_wiki}")
 
-        # --- 4. Combine Text Sources for LLM --- 
-        combined_text_parts = []
+        # --- 5. Extract Text from Homepage & Validate (if About page text is missing) ---
+        hp_text = None
+        if not about_page_text and hp_html_content and hp_url_found_serper:
+            pipeline_logger.info(f"  > {company_name}: Extracting text from homepage for potential use...")
+            hp_text = extract_text_for_description(hp_html_content)
+            if hp_text and len(hp_text) > 100:
+                pipeline_logger.info(f"  > {company_name}: Text extracted from homepage (length: {len(hp_text)}). Validating homepage...")
+                page_validated_for_text_extraction = validate_page(company_name, hp_title, hp_root, hp_html_content, hp_url_found_serper)
+                if page_validated_for_text_extraction:
+                    pipeline_logger.info(f"  > {company_name}: Homepage content IS validated.")
+                else:
+                    pipeline_logger.warning(f"  > {company_name}: Homepage content validation FAILED. Will not use homepage text.")
+                    hp_text = None # Discard text if validation fails
+            else:
+                pipeline_logger.warning(f"  > {company_name}: No description-like text extracted from homepage.")
+                hp_text = None
+        elif about_page_text:
+             # If we got text from 'About Us', we consider validation passed for text source
+             page_validated_for_text_extraction = True
+             pipeline_logger.info(f"  > {company_name}: Using text from 'About Us' page, skipping homepage validation for description text.")
+
+        # --- 6. Combine Text Sources for LLM --- 
+        combined_sources = []
         if about_page_text:
-            combined_text_parts.append(f"[From About Page Found at {best_about_url if 'best_about_url' in locals() else 'N/A'}]:\n{about_page_text}")
-            text_available_for_llm = True
+            combined_sources.append("[From About Page Found at N/A]:\n" + about_page_text)
         if wiki_summary:
-            combined_text_parts.append(f"[From Wikipedia ({page_title if 'page_title' in locals() else 'N/A'})]:\n{wiki_summary}")
-            text_available_for_llm = True
-        if homepage_text_extract and homepage_validated:
-             # Only add homepage text if we didn't get About page text, or as supplementary? Let's add it if validated.
-             # If we add it always, the LLM prompt needs to guide priority.
-             # Let's add it as lower priority information.
-             combined_text_parts.append(f"[From Homepage ({hp_url_found_serper})]:\n{homepage_text_extract}")
-             text_available_for_llm = True
+            combined_sources.append("[From Wikipedia Summary]:\n" + wiki_summary)
+        if li_url_found_serper and li_snippet_serper:
+             combined_sources.append(f"[From LinkedIn Serper Snippet ({li_url_found_serper})]:\n{li_snippet_serper}")
+        if not about_page_text and not wiki_summary and hp_text and page_validated_for_text_extraction:
+             combined_sources.append("[From Homepage]:\n" + hp_text)
+             
+        if combined_sources:
+            text_src = "\n\n---\n\n".join(combined_sources)
+            pipeline_logger.debug(f"  > {company_name}: Final combined text_src length: {len(text_src)}")
+        else:
+            pipeline_logger.warning(f"  > {company_name}: No text source available after checking About page, Wikipedia, and Homepage.")
+            manual_check_flag = True
             
-        final_llm_input_text = "\n\n---\n\n".join(combined_text_parts) if combined_text_parts else None
-
-        # --- 5. Generate Description using LLM --- 
+        # --- 7. Generate Description using LLM --- 
         llm_generated_output = None
-        if final_llm_input_text:
-            logging.info(f"  > {company_name}: Combined text source created (length: {len(final_llm_input_text)}), generating LLM description...")
+        if text_src:
+            pipeline_logger.info(f"  > {company_name}: Combined text source found (length: {len(text_src)}), generating LLM description...")
             try:
                  llm_generated_output = await generate_description_openai_async(
                      openai_client=openai_client, 
                      llm_config=llm_config, 
                      company_name=company_name, 
-                     about_snippet=final_llm_input_text, # Pass the combined text
+                     about_snippet=text_src, # Pass the combined text
                      homepage_root=hp_root, 
                      linkedin_url=li_url_found_serper, 
-                     context_text=context_text 
+                     context_text=context_text
                  )
                  if llm_generated_output:
                      result_data["description"] = llm_generated_output
-                     logging.info(f"  > {company_name}: LLM description generated successfully (length {len(result_data['description'])}).")
+                     pipeline_logger.info(f"  > {company_name}: LLM description generated successfully (length {len(llm_generated_output)}).")
                  else:
-                     logging.warning(f"  > {company_name}: LLM description generation returned None or failed validation.")
+                     pipeline_logger.warning(f"  > {company_name}: LLM generation returned empty result.")
                      manual_check_flag = True
             except Exception as e_llm:
-                logging.error(f"  > {company_name}: CRITICAL - Error during LLM description generation: {type(e_llm).__name__} - {e_llm}")
-                logging.debug(traceback.format_exc())
+                pipeline_logger.error(f"  > {company_name}: LLM description generation FAILED: {e_llm}")
+                pipeline_logger.debug(traceback.format_exc()) # Log full traceback for LLM errors
                 manual_check_flag = True
         else:
-            logging.warning(f"  > {company_name}: No usable text source found from About page, Wikipedia, or validated Homepage. LLM description cannot be generated.")
-            manual_check_flag = True
-            
-        if manual_check_flag and not result_data["description"]:
-            result_data["description"] = "Manual check required"
-
+             pipeline_logger.warning(f"  > {company_name}: No usable text source found. LLM description cannot be generated.")
+             manual_check_flag = True # Already flagged above, but redundant doesn't hurt
+             
     except Exception as e_outer:
         logging.critical(f"CRITICAL ERROR processing {company_name}: {type(e_outer).__name__} - {e_outer}")
         logging.debug(traceback.format_exc())

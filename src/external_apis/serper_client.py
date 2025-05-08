@@ -167,13 +167,13 @@ async def find_urls_with_serper_async(
     company_name: str,
     context_text: str | None,
     serper_api_key: str | None,
-    openai_client: AsyncOpenAI | None, 
+    openai_client: AsyncOpenAI | None,
     scoring_logger_obj: logging.Logger
-) -> tuple[str | None, str | None, str | None]:
+) -> tuple[str | None, str | None, str | None, str | None]:
     
     if not serper_api_key:
         scoring_logger_obj.warning(f"SERPER_API_KEY missing for {company_name}. Cannot find URLs.")
-        return None, None, None
+        return None, None, None, None
 
     headers = {'X-API-KEY': serper_api_key, 'Content-Type': 'application/json'}
     
@@ -186,17 +186,18 @@ async def find_urls_with_serper_async(
 
     if not serper_results_json or not serper_results_json.get("organic"):
         scoring_logger_obj.warning(f"No organic results from Serper for '{company_name}' with query '{search_query}'.")
-        return None, None, None
+        return None, None, None, None
     
     organic_results = serper_results_json["organic"]
     scoring_logger_obj.info(f"Received {len(organic_results)} organic results from Serper for '{company_name}'.")
 
-    selected_linkedin_url: str | None = None
     selected_homepage_url: str | None = None
+    selected_linkedin_url: str | None = None
+    linkedin_snippet: str | None = None
     wikipedia_url: str | None = None
     
     scoring_logger_obj.info(f"\n--- Searching for LinkedIn URL for '{company_name}' (Scoring Method) ---")
-    linkedin_candidates: list[tuple[str, str, int]] = []
+    linkedin_candidates = []
     for res_li in organic_results:
         link_li = res_li.get("link")
         title_li = res_li.get("title", "").lower()
@@ -217,13 +218,17 @@ async def find_urls_with_serper_async(
             if "jobs" in title_li or "careers" in title_li or "/jobs" in link_li.lower() or "/careers" in link_li.lower():
                 if not ("/company/" in normalized_li_url.lower() and score_li > 20): score_li -= 5; reason_li.append("Jobs/careers term:-5")
             if score_li > 0:
-                linkedin_candidates.append((normalized_li_url, slug_li or title_li, score_li))
+                linkedin_candidates.append({"url": normalized_li_url, "score": score_li, "title": title_li, "slug": slug_li or title_li, "reason": ", ".join(reason_li), "snippet": res_li.get("snippet", "")})
                 scoring_logger_obj.debug(f"  LI Candidate: {normalized_li_url}, Score: {score_li}, Slug/Title: '{slug_li or title_li}', Reason: {', '.join(reason_li)}")
         else: scoring_logger_obj.debug(f"  Skipped non-normalizable LinkedIn-like URL: {link_li}")
     if linkedin_candidates:
-        linkedin_candidates.sort(key=lambda x: x[2], reverse=True)
-        selected_linkedin_url = linkedin_candidates[0][0]
-        scoring_logger_obj.info(f"Selected LinkedIn URL (by score): {selected_linkedin_url} (Score: {linkedin_candidates[0][2]}, Slug/Title: '{linkedin_candidates[0][1]}')")
+        linkedin_candidates.sort(key=lambda x: x["score"], reverse=True)
+        best_linkedin = linkedin_candidates[0]
+        selected_linkedin_url = best_linkedin["url"]
+        linkedin_snippet = best_linkedin["snippet"]
+        scoring_logger_obj.info(f"Selected LinkedIn URL (by score): {selected_linkedin_url} (Score: {best_linkedin['score']}, Slug/Title: '{best_linkedin['slug'] or best_linkedin['title'][:30]}')")
+        if linkedin_snippet:
+             scoring_logger_obj.info(f"  Associated LinkedIn Snippet: '{linkedin_snippet[:100]}...'")
     else: scoring_logger_obj.warning(f"No suitable LinkedIn URL found for '{company_name}'.")
 
     scoring_logger_obj.info(f"\n--- Searching for Homepage URL for '{company_name}' (LLM Method with Few-Shot) ---")
@@ -513,6 +518,6 @@ Answer:""" # Removed the final Answer: prompt to let model complete
              scoring_logger_obj.warning(f"  No Wikipedia URL found in Serper results for '{company_name}'.") # DEBUG
 
     scoring_logger_obj.info(f"\\n--- Final URL Selection for '{company_name}' ---")
-    scoring_logger_obj.info(f"  > find_urls_with_serper_async is returning HP: '{selected_homepage_url}', LI: '{selected_linkedin_url}', Wiki: '{wikipedia_url}' for '{company_name}'")
+    scoring_logger_obj.info(f"  > find_urls_with_serper_async is returning HP: '{selected_homepage_url}', LI: '{selected_linkedin_url}', LI Snippet: '{linkedin_snippet[:50] if linkedin_snippet else 'None'}...', Wiki: '{wikipedia_url}' for '{company_name}'")
 
-    return selected_homepage_url, selected_linkedin_url, wikipedia_url 
+    return selected_homepage_url, selected_linkedin_url, linkedin_snippet, wikipedia_url 
