@@ -28,24 +28,23 @@ messages:
       Generate a single-paragraph company description based *only* on the facts found within the following sources. Synthesize information from the different parts of the 'Extracted Text Snippet' if multiple sources are present (indicated by headers like [From...]).
 
       Sources:
-      - Company Name: {company}
-      - Official Site URL (if found): {website_url}
-      - LinkedIn URL (if found): {linkedin_url}
-      - Extracted Text Snippet (potentially combined from Website/Wikipedia):
-      ```text
+      Company Name: {company}
+      Official Site URL: {website_url}
+      LinkedIn URL: {linkedin_url}
+      Extracted Text Snippet:
       {about_snippet}
-      ```
-      - User Context (if provided): {user_provided_context}
+      User Context: {user_provided_context}
 
       Follow these rules strictly:
-      1.  **Fact-Based Only:** Include only information explicitly stated or directly derivable from the provided sources, primarily the 'Extracted Text Snippet'. Do NOT add external knowledge, assumptions, or interpretations.
-      2.  **Synthesize & Prioritize:** Combine information logically if multiple sources are present in the snippet. Give preference to facts from '[From About Page]' or '[From Wikipedia]' sections over '[From Homepage]' text if available. Avoid redundancy.
-      3.  **Neutral Tone:** Write in a neutral, objective, third-person narrative style using complete sentences.
-      4.  **Conciseness:** Generate a dense paragraph. The length should reflect the amount of relevant information verified in the sources. Do not add filler content. If the snippet provides very little useful information, the description should be correspondingly brief or state that insufficient information was provided in the snippet.
-      5.  **No Repetition:** Avoid repeating the same information using different phrasing.
-      6.  **Formatting:** Output MUST be a single continuous paragraph. No markdown lists, headers, bullet points, tabs, or extra line breaks. Use digits for numbers (e.g., 10, 1995). Spell out acronyms on first use, followed by the acronym in parentheses, e.g., Saudi Broadcasting Authority (SBA).
-      7.  **Handle Missing Data:** If specific information (like founding date, headquarters, etc.) is not present in the sources, simply omit it. Do not state that it's missing.
-      8.  **Language:** The output description must be in English.
-      9.  **Output:** Provide ONLY the generated paragraph.
-
+      1.  Fact-Based Only: Include only information explicitly stated or directly derivable from the provided sources, primarily the 'Extracted Text Snippet'. Do NOT add external knowledge, assumptions, or interpretations.
+      2.  Synthesize & Prioritize: Combine information logically if multiple sources are present in the snippet. Give preference to facts from '[From About Page]' or '[From Wikipedia]' sections over '[From Homepage]' text if available. Avoid redundancy.
+      3.  Neutral Tone: Write in a neutral, objective, third-person narrative style using complete sentences.
+      4.  Conciseness: Generate a dense paragraph. The length should reflect the amount of relevant information verified in the sources. Do not add filler content. If the snippet provides very little useful information, the description should be correspondingly brief or state that insufficient information was provided in the snippet.
+      5.  No Repetition: Avoid repeating the same information using different phrasing.
+      6.  Formatting: Output MUST be a single continuous paragraph. No markdown lists, headers, bullet points, tabs, or extra line breaks. Use digits for numbers (e.g., 10, 1995). Spell out acronyms on first use, followed by the acronym in parentheses, e.g., Saudi Broadcasting Authority (SBA).
+      7.  Handle Missing Data: If specific information (like founding date, headquarters, etc.) is not present in the sources, simply omit it. Do not state that it's missing.
+      8.  Language: The output description must be in English.
+      9.  Output: Provide ONLY the generated paragraph.
+      10. Sentence Limit: Write only as many sentences as needed to cover the facts, up to a maximum of 15 sentences. Do not add filler just to reach 15.
+      
       Description:
