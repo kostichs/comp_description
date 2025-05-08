@@ -12,6 +12,8 @@ from scrapingbee import ScrapingBeeClient
 # Assuming scrape_page_data_async is correctly imported and handles the client passed from pipeline.py
 from .external_apis.scrapingbee_client import scrape_page_data_async 
 from openai import AsyncOpenAI # <<< ADDED IMPORT FOR LLM
+import wikipediaapi # <<< ADDED IMPORT FOR WIKIPEDIA
+import traceback # <<< ADDED MISSING IMPORT
 
 # Настройка логгера
 logger = logging.getLogger(__name__)
@@ -530,6 +532,57 @@ def parse_linkedin_about_section_flexible(html_content: str) -> tuple[str | None
 
     logger.info(f"[LinkedIn Parser] Final result - Description length: {len(description) if description else 0}, Homepage: {homepage_url}")
     return description, homepage_url 
+
+async def get_wikipedia_summary_async(company_name: str, logger_obj: logging.Logger, lang: str = 'en') -> str | None:
+    """
+    Fetches the summary of the Wikipedia page for the given company name.
+
+    Args:
+        company_name: The name of the company to search for.
+        logger_obj: Logger object for logging messages.
+        lang: The language code for Wikipedia (default: 'en').
+
+    Returns:
+        The summary text (up to 1500 characters) if found, otherwise None.
+    """
+    logger_obj.debug(f"[Wikipedia] Attempting to fetch summary for '{company_name}' in language '{lang}'")
+    try:
+        wiki_wiki = wikipediaapi.Wikipedia(
+            language=lang,
+            extract_format=wikipediaapi.ExtractFormat.WIKI,
+            user_agent='CompanyDescScraper/1.0 (mercury@example.com)' # Replace with actual contact if needed
+        )
+        
+        page_py = wiki_wiki.page(company_name)
+
+        if page_py.exists():
+            summary = page_py.summary
+            if summary:
+                # Limit summary length to avoid excessively long inputs later
+                max_summary_len = 1500
+                summary_truncated = summary[:max_summary_len]
+                if len(summary) > max_summary_len:
+                    logger_obj.debug(f"[Wikipedia] Summary for '{company_name}' truncated to {max_summary_len} chars.")
+                logger_obj.info(f"[Wikipedia] Found summary for '{company_name}' (Length: {len(summary_truncated)})")
+                return summary_truncated
+            else:
+                logger_obj.warning(f"[Wikipedia] Page found for '{company_name}' but summary is empty.")
+                return None
+        else:
+            logger_obj.warning(f"[Wikipedia] Page not found for '{company_name}'.")
+            return None
+            
+    except wikipediaapi.exceptions.DisambiguationError as e:
+        logger_obj.warning(f"[Wikipedia] Disambiguation error for '{company_name}': {e.options[:5]}...") # Log first few options
+        # Could try to pick the first option, or use LLM to clarify, but for now, just fail.
+        return None
+    except wikipediaapi.exceptions.WikipediaException as e:
+        logger_obj.error(f"[Wikipedia] API error for '{company_name}': {type(e).__name__} - {e}")
+        return None
+    except Exception as e:
+        logger_obj.error(f"[Wikipedia] Unexpected error fetching summary for '{company_name}': {type(e).__name__} - {e}")
+        logger_obj.debug(traceback.format_exc())
+        return None
 
 async def find_and_scrape_about_page_async(
     main_page_html: str,

@@ -169,11 +169,11 @@ async def find_urls_with_serper_async(
     serper_api_key: str | None,
     openai_client: AsyncOpenAI | None, 
     scoring_logger_obj: logging.Logger
-) -> tuple[str | None, str | None]:
+) -> tuple[str | None, str | None, str | None]:
     
     if not serper_api_key:
         scoring_logger_obj.warning(f"SERPER_API_KEY missing for {company_name}. Cannot find URLs.")
-        return None, None
+        return None, None, None
 
     headers = {'X-API-KEY': serper_api_key, 'Content-Type': 'application/json'}
     
@@ -186,13 +186,14 @@ async def find_urls_with_serper_async(
 
     if not serper_results_json or not serper_results_json.get("organic"):
         scoring_logger_obj.warning(f"No organic results from Serper for '{company_name}' with query '{search_query}'.")
-        return None, None
+        return None, None, None
     
     organic_results = serper_results_json["organic"]
     scoring_logger_obj.info(f"Received {len(organic_results)} organic results from Serper for '{company_name}'.")
 
     selected_linkedin_url: str | None = None
     selected_homepage_url: str | None = None
+    wikipedia_url: str | None = None
     
     scoring_logger_obj.info(f"\n--- Searching for LinkedIn URL for '{company_name}' (Scoring Method) ---")
     linkedin_candidates: list[tuple[str, str, int]] = []
@@ -485,7 +486,33 @@ Answer:""" # Removed the final Answer: prompt to let model complete
             except Exception as e_retry:
                 scoring_logger_obj.error(f"Error during LLM Attempt 2 for homepage selection for '{company_name}': {type(e_retry).__name__} - {str(e_retry)}")
 
-    scoring_logger_obj.info(f"\\n--- Final URL Selection for '{company_name}' ---") # Changed header for clarity
-    scoring_logger_obj.info(f"  > find_urls_with_serper_async is returning HP: '{selected_homepage_url}', LI: '{selected_linkedin_url}' for '{company_name}'")
+    # 4. Find Wikipedia URL (Simple search)
+    wikipedia_url = None # <<< MOVED INITIALIZATION HERE
+    if organic_results:
+        scoring_logger_obj.debug(f"  Checking {len(organic_results)} Serper results for Wikipedia link...") # DEBUG
+        for i, result in enumerate(organic_results):
+            link = result.get("link", "")
+            if not link:
+                scoring_logger_obj.debug(f"    Result #{i+1}: Skipping empty link.") # DEBUG
+                continue
+            
+            try:
+                parsed_link = urlparse(link)
+                netloc_lower = parsed_link.netloc.lower()
+                scoring_logger_obj.debug(f"    Result #{i+1}: Checking link '{link}' -> netloc: '{netloc_lower}'") # DEBUG
+                
+                # Basic check for wikipedia.org domain 
+                if "wikipedia.org" in netloc_lower:
+                    wikipedia_url = link # Assign the found URL
+                    scoring_logger_obj.info(f"  Found potential Wikipedia URL: {wikipedia_url}") 
+                    break # Take the first one found
+            except Exception as e:
+                 scoring_logger_obj.warning(f"    Result #{i+1}: Error parsing link '{link}': {e}") # DEBUG
 
-    return selected_homepage_url, selected_linkedin_url 
+        if not wikipedia_url:
+             scoring_logger_obj.warning(f"  No Wikipedia URL found in Serper results for '{company_name}'.") # DEBUG
+
+    scoring_logger_obj.info(f"\\n--- Final URL Selection for '{company_name}' ---")
+    scoring_logger_obj.info(f"  > find_urls_with_serper_async is returning HP: '{selected_homepage_url}', LI: '{selected_linkedin_url}', Wiki: '{wikipedia_url}' for '{company_name}'")
+
+    return selected_homepage_url, selected_linkedin_url, wikipedia_url 
