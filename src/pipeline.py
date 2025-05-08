@@ -112,18 +112,41 @@ async def process_company(company_name: str,
         hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = await find_urls_with_serper_async(
             aiohttp_session, company_name, context_text, serper_api_key, openai_client, pipeline_logger
         )
-        result_data["homepage"] = hp_url_found_serper if hp_url_found_serper else "Not found"
-        result_data["linkedin"] = li_url_found_serper if li_url_found_serper else "Not found"
         
-        # Store initial homepage data if found
+        # <<< START: Extract base URL for homepage column >>>
+        base_homepage_url = "Not found"
         if hp_url_found_serper:
-            pipeline_logger.info(f"  > {company_name}: Homepage URL found: {hp_url_found_serper}")
+            try:
+                parsed_hp_url = urlparse(hp_url_found_serper)
+                base_homepage_url = f"{parsed_hp_url.scheme}://{parsed_hp_url.netloc}" 
+            except Exception as e_parse:
+                pipeline_logger.warning(f"  > {company_name}: Could not parse homepage URL '{hp_url_found_serper}' to extract base: {e_parse}")
+                base_homepage_url = hp_url_found_serper # Fallback to original if parsing fails
+        result_data["homepage"] = base_homepage_url # Assign the cleaned base URL
+        # <<< END: Extract base URL >>>
+        
+        # <<< START: Clean LinkedIn URL for output >>>
+        cleaned_linkedin_url = "Not found"
+        if li_url_found_serper:
+            # Remove trailing '/about/' or '/' if present
+            if li_url_found_serper.endswith('/about/'):
+                cleaned_linkedin_url = li_url_found_serper[:-len('/about/')]
+            elif li_url_found_serper.endswith('/'):
+                 cleaned_linkedin_url = li_url_found_serper[:-1]
+            else:
+                 cleaned_linkedin_url = li_url_found_serper 
+        result_data["linkedin"] = cleaned_linkedin_url # Assign cleaned URL
+        # <<< END: Clean LinkedIn URL >>>
+        
+        # Store initial homepage data if found (using the potentially full URL from Serper for logging)
+        if hp_url_found_serper:
+            pipeline_logger.info(f"  > {company_name}: Homepage URL found: {hp_url_found_serper} (Saved base: {base_homepage_url})") # Log both for clarity
         else:
             pipeline_logger.warning(f"  > {company_name}: Homepage URL NOT found by Serper/LLM.")
             manual_check_flag = True
             
-        if li_url_found_serper:
-            pipeline_logger.info(f"  > {company_name}: LinkedIn URL found: {li_url_found_serper}")
+        if li_url_found_serper: # Log the originally found URL
+            pipeline_logger.info(f"  > {company_name}: LinkedIn URL found: {li_url_found_serper} (Saved base: {cleaned_linkedin_url})") # Log both
             if li_snippet_serper:
                 pipeline_logger.info(f"  > {company_name}: LinkedIn Snippet found (Serper): '{li_snippet_serper[:100]}...'")
         else:
