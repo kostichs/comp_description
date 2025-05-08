@@ -279,6 +279,12 @@ async def find_urls_with_serper_async(
              
         candidates_str = "\n".join([f"- {c['link']}\n  Title: {c['title']}\n  Snippet: {c['snippet']}" for c in homepage_candidates_for_llm])
         
+        # --- Prepare context for LLM Homepage Selection (including Wiki URL if found) ---
+        llm_context_info = context_text or "General Business"
+        if wikipedia_url:
+            llm_context_info += f". Wikipedia page found: {wikipedia_url}"
+            scoring_logger_obj.info(f"  Adding found Wikipedia URL to context for LLM Homepage selection.")
+
         system_prompt_content = f"""You are a reliable assistant that, given a list of URLs for a single company, name the one official homepage for the company {company_name}. 
 Always output EXACTLY the URL on a single line, without any extra commentary."""
         
@@ -300,7 +306,7 @@ Answer: https://acme.com
 
 Example 2:
 Company: Foo Bar Inc.
-Context: Local bakery
+Context: Local bakery. Wikipedia page found: https://en.wikipedia.org/wiki/Foo_Bar_Inc
 Candidates:
 - https://linkedin.com/company/foo-bar-inc/about/
   Title: Foo Bar Inc. | LinkedIn
@@ -315,7 +321,7 @@ Answer: None
 
 Now:
 Company: {company_name}
-Context: {context_text or 'Not provided'}
+Context: {llm_context_info} 
 Candidates:
 {candidates_str}
 Answer:
@@ -412,7 +418,7 @@ Answer: https://acme.com
 
 Example 2:
 Company: Foo Bar Inc.
-Context: Local bakery
+Context: Local bakery. Wikipedia page found: https://en.wikipedia.org/wiki/Foo_Bar_Inc
 Candidates:
 - https://linkedin.com/company/foo-bar-inc/about/
   Title: Foo Bar Inc. | LinkedIn
@@ -427,7 +433,7 @@ Answer: https://www.some_directory.com/foo-bar-inc # Example adjustment: Force a
 
 Now:
 Company: {company_name}
-Context: {context_text or 'Not provided'}
+Context: {llm_context_info}
 Candidates:
 {candidates_str}
 Instruction: Select the single most likely official homepage from the list above.
