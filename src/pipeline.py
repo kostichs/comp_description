@@ -9,6 +9,7 @@ from urllib.parse import urlparse, unquote
 import re # For keyword extraction from context
 from bs4 import BeautifulSoup
 import logging # Added for logging
+from pathlib import Path
 
 from scrapingbee import ScrapingBeeClient # Need sync client for thread
 from openai import AsyncOpenAI
@@ -168,7 +169,7 @@ async def process_company(company_name: str,
                     hp_root = hp_data[1]
                     hp_html_content = hp_data[2]
                     pipeline_logger.info(f"  > {company_name}: Homepage scraped. Title: '{hp_title}', Root: {hp_root}, HTML len: {len(hp_html_content)}")
-                else:
+                else: 
                     pipeline_logger.warning(f"  > {company_name}: Scraping homepage returned no HTML content.")
                     manual_check_flag = True
             except Exception as e_scrape_hp:
@@ -190,8 +191,8 @@ async def process_company(company_name: str,
                 )
                 if about_page_text:
                     pipeline_logger.info(f"  > {company_name}: Found text from 'About Us' page (length: {len(about_page_text)}).")
-                else:
-                     pipeline_logger.info(f"  > {company_name}: No meaningful text from 'About Us' page (or page not found).")
+                else: 
+                    pipeline_logger.info(f"  > {company_name}: No meaningful text from 'About Us' page (or page not found).")
             except Exception as e_about:
                 pipeline_logger.error(f"  > {company_name}: Error in find_and_scrape_about_page_async: {e_about}")
                 # Continue, fallback to other sources
@@ -251,7 +252,7 @@ async def process_company(company_name: str,
         else:
             pipeline_logger.warning(f"  > {company_name}: No text source available after checking About page, Wikipedia, and Homepage.")
             manual_check_flag = True
-            
+
         # --- 7. Generate Description using LLM --- 
         llm_generated_output = None
         if text_src:
@@ -505,6 +506,110 @@ async def run_pipeline():
         logging.info(f"No supported files processed successfully in '{input_dir}'.")
     
     logging.info("Async batch processing finished.") 
+
+async def run_pipeline_for_file(
+    input_file_path: str | Path,
+    output_csv_path: str | Path,
+    pipeline_log_path: str,
+    scoring_log_path: str,
+    context_text: str | None,
+    company_col_index: int,
+    aiohttp_session: aiohttp.ClientSession,
+    sb_client: ScrapingBeeClient,
+    llm_config: dict,
+    openai_client: AsyncOpenAI,
+    serper_api_key: str,
+    expected_csv_fieldnames: list[str]
+) -> tuple[int, int, list[dict]]:
+    """
+    Processes a single input file and saves results to CSV.
+    Returns tuple of (success_count, failure_count, results_list).
+    """
+    logging.info(f"Starting processing for file: {input_file_path}")
+    success_count = 0
+    failure_count = 0
+    results_list = []
+
+    try:
+        # Load company names from input file
+        company_names = load_and_prepare_company_names(input_file_path, company_col_index)
+        if not company_names:
+            logging.warning(f"No valid company names found in {input_file_path}")
+            return 0, 0, []
+
+        logging.info(f"Found {len(company_names)} companies. Processing each...")
+        
+        # Process each company
+        tasks = [
+            asyncio.create_task(
+                process_company(name, aiohttp_session, sb_client, llm_config, openai_client, context_text, serper_api_key)
+            ) for name in company_names
+        ]
+
+        for future in asyncio.as_completed(tasks):
+            try:
+                result_data = await future
+                if isinstance(result_data, dict):
+                    results_list.append(result_data)
+                    # Save/append this single result immediately
+                    save_results_csv(
+                        [result_data],
+                        output_csv_path,
+                        append_mode=True,
+                        fieldnames=expected_csv_fieldnames
+                    )
+                    success_count += 1
+                else:
+                    logging.error(f"Unexpected result type: {type(result_data)}")
+                    failure_count += 1
+            except Exception as e:
+                logging.error(f"Task failed: {type(e).__name__} - {e}")
+                failure_count += 1
+
+        logging.info(f"Finished processing {input_file_path}. Successes: {success_count}, Failures: {failure_count}")
+        return success_count, failure_count, results_list
+
+    except Exception as e:
+        logging.error(f"Error processing file {input_file_path}: {type(e).__name__} - {e}")
+        logging.debug(traceback.format_exc())
+        return success_count, failure_count, results_list
+
+def setup_session_logging(pipeline_log_path: str, scoring_log_path: str):
+    """Configures logging handlers for a specific session run."""
+    # Remove existing handlers for the root logger
+    root_logger = logging.getLogger()
+    for handler in root_logger.handlers[:]:
+        if isinstance(handler, logging.FileHandler):
+            root_logger.removeHandler(handler)
+            handler.close()
+    
+    # Configure root logger for pipeline logs
+    root_logger.setLevel(logging.DEBUG)
+    pipeline_handler = logging.FileHandler(pipeline_log_path, mode='w', encoding='utf-8')
+    pipeline_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'))
+    root_logger.addHandler(pipeline_handler)
+    
+    # Add console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    root_logger.addHandler(console_handler)
+    
+    # Configure scoring logger
+    scoring_logger = logging.getLogger('ScoringLogger')
+    scoring_logger.setLevel(logging.DEBUG)
+    scoring_logger.propagate = False
+    
+    # Remove existing handlers for scoring_logger
+    for handler in scoring_logger.handlers[:]:
+        scoring_logger.removeHandler(handler)
+        handler.close()
+    
+    # Add scoring file handler
+    scoring_handler = logging.FileHandler(scoring_log_path, mode='w', encoding='utf-8')
+    scoring_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    scoring_logger.addHandler(scoring_handler)
+    
+    logging.info(f"Logging configured. Pipeline log: {pipeline_log_path}, Scoring log: {scoring_log_path}")
 
 if __name__ == "__main__":
     if os.name == 'nt': asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

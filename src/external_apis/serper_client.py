@@ -3,11 +3,8 @@ import asyncio
 import json
 import re
 import tldextract # For domain checks in ranking
-import numpy as np # For embeddings
-from sklearn.metrics.pairwise import cosine_similarity # For embeddings
-from openai import AsyncOpenAI # To pass the client for embeddings
+from openai import AsyncOpenAI # To pass the client for LLM selection
 import logging # Added for logging
-from ..external_apis.openai_client import get_embedding_async, is_url_company_page_llm # Ensure this is imported
 from urllib.parse import urlparse, unquote # Added for path depth checking and URL decoding
 from ..config import SPECIAL_COMPANY_HANDLING # Import the special handling rules
 
@@ -176,11 +173,11 @@ async def find_urls_with_serper_async(
         return None, None, None, None
 
     headers = {'X-API-KEY': serper_api_key, 'Content-Type': 'application/json'}
-    
-    normalized_company_name_for_li_match = normalize_name_for_domain_comparison(company_name)
-    scoring_logger_obj.info(f"Normalized name for LI scoring: '{normalized_company_name_for_li_match}'")
 
-    search_query = f"{company_name} official website"
+    normalized_company_name_for_match = normalize_name_for_domain_comparison(company_name)
+    scoring_logger_obj.info(f"Normalized name for general matching: '{normalized_company_name_for_match}'")
+
+    search_query = f"{company_name} official website linkedin company profile"
     scoring_logger_obj.info(f"Executing Serper API query for '{company_name}': \"{search_query}\"")
     serper_results_json = await _execute_serper_query(session, search_query, serper_api_key, headers, num_results=30)
 
@@ -211,10 +208,10 @@ async def find_urls_with_serper_async(
             if "/company/" in normalized_li_url.lower(): score_li += 20; reason_li.append("/company/ link:+20")
             elif "/showcase/" in normalized_li_url.lower(): score_li += 5; reason_li.append("/showcase/ link:+5")
             elif "/school/" in normalized_li_url.lower(): score_li += 3; reason_li.append("/school/ link:+3")
-            if slug_li and normalized_company_name_for_li_match in slug_li.replace('-', ''): score_li += 15; reason_li.append(f"Name in slug ({slug_li}):+15")
-            elif normalized_company_name_for_li_match in title_li.replace('-', '').replace(' ', ''): score_li += 10; reason_li.append(f"Name in title ({title_li[:30]}...):+10")
-            elif any(part_li in slug_li.replace('-', '') for part_li in normalized_company_name_for_li_match.split('-') if len(part_li) > 2): score_li += 7; reason_li.append(f"Part of name in slug ({slug_li}):+7")
-            elif any(part_li in title_li.replace('-', '').replace(' ', '') for part_li in normalized_company_name_for_li_match.split('-') if len(part_li) > 2): score_li += 5; reason_li.append(f"Part of name in title ({title_li[:30]}...):+5")
+            if slug_li and normalized_company_name_for_match in slug_li.replace('-', ''): score_li += 15; reason_li.append(f"Name in slug ({slug_li}):+15")
+            elif normalized_company_name_for_match in title_li.replace('-', '').replace(' ', ''): score_li += 10; reason_li.append(f"Name in title ({title_li[:30]}...):+10")
+            elif any(part_li in slug_li.replace('-', '') for part_li in normalized_company_name_for_match.split('-') if len(part_li) > 2): score_li += 7; reason_li.append(f"Part of name in slug ({slug_li}):+7")
+            elif any(part_li in title_li.replace('-', '').replace(' ', '') for part_li in normalized_company_name_for_match.split('-') if len(part_li) > 2): score_li += 5; reason_li.append(f"Part of name in title ({title_li[:30]}...):+5")
             if "jobs" in title_li or "careers" in title_li or "/jobs" in link_li.lower() or "/careers" in link_li.lower():
                 if not ("/company/" in normalized_li_url.lower() and score_li > 20): score_li -= 5; reason_li.append("Jobs/careers term:-5")
             if score_li > 0:

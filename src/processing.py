@@ -20,21 +20,25 @@ logger = logging.getLogger(__name__)
 
 def validate_page(company_name: str, title: str | None, domain: str | None, html_content: str | None, original_url: str | None = None) -> bool:
     """Validates if the page content is relevant, checking title, domain, content signals, and basic URL structure."""
-    logger.debug(f"Starting validation for '{company_name}'...") # DEBUG
-    if not html_content and (not title and not domain):
-        logger.debug(f"Validation skipped for '{company_name}': Not enough info (no title, domain, or HTML).") # DEBUG
-        return False 
-
-    company_name_lower = company_name.lower()
-    # --- Start: Clean company name for validation --- 
-    clean_company_name_for_check = re.sub(r'\s*\(.*\)', '', company_name_lower).strip() # Corrected regex
+    if not any([title, domain, html_content]):
+        logger.debug(f"Validation FAILED (No input data provided) for '{company_name}'")
+        return False
+    
+    # --- Clean company name for validation ---
+    temp_name = company_name.lower()
     common_suffixes_to_remove = [
-        ', inc.', ' inc.', ', llc', ' llc', ', ltd.', ' ltd.', ' ltd', ', gmbh', ' gmbh',
-        ', s.a.', ' s.a.', ' plc', ' se', ' ag', ' oyj', ' ab', ' as', ' nv', ' bv', ' co.', ' co',
-        ' corporation', ' company', ' group', ' holding', ' solutions', ' services',
-        ' technologies', ' systems', ' international', ' limited' # Add more if needed
+        " inc", " inc.", " incorporated", 
+        " llc", " llc.", " l.l.c.", " limited liability company",
+        " ltd", " ltd.", " limited",
+        " corp", " corp.", " corporation",
+        " co", " co.", " company",
+        " gmbh", " ag", " kg", " ohg", " eg",  # German
+        " srl", " s.r.l.", # Italian
+        " sa", " s.a.", " s.a.s", " societe anonyme", # French
+        " bv", " b.v.", " nv", " n.v." # Dutch
     ]
-    temp_name = clean_company_name_for_check # Use a temp var for suffix stripping
+    
+    # Use a temp var for suffix stripping
     for suffix in common_suffixes_to_remove:
         if temp_name.endswith(suffix):
             temp_name = temp_name[:-len(suffix)].strip()
@@ -44,164 +48,117 @@ def validate_page(company_name: str, title: str | None, domain: str | None, html
 
     title_lower = title.lower() if title else ""
     normalized_domain_from_tld = tldextract.extract(original_url if original_url else "").registered_domain.lower().replace("-","")
-    # Use domain if provided, otherwise derive from original_url for better consistency
-    # Fallback to the passed 'domain' if original_url is not available or tldextract fails for it
     normalized_domain = normalized_domain_from_tld if normalized_domain_from_tld else (domain.lower().replace("-", "") if domain else "")
 
     html_content_lower = html_content.lower() if html_content else ""
     soup = BeautifulSoup(html_content, 'html.parser') if html_content else None
 
     # 1. Title/Domain basic check (using cleaned name)
-    if clean_company_name_for_check and clean_company_name_for_check in title_lower: 
-        logger.debug(f"Validation PASSED (Check 1a: cleaned name '{clean_company_name_for_check}' in title '{title_lower[:60]}...') for '{company_name}'")
-        return True
+    # Ослабляем проверку - теперь достаточно, чтобы название компании было частью домена или заголовка
+    if clean_company_name_for_check:
+        words = clean_company_name_for_check.split()
+        # Если название состоит из нескольких слов, проверяем, есть ли хотя бы 2 слова в title или domain
+        if len(words) > 1:
+            matches = sum(1 for word in words if word in title_lower or word in normalized_domain)
+            if matches >= 2:
+                logger.debug(f"Validation PASSED (Check 1: multiple words match in title/domain) for '{company_name}'")
+                return True
+        # Для коротких названий - достаточно полного совпадения одного слова
+        elif clean_company_name_for_check in title_lower or clean_company_name_for_check in normalized_domain:
+            logger.debug(f"Validation PASSED (Check 1: exact match in title/domain) for '{company_name}'")
+            return True
     
-    # Prepare a version of cleaned name without spaces for domain matching
-    cleaned_name_no_spaces = clean_company_name_for_check.replace(" ", "").replace(",", "").replace(".", "")
-    if domain and cleaned_name_no_spaces and cleaned_name_no_spaces in normalized_domain: 
-        logger.debug(f"Validation PASSED (Check 1b: cleaned name (no spaces) '{cleaned_name_no_spaces}' in normalized domain '{normalized_domain}') for '{company_name}'")
-        return True
-    logger.debug(f"Validation FAILED (Check 1: Direct cleaned name '{clean_company_name_for_check}' or '{cleaned_name_no_spaces}' not in title/domain) for '{company_name}'")
-
-    # 2. Check for parts of cleaned company name in title/domain
+    # 2. Check for parts of cleaned company name in title/domain with more relaxed rules
     parts_to_check = []
     if clean_company_name_for_check:
-        parts = [p for p in clean_company_name_for_check.split() if len(p) > 2] 
-        if parts: parts_to_check = parts
-        elif len(clean_company_name_for_check) > 2: parts_to_check = [clean_company_name_for_check]
+        # Уменьшаем минимальную длину слова с 3 до 2 символов
+        parts = [p for p in clean_company_name_for_check.split() if len(p) > 1]
+        if parts: 
+            parts_to_check = parts
+        elif len(clean_company_name_for_check) > 1: 
+            parts_to_check = [clean_company_name_for_check]
     
     found_part_match = False
     if parts_to_check:
         for part in parts_to_check:
-            if (title and part in title_lower) or (domain and part in normalized_domain): 
-                logger.debug(f"Validation PASSED (Check 2: part '{part}' of cleaned name in title/domain) for '{company_name}'")
+            # Добавляем проверку на вхождение части слова
+            if (title and (part in title_lower or any(word.startswith(part) for word in title_lower.split()))) or \
+               (domain and (part in normalized_domain or any(word.startswith(part) for word in normalized_domain.split('.')))):
+                logger.debug(f"Validation PASSED (Check 2: partial match '{part}' in title/domain) for '{company_name}'")
                 found_part_match = True
                 return True
-    if not found_part_match: logger.debug(f"Validation FAILED (Check 2: Part of cleaned name match for '{company_name}'; Parts checked: {parts_to_check})")
+    
+    if not found_part_match: 
+        logger.debug(f"Validation FAILED (Check 2: Part match) for '{company_name}'; Parts checked: {parts_to_check}")
 
-    # 3. Meta Description and Keywords Check (using cleaned name)
-    if soup:
-        meta_desc_tag = soup.find('meta', attrs={'name': 'description'})
-        meta_keywords_tag = soup.find('meta', attrs={'name': 'keywords'})
-        meta_desc_content = meta_desc_tag.get('content', '').lower() if meta_desc_tag else ""
-        meta_keywords_content = meta_keywords_tag.get('content', '').lower() if meta_keywords_tag else ""
+    # 3. Content signals check
+    if html_content_lower and soup:
+        # Positive signals - things that suggest this is a homepage
+        positive_hits = 0
+        negative_hits = 0
         
-        meta_positive_signals = ["about", "company", "official", "corporate", "profile", "headquarters", "founded", "investors", "team"]
-        name_in_meta = clean_company_name_for_check and (clean_company_name_for_check in meta_desc_content or clean_company_name_for_check in meta_keywords_content)
-        signals_in_meta = any(signal in meta_desc_content for signal in meta_positive_signals) or \
-                          any(signal in meta_keywords_content for signal in meta_positive_signals)
-                          
-        if name_in_meta and signals_in_meta:
-            logger.debug(f"Validation PASSED (Check 3: Cleaned name and positive signal found in meta tags) for '{company_name}'")
-            return True 
-        else:
-            logger.debug(f"Validation FAILED (Check 3: Meta tags) for '{company_name}'. Cleaned Name '{clean_company_name_for_check}' in meta: {name_in_meta}, Signals in meta: {signals_in_meta}")
-    else:
-         logger.debug(f"Validation SKIPPED (Check 3: Meta tags) for '{company_name}': No soup object.")
-
-    # 4. Content-based "Company Signals"
-    positive_hits = 0 
-    negative_hits = 0 
-    if html_content_lower:
-        # 4a. Check for presence of *cleaned* company name in body
-        if clean_company_name_for_check and clean_company_name_for_check not in html_content_lower:
-            # If even the cleaned name isn't there, it's a strong negative signal unless other checks pass
-            logger.debug(f"Validation NOTE (Check 4a: cleaned company name '{clean_company_name_for_check}' not in HTML body) for '{company_name}'. Will rely on other signals.")
-            # Not returning False immediately, to give other content signals a chance, but this is a weak sign.
-        elif clean_company_name_for_check:
-             logger.debug(f"Validation Info (Check 4a: cleaned company name '{clean_company_name_for_check}' found in HTML body) for '{company_name}'")
+        # Check meta tags
+        meta_desc = soup.find('meta', attrs={'name': 'description'})
+        meta_keywords = soup.find('meta', attrs={'name': 'keywords'})
         
-        # 4b. Check content signals
-        positive_signals = [
-            "about us", "about company", "our company", "mission", "vision", "values",
-            "contact us", "contact information", "get in touch", "headquarters",
-            "investor relations", "investors", "media room",
-            "careers", "jobs", "work with us",
-            "privacy policy", "terms of service", "legal notice", "imprint", "terms & conditions",
-            "corporate information", "company profile", "founded in"
-        ]
-        negative_signals = [ # Keywords suggesting it's not a primary corporate page
-            "add to cart", "checkout", "shopping cart", "my account", "user login",
-            "blog post", "news article", "read more", "comments", "forum", 
-            "product details", "item specifics", "product id", "review", "rating", "price list"
-        ]
+        if meta_desc and clean_company_name_for_check in meta_desc.get('content', '').lower():
+            positive_hits += 2  # Увеличиваем вес meta description
+            logger.debug(f"Found company name in meta description for '{company_name}'")
         
-        positive_hits = sum(1 for signal in positive_signals if signal in html_content_lower)
-        negative_hits = sum(1 for signal in negative_signals if signal in html_content_lower)
-        logger.debug(f"Validation Check 4b (Content Signals) for '{company_name}': Positive Hits={positive_hits}, Negative Hits={negative_hits}") # DEBUG
+        if meta_keywords and clean_company_name_for_check in meta_keywords.get('content', '').lower():
+            positive_hits += 1
+            logger.debug(f"Found company name in meta keywords for '{company_name}'")
         
-        # 4c. Check for company name in first few paragraphs if soup is available
-        first_para_check_passed = False # DEBUG
-        if soup:
-            first_paras = soup.find_all('p', limit=5)
-            first_paras_text = " ".join(p.get_text(strip=True).lower() for p in first_paras)
-            name_in_first_paras = clean_company_name_for_check in first_paras_text
-            signals_in_first_paras = any(signal in first_paras_text for signal in ["about", "company", "profile", "founded"])
-            
-            if name_in_first_paras and positive_hits > 0 and signals_in_first_paras:
-                logger.debug(f"Validation PASSED (Check 4c: Name & signal in first paras, positive hits > 0) for '{company_name}'") # DEBUG
-                first_para_check_passed = True # DEBUG
-                return True
-            else:
-                 logger.debug(f"Validation FAILED (Check 4c: First paras) for '{company_name}'. Name in paras: {name_in_first_paras}, Signals in paras: {signals_in_first_paras}, Positive hits: {positive_hits}") # DEBUG
-        else:
-             logger.debug(f"Validation SKIPPED (Check 4c: First paras) for '{company_name}': No soup object.") # DEBUG
+        # Check for common homepage elements
+        if soup.find('link', attrs={'rel': 'canonical'}):
+            positive_hits += 1
+            logger.debug(f"Found canonical link for '{company_name}'")
         
-        # 4d. Check signal thresholds
-        if positive_hits >= 2 and negative_hits <= 1: 
-            logger.debug(f"Validation PASSED (Check 4d.1: positive_hits >= 2 and negative_hits <= 1) for '{company_name}'") # DEBUG
+        # Ослабляем негативные сигналы
+        blog_indicators = ['blog', 'news', 'article', 'press']
+        for indicator in blog_indicators:
+            if indicator in html_content_lower:
+                negative_hits += 0.5  # Уменьшаем вес негативных сигналов
+        
+        # Если есть хотя бы 2 позитивных сигнала и мало негативных, считаем страницу валидной
+        if positive_hits >= 2 and negative_hits < 1:
+            logger.debug(f"Validation PASSED (Content signals: {positive_hits} positive, {negative_hits} negative) for '{company_name}'")
             return True
-        if positive_hits >= 1 and negative_hits == 0: 
-             logger.debug(f"Validation PASSED (Check 4d.2: positive_hits >= 1 and negative_hits == 0) for '{company_name}'") # DEBUG
-             return True
-        logger.debug(f"Validation FAILED (Check 4d: Signal Thresholds) for '{company_name}'. Positive={positive_hits}, Negative={negative_hits}") # DEBUG
         
-        # 4e. Copyright check 
-        copyright_check_passed = False # DEBUG
-        try: # Wrap regex in try-except
+        # Copyright check with more relaxed pattern
+        try:
             current_year = str(time.gmtime().tm_year)
             prev_year = str(int(current_year) - 1)
-            simple_company_name_match = re.escape(clean_company_name_for_check.split()[0]) 
-            if len(clean_company_name_for_check.split()) > 1 : 
+            simple_company_name_match = re.escape(clean_company_name_for_check.split()[0])
+            if len(clean_company_name_for_check.split()) > 1:
                 simple_company_name_match += ".*" + re.escape(clean_company_name_for_check.split()[-1])
             
             copyright_pattern = rf"(©|\(c\)|copyright)\s*(\d{{4}}|{current_year}|{prev_year})?\s*.*{simple_company_name_match}"
             if re.search(copyright_pattern, html_content_lower, re.IGNORECASE):
-                logger.debug(f"Validation PASSED (Check 4e: copyright pattern) for '{company_name}'") # DEBUG
-                copyright_check_passed = True # DEBUG
+                logger.debug(f"Validation PASSED (Copyright pattern) for '{company_name}'")
                 return True
-            else:
-                 logger.debug(f"Validation FAILED (Check 4e: copyright pattern not found) for '{company_name}'") # DEBUG
         except Exception as e_re:
-             logger.warning(f"Validation Check 4e (Copyright Regex) FAILED with error for '{company_name}': {e_re}") # DEBUG
-        if not copyright_check_passed: logger.debug(f"Validation FAILED (Check 4e: Copyright Check) for '{company_name}'") # DEBUG
-    else:
-        logger.debug(f"Validation SKIPPED (Check 4: Content Signals) for '{company_name}': No html_content_lower.") # DEBUG
-
-    # 5. URL Structure (Negative Signals) - only if original_url is provided ---
-    url_structure_check_passed = True # DEBUG: Assume passed unless it fails
+            logger.warning(f"Copyright check failed with error for '{company_name}': {e_re}")
+    
+    # URL Structure check - значительно ослабляем
     if original_url:
         try:
             parsed_original_url = urlparse(original_url.lower())
             path_lower = parsed_original_url.path
-            is_bad_path = path_lower and (path_lower.count('/') > 3 or any(seg in path_lower for seg in ["/blog/", "/news/", "/product/", "/category/", "/article/"]))
             
-            # Check if content signals were also weak (condition to actually fail based on URL)
-            content_signals_weak = not (positive_hits >=1 and negative_hits == 0)
+            # Уменьшаем количество негативных сигналов в URL
+            is_bad_path = path_lower and path_lower.count('/') > 4 and \
+                         any(seg in path_lower for seg in ["/blog/", "/news/", "/press/"])
             
-            if is_bad_path and content_signals_weak: 
-                logger.debug(f"Validation FAILED (Check 5: URL structure '{path_lower}' is bad AND content signals were weak) for '{company_name}'") # DEBUG
-                url_structure_check_passed = False # DEBUG
+            # Проверяем негативные сигналы только если нет других позитивных признаков
+            if is_bad_path and not (found_part_match or (html_content and positive_hits > 0)):
+                logger.debug(f"Validation FAILED (URL structure) for '{company_name}'")
                 return False
-            else:
-                 logger.debug(f"Validation PASSED (Check 5: URL structure '{path_lower}' ok or content signals strong enough) for '{company_name}'. Bad path: {is_bad_path}, Weak signals: {content_signals_weak}") # DEBUG
+            
         except Exception as e_url:
-             logger.warning(f"Validation Check 5 (URL Structure) FAILED with error for '{company_name}': {e_url}") # DEBUG
-             # Don't fail validation just because URL parsing failed, rely on content checks
-    else:
-         logger.debug(f"Validation SKIPPED (Check 5: URL Structure) for '{company_name}': No original_url provided.") # DEBUG
-
-    logger.debug(f"Validation FAILED (All checks completed without returning True) for '{company_name}'") # DEBUG
+            logger.warning(f"URL structure check failed with error for '{company_name}': {e_url}")
+    
+    logger.debug(f"Validation FAILED (All checks completed) for '{company_name}'")
     return False
 
 def extract_text_for_description(html_content: str | None) -> str | None:

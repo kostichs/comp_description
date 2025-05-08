@@ -2,7 +2,6 @@ import json
 import time
 from openai import AsyncOpenAI
 import numpy as np # For dot product if not using sklearn
-from sklearn.metrics.pairwise import cosine_similarity # For cosine similarity
 import logging
 import traceback
 
