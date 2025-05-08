@@ -3,6 +3,8 @@ import time
 from openai import AsyncOpenAI
 import numpy as np # For dot product if not using sklearn
 from sklearn.metrics.pairwise import cosine_similarity # For cosine similarity
+import logging
+import traceback
 
 async def get_embedding_async(text: str, openai_client: AsyncOpenAI, model: str = "text-embedding-3-small") -> list[float] | None:
     """Generates an embedding for the given text using OpenAI."""
@@ -80,10 +82,34 @@ async def generate_description_openai_async(company_name: str, homepage_root: st
         response = await openai_client.chat.completions.create(**api_params)
         if response.choices:
             response_content = response.choices[0].message.content.strip()
+            
+            # --->>> ADDED VALIDATION <<<---
+            # Check for unreasonable length compared to input, suggesting hallucination/repetition
+            input_length = len(about_snippet or "")
+            output_length = len(response_content)
+            # If output is more than 15x input length AND over 1000 chars absolute, it's likely problematic
+            if input_length > 0 and output_length > 1000 and output_length > input_length * 15:
+                logging.warning(f"LLM output for {company_name} seems excessively long ({output_length} chars) compared to input ({input_length} chars). Discarding.")
+                logging.debug(f"Problematic LLM output for {company_name}: {response_content[:500]}...") # Log snippet
+                return None
+            # --->>> END VALIDATION <<<---
+
             response_format = api_params.get("response_format")
             if isinstance(response_format, dict) and response_format.get("type") == "json_object":
-                try: parsed_json = json.loads(response_content); return parsed_json
-                except json.JSONDecodeError: print(f"Error: OpenAI response not valid JSON ({company_name})."); return None 
-            else: return response_content 
-        else: print(f"OpenAI no choices ({company_name})."); return None 
-    except Exception as e: print(f"OpenAI API error ({company_name}): {type(e).__name__}"); return None 
+                try: 
+                    parsed_json = json.loads(response_content)
+                    logging.info(f"LLM generated JSON for {company_name}") # DEBUG
+                    return parsed_json
+                except json.JSONDecodeError: 
+                    logging.error(f"Error: OpenAI response not valid JSON ({company_name}). Response: {response_content[:200]}...")
+                    return None 
+            else: 
+                logging.info(f"LLM generated text for {company_name} (Length: {output_length})") # DEBUG
+                return response_content 
+        else: 
+            logging.warning(f"OpenAI returned no choices for {company_name}.") # Changed print to logging
+            return None 
+    except Exception as e: 
+        logging.error(f"OpenAI API error ({company_name}): {type(e).__name__} - {e}") # Changed print to logging
+        logging.debug(traceback.format_exc()) # Added traceback for debug log
+        return None 

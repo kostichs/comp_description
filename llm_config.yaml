@@ -40,4 +40,4 @@ messages:
       6. Do not speculate, inject opinion, or add qualifiers like "may," "might," or "appears."
       7. If a data point is missing, skip it rather than guessing.
       8. The paragraph is the only output.
-      9. The paragraph must contain at least 15 sentences.
+      9. The paragraph must contain no more than 15 sentences (it may be shorter if source material is limited).

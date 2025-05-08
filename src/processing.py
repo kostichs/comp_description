@@ -11,6 +11,7 @@ import aiohttp # Added for async HTTP requests
 from scrapingbee import ScrapingBeeClient
 # Assuming scrape_page_data_async is correctly imported and handles the client passed from pipeline.py
 from .external_apis.scrapingbee_client import scrape_page_data_async 
+from openai import AsyncOpenAI # <<< ADDED IMPORT FOR LLM
 
 # Настройка логгера
 logger = logging.getLogger(__name__)
@@ -533,179 +534,171 @@ def parse_linkedin_about_section_flexible(html_content: str) -> tuple[str | None
 async def find_and_scrape_about_page_async(
     main_page_html: str,
     main_page_url: str,
+    company_name: str,
     session: aiohttp.ClientSession, 
-    sb_client: ScrapingBeeClient, # Changed parameter name to match usage in pipeline
+    sb_client: ScrapingBeeClient,
+    openai_client: AsyncOpenAI | None,
     logger_obj: logging.Logger 
 ) -> str | None:
-    """
-    Parses the main page HTML to find a link to an "About Us" page,
-    then tries to scrape that page first with aiohttp, then with ScrapingBee.
-    Returns the extracted text from the "About Us" page, or None.
-    """
-    logger_obj.info(f"[About Page Finder] Starting to find 'About Us' link on {main_page_url}")
+    logger_obj.info(f"[About Page Finder] Starting to find 'About Us' link for '{company_name}' on {main_page_url}")
     if not main_page_html or not main_page_url:
         logger_obj.warning("[About Page Finder] Missing main_page_html or main_page_url.")
         return None
 
     soup = BeautifulSoup(main_page_html, 'html.parser')
-    
-    about_link_keywords = [
-        # English
-        "about", "company", "profile", "who we are", "about us", "corporate", "overview", "whois",
-        # German
-        "über uns", "unternehmen", "profil", "wir über uns", "firma", "ueber uns", "impressum",
-        # French
-        "à propos", "a propos", "société", "entreprise", "qui sommes nous", "notre entreprise", "mentions légales",
-        # Spanish
-        "acerca de", "sobre nosotros", "empresa", "compañía", "quienes somos", "perfil", "nosotros", "aviso legal",
-        # Italian
-        "chi siamo", "su di noi", "azienda", "profilo", "la nostra azienda", "note legali",
-        # Portuguese
-        "sobre nós", "a empresa", "quem somos", "perfil", "aviso legal",
-        # Polish
-        "o nas", "o firmie", "firma", "profil firmy", "nota prawna",
-        # Dutch
-        "over ons", "bedrijfsprofiel", "ons bedrijf", "colofon",
-        # Nordic (Swedish, Norwegian, Danish)
-        "om oss", "om os", "företaget", "virksomheden", "firma profil",
-        # Russian
-        "о нас", "о компании", "компания", "профиль", "о фирме", "контакты",
-        # Arabic
-        "نبذة عنا", "عن الشركة", "معلومات عنا", "من نحن", "لمحة عنا",
-        # Chinese (Simplified & Traditional)
-        "关于我们", "公司简介", "關於我們", "公司簡介", "公司信息", "联系我们", "聯繫我們",
-        # Japanese
-        "会社概要", "私たちについて", "企業情報", "お問い合わせ", "会社案内",
-        # Korean
-        "회사 소개", "소개", "기업 정보", "연락처", "회사 안내",
-        # Hindi
-        "हमारे बारे में", "कंपनी प्रोफाइल", "कंपनी के बारे में", "संपर्क करें",
-        # Turkish
-        "hakkımızda", "şirket profili", "firma hakkında", "iletişim",
-        # Indonesian / Malay
-        "tentang kami", "profil syarikat", "mengenai kami", "hubungi kami"
-    ]
-    about_link_keywords = [k.lower() for k in about_link_keywords]
+    candidate_links_for_llm = []
+    try:
+        main_page_domain_info = tldextract.extract(main_page_url)
+        main_registered_domain = main_page_domain_info.registered_domain.lower()
+    except Exception:
+        main_registered_domain = ""
 
-    potential_links = []
     for a_tag in soup.find_all('a', href=True):
         href = a_tag['href'].strip()
-        link_text = a_tag.get_text(strip=True).lower()
-        
-        if not href or href.startswith('#') or href.startswith('mailto:') or href.startswith('tel:') or href.startswith('javascript:'):
+        link_text = a_tag.get_text(strip=True)
+        if not href or href.startswith( ('#', 'mailto:', 'tel:', 'javascript:') ):
             continue
-
-        for keyword in about_link_keywords:
-            if keyword in link_text or keyword in href.lower():
-                abs_url = urljoin(main_page_url, href)
-                parsed_abs_url = urlparse(abs_url)
-                if not parsed_abs_url.scheme or not parsed_abs_url.netloc:
-                    continue
-
-                score = 0
-                path_lower = parsed_abs_url.path.lower()
-                
-                if any(k in path_lower for k in ["about", "company", "profil", "ueber", "propos", "acerca", "sobre", "chi-siamo", "o-nas"]):
-                     score += 20
-                elif any(k in path_lower for k in about_link_keywords):
-                     score += 5
-                
-                if any(k in link_text for k in ["about", "company", "profil", "ueber", "propos", "acerca", "sobre"]): score += 15
-                elif any(k in link_text for k in about_link_keywords): score += 5
-                    
-                if len(path_lower.split('/')) < 4: score += 10
-                if not parsed_abs_url.query: score += 5
-                if 'contact' in path_lower or 'kontakt' in path_lower: score -= 5
-                
-                if abs_url.rstrip('/') == main_page_url.rstrip('/') or _is_external_social_media(abs_url):
-                    continue
-                
-                if score > 0:
-                    potential_links.append((abs_url, score))
-                    logger_obj.debug(f"[About Page Finder] Potential 'About Us' link: {abs_url} (Text: '{link_text[:50]}...', Score: {score})")
-                break 
-
-    if not potential_links:
-        logger_obj.info(f"[About Page Finder] No potential 'About Us' links found on {main_page_url}.")
-        return None
-
-    potential_links.sort(key=lambda x: x[1], reverse=True)
-    logger_obj.debug(f"[About Page Finder] Sorted potential links: {potential_links[:5]}")
-    
-    best_about_url = potential_links[0][0]
-    logger_obj.info(f"[About Page Finder] Best 'About Us' link candidate: {best_about_url} (Score: {potential_links[0][1]}) (Used from {len(potential_links)} candidates)")
-
-    about_page_html_content = None
-    try:
-        logger_obj.info(f"[About Page Finder] Attempting to fetch '{best_about_url}' with aiohttp...")
-        aio_headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9',
-        }
-        async with session.get(best_about_url, timeout=aiohttp.ClientTimeout(total=20), headers=aio_headers, ssl=False) as response:
-            if response.status == 200:
-                content_type = response.headers.get('Content-Type', '').lower()
-                if 'html' in content_type:
-                    about_page_html_content = await response.text()
-                    logger_obj.info(f"[About Page Finder] Successfully fetched HTML from '{best_about_url}' with aiohttp (Length: {len(about_page_html_content)}).")
-                else:
-                    logger_obj.warning(f"[About Page Finder] Fetched content from '{best_about_url}' with aiohttp, but content-type is not HTML: {content_type}.")
-            else:
-                logger_obj.warning(f"[About Page Finder] aiohttp GET request for '{best_about_url}' failed with status: {response.status}.")
-    except asyncio.TimeoutError:
-        logger_obj.warning(f"[About Page Finder] Timeout fetching '{best_about_url}' with aiohttp.")
-    except aiohttp.ClientError as e:
-        logger_obj.warning(f"[About Page Finder] aiohttp ClientError for '{best_about_url}': {e}")
-    except Exception as e:
-        logger_obj.error(f"[About Page Finder] Generic error fetching '{best_about_url}' with aiohttp: {type(e).__name__} - {e}")
-
-    if not about_page_html_content and sb_client: # Corrected: use sb_client passed from pipeline
-        logger_obj.warning(f"[About Page Finder] aiohttp failed for '{best_about_url}'. Falling back to ScrapingBee.")
+        abs_url = urljoin(main_page_url, href)
         try:
-            # Call the imported async wrapper from scrapingbee_client.py
-            about_page_sb_data = await scrape_page_data_async(best_about_url, sb_client)
-            if about_page_sb_data and about_page_sb_data[2]:
-                about_page_html_content = about_page_sb_data[2]
-                logger_obj.info(f"[About Page Finder] Successfully fetched HTML from '{best_about_url}' with ScrapingBee (Length: {len(about_page_html_content)}).")
-            else:
-                 logger_obj.warning(f"[About Page Finder] ScrapingBee fetch for '{best_about_url}' did not return HTML.")
-        except Exception as e_sb:
-            logger_obj.error(f"[About Page Finder] Error fetching '{best_about_url}' with ScrapingBee: {type(e_sb).__name__} - {e_sb}")
+            parsed_abs_url = urlparse(abs_url)
+            if not parsed_abs_url.scheme or not parsed_abs_url.netloc:
+                continue
+            if main_registered_domain:
+                link_domain_info = tldextract.extract(abs_url)
+                if link_domain_info.registered_domain.lower() != main_registered_domain:
+                    continue 
+            if _is_external_social_media(abs_url) or _is_file_link(abs_url):
+                continue
+            if len(parsed_abs_url.path.strip('/').split('/')) > 3:
+                continue
+            candidate_links_for_llm.append({"url": abs_url, "text": link_text[:200]})
+            if len(candidate_links_for_llm) >= 30: break
+        except Exception: continue 
+
+    if not candidate_links_for_llm:
+        logger_obj.info(f"[About Page Finder] No internal candidate links found on {main_page_url} for LLM.")
     
-    if about_page_html_content:
-        extracted_text = extract_text_for_description(about_page_html_content)
+    best_about_url = None
+    if openai_client and candidate_links_for_llm:
+        logger_obj.info(f"[About Page Finder] Sending {len(candidate_links_for_llm)} candidates to LLM for '{company_name}'.")
+        candidates_str = "\n".join([f"- URL: {c['url']}, Text: {c['text']}" for c in candidate_links_for_llm])
         
-        if extracted_text and len(extracted_text) > 100:
-            logger_obj.info(f"[About Page Finder] Successfully extracted text (length {len(extracted_text)}) from '{best_about_url}' using extract_text_for_description: '{extracted_text[:200]}...'")
-            return extracted_text
+        system_prompt = (
+            f"You are an expert assistant that identifies the single most relevant 'About Us' or company information page from a list of URLs.\n"
+            f"Company Name: {company_name}\n"
+            f"Your task is to analyze the provided list of URLs and their link texts from the company's homepage.\n"
+            f"Select EXACTLY ONE URL that is most likely to contain detailed information about the company (e.g., 'About Us', 'Company Profile', 'Our Mission', 'Who We Are').\n"
+            f"If multiple links seem relevant, choose the one that appears to be the main or most comprehensive 'About Us' page.\n"
+            f"If no link seems clearly relevant to detailed company information, or if all links are for products, blogs, news, contact, careers, or privacy policies, output the exact word 'None'.\n"
+            f"Do not select links that are primarily for 'Contact Us', 'Careers', 'Privacy Policy', 'Terms of Service', 'Blog', 'News', or specific products/services unless they also strongly imply they contain general company overview.\n"
+            f"Output only the selected URL or the word 'None'. No other text, no explanations."
+        )
+        user_prompt = (
+            f"Here is the list of candidate links for the company '{company_name}':\n"
+            f"{candidates_str}\n\n"
+            f"Based on these candidates, which single URL is the company's main 'About Us' or company information page?\n"
+            f"Answer:"
+        )
+        try:
+            response = await openai_client.chat.completions.create(
+                model="gpt-4o-mini", 
+                messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
+                temperature=0.0, max_tokens=150
+            )
+            llm_choice = response.choices[0].message.content.strip()
+            logger_obj.info(f"[About Page Finder] LLM choice for '{company_name}': '{llm_choice}' (Reason: {response.choices[0].finish_reason})")
+            if llm_choice and llm_choice.lower() != 'none' and re.match(r'^https?://', llm_choice):
+                if any(c['url'] == llm_choice for c in candidate_links_for_llm):
+                    best_about_url = llm_choice
+                else:
+                    logger_obj.warning(f"[About Page Finder] LLM chose '{llm_choice}', not in candidates. Discarding.")
+            elif llm_choice and llm_choice.lower() == 'none':
+                 logger_obj.info(f"[About Page Finder] LLM indicated 'None' for '{company_name}'.")
+            else: logger_obj.warning(f"[About Page Finder] LLM invalid choice: '{llm_choice}'.")
+        except Exception as e: logger_obj.error(f"[About Page Finder] LLM Error for '{company_name}': {e}")
+
+    if not best_about_url:
+        logger_obj.info(f"[About Page Finder] LLM failed or no choice. Fallback to keywords for '{company_name}'.")
+        keywords = ["about", "company", "profile", "who we are", "corporate", "mission", "über uns", "unternehmen", "société", "entreprise", "о нас", "о компании"]
+        potential_kw_links = []
+        for a_tag in soup.find_all('a', href=True):
+            href = a_tag['href'].strip()
+            link_text = a_tag.get_text(strip=True).lower()
+            if not href or href.startswith( ('#', 'mailto:', 'tel:', 'javascript:') ): continue
+            abs_url = urljoin(main_page_url, href)
+            try:
+                parsed = urlparse(abs_url)
+                if not parsed.scheme or not parsed.netloc: continue
+                if main_registered_domain and tldextract.extract(abs_url).registered_domain.lower() != main_registered_domain: continue
+                if _is_external_social_media(abs_url) or _is_file_link(abs_url) or len(parsed.path.strip('/').split('/')) > 3: continue
+            except Exception: continue
+            score = sum(10 for kw in keywords if kw in link_text or kw in href.lower()) + (5 if len(parsed.path.strip('/').split('/')) == 1 else 0)
+            if score > 0 and not any(ex_url == abs_url for ex_url, _ in potential_kw_links):
+                potential_kw_links.append((abs_url, score))
+        if potential_kw_links:
+            potential_kw_links.sort(key=lambda x: x[1], reverse=True)
+            best_about_url = potential_kw_links[0][0]
+            logger_obj.info(f"[About Page Finder] Keyword fallback: {best_about_url} (Score: {potential_kw_links[0][1]})")
         else:
-            logger_obj.warning(f"[About Page Finder] Extracted text from '{best_about_url}' using extract_text_for_description was too short (length {len(extracted_text) if extracted_text else 0}) or empty. Attempting generic paragraph extraction.")
-            about_soup = BeautifulSoup(about_page_html_content, 'html.parser')
-            text_elements = []
-            for p_tag in about_soup.find_all('p'):
-                p_text = p_tag.get_text(separator=' ', strip=True)
-                if len(p_text.split()) > 10:
-                    text_elements.append(p_text)
-            generic_extracted_text = " ".join(text_elements).strip()
-            if generic_extracted_text and len(generic_extracted_text) > 100:
-                logger_obj.info(f"[About Page Finder] Successfully extracted generic paragraph text (length {len(generic_extracted_text)}) from '{best_about_url}': '{generic_extracted_text[:200]}...'")
-                return generic_extracted_text
-            else:
-                logger_obj.warning(f"[About Page Finder] Generic paragraph extraction from '{best_about_url}' also yielded short/empty text.")
+            logger_obj.info(f"[About Page Finder] No links by keyword fallback for '{company_name}'.")
+            return None
+
+    if not best_about_url: return None
+    logger_obj.info(f"[About Page Finder] Best 'About Us' URL for '{company_name}': {best_about_url}")
+
+    html_content = None
+    headers = {'User-Agent': 'Mozilla/5.0', 'Accept': 'text/html', 'Accept-Language': 'en-US,en'}
+    try:
+        logger_obj.info(f"[About Page Finder] Fetching '{best_about_url}' with aiohttp...")
+        async with session.get(best_about_url, timeout=20, headers=headers, ssl=False, allow_redirects=True) as resp:
+            if resp.status == 200 and 'html' in resp.headers.get('Content-Type', '').lower():
+                html_content = await resp.text()
+                logger_obj.info(f"[About Page Finder] Fetched HTML from '{best_about_url}' via aiohttp (Len: {len(html_content)}). Final URL: {resp.url}")
+            else: logger_obj.warning(f"[About Page Finder] aiohttp GET for '{best_about_url}' status: {resp.status}, type: {resp.headers.get('Content-Type')}")
+    except Exception as e: logger_obj.error(f"[About Page Finder] aiohttp error for '{best_about_url}': {e}")
+
+    if not html_content and sb_client:
+        logger_obj.warning(f"[About Page Finder] aiohttp failed for '{best_about_url}'. Using ScrapingBee.")
+        try:
+            data = await scrape_page_data_async(best_about_url, sb_client)
+            if data and data[2]: 
+                html_content = data[2]
+                logger_obj.info(f"[About Page Finder] Fetched HTML from '{best_about_url}' via ScrapingBee (Len: {len(html_content)}).")
+            else: logger_obj.warning(f"[About Page Finder] ScrapingBee for '{best_about_url}' no HTML.")
+        except Exception as e: logger_obj.error(f"[About Page Finder] ScrapingBee error for '{best_about_url}': {e}")
+    
+    if html_content:
+        text = extract_text_for_description(html_content)
+        if text and len(text) > 100:
+            logger_obj.info(f"[About Page Finder] Extracted text (len {len(text)}) from '{best_about_url}'. Preview: '{text[:150]}...'")
+            return text
+        logger_obj.warning(f"[About Page Finder] Text from extract_text_for_description for '{best_about_url}' too short. Trying generic.")
+        soup_about = BeautifulSoup(html_content, 'html.parser')
+        for tag in soup_about(["script", "style", "nav", "header", "footer", "aside", "form"]): tag.decompose()
+        generic_text = re.sub(r'\s\s+', ' ', soup_about.get_text(separator=' ', strip=True)).strip()
+        if generic_text and len(generic_text) > 200:
+            logger_obj.info(f"[About Page Finder] Extracted generic text (len {len(generic_text)}) from '{best_about_url}'. Preview: '{generic_text[:150]}...'")
+            return generic_text
+        logger_obj.warning(f"[About Page Finder] Generic text from '{best_about_url}' also short (len {len(generic_text) if generic_text else 0}).")
             
-    logger_obj.warning(f"[About Page Finder] Could not retrieve and extract meaningful text from 'About Us' page: {best_about_url}")
+    logger_obj.warning(f"[About Page Finder] No meaningful text from '{best_about_url}'.")
     return None
+
+def _is_file_link(url_string: str) -> bool:
+    """Checks if a URL likely points to a downloadable file based on extension."""
+    try:
+        path = urlparse(url_string.lower()).path
+        exts = ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.zip', '.rar', '.tar.gz', '.gz', '.7z',
+                '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp', '.mp4', '.mov', '.avi', '.wmv', '.mp3', '.wav', '.ogg',
+                '.exe', '.dmg', '.pkg', '.deb', '.rpm', '.css', '.js']
+        return any(path.endswith(ext) for ext in exts)
+    except Exception: return False
 
 def _is_external_social_media(url_string: str) -> bool:
     try:
         domain = tldextract.extract(url_string).registered_domain.lower()
-        social_media_domains = [
-            "linkedin.com", "facebook.com", "twitter.com", "instagram.com", "youtube.com",
-            "pinterest.com", "tumblr.com", "reddit.com", "vk.com", "ok.ru", "medium.com",
-            "slideshare.net", "telegram.org", "whatsapp.com", "tiktok.com", "snapchat.com",
-            "xing.com", "weibo.com", "qq.com"
-        ]
-        return domain in social_media_domains
-    except Exception:
-        return False 
+        social_domains = ["linkedin.com", "facebook.com", "twitter.com", "instagram.com", "youtube.com", "pinterest.com", "tumblr.com", 
+                          "reddit.com", "vk.com", "ok.ru", "medium.com", "slideshare.net", "telegram.org", "whatsapp.com", "tiktok.com", 
+                          "snapchat.com", "xing.com", "weibo.com", "qq.com"]
+        return domain in social_domains
+    except Exception: return False 

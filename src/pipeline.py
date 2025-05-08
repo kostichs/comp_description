@@ -126,8 +126,10 @@ async def process_company(company_name: str,
                     about_page_text = await find_and_scrape_about_page_async(
                         main_page_html=hp_data[2], 
                         main_page_url=hp_url_found_serper, 
+                        company_name=company_name,
                         session=aiohttp_session, 
                         sb_client=sb_client, 
+                        openai_client=openai_client,
                         logger_obj=logging.getLogger(__name__)
                     )
 
