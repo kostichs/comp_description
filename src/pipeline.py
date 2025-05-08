@@ -292,93 +292,74 @@ async def process_company(company_name: str,
     return result_data
 
 
-async def run_pipeline():
-    """Main asynchronous pipeline orchestration."""
-    
-    # Log a separator for new run for better readability of appended logs (now less critical as files are unique)
-    # run_start_time_str = time.strftime("%Y-%m-%d %H:%M:%S") # Already used for filename
-    logging.info(f"\n{'='*30} PIPELINE RUNNING (Log file: {os.path.basename(log_file_path)}) {'='*30}")
-    scoring_logger.info(f"\n{'='*30} SCORING SESSION (Log file: {os.path.basename(scoring_log_file_path)}) {'='*30}")
+def setup_session_logging(pipeline_log_path: str, scoring_log_path: str):
+    """Configures logging handlers for a specific session run."""
+    # Remove existing handlers for the root logger (if any were added before)
+    root_logger = logging.getLogger()
+    # Keep only the StreamHandler if present, remove FileHandlers from previous sessions
+    for handler in root_logger.handlers[:]:
+        if isinstance(handler, logging.FileHandler):
+             root_logger.removeHandler(handler)
+             handler.close() # Ensure file is closed
+        # Optional: Keep StreamHandler if you want console output during UI run
+        # if isinstance(handler, logging.StreamHandler):
+        #     pass # Keep console handler
 
+    # Add new file handler for the current session's pipeline log
+    fh_pipeline = logging.FileHandler(pipeline_log_path, mode='w', encoding='utf-8')
+    fh_pipeline.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'))
+    root_logger.addHandler(fh_pipeline)
+    root_logger.setLevel(logging.DEBUG) # Ensure root logger level is set
+
+    # Configure scoring logger for the specific session file
+    scoring_logger = logging.getLogger('ScoringLogger')
+    scoring_logger.setLevel(logging.DEBUG)
+    scoring_logger.propagate = False 
+    for handler in scoring_logger.handlers[:]: # Remove old handlers
+        scoring_logger.removeHandler(handler)
+        handler.close()
+    fh_scoring = logging.FileHandler(scoring_log_path, mode='w', encoding='utf-8')
+    fh_scoring.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+    scoring_logger.addHandler(fh_scoring)
+
+async def run_pipeline_cli():
+    """Main asynchronous pipeline orchestration for CLI execution."""
+    run_timestamp = time.strftime("%Y%m%d_%H%M%S")
+    logs_base_dir = os.path.join("output", "logs")
+    if not os.path.exists(logs_base_dir):
+        os.makedirs(logs_base_dir)
+        
+    # Setup initial basic logging (will be reconfigured by setup_session_logging per file)
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s',
+        handlers=[logging.StreamHandler()] # Log to console initially
+    )
+
+    logging.info(f"\n{'='*30} CLI PIPELINE RUNNING {'='*30}")
     input_dir = "input"
     output_dir = "output"
     final_output_dir = os.path.join(output_dir, "final_outputs") 
-    llm_config_file = "llm_config.yaml" 
+    llm_config_file = "llm_config.yaml"
     company_col_index = 0 
 
-    # --- Create Directories --- 
+    # Create Directories
     for dir_path in [output_dir, final_output_dir]: 
         if not os.path.exists(dir_path):
             os.makedirs(dir_path); logging.info(f"Created directory: {dir_path}")
             
-    # --- Load Configs and Keys --- 
     logging.info("Loading configurations and API keys...")
     scrapingbee_api_key, openai_api_key, serper_api_key = load_env_vars()
     if not all([scrapingbee_api_key, openai_api_key, serper_api_key]):
         logging.critical("Exiting due to missing API keys.") 
-        return # Changed from exit() to return for better testability if needed
+        return
         
     llm_config = load_llm_config(llm_config_file) 
     if not llm_config: 
         logging.critical(f"Failed to load LLM config from {llm_config_file}. Exiting."); 
-        return # Changed from exit()
-
-    # --- Define expected CSV fieldnames --- 
-    base_ordered_fields = ["name", "homepage", "linkedin", "description"]
-    # llm_error убрано из базовых. Ошибки LLM будут в логах и, возможно, в поле description.
-    
-    additional_llm_fields = []
-    if isinstance(llm_config.get("response_format"), dict) and \
-       llm_config["response_format"].get("type") == "json_object":
-        try:
-            if "expected_json_keys" in llm_config: 
-                llm_keys = [f"llm_{k}" for k in llm_config["expected_json_keys"]]
-                additional_llm_fields.extend(llm_keys)
-            else: 
-                if 'messages' in llm_config and isinstance(llm_config['messages'], list) and llm_config['messages']:
-                    last_message_content = llm_config['messages'][-1].get('content', '')
-                    json_block_match = re.search(r"```json\s*([\s\S]*?)\s*```", last_message_content)
-                    if json_block_match:
-                        try:
-                            example_json = json.loads(json_block_match.group(1))
-                            if isinstance(example_json, dict):
-                                llm_keys = [f"llm_{k}" for k in example_json.keys()]
-                                additional_llm_fields.extend(llm_keys)
-                                logging.info(f"Dynamically added LLM keys to CSV header: {llm_keys}")
-                        except json.JSONDecodeError:
-                            logging.warning("Found JSON block in LLM config, but could not parse it for keys.")
-            
-            # Add some default llm fields if no specific ones were found and they are not already covered
-            # by base_ordered_fields (like 'description' which might be an llm output)
-            default_llm_placeholders = ["llm_summary", "llm_key_points", "llm_details"]
-            for f_placeholder in default_llm_placeholders:
-                if f_placeholder not in base_ordered_fields and f_placeholder not in additional_llm_fields:
-                    # Avoid adding if 'description' (a base field) is meant to capture one of these roles
-                    # Example: if 'llm_summary' is the primary output and should go into 'description'
-                    # This logic assumes 'description' is the main text output. 
-                    # If llm_config produces specific fields that *replace* description, this needs adjustment.
-                    is_covered_by_description = (f_placeholder == "llm_summary" or f_placeholder == "llm_details") and \
-                                                "description" in base_ordered_fields
-                    if not is_covered_by_description:
-                         additional_llm_fields.append(f_placeholder)
-
-        except Exception as e:
-            logging.warning(f"Could not dynamically determine LLM output keys for CSV header from llm_config: {e}")
-    
-    # Combine base ordered fields with unique, sorted additional fields
-    unique_additional_fields = sorted(list(set(additional_llm_fields) - set(base_ordered_fields)))
-    expected_csv_fieldnames = base_ordered_fields + unique_additional_fields
-    
-    # Ensure description is there if somehow removed (it is in base_ordered_fields, so this is a safeguard)
-    if "description" not in expected_csv_fieldnames: 
-        if "description" in base_ordered_fields: # Should always be true
-             # If it was removed from unique_additional_fields because it was in base, ensure it's back if logic was faulty
-             # This path should ideally not be hit if base_ordered_fields is handled correctly.
-             pass # It's in base_ordered_fields, so it will be included.
-        else: # This case should not happen
-            expected_csv_fieldnames.append("description")
-            expected_csv_fieldnames = base_ordered_fields + sorted(list(set(expected_csv_fieldnames) - set(base_ordered_fields)))
-
+        return
+        
+    expected_csv_fieldnames = ["name", "homepage", "linkedin", "description"] # Simplified for CLI example
     logging.info(f"Final CSV fieldnames will be: {expected_csv_fieldnames}")
         
     logging.info(f"Starting ASYNC batch company processing. Input: '{input_dir}', Outputs: '{final_output_dir}'")
@@ -389,7 +370,7 @@ async def run_pipeline():
 
     if not os.path.exists(input_dir): 
         logging.critical(f"Error: Input directory '{input_dir}' not found. Exiting."); 
-        return # Changed from exit()
+        return
         
     logging.info("Initializing API clients...")
     sb_client = ScrapingBeeClient(api_key=scrapingbee_api_key) 
@@ -402,21 +383,20 @@ async def run_pipeline():
                 logging.info(f"\n>>> Found data file: {filename}")
                 base_name, _ = os.path.splitext(filename)
                 
-                # Use the run_timestamp (defined globally in this module where logs are set up) for output CSV names
-                # This ensures output CSVs can be correlated with specific run logs.
-                output_file_base_with_ts = os.path.join(final_output_dir, f"{base_name}_output_{run_timestamp}")
-                output_file_path = f"{output_file_base_with_ts}.csv"
-                counter = 1
-                # This loop handles the extremely rare case of a filename collision even with the timestamp.
-                while os.path.exists(output_file_path):
-                    output_file_path = f"{output_file_base_with_ts}_{counter}.csv"
-                    counter += 1
-                logging.info(f"Output for this file will be: {output_file_path}")
+                # Generate session-specific paths for CLI run
+                session_id = f"cli_{run_timestamp}_{base_name}" # Example session ID for CLI
+                session_log_dir = os.path.join(logs_base_dir, session_id)
+                if not os.path.exists(session_log_dir):
+                    os.makedirs(session_log_dir)
+                    
+                output_file_path = os.path.join(final_output_dir, f"{base_name}_output_{run_timestamp}.csv") # Keep original output scheme for CLI
+                pipeline_log_path = os.path.join(session_log_dir, "pipeline.log")
+                scoring_log_path = os.path.join(session_log_dir, "scoring.log")
                 
+                # --- Handle Context for CLI --- 
                 context_file_path = os.path.join(input_dir, f"{base_name}_context.txt")
                 existing_context = load_context_file(context_file_path)
                 current_run_context = None
-                
                 try:
                     prompt_message = f"\nEnter context for '{filename}'" 
                     if existing_context:
@@ -434,80 +414,100 @@ async def run_pipeline():
                 except EOFError: 
                      logging.warning("\nCannot read input. Proceeding without context.")
                      current_run_context = None
-                         
-                company_names = load_and_prepare_company_names(original_input_path, company_col_index)
-                if not company_names: 
-                    logging.warning(f"--- Skipping file {filename}: No valid company names found."); 
-                    continue
+                     
+                # --- Run the processing logic for this file --- 
+                success_count, failure_count, file_results = await run_pipeline_for_file(
+                    input_file_path=original_input_path,
+                    output_csv_path=output_file_path,
+                    pipeline_log_path=pipeline_log_path,
+                    scoring_log_path=scoring_log_path,
+                    context_text=current_run_context,
+                    company_col_index=company_col_index,
+                    aiohttp_session=session,
+                    sb_client=sb_client,
+                    llm_config=llm_config,
+                    openai_client=openai_client,
+                    serper_api_key=serper_api_key,
+                    expected_csv_fieldnames=expected_csv_fieldnames
+                )
                 
-                logging.info(f"Found {len(company_names)} companies for {filename}. Processing each and saving incrementally...")
-                
-                current_file_successful_results = [] 
-                exceptions_in_current_file = 0
-
-                tasks = [
-                    asyncio.create_task(
-                        process_company(name, session, sb_client, llm_config, openai_client, current_run_context, serper_api_key)
-                    ) for name in company_names
-                ]
-
-                for future in asyncio.as_completed(tasks):
-                    try:
-                        result_data = await future
-                        if isinstance(result_data, dict):
-                            current_file_successful_results.append(result_data)
-                            # Save/append this single result immediately
-                            save_results_csv(
-                                [result_data], # save_results_csv expects a list of dicts
-                                output_file_path,
-                                append_mode=True, # Critical for incremental saving
-                                fieldnames=expected_csv_fieldnames # Provide all expected headers
-                            )
-                        else:
-                            logging.error(f"Unexpected result type for a company in {filename}: {type(result_data)}")
-                            exceptions_in_current_file += 1
-                            # Optionally save a placeholder or error entry to CSV for this failed task
-                            # save_results_csv([{"name": "UNKNOWN_FROM_FAILED_TASK", "description": f"Error: Unexpected type {type(result_data)}"}], 
-                            # output_file_path, append_mode=True, fieldnames=expected_csv_fieldnames)
-
-                    except Exception as e:
-                        task_exc_company_name = "UnknownCompanyInFailedTask" # Placeholder
-                        # Attempt to find company name if task stored it, this is a bit complex with asyncio exceptions
-                        # For now, using a placeholder
-                        logging.error(f"Task for company '{task_exc_company_name}' in {filename} failed: {type(e).__name__} - {e}")
-                        # traceback.print_exc(file=open(log_file_path, 'a')) # Already done in process_company
-                        exceptions_in_current_file += 1
-                        # Optionally save an error entry to CSV
-                        # error_entry = {"name": task_exc_company_name, "description": f"Processing Error: {type(e).__name__}"}
-                        # for field in expected_csv_fieldnames: # Ensure all fields exist for DictWriter
-                        #    if field not in error_entry: error_entry[field] = "ERROR_STATE"
-                        # save_results_csv([error_entry], output_file_path, append_mode=True, fieldnames=expected_csv_fieldnames)
-                
-                logging.info(f"<<< Finished incremental processing for {filename}. Successes: {len(current_file_successful_results)}, Failures: {exceptions_in_current_file}")
-                if current_file_successful_results:
-                    overall_results.extend(current_file_successful_results)
+                logging.info(f"<<< Finished processing for {filename}. Successes: {success_count}, Failures: {failure_count}")
+                if file_results: 
+                    overall_results.extend(file_results)
                     processed_files_count += 1
                 else: 
-                    logging.info(f"No successful results for {filename} to add to overall summary.")
+                    logging.warning(f"No successful results for {filename} to add to overall summary.") # Changed info to warning
             else: 
                 logging.info(f"Skipping non-supported/file item: {filename}")
-            
-    if processed_files_count > 0:
-        logging.info(f"\nSuccessfully processed {processed_files_count} file(s). Total successful results collated: {len(overall_results)}.")
-        if overall_results:
-            # The consolidated JSON output remains useful for a final overview / debugging
-            logging.info("\n--- Consolidated JSON Output (from in-memory list, also in pipeline_run.log) ---")
-            logging.info(json.dumps(overall_results, indent=2, ensure_ascii=False))
-            print("\n--- Consolidated JSON Output (also in pipeline_run.log) ---")
-            print(json.dumps(overall_results, indent=2, ensure_ascii=False))
-            print("--- --- --- --- --- --- --- ")
-    else: 
-        logging.info(f"No supported files processed successfully in '{input_dir}'.")
-    
-    logging.info("Async batch processing finished.") 
+                
+    # ... (Final summary logging as before) ...
+    logging.info(f"CLI run finished.")
 
+async def run_pipeline_for_file(input_file_path: str, output_csv_path: str, pipeline_log_path: str, scoring_log_path: str, context_text: str | None, company_col_index: int, aiohttp_session: aiohttp.ClientSession, sb_client: ScrapingBeeClient, llm_config: dict, openai_client: AsyncOpenAI, serper_api_key: str | None, expected_csv_fieldnames: list[str]) -> tuple[int, int, list[dict]]:
+    """Processes a single input file and saves results incrementally."""
+    
+    # Setup logging for this specific run
+    setup_session_logging(pipeline_log_path, scoring_log_path)
+    base_name = os.path.basename(input_file_path)
+    logging.info(f"Starting processing for file: {base_name}")
+    
+    company_names = load_and_prepare_company_names(input_file_path, company_col_index)
+    if not company_names:
+        logging.warning(f"--- Skipping file {base_name}: No valid company names found.")
+        return 0, 0, [] # Success count, Failure count, Results list
+
+    logging.info(f"Found {len(company_names)} companies for {base_name}. Processing each and saving incrementally to {output_csv_path}...")
+
+    current_file_successful_results = []
+    exceptions_in_current_file = 0
+    
+    # Ensure output directory exists before trying to save
+    output_dir = os.path.dirname(output_csv_path)
+    if not os.path.exists(output_dir):
+        try:
+            os.makedirs(output_dir)
+            logging.info(f"Created output directory for session: {output_dir}")
+        except OSError as e:
+            logging.critical(f"Could not create output directory {output_dir}. Error: {e}")
+            return 0, len(company_names), [] # Treat all as failures if cannot write output
+
+    tasks = [
+        asyncio.create_task(
+            process_company(name, aiohttp_session, sb_client, llm_config, openai_client, context_text, serper_api_key)
+        ) for name in company_names
+    ]
+
+    for future in asyncio.as_completed(tasks):
+        try:
+            result_data = await future
+            if isinstance(result_data, dict):
+                current_file_successful_results.append(result_data)
+                # Save/append this single result immediately
+                save_results_csv(
+                    [result_data], # save_results_csv expects a list of dicts
+                    output_csv_path,
+                    append_mode=True, # Critical for incremental saving
+                    fieldnames=expected_csv_fieldnames # Provide all expected headers
+                )
+            else:
+                logging.error(f"Unexpected result type for a company in {base_name}: {type(result_data)}")
+                exceptions_in_current_file += 1
+
+        except Exception as e:
+            task_exc_company_name = "UnknownCompanyInFailedTask" # Placeholder
+            logging.error(f"Task for company '{task_exc_company_name}' in {base_name} failed: {type(e).__name__} - {e}")
+            exceptions_in_current_file += 1
+            # Optionally save error to CSV?
+            # error_entry = {"name": task_exc_company_name, "description": f"Processing Error: {type(e).__name__}"}
+            # ... (ensure all fields exist)
+            # save_results_csv([error_entry], output_csv_path, append_mode=True, fieldnames=expected_csv_fieldnames)
+
+    return len(current_file_successful_results), exceptions_in_current_file, current_file_successful_results
+
+# --- Main Execution Block (for CLI) --- 
 if __name__ == "__main__":
+    # Keep the original CLI execution logic
     if os.name == 'nt': asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    try: asyncio.run(run_pipeline())
+    try: asyncio.run(run_pipeline_cli()) # Call the CLI runner
     except KeyboardInterrupt: logging.warning("\nProcessing interrupted.")
     except Exception as e: logging.error(f"\nUnexpected error in main async exec: {e}"); traceback.print_exc() 

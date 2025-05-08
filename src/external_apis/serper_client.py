@@ -177,8 +177,8 @@ async def find_urls_with_serper_async(
 
     headers = {'X-API-KEY': serper_api_key, 'Content-Type': 'application/json'}
     
-    normalized_company_name_for_li_match = normalize_name_for_domain_comparison(company_name)
-    scoring_logger_obj.info(f"Normalized name for LI scoring: '{normalized_company_name_for_li_match}'")
+    normalized_company_name_for_match = normalize_name_for_domain_comparison(company_name)
+    scoring_logger_obj.info(f"Normalized name for general matching: '{normalized_company_name_for_match}'")
 
     search_query = f"{company_name} official website"
     scoring_logger_obj.info(f"Executing Serper API query for '{company_name}': \"{search_query}\"")
@@ -191,46 +191,111 @@ async def find_urls_with_serper_async(
     organic_results = serper_results_json["organic"]
     scoring_logger_obj.info(f"Received {len(organic_results)} organic results from Serper for '{company_name}'.")
 
+    # --- Initialize variables ---
     selected_homepage_url: str | None = None
     selected_linkedin_url: str | None = None
-    linkedin_snippet: str | None = None
+    linkedin_snippet: str | None = None 
     wikipedia_url: str | None = None
     
-    scoring_logger_obj.info(f"\n--- Searching for LinkedIn URL for '{company_name}' (Scoring Method) ---")
-    linkedin_candidates = []
-    for res_li in organic_results:
-        link_li = res_li.get("link")
-        title_li = res_li.get("title", "").lower()
-        if not link_li or not isinstance(link_li, str) or "linkedin.com/" not in link_li.lower(): continue
-        normalized_li_url = normalize_linkedin_url(link_li)
-        if normalized_li_url:
-            slug_match_li = re.search(r"linkedin\.com/(?:company|school|showcase)/([^/]+)/about/?", normalized_li_url.lower())
-            slug_li = slug_match_li.group(1) if slug_match_li else ""
-            score_li = 0
-            reason_li = []
-            if "/company/" in normalized_li_url.lower(): score_li += 20; reason_li.append("/company/ link:+20")
-            elif "/showcase/" in normalized_li_url.lower(): score_li += 5; reason_li.append("/showcase/ link:+5")
-            elif "/school/" in normalized_li_url.lower(): score_li += 3; reason_li.append("/school/ link:+3")
-            if slug_li and normalized_company_name_for_li_match in slug_li.replace('-', ''): score_li += 15; reason_li.append(f"Name in slug ({slug_li}):+15")
-            elif normalized_company_name_for_li_match in title_li.replace('-', '').replace(' ', ''): score_li += 10; reason_li.append(f"Name in title ({title_li[:30]}...):+10")
-            elif any(part_li in slug_li.replace('-', '') for part_li in normalized_company_name_for_li_match.split('-') if len(part_li) > 2): score_li += 7; reason_li.append(f"Part of name in slug ({slug_li}):+7")
-            elif any(part_li in title_li.replace('-', '').replace(' ', '') for part_li in normalized_company_name_for_li_match.split('-') if len(part_li) > 2): score_li += 5; reason_li.append(f"Part of name in title ({title_li[:30]}...):+5")
-            if "jobs" in title_li or "careers" in title_li or "/jobs" in link_li.lower() or "/careers" in link_li.lower():
-                if not ("/company/" in normalized_li_url.lower() and score_li > 20): score_li -= 5; reason_li.append("Jobs/careers term:-5")
-            if score_li > 0:
-                linkedin_candidates.append({"url": normalized_li_url, "score": score_li, "title": title_li, "slug": slug_li or title_li, "reason": ", ".join(reason_li), "snippet": res_li.get("snippet", "")})
-                scoring_logger_obj.debug(f"  LI Candidate: {normalized_li_url}, Score: {score_li}, Slug/Title: '{slug_li or title_li}', Reason: {', '.join(reason_li)}")
-        else: scoring_logger_obj.debug(f"  Skipped non-normalizable LinkedIn-like URL: {link_li}")
-    if linkedin_candidates:
-        linkedin_candidates.sort(key=lambda x: x["score"], reverse=True)
-        best_linkedin = linkedin_candidates[0]
-        selected_linkedin_url = best_linkedin["url"]
-        linkedin_snippet = best_linkedin["snippet"]
-        scoring_logger_obj.info(f"Selected LinkedIn URL (by score): {selected_linkedin_url} (Score: {best_linkedin['score']}, Slug/Title: '{best_linkedin['slug'] or best_linkedin['title'][:30]}')")
-        if linkedin_snippet:
-             scoring_logger_obj.info(f"  Associated LinkedIn Snippet: '{linkedin_snippet[:100]}...'")
-    else: scoring_logger_obj.warning(f"No suitable LinkedIn URL found for '{company_name}'.")
+    # --- 2. Find LinkedIn URL and Snippet (USING LLM METHOD NOW) ---
+    scoring_logger_obj.info(f"\\n--- Searching for LinkedIn URL for '{company_name}' (LLM Method) ---")
+    linkedin_candidates_for_llm = [] # List to hold dicts {url, title, snippet}
+    if organic_results:
+        for i, result in enumerate(organic_results):
+            link = result.get("link", "")
+            title = result.get("title", "")
+            snippet = result.get("snippet", "")
+            
+            if not link or "linkedin.com" not in link.lower(): continue # Skip non-linkedin links
+            
+            # Basic check: must contain /company/ or be a plausible profile link (e.g., /in/ potentially? No, stick to /company/ for now)
+            if "/company/" not in link.lower(): 
+                scoring_logger_obj.debug(f"  Skipping LinkedIn-like URL (no /company/): {link}")
+                continue
+            
+            normalized_li_url = normalize_linkedin_url(link) # Normalize to base /company/ URL
+            if not normalized_li_url:
+                scoring_logger_obj.debug(f"  Skipped non-normalizable LinkedIn /company/ URL: {link}")
+                continue
+            
+            # Add to candidates if it's a valid company URL
+            # Avoid duplicates based on the normalized URL
+            if not any(c['url'] == normalized_li_url for c in linkedin_candidates_for_llm):
+                linkedin_candidates_for_llm.append({
+                    "url": normalized_li_url,
+                    "original_link": link, # Keep original for context if needed
+                    "title": title,
+                    "snippet": snippet
+                })
+                scoring_logger_obj.debug(f"  Added LinkedIn candidate for LLM: {normalized_li_url} (Title: {title[:50]}...) Snippet: {snippet[:50]}...")
+            else:
+                scoring_logger_obj.debug(f"  Skipping duplicate normalized LinkedIn candidate: {normalized_li_url}")
 
+    if openai_client and linkedin_candidates_for_llm:
+        scoring_logger_obj.info(f"Found {len(linkedin_candidates_for_llm)} potential LinkedIn company candidates. Sending to LLM for selection.")
+        
+        # Prepare string for LLM prompt
+        candidates_str = "\n".join([f"- URL: {c['url']}\n  Title: {c['title']}\n  Snippet: {c['snippet']}" for c in linkedin_candidates_for_llm])
+        
+        # Define LLM prompts (similar to homepage, but focused on LinkedIn official page)
+        system_prompt = (
+            f"You are an expert assistant that identifies the single most relevant OFFICIAL LinkedIn company page URL from a list."
+            f"Company Name: {company_name}\n"
+            f"Context: {context_text or 'General Business'}\n"
+            f"Your task is to analyze the provided list of LinkedIn URLs, titles, and snippets."
+            f"Select EXACTLY ONE URL that is the official corporate page for the company. Ignore individual profiles, group pages, or posts."
+            f"If no URL seems to be the official corporate page, output the exact word 'None'."
+            f"Output only the selected URL or the word 'None'. No other text, no explanations."
+        )
+        user_prompt = (
+            f"Here is the list of candidate LinkedIn links for the company '{company_name}':\n"
+            f"{candidates_str}\n\n"
+            f"Based on these candidates, which single URL is the company's main OFFICIAL LinkedIn company page?\n"
+            f"Answer:"
+        )
+        
+        try:
+            scoring_logger_obj.info(f"Calling LLM to select LinkedIn URL from {len(linkedin_candidates_for_llm)} candidates for '{company_name}'.")
+            response = await openai_client.chat.completions.create(
+                model="gpt-4o-mini", # Using a capable but potentially faster model
+                messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}],
+                temperature=0.0,
+                max_tokens=150 # Expecting just a URL
+            )
+            llm_choice_li = response.choices[0].message.content.strip()
+            scoring_logger_obj.info(f"LLM LinkedIn choice for '{company_name}': '{llm_choice_li}' (Reason: {response.choices[0].finish_reason}) ")
+
+            # Validate the choice
+            if llm_choice_li and llm_choice_li.lower() != 'none' and re.match(r'^https?://www.linkedin.com/company/', llm_choice_li.lower()):
+                # Find the corresponding candidate to get the snippet
+                chosen_candidate = next((c for c in linkedin_candidates_for_llm if c['url'] == llm_choice_li), None)
+                if chosen_candidate:
+                    selected_linkedin_url = chosen_candidate['url']
+                    linkedin_snippet = chosen_candidate['snippet']
+                    scoring_logger_obj.info(f"Selected LinkedIn URL (LLM Validated): {selected_linkedin_url}")
+                    if linkedin_snippet: scoring_logger_obj.info(f"  Associated LinkedIn Snippet: '{linkedin_snippet[:100]}...'")
+                else:
+                     scoring_logger_obj.warning(f"LLM chose a valid-looking LinkedIn URL '{llm_choice_li}' but it wasn't in the initial candidate list. Ignoring.")
+                     # selected_linkedin_url remains None
+            elif llm_choice_li and llm_choice_li.lower() == 'none':
+                scoring_logger_obj.info(f"LLM explicitly chose 'None' for LinkedIn URL for '{company_name}'.")
+                # selected_linkedin_url remains None
+            else:
+                scoring_logger_obj.warning(f"LLM returned an invalid choice for LinkedIn URL: '{llm_choice_li}'.")
+                # selected_linkedin_url remains None
+                
+        except Exception as e_llm_li:
+            scoring_logger_obj.error(f"Error during LLM LinkedIn selection for '{company_name}': {type(e_llm_li).__name__} - {str(e_llm_li)}")
+            # selected_linkedin_url remains None
+            
+    else: # No candidates found or no LLM client
+        if not linkedin_candidates_for_llm:
+             scoring_logger_obj.warning(f"No potential LinkedIn /company/ URLs found in Serper results for '{company_name}' to send to LLM.")
+        elif not openai_client:
+             scoring_logger_obj.error(f"OpenAI client not available, cannot use LLM to select LinkedIn URL for '{company_name}'.")
+        # selected_linkedin_url remains None
+        
+    # --- 3. Find Homepage URL (LLM Method with Few-Shot) --- 
     scoring_logger_obj.info(f"\n--- Searching for Homepage URL for '{company_name}' (LLM Method with Few-Shot) ---")
     
     homepage_candidates_for_llm: list[dict] = []

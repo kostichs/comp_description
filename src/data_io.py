@@ -1,5 +1,8 @@
 import pandas as pd
 import os
+import csv
+import json
+import logging
 
 def load_and_prepare_company_names(file_path: str, col_index: int = 0) -> list[str] | None:
     """Loads the first column from Excel/CSV, handles headers, returns list of names."""
@@ -57,11 +60,52 @@ def save_context_file(context_file_path: str, context_text: str) -> bool:
         print(f"Error saving context file {context_file_path}: {e}")
         return False
 
-# В src/data_io.py
+# === Session Metadata Handling (NEW) ===
+SESSIONS_METADATA_FILE = "sessions_metadata.json"
+SESSIONS_DIR = os.path.join("output", "sessions")
 
-import csv
-import os # Потребуется для проверки существования файла
+def ensure_sessions_dir_exists():
+    """Ensures the sessions directory exists."""
+    if not os.path.exists(SESSIONS_DIR):
+        try:
+            os.makedirs(SESSIONS_DIR)
+            logging.info(f"Created sessions directory: {SESSIONS_DIR}")
+        except OSError as e:
+            logging.error(f"Could not create sessions directory {SESSIONS_DIR}. Error: {e}")
+            # Depending on how critical this is, you might raise the exception
+            # raise
 
+def load_session_metadata() -> list[dict]:
+    """Loads session metadata from the JSON file."""
+    ensure_sessions_dir_exists() # Ensure parent dir exists first
+    if not os.path.exists(SESSIONS_METADATA_FILE):
+        logging.warning(f"'{SESSIONS_METADATA_FILE}' not found. Initializing with empty list.")
+        return []
+    try:
+        with open(SESSIONS_METADATA_FILE, 'r', encoding='utf-8') as f:
+            metadata = json.load(f)
+            if not isinstance(metadata, list):
+                 logging.error(f"Invalid format in '{SESSIONS_METADATA_FILE}'. Expected a list. Returning empty list.")
+                 return []
+            return metadata
+    except json.JSONDecodeError:
+        logging.error(f"Error decoding JSON from '{SESSIONS_METADATA_FILE}'. Returning empty list.")
+        return []
+    except Exception as e:
+        logging.error(f"Error loading session metadata: {e}")
+        return []
+
+def save_session_metadata(metadata: list[dict]):
+    """Saves session metadata list to the JSON file."""
+    ensure_sessions_dir_exists()
+    try:
+        with open(SESSIONS_METADATA_FILE, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+        logging.debug(f"Saved session metadata to {SESSIONS_METADATA_FILE}")
+    except Exception as e:
+        logging.error(f"Error saving session metadata: {e}")
+
+# === Results CSV Handling ===
 def save_results_csv(results: list[dict], output_file_path: str, append_mode: bool = False, fieldnames: list[str] | None = None):
     """
     Saves a list of dictionaries to a CSV file.

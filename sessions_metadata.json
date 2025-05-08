@@ -1,0 +1,13 @@
+[
+  {
+    "session_id": "20250508_171333_input_test2",
+    "timestamp_created": "2025-05-08 17:13:34",
+    "original_input_file": "D:/PyProjects/company-description/input/input_test2.xlsx",
+    "last_processed_count": 20,
+    "status": "completed",
+    "context_used": null,
+    "output_csv": "D:\\PyProjects\\company-description\\output\\sessions\\20250508_171333_input_test2\\results.csv",
+    "pipeline_log": "D:\\PyProjects\\company-description\\output\\sessions\\20250508_171333_input_test2\\pipeline.log",
+    "scoring_log": "D:\\PyProjects\\company-description\\output\\sessions\\20250508_171333_input_test2\\scoring.log"
+  }
+]
