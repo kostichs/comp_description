@@ -491,18 +491,21 @@ async def run_pipeline():
                             # output_file_path, append_mode=True, fieldnames=expected_csv_fieldnames)
 
                     except Exception as e:
-                        task_exc_company_name = "UnknownCompanyInFailedTask" # Placeholder
-                        # Attempt to find company name if task stored it, this is a bit complex with asyncio exceptions
-                        # For now, using a placeholder
-                        logging.error(f"Task for company '{task_exc_company_name}' in {filename} failed: {type(e).__name__} - {e}")
-                        # traceback.print_exc(file=open(log_file_path, 'a')) # Already done in process_company
+                        task_exc_company_name = "UnknownCompanyInFailedTask" 
+                        # ... (логирование ошибки) ...
                         exceptions_in_current_file += 1
-                        # Optionally save an error entry to CSV
-                        # error_entry = {"name": task_exc_company_name, "description": f"Processing Error: {type(e).__name__}"}
-                        # for field in expected_csv_fieldnames: # Ensure all fields exist for DictWriter
-                        #    if field not in error_entry: error_entry[field] = "ERROR_STATE"
-                        # save_results_csv([error_entry], output_file_path, append_mode=True, fieldnames=expected_csv_fieldnames) # Используем переданный expected_csv_fieldnames
-                        batch_results_temp.append(error_result) 
+                        
+                        # Формируем error_result и добавляем его в current_file_successful_results
+                        error_result = {"name": task_exc_company_name, "homepage": "Error", "linkedin": "Error", "description": f"Processing Error: {type(e).__name__}"}
+                        if "timestamp" in expected_csv_fieldnames: # Добавляем timestamp, если он ожидается
+                            error_result["timestamp"] = datetime.now().strftime("%Y-%m-%d")
+                        
+                        # Гарантируем, что все ожидаемые поля присутствуют, даже если с заглушкой "ERROR_STATE"
+                        for field in expected_csv_fieldnames:
+                           if field not in error_result: error_result[field] = "ERROR_STATE"
+                        current_file_successful_results.append(error_result) # <--- ИСПРАВЛЕНО ЗДЕСЬ
+                        # Записываем строку с ошибкой в CSV немедленно
+                        save_results_csv([error_result], output_file_path, append_mode=True, fieldnames=expected_csv_fieldnames)
                 
                 logging.info(f"<<< Finished incremental processing for {filename}. Successes: {len(current_file_successful_results)}, Failures: {exceptions_in_current_file}")
                 if current_file_successful_results:
