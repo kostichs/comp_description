@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import tldextract
 import re # For finding copyright or specific patterns
 import time
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin, unquote
 import json # For parsing JSON-LD
 import logging
 import os
@@ -14,8 +14,8 @@ from .external_apis.scrapingbee_client import scrape_page_data_async
 from openai import AsyncOpenAI # <<< ADDED IMPORT FOR LLM
 import wikipediaapi # <<< ADDED IMPORT FOR WIKIPEDIA
 import traceback # <<< ADDED MISSING IMPORT
+from typing import List, Dict, Optional, Tuple, Set 
 
-# Настройка логгера
 logger = logging.getLogger(__name__)
 
 def validate_page(company_name: str, title: str | None, domain: str | None, html_content: str | None, original_url: str | None = None) -> bool:
@@ -205,126 +205,70 @@ def validate_page(company_name: str, title: str | None, domain: str | None, html
     return False
 
 def extract_text_for_description(html_content: str | None) -> str | None:
-    """Extracts relevant text snippet for description (meta-description, first <p>, or 'About' section)."""
+    """Extracts meaningful text from HTML, preferring main content areas."""
     if not html_content: return None
-    soup = BeautifulSoup(html_content, 'html.parser')
-    
-    # 1. Meta description
-    meta_desc = soup.find('meta', attrs={'name': 'description'})
-    if meta_desc and meta_desc.get('content'): 
-        return meta_desc['content'].strip()
-    
-    # 2. LinkedIn specific selectors
-    linkedin_selectors = [
-        'div[data-test-id="about-us__description"]',  # Основное описание компании
-        'div[data-test-id="about-us__overview"]',     # Обзор компании
-        'div[data-test-id="about-us__mission"]',      # Миссия компании
-        'div[data-test-id="about-us__specialties"]',  # Специализация
-        'div[data-test-id="about-us__company-size"]', # Размер компании
-        'div[data-test-id="about-us__industry"]',     # Отрасль
-        'div[data-test-id="about-us__founded"]',      # Год основания
-        'div[data-test-id="about-us__headquarters"]'  # Штаб-квартира
-    ]
-    
-    # Собираем все тексты из LinkedIn селекторов
-    linkedin_texts = []
-    for selector in linkedin_selectors:
-        element = soup.select_one(selector)
-        if element:
-            text = element.get_text(strip=True)
-            if text and len(text) > 10:  # Минимальная длина для значимого текста
-                linkedin_texts.append(text)
-    
-    if linkedin_texts:
-        return " ".join(linkedin_texts)
+    try:
+        soup = BeautifulSoup(html_content, 'html.parser')
         
-    # 3. First meaningful paragraph (improved search)
-    for selector in ['main p', 'article p', 'div[role="main"] p', 'body > div p', 'body > p']: 
-        try:
-            first_p = soup.select_one(selector)
-            if first_p:
-                p_text = first_p.get_text(strip=True)
-                if len(p_text) > 50: return p_text # Check length
-        except Exception: continue # Ignore errors from invalid selectors
-            
-    # 4. About section (improved search with multiple languages)
-    about_section_keywords = [
-        # English
-        "about us", "about company", "our company", "who we are", "company profile", "about",
-        # German
-        "über uns", "unternehmen", "profil", "wir über uns", "firma",
-        # French
-        "à propos", "a propos", "société", "entreprise", "qui sommes nous", "notre entreprise",
-        # Spanish
-        "acerca de", "sobre nosotros", "empresa", "compañía", "quienes somos", "perfil",
-        # Italian
-        "chi siamo", "su di noi", "azienda", "profilo", "la nostra azienda",
-        # Portuguese
-        "sobre nós", "a empresa", "quem somos", "perfil",
-        # Polish
-        "o nas", "o firmie", "firma", "profil firmy",
-        # Dutch
-        "over ons", "bedrijfsprofiel", "ons bedrijf",
-        # Nordic (Swedish, Norwegian, Danish)
-        "om oss", "om os", "företaget", "virksomheden", "firma profil",
-        # Russian
-        "о нас", "о компании", "компания", "профиль", "о фирме",
-        # Arabic (Common terms - exact match might be tricky)
-        "نبذة عنا", "عن الشركة", "معلومات عنا", "من نحن",
-        # Chinese (Simplified & Traditional)
-        "关于我们", "公司简介", "關於我們", "公司簡介",
-        # Japanese
-        "会社概要", "私たちについて", "企業情報",
-        # Korean
-        "회사 소개", "소개", "기업 정보",
-        # Hindi
-        "हमारे बारे में", "कंपनी प्रोफाइल", "कंपनी के बारे में",
-        # Turkish
-        "hakkımızda", "şirket profili", "firma hakkında",
-        # Indonesian / Malay
-        "tentang kami", "profil syarikat", "mengenai kami",
-        # Add more languages/variants as needed
-    ]
-    about_section_keywords = [k.lower() for k in about_section_keywords] # Ensure all are lowercase
-    found_about_section = False # Flag to stop searching once a good section is found
-    logger.debug(f"[Description Extractor] Searching for About section with {len(about_section_keywords)} keywords...") # DEBUG
-    
-    # Search in common semantic elements first
-    for section_tag_name in ['section', 'article', 'aside', 'div[role="region"]', 'div[class*="about"]' , 'div[id*="about"]', 'div[class*="company"]' , 'div[id*="company"]']:
-        for potential_section in soup.select(section_tag_name): 
-            section_text_lower = potential_section.get_text(strip=True).lower()
-            # Check for keywords in the whole section text OR in specific headers within the section
-            header = potential_section.find(['h1', 'h2', 'h3'])
-            header_text_lower = header.get_text(strip=True).lower() if header else ""
-            
-            # Use a flag to avoid redundant logging if keyword found in both header and section text
-            keyword_found = False
-            if any(keyword in header_text_lower for keyword in about_section_keywords):
-                keyword_found = True
-            elif any(keyword in section_text_lower for keyword in about_section_keywords):
-                 keyword_found = True
-                 
-            if keyword_found:
-                logger.debug(f"[Description Extractor] Found potential About section in <{potential_section.name}> (Header: '{header_text_lower[:50]}...'). Checking content...") # DEBUG
-                # Try to get paragraph text from this section
-                p_tags = potential_section.find_all('p', limit=5) # Look for paragraphs within the found section
-                text_block = " ".join(p.get_text(strip=True) for p in p_tags if p.get_text(strip=True))
-                
-                if len(text_block) > 50:
-                    logger.info(f"[Description Extractor] Found About section text (length {len(text_block)}): '{text_block[:100]}...'")
-                    # Set flag to true and break outer loop after returning
-                    found_about_section = True 
-                    return text_block.strip()
-                else:
-                    logger.debug(f"[Description Extractor] Potential section found, but paragraph text is too short or missing (Length: {len(text_block)}).") # DEBUG
-            
-        if found_about_section: break # Break outer loop if a good section was found and processed
+        tags_to_remove = ['script', 'style', 'nav', 'footer', 'header', 'form', 'button', 'input', 'textarea', 'select', 'aside', 'noscript', 'img', 'svg', 'path']
+        for tag_name in tags_to_remove:
+            for tag in soup.find_all(tag_name):
+                tag.decompose()
 
-    # If no specific section found, fall back to the first paragraph logic (already implemented above)
-    if not found_about_section:
-      logger.debug("[Description Extractor] No specific About section found or extracted text was too short. Relies on previous first-paragraph check.") # DEBUG
+        main_content_selectors = [
+            'article', 
+            'main', 
+            '[role="main"]', 
+            '.main-content', '#main-content', '.content', '#content', '.entry-content'
+        ]
+        
+        text_parts = []
+        content_found_in_main_selector = False
+
+        for selector in main_content_selectors:
+            main_element = soup.select_one(selector)
+            if main_element:
+                logger.debug(f"[ExtractText] Found main content with selector: {selector}")
+                for child in main_element.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'div', 'span', 'td'], recursive=True):
+                    if child.name == 'div' or child.name == 'span':
+                        num_links = len(child.find_all('a', recursive=False))
+                        num_direct_children = len(child.find_all(recursive=False))
+                        if num_links > 2 and num_links >= num_direct_children / 2: 
+                            continue
+
+                    text_content = child.get_text(separator=' ', strip=True)
+                    if text_content and len(text_content.split()) > 3: 
+                        text_parts.append(text_content)
+                content_found_in_main_selector = True
+                break 
+        
+        if not content_found_in_main_selector:
+            logger.debug("[ExtractText] No specific main content selector found, falling back to body text.")
+            body = soup.body
+            if body:
+                for child in body.find_all(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'div', 'span', 'td'], recursive=True):
+                    text_content = child.get_text(separator=' ', strip=True)
+                    if text_content and len(text_content.split()) > 3:
+                        text_parts.append(text_content)
+        
+        if not text_parts:
+            logger.warning("[ExtractText] No meaningful text parts found after parsing.")
+            return None
             
-    return None # Return None if nothing suitable is found
+        full_text = ' \n '.join(text_parts)
+        full_text = re.sub(r'\s*\n\s*', '\n', full_text).strip()
+        full_text = re.sub(r'[ \t]{2,}', ' ', full_text) 
+        
+        MAX_TEXT_LENGTH = 12000 
+        if len(full_text) > MAX_TEXT_LENGTH:
+            logger.warning(f"[ExtractText] Extracted text truncated from {len(full_text)} to {MAX_TEXT_LENGTH} chars.")
+            full_text = full_text[:MAX_TEXT_LENGTH]
+
+        return full_text if full_text else None
+
+    except Exception as e:
+        logger.error(f"[ExtractText] Error extracting text: {e}")
+        return None
 
 def extract_definitive_url_from_html(html_content: str, original_url: str) -> str | None:
     """Extracts a definitive (canonical, og:url, or JSON-LD organization) URL from HTML content.

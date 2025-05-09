@@ -1,9 +1,15 @@
 import json
 import time
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, APIError, RateLimitError, APITimeoutError
 import numpy as np # For dot product if not using sklearn
 import logging
 import traceback
+import asyncio
+from typing import List, Dict, Any, Optional
+# import tenacity # Закомментировано
+# from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type, before_sleep_log, RetryError # Закомментировано
+
+logger = logging.getLogger(__name__)
 
 async def get_embedding_async(text: str, openai_client: AsyncOpenAI, model: str = "text-embedding-3-small") -> list[float] | None:
     """Generates an embedding for the given text using OpenAI."""

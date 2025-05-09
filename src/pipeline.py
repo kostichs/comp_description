@@ -10,6 +10,7 @@ import re # For keyword extraction from context
 from bs4 import BeautifulSoup
 import logging # Added for logging
 from pathlib import Path
+from datetime import datetime
 
 from scrapingbee import ScrapingBeeClient # Need sync client for thread
 from openai import AsyncOpenAI
@@ -88,9 +89,20 @@ async def process_company(company_name: str,
                           context_text: str | None, 
                           serper_api_key: str | None) -> dict:
     """Async: Processes a single company. Returns a dictionary for the output row."""
-    logging.info(f"Starting async process for: {company_name} (Context: {bool(context_text)})")
-    start_time = time.time()
-    result_data = {"name": company_name, "homepage": "Not found", "linkedin": "Not found", "description": ""}
+    pipeline_logger = logging.getLogger(__name__)
+    pipeline_logger.info(f"Starting async process for: {company_name} (Context: {bool(context_text)})")
+    start_time_processing = time.time() # Используем другую переменную, чтобы не конфликтовать с глобальным start_time, если он есть
+    
+    # Получаем текущую дату и форматируем ее
+    current_date_iso = datetime.now().strftime("%Y-%m-%d") # Формат ГГГГ-ММ-ДД
+
+    result_data = {
+        "name": company_name, 
+        "homepage": "Not found", 
+        "linkedin": "Not found", 
+        "description": "Description not generated",
+        "timestamp": current_date_iso # <--- НОВОЕ ПОЛЕ
+    }
     
     # --- Variables to store collected data ---
     hp_url_found_serper: str | None = None
@@ -105,53 +117,49 @@ async def process_company(company_name: str,
     text_src: str | None = None
     page_validated_for_text_extraction: bool = False
     manual_check_flag: bool = False
-    pipeline_logger = logging.getLogger(__name__)
 
     try:
         # --- 1. Find URLs using Serper API ---
         pipeline_logger.info(f"  > {company_name}: Finding URLs via Serper...")
-        hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = await find_urls_with_serper_async(
-            aiohttp_session, company_name, context_text, serper_api_key, openai_client, pipeline_logger
+        serper_urls = await find_urls_with_serper_async(
+            aiohttp_session, company_name, context_text, serper_api_key, openai_client, pipeline_logger 
         )
-        
+        if serper_urls:
+            hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = serper_urls
+        else:
+            pipeline_logger.error(f"  > {company_name}: Critical error in find_urls_with_serper_async, returned None.")
+            result_data["homepage"] = "Not found"
+            result_data["linkedin"] = "Not found"
+            manual_check_flag = True
+
         # <<< START: Extract base URL for homepage column >>>
-        base_homepage_url = "Not found"
+        base_homepage_url = "Homepage not found (Serper API issue)" 
         if hp_url_found_serper:
             try:
                 parsed_hp_url = urlparse(hp_url_found_serper)
                 base_homepage_url = f"{parsed_hp_url.scheme}://{parsed_hp_url.netloc}" 
+                result_data["homepage"] = base_homepage_url
+                pipeline_logger.info(f"  > {company_name}: Homepage URL found: {hp_url_found_serper} (Base: {base_homepage_url})")
             except Exception as e_parse:
-                pipeline_logger.warning(f"  > {company_name}: Could not parse homepage URL '{hp_url_found_serper}' to extract base: {e_parse}")
-                base_homepage_url = hp_url_found_serper # Fallback to original if parsing fails
-        result_data["homepage"] = base_homepage_url # Assign the cleaned base URL
-        # <<< END: Extract base URL >>>
-        
-        # <<< START: Clean LinkedIn URL for output >>>
-        cleaned_linkedin_url = "Not found"
-        if li_url_found_serper:
-            # Remove trailing '/about/' or '/' if present
-            if li_url_found_serper.endswith('/about/'):
-                cleaned_linkedin_url = li_url_found_serper[:-len('/about/')]
-            elif li_url_found_serper.endswith('/'):
-                 cleaned_linkedin_url = li_url_found_serper[:-1]
-            else:
-                 cleaned_linkedin_url = li_url_found_serper 
-        result_data["linkedin"] = cleaned_linkedin_url # Assign cleaned URL
-        # <<< END: Clean LinkedIn URL >>>
-        
-        # Store initial homepage data if found (using the potentially full URL from Serper for logging)
-        if hp_url_found_serper:
-            pipeline_logger.info(f"  > {company_name}: Homepage URL found: {hp_url_found_serper} (Saved base: {base_homepage_url})") # Log both for clarity
+                pipeline_logger.warning(f"  > {company_name}: Could not parse homepage URL '{hp_url_found_serper}': {e_parse}")
+                result_data["homepage"] = hp_url_found_serper 
         else:
-            pipeline_logger.warning(f"  > {company_name}: Homepage URL NOT found by Serper/LLM.")
+            pipeline_logger.warning(f"  > {company_name}: Homepage URL NOT found by Serper/LLM after retries.")
+            result_data["homepage"] = "Not found"
             manual_check_flag = True
             
-        if li_url_found_serper: # Log the originally found URL
-            pipeline_logger.info(f"  > {company_name}: LinkedIn URL found: {li_url_found_serper} (Saved base: {cleaned_linkedin_url})") # Log both
-            if li_snippet_serper:
-                pipeline_logger.info(f"  > {company_name}: LinkedIn Snippet found (Serper): '{li_snippet_serper[:100]}...'")
+        # <<< START: Clean LinkedIn URL for output >>>
+        cleaned_linkedin_url = "LinkedIn URL not found (Serper API issue)" 
+        if li_url_found_serper:
+            if li_url_found_serper.endswith('/about/'): cleaned_linkedin_url = li_url_found_serper[:-len('/about/')]
+            elif li_url_found_serper.endswith('/'): cleaned_linkedin_url = li_url_found_serper[:-1]
+            else: cleaned_linkedin_url = li_url_found_serper 
+            result_data["linkedin"] = cleaned_linkedin_url
+            pipeline_logger.info(f"  > {company_name}: LinkedIn URL found: {li_url_found_serper} (Cleaned: {cleaned_linkedin_url})")
+            if li_snippet_serper: pipeline_logger.info(f"  > {company_name}: LinkedIn Snippet: '{li_snippet_serper[:100]}...'")
         else:
-            pipeline_logger.warning(f"  > {company_name}: LinkedIn URL NOT found.")
+            pipeline_logger.warning(f"  > {company_name}: LinkedIn URL NOT found by Serper after retries.")
+            result_data["linkedin"] = "Not found"
             
         if wiki_url_found_serper:
             pipeline_logger.info(f"  > {company_name}: Wikipedia URL found: {wiki_url_found_serper}")
@@ -170,7 +178,7 @@ async def process_company(company_name: str,
                     hp_html_content = hp_data[2]
                     pipeline_logger.info(f"  > {company_name}: Homepage scraped. Title: '{hp_title}', Root: {hp_root}, HTML len: {len(hp_html_content)}")
                 else: 
-                    pipeline_logger.warning(f"  > {company_name}: Scraping homepage returned no HTML content.")
+                    pipeline_logger.warning(f"  > {company_name}: Scraping homepage '{hp_url_found_serper}' failed or returned no HTML after retries.")
                     manual_check_flag = True
             except Exception as e_scrape_hp:
                 pipeline_logger.error(f"  > {company_name}: Error scraping homepage {hp_url_found_serper}: {e_scrape_hp}")
@@ -192,7 +200,7 @@ async def process_company(company_name: str,
                 if about_page_text:
                     pipeline_logger.info(f"  > {company_name}: Found text from 'About Us' page (length: {len(about_page_text)}).")
                 else: 
-                    pipeline_logger.info(f"  > {company_name}: No meaningful text from 'About Us' page (or page not found).")
+                    pipeline_logger.info(f"  > {company_name}: No meaningful text from 'About Us' page (or page not found/scraped after retries).")
             except Exception as e_about:
                 pipeline_logger.error(f"  > {company_name}: Error in find_and_scrape_about_page_async: {e_about}")
                 # Continue, fallback to other sources
@@ -208,7 +216,7 @@ async def process_company(company_name: str,
                     if wiki_summary:
                         pipeline_logger.info(f"  > {company_name}: Wikipedia summary fetched successfully (length: {len(wiki_summary)}).")
                     else:
-                        pipeline_logger.warning(f"  > {company_name}: Wikipedia summary fetch failed or summary was empty.")
+                        pipeline_logger.warning(f"  > {company_name}: Wikipedia summary fetch FAILED for '{wiki_page_title}' after retries.")
                 else:
                     pipeline_logger.warning(f"  > {company_name}: Could not extract page title from Wikipedia URL: {wiki_url_found_serper}")
             except Exception as e_wiki:
@@ -238,7 +246,7 @@ async def process_company(company_name: str,
         # --- 6. Combine Text Sources for LLM --- 
         combined_sources = []
         if about_page_text:
-            combined_sources.append("[From About Page Found at N/A]:\n" + about_page_text)
+            combined_sources.append("[From About Page]:\n" + about_page_text)
         if wiki_summary:
             combined_sources.append("[From Wikipedia Summary]:\n" + wiki_summary)
         if li_url_found_serper and li_snippet_serper:
@@ -294,8 +302,8 @@ async def process_company(company_name: str,
         result_data["homepage"] = hp_url_found_serper if hp_url_found_serper else result_data.get("homepage", "Error")
         result_data["linkedin"] = li_url_found_serper if li_url_found_serper else result_data.get("linkedin", "Error")
     
-    processing_time = time.time() - start_time
-    logging.info(f"Finished processing {company_name} in {processing_time:.2f} seconds. Result: Homepage: '{result_data['homepage']}', LI: '{result_data['linkedin']}', Desc len: {len(result_data['description']) if result_data['description'] else 0}")
+    processing_duration = time.time() - start_time_processing
+    logging.info(f"Finished processing {company_name} in {processing_duration:.2f} seconds. Result: Homepage: '{result_data['homepage'][:70]}...', LI: '{result_data['linkedin'][:70]}...', Desc len: {len(result_data['description']) if result_data['description'] else 0}, Date: {result_data['timestamp']}")
     return result_data
 
 
@@ -331,7 +339,7 @@ async def run_pipeline():
         return # Changed from exit()
 
     # --- Define expected CSV fieldnames --- 
-    base_ordered_fields = ["name", "homepage", "linkedin", "description"]
+    base_ordered_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
     # llm_error убрано из базовых. Ошибки LLM будут в логах и, возможно, в поле description.
     
     additional_llm_fields = []
@@ -493,7 +501,8 @@ async def run_pipeline():
                         # error_entry = {"name": task_exc_company_name, "description": f"Processing Error: {type(e).__name__}"}
                         # for field in expected_csv_fieldnames: # Ensure all fields exist for DictWriter
                         #    if field not in error_entry: error_entry[field] = "ERROR_STATE"
-                        # save_results_csv([error_entry], output_file_path, append_mode=True, fieldnames=expected_csv_fieldnames)
+                        # save_results_csv([error_entry], output_file_path, append_mode=True, fieldnames=expected_csv_fieldnames) # Используем переданный expected_csv_fieldnames
+                        batch_results_temp.append(error_result) 
                 
                 logging.info(f"<<< Finished incremental processing for {filename}. Successes: {len(current_file_successful_results)}, Failures: {exceptions_in_current_file}")
                 if current_file_successful_results:
@@ -527,43 +536,48 @@ async def run_pipeline_for_file(
     company_col_index: int,
     aiohttp_session: aiohttp.ClientSession,
     sb_client: ScrapingBeeClient,
-    llm_config: dict,
+    llm_config: dict, # llm_config теперь используется только для process_company
     openai_client: AsyncOpenAI,
     serper_api_key: str,
-    expected_csv_fieldnames: list[str],
+    expected_csv_fieldnames: list[str], # <--- Этот параметр теперь ЕДИНСТВЕННЫЙ ИСТОЧНИК fieldnames
     broadcast_update: callable = None,
     main_batch_size: int = 50
 ) -> tuple[int, int, list[dict]]:
-    """
-    Processes a single input file in batches of companies and saves results to CSV.
-    Returns tuple of (success_count, failure_count, results_list).
-    """
-    file_logger = logging.getLogger(f"pipeline.file.{Path(input_file_path).name}")
-    file_logger.info(f"Starting processing for file: {input_file_path} -> {output_csv_path} with batch size: {main_batch_size}")
+    
+    file_specific_logger = logging.getLogger(f"pipeline.session.{Path(input_file_path).stem}") 
+    file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Initializing for file: {input_file_path}")
+    file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Output CSV: {output_csv_path}")
+    file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Received expected_csv_fieldnames AS PARAMETER: {expected_csv_fieldnames}")
+    file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Main batch size: {main_batch_size}")
+
     overall_success_count = 0
     overall_failure_count = 0
     overall_results_list = [] 
 
     try:
+        file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Loading company names from: {input_file_path}")
         all_company_names = load_and_prepare_company_names(input_file_path, company_col_index)
         if not all_company_names:
-            file_logger.warning(f"No valid company names found in {input_file_path}")
+            file_specific_logger.warning(f"[RUN_PIPELINE_FOR_FILE] No valid company names found in {input_file_path}. Exiting.")
             return 0, 0, []
+        file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Loaded {len(all_company_names)} company names.")
 
         total_companies_to_process = len(all_company_names)
-        file_logger.info(f"Found {total_companies_to_process} total companies. Processing in batches of {main_batch_size}...")
         
+        file_specific_logger.info(f"DEBUG: expected_csv_fieldnames for header in run_pipeline_for_file: {expected_csv_fieldnames}") 
         if not Path(output_csv_path).exists() or Path(output_csv_path).stat().st_size == 0:
-            save_results_csv([], output_csv_path, append_mode=False, fieldnames=expected_csv_fieldnames)
-            file_logger.info(f"Initialized CSV file with headers: {output_csv_path}")
+            file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Output CSV file {output_csv_path} does not exist or is empty. Creating with headers.")
+            save_results_csv([], output_csv_path, append_mode=False, fieldnames=expected_csv_fieldnames) # Используем переданный expected_csv_fieldnames
+            file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Initialized CSV file with headers: {output_csv_path}")
+        else:
+            file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Output CSV file {output_csv_path} already exists and is not empty. Will append.")
 
         processed_companies_count = 0
-
         for i in range(0, total_companies_to_process, main_batch_size):
             company_names_batch = all_company_names[i:i + main_batch_size]
             batch_number = (i // main_batch_size) + 1
             total_batches = (total_companies_to_process + main_batch_size - 1) // main_batch_size
-            file_logger.info(f"Processing batch {batch_number}/{total_batches} ({len(company_names_batch)} companies)... ")
+            file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Processing batch {batch_number}/{total_batches} ({len(company_names_batch)} companies)... ")
 
             tasks = [
                 asyncio.create_task(
@@ -574,21 +588,22 @@ async def run_pipeline_for_file(
             batch_results_temp = []
             for future_index, future in enumerate(asyncio.as_completed(tasks)):
                 current_overall_processed = processed_companies_count + future_index + 1
-                # Проверка на отмену перед ожиданием следующей задачи
                 if asyncio.current_task().cancelled(): # type: ignore[attr-defined]
-                    file_logger.warning(f"Task for run_pipeline_for_file was cancelled during batch {batch_number}. Stopping further processing of companies for {input_file_path}.")
+                    file_specific_logger.warning(f"[RUN_PIPELINE_FOR_FILE] Task for run_pipeline_for_file was cancelled during batch {batch_number}. Stopping further processing of companies for {input_file_path}.")
                     for task_to_cancel in tasks:
                         if not task_to_cancel.done():
                             task_to_cancel.cancel()
                     await asyncio.gather(*tasks, return_exceptions=True)
                     raise asyncio.CancelledError 
                 
-                company_name_for_log = company_names_batch[future_index] # Приблизительно, т.к. as_completed не гарантирует порядок
+                company_name_for_log = company_names_batch[future_index] 
                 try:
                     result_data = await future
                     if isinstance(result_data, dict):
                         batch_results_temp.append(result_data) 
-                        save_results_csv([result_data], output_csv_path, append_mode=True, fieldnames=expected_csv_fieldnames)
+                        file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] DEBUG: fieldnames for row in run_pipeline_for_file: {expected_csv_fieldnames}") 
+                        file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] DEBUG: result_data keys for row: {list(result_data.keys())}") 
+                        save_results_csv([result_data], output_csv_path, append_mode=True, fieldnames=expected_csv_fieldnames) # Используем переданный expected_csv_fieldnames
                         overall_success_count += 1
                         if broadcast_update:
                             progress_data = {
@@ -600,42 +615,42 @@ async def run_pipeline_for_file(
                             await broadcast_update(progress_data)
                             await broadcast_update({"type": "update", "data": result_data})
                     else:
-                        file_logger.error(f"Unexpected result type: {type(result_data)} for company '{company_name_for_log}' in batch {batch_number} of {input_file_path}")
+                        file_specific_logger.error(f"[RUN_PIPELINE_FOR_FILE] Unexpected result type: {type(result_data)} for company '{company_name_for_log}' in batch {batch_number} of {input_file_path}")
                         overall_failure_count += 1
                 except asyncio.CancelledError:
-                    file_logger.warning(f"Processing for company '{company_name_for_log}' in batch {batch_number} was cancelled.")
+                    file_specific_logger.warning(f"[RUN_PIPELINE_FOR_FILE] Processing for company '{company_name_for_log}' in batch {batch_number} was cancelled.")
                     overall_failure_count += 1
                 except Exception as e_task:
-                    file_logger.error(f"Task for company '{company_name_for_log}' in batch {batch_number} of {input_file_path} failed: {type(e_task).__name__} - {e_task}", exc_info=True)
+                    file_specific_logger.error(f"[RUN_PIPELINE_FOR_FILE] Task for company '{company_name_for_log}' in batch {batch_number} of {input_file_path} failed: {type(e_task).__name__} - {e_task}", exc_info=True)
                     overall_failure_count += 1
-                    # Сохраняем информацию об ошибке для этой компании
                     error_result = {"name": company_name_for_log, "homepage": "Error", "linkedin": "Error", "description": f"Processing Error: {type(e_task).__name__}"}
+                    # Добавляем timestamp и для ошибочных записей, если он есть в expected_csv_fieldnames
+                    if "timestamp" in expected_csv_fieldnames:
+                        error_result["timestamp"] = datetime.now().strftime("%Y-%m-%d")
                     for field in expected_csv_fieldnames:
                         if field not in error_result: error_result[field] = "ERROR_STATE"
-                    save_results_csv([error_result], output_csv_path, append_mode=True, fieldnames=expected_csv_fieldnames)
-                    batch_results_temp.append(error_result) # Добавляем в результаты батча для общего списка
+                    save_results_csv([error_result], output_csv_path, append_mode=True, fieldnames=expected_csv_fieldnames) # Используем переданный expected_csv_fieldnames
+                    batch_results_temp.append(error_result) 
             
             overall_results_list.extend(batch_results_temp)
             processed_companies_count += len(company_names_batch)
-            file_logger.info(f"Finished batch {batch_number}/{total_batches}. Total processed so far: {processed_companies_count}/{total_companies_to_process}")
-            # Можно добавить небольшую паузу между пакетами, если есть опасения по поводу rate limiting
-            # await asyncio.sleep(5) # Например, 5 секунд
+            file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Finished batch {batch_number}/{total_batches}. Total processed so far: {processed_companies_count}/{total_companies_to_process}")
         
-        file_logger.info(f"Finished all batches for {input_file_path}. Overall Successes: {overall_success_count}, Failures: {overall_failure_count}")
+        file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Finished all batches for {input_file_path}. Overall Successes: {overall_success_count}, Failures: {overall_failure_count}")
         if broadcast_update:
             await broadcast_update({"type": "complete", "data": {"message": f"Processing of {Path(input_file_path).name} completed.", "success_count": overall_success_count, "failure_count": overall_failure_count, "total_companies": total_companies_to_process}})
         
         return overall_success_count, overall_failure_count, overall_results_list
 
     except asyncio.CancelledError: 
-        file_logger.info(f"Processing of file {input_file_path} was cancelled externally.")
-        # При отмене возвращаем то, что успели обработать
+        file_specific_logger.info(f"[RUN_PIPELINE_FOR_FILE] Processing of file {input_file_path} was cancelled externally.")
         return overall_success_count, overall_failure_count, overall_results_list
     except Exception as e_main:
-        file_logger.error(f"Critical error processing file {input_file_path}: {type(e_main).__name__} - {e_main}", exc_info=True)
+        file_specific_logger.error(f"[RUN_PIPELINE_FOR_FILE] Critical error processing file {input_file_path}: {type(e_main).__name__} - {e_main}", exc_info=True)
         if broadcast_update:
              await broadcast_update({"type": "error", "data": {"message": f"Critical error processing file {Path(input_file_path).name}: {str(e_main)}"}})
         return overall_success_count, overall_failure_count, overall_results_list
+
 
 def setup_session_logging(pipeline_log_path: str, scoring_log_path: str):
     """Configures logging handlers for a specific session run."""

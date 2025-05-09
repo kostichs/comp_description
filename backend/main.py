@@ -14,16 +14,26 @@ from fastapi.staticfiles import StaticFiles
 import asyncio
 import json
 from datetime import datetime
-from src.pipeline import process_companies
-from src.config import OUTPUT_DIR
+from src.pipeline import process_companies, run_pipeline_for_file
+from src.config import OUTPUT_DIR, load_env_vars, load_llm_config
 from typing import Dict, List, Any, Optional
+import aiohttp
+from openai import AsyncOpenAI
+from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR # Example import
+from scrapingbee import ScrapingBeeClient
+
+# Need to ensure SESSIONS_DIR and SESSIONS_METADATA_FILE are correctly handled within data_io.py
+
+# Configure basic logging if not already configured elsewhere
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Adjust sys.path to allow importing from src
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 # Now we can import from src
-from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR # Example import
+from src.config import load_env_vars, load_llm_config # Example import
 # Need to ensure SESSIONS_DIR and SESSIONS_METADATA_FILE are correctly handled within data_io.py
 
 # --- Import background task runner --- 
@@ -74,56 +84,86 @@ async def execute_pipeline_for_session_async(
     session_id: str, 
     input_file: Path, 
     output_csv_file: Path,
-    pipeline_log_path: Path, # Путь к логу пайплайна для этой сессии
-    scoring_log_path: Path,  # Путь к скоринг логу для этой сессии
-    context_text: Optional[str]
-    # ... другие необходимые параметры: llm_config, api_keys, клиенты ...
+    pipeline_log_path: Path, 
+    scoring_log_path: Path,  
+    context_text: Optional[str],
+    llm_config: dict 
 ):
-    logger.info(f"Starting pipeline execution for session_id: {session_id}")
-    # Пример вызова вашей основной функции пайплайна
-    # Здесь должны быть инициализированы все клиенты и конфигурации, если они не передаются
+    logger.info(f"[EXECUTE_PIPELINE] Starting for session_id: {session_id}")
+    logger.info(f"[EXECUTE_PIPELINE] Input file: {input_file}")
+    logger.info(f"[EXECUTE_PIPELINE] Output CSV: {output_csv_file}")
+    logger.info(f"[EXECUTE_PIPELINE] Pipeline Log: {pipeline_log_path}")
+    logger.info(f"[EXECUTE_PIPELINE] Scoring Log: {scoring_log_path}")
+    logger.info(f"[EXECUTE_PIPELINE] Context provided: {bool(context_text)}")
+    logger.info(f"[EXECUTE_PIPELINE] LLM Config keys: {list(llm_config.keys()) if llm_config else 'None'}")
+
+    try:
+        logger.info("[EXECUTE_PIPELINE] Loading environment variables...")
+        env_vars = load_env_vars()
+        scrapingbee_api_key = env_vars[0] 
+        openai_api_key = env_vars[1]
+        serper_api_key = env_vars[2]
+        logger.info("[EXECUTE_PIPELINE] Environment variables loaded.")
+    except Exception as e_env:
+        logger.error(f"[EXECUTE_PIPELINE] Failed to load env_vars: {e_env}", exc_info=True)
+        return
+
+    # --- Определение полей CSV --- 
+    base_ordered_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
+    # logger.info(f"[EXECUTE_PIPELINE] Defined base_ordered_fields: {base_ordered_fields}") # Можно оставить для отладки
     
-    # Загрузка конфигураций и ключей (пример, может быть сделано выше и передано)
-    scrapingbee_api_key, openai_api_key, serper_api_key = load_env_vars()
-    llm_config = load_llm_config("llm_config.yaml") # Путь к конфигу может быть другим
+    additional_llm_fields = []
+    if isinstance(llm_config.get("response_format"), dict) and \
+       llm_config["response_format"].get("type") == "json_object":
+        try:
+            if "expected_json_keys" in llm_config: 
+                llm_keys = [f"llm_{k}" for k in llm_config["expected_json_keys"]]
+                additional_llm_fields.extend(llm_keys)
+        except Exception as e_llm_keys:
+            logger.warning(f"[EXECUTE_PIPELINE] Could not dynamically determine LLM output keys: {e_llm_keys}")
     
-    # Определение полей CSV (пример, адаптируйте)
-    # Это должно быть согласовано с тем, что возвращает ваш process_company и ожидает save_results_csv
-    expected_csv_fieldnames = ["name", "homepage", "linkedin", "description"] 
+    # Формируем окончательный список полей
+    temp_fieldnames = list(base_ordered_fields) # Начинаем с базовых
+    for field in additional_llm_fields:
+        if field not in temp_fieldnames:
+            temp_fieldnames.append(field)
+    expected_csv_fieldnames = temp_fieldnames
     
-    # --- Важно: Инициализация aiohttp.ClientSession ---
-    # Сессию лучше создавать здесь и передавать в run_pipeline_for_file,
-    # чтобы она была активна на протяжении всей обработки сессии.
+    logger.info(f"[EXECUTE_PIPELINE] Determined expected_csv_fieldnames for session {session_id}: {expected_csv_fieldnames}") # <--- КЛЮЧЕВОЙ ЛОГ
+    
+    logger.info("[EXECUTE_PIPELINE] Initializing API clients and aiohttp session...")
     async with aiohttp.ClientSession() as aiohttp_session:
-        sb_client = ScrapingBeeClient(api_key=scrapingbee_api_key) # Синхронный клиент
-        openai_async_client = AsyncOpenAI(api_key=openai_api_key) # Асинхронный клиент
+        logger.info("[EXECUTE_PIPELINE] aiohttp.ClientSession created.")
+        sb_client = ScrapingBeeClient(api_key=scrapingbee_api_key) 
+        logger.info("[EXECUTE_PIPELINE] ScrapingBeeClient created.")
+        openai_async_client = AsyncOpenAI(api_key=openai_api_key)
+        logger.info("[EXECUTE_PIPELINE] AsyncOpenAI client created.")
         
         try:
-            await run_pipeline_for_file( # Замените на имя вашей функции и ее параметры
+            logger.info(f"[EXECUTE_PIPELINE] Calling run_pipeline_for_file for session {session_id}...")
+            await run_pipeline_for_file( 
                 input_file_path=input_file,
                 output_csv_path=output_csv_file,
-                pipeline_log_path=str(pipeline_log_path), # Убедитесь, что передаются строки, если функция ожидает их
+                pipeline_log_path=str(pipeline_log_path), 
                 scoring_log_path=str(scoring_log_path),
                 context_text=context_text,
-                company_col_index=0, # Пример
-                aiohttp_session=aiohttp_session, # Передаем сессию
-                sb_client=sb_client, # Передаем клиент
+                company_col_index=0, 
+                aiohttp_session=aiohttp_session, 
+                sb_client=sb_client, 
                 llm_config=llm_config,
-                openai_client=openai_async_client, # Передаем клиент
+                openai_client=openai_async_client, 
                 serper_api_key=serper_api_key,
-                expected_csv_fieldnames=expected_csv_fieldnames,
-                broadcast_update=None # Или ваша функция broadcast_update, если она асинхронная
+                expected_csv_fieldnames=expected_csv_fieldnames, 
+                broadcast_update=None, # Ваша функция broadcast_update
+                main_batch_size=50 
             )
-            logger.info(f"Pipeline execution for session_id: {session_id} completed.")
-            # Здесь можно обновить метаданные сессии, указав статус "completed"
+            logger.info(f"[EXECUTE_PIPELINE] Pipeline execution for session_id: {session_id} completed.")
         except asyncio.CancelledError:
-            logger.info(f"Pipeline execution for session_id: {session_id} was cancelled.")
-            # Здесь можно обновить метаданные сессии, указав статус "cancelled"
-            raise # Важно перевыбросить, чтобы задача завершилась как отмененная
+            logger.info(f"[EXECUTE_PIPELINE] Pipeline execution for session_id: {session_id} was cancelled.")
+            raise 
         except Exception as e:
-            logger.error(f"Error during pipeline execution for session_id {session_id}: {e}", exc_info=True)
-            # Здесь можно обновить метаданные сессии, указав статус "error"
-            # Не перевыбрасываем, чтобы done_callback мог залогировать это как ошибку задачи
+            logger.error(f"[EXECUTE_PIPELINE] Error during run_pipeline_for_file for session_id {session_id}: {e}", exc_info=True)
+    logger.info(f"[EXECUTE_PIPELINE] Finished for session_id: {session_id}")
 
 # Callback-функция для задач
 def _processing_task_done_callback(task: asyncio.Task, session_id: str):
@@ -546,8 +586,8 @@ async def start_processing_session(session_id: str): # Убрал BackgroundTask
             output_csv_file,
             pipeline_log_path,
             scoring_log_path,
-            context_text
-            # ... передайте сюда остальные необходимые клиенты и конфигурации ...
+            context_text,
+            llm_config={} # Заглушка, так как llm_config не передается в этом вызове
         )
     )
     active_processing_tasks[session_id] = task

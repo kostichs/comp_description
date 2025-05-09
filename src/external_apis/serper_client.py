@@ -3,12 +3,14 @@ import asyncio
 import json
 import re
 import tldextract # For domain checks in ranking
-from openai import AsyncOpenAI # To pass the client for LLM selection
+from openai import AsyncOpenAI, APIError, RateLimitError, APITimeoutError
 import logging # Added for logging
 from urllib.parse import urlparse, unquote # Added for path depth checking and URL decoding
 from ..config import SPECIAL_COMPANY_HANDLING # Import the special handling rules
 import socket
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
+
+logger = logging.getLogger(__name__) # Added for logging
 
 # Global list of blacklisted domains (registered domain part)
 BLACKLISTED_DOMAINS_FOR_HP = [ # More aggressive blacklist for HP
@@ -109,29 +111,29 @@ async def _execute_serper_query(
         async with session.post("https://google.serper.dev/search", headers=headers, data=payload, timeout=20) as resp: # Increased timeout
             if resp.status == 200:
                 results = await resp.json()
-                logging.info(f"\\n{'='*80}")
-                logging.info(f"SERPER API RAW RESULTS FOR QUERY: {query}")
-                logging.info(f"{'='*80}")
+                logger.info(f"\\n{'='*80}")
+                logger.info(f"SERPER API RAW RESULTS FOR QUERY: {query}")
+                logger.info(f"{'='*80}")
                 if results and "organic" in results:
-                    logging.info(f"Found {len(results['organic'])} organic results:")
+                    logger.info(f"Found {len(results['organic'])} organic results:")
                     for idx, res_item in enumerate(results["organic"], 1):
-                        logging.info(f"  Result #{idx}: Link: {res_item.get('link', 'N/A')}, Title: {res_item.get('title', 'N/A')}, Snippet: {res_item.get('snippet', 'N/A')[:100]}...")
+                        logger.info(f"  Result #{idx}: Link: {res_item.get('link', 'N/A')}, Title: {res_item.get('title', 'N/A')}, Snippet: {res_item.get('snippet', 'N/A')[:100]}...")
                 else:
-                    logging.info("No organic results found in Serper response.")
-                logging.info(f"{'='*80}\\n")
+                    logger.info("No organic results found in Serper response.")
+                logger.info(f"{'='*80}\\n")
                 return results
             else:
                 error_text = await resp.text()
-                logging.error(f"Serper API Error for query '{query}': Status {resp.status}, Response: {error_text[:300]}")
+                logger.error(f"Serper API Error for query '{query}': Status {resp.status}, Response: {error_text[:300]}")
                 return None
     except asyncio.TimeoutError:
-        logging.error(f"Timeout for Serper query: '{query}'")
+        logger.error(f"Timeout for Serper query: '{query}'")
         return None
     except aiohttp.ClientError as e:
-        logging.error(f"AIOHttp error for Serper query '{query}': {e}")
+        logger.error(f"AIOHttp error for Serper query '{query}': {e}")
         return None
     except Exception as e:
-        logging.error(f"Generic error for Serper query '{query}': {type(e).__name__} - {str(e)[:100]}")
+        logger.error(f"Generic error for Serper query '{query}': {type(e).__name__} - {str(e)[:100]}")
         return None
 
 def normalize_linkedin_url(url: str) -> str | None:
@@ -169,7 +171,7 @@ def normalize_linkedin_url(url: str) -> str | None:
     try:
         decoded_slug = unquote(slug)
     except Exception as e:
-        logging.warning(f"Error decoding LinkedIn slug '{slug}' from URL '{url}': {e}")
+        logger.warning(f"Error decoding LinkedIn slug '{slug}' from URL '{url}': {e}")
         decoded_slug = slug # Use original slug if decoding fails
 
     # Clean the slug further: remove extra slashes or query params mistakenly included
@@ -177,7 +179,7 @@ def normalize_linkedin_url(url: str) -> str | None:
     cleaned_slug = decoded_slug.strip('/')
 
     if not cleaned_slug: # Empty slug after cleaning
-        logging.warning(f"Empty slug after cleaning for LinkedIn URL: {url}")
+        logger.warning(f"Empty slug after cleaning for LinkedIn URL: {url}")
         return None
 
     # For 'showcase' and 'school', we still normalize to /about/ for consistency,

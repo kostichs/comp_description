@@ -21,17 +21,18 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
     Runs the full data processing pipeline for a given session ID in the background.
     Updates the session metadata with status (running, completed, error).
     """
-    logging.info(f"Background task started for session: {session_id}")
+    session_logger = logging.getLogger(f"pipeline.session.{session_id}") # Создаем или получаем логгер сессии
+    session_logger.info(f"Background task started for session: {session_id}")
     
     # --- 1. Load Session Metadata --- 
     try:
         all_metadata = load_session_metadata()
         session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
         if not session_data:
-            logging.error(f"[BG Task {session_id}] Session metadata not found. Aborting.")
+            session_logger.error(f"[BG Task {session_id}] Session metadata not found. Aborting.")
             return # Cannot proceed without metadata
     except Exception as e:
-        logging.error(f"[BG Task {session_id}] Error loading session metadata: {e}. Aborting.")
+        session_logger.error(f"[BG Task {session_id}] Error loading session metadata: {e}. Aborting.")
         return
         
     # --- 2. Prepare Paths and Context --- 
@@ -57,9 +58,9 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     with open(context_file_path, 'r', encoding='utf-8') as cf:
                         context_text = cf.read().strip() or None
                 except Exception as e_ctx:
-                    logging.warning(f"[BG Task {session_id}] Failed to read context file {context_file_path}: {e_ctx}")
+                    session_logger.warning(f"[BG Task {session_id}] Failed to read context file {context_file_path}: {e_ctx}")
             else:
-                logging.warning(f"[BG Task {session_id}] Context file path in metadata but file not found: {context_file_path}")
+                session_logger.warning(f"[BG Task {session_id}] Context file path in metadata but file not found: {context_file_path}")
 
         # Update metadata with concrete paths (useful for UI later?)
         session_data['output_csv_path'] = str(output_csv_path.relative_to(PROJECT_ROOT))
@@ -67,7 +68,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         session_data['scoring_log_path'] = str(scoring_log_path.relative_to(PROJECT_ROOT))
         
     except Exception as e_path:
-        logging.error(f"[BG Task {session_id}] Error preparing file paths: {e_path}. Aborting.")
+        session_logger.error(f"[BG Task {session_id}] Error preparing file paths: {e_path}. Aborting.")
         # Update status to error before returning
         session_data['status'] = 'error'
         session_data['error_message'] = f"Error preparing paths: {e_path}"
@@ -76,9 +77,10 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
 
     # --- 3. Setup Logging for this Session --- 
     try:
+        # Перемещаем setup_session_logging сюда, чтобы пути были уже определены
+        # Убедимся, что директория для логов сессии существует
+        pipeline_log_path.parent.mkdir(parents=True, exist_ok=True)
         setup_session_logging(str(pipeline_log_path), str(scoring_log_path))
-        # Use session-specific logger from now on if needed, or root logger configured by setup_session_logging
-        session_logger = logging.getLogger() # Get the root logger now configured
         session_logger.info(f"--- Starting Background Processing for Session: {session_id} ---")
         session_logger.info(f"Input file: {input_file_path}")
         session_logger.info(f"Context provided: {bool(context_text)}")
@@ -86,6 +88,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         session_logger.info(f"Pipeline Log: {pipeline_log_path}")
         session_logger.info(f"Scoring Log: {scoring_log_path}")
     except Exception as e_log:
+        # Используем глобальный logger, если session_logger еще не настроен
         logging.error(f"[BG Task {session_id}] Error setting up session logging: {e_log}. Aborting.")
         session_data['status'] = 'error'
         session_data['error_message'] = f"Error setting up logging: {e_log}"
@@ -120,8 +123,26 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             pipeline_error = f"API Client initialization failed: {e_client}"
             raise # Re-raise
         
-        # Expected columns for the CSV output (adjust if needed)
-        expected_cols = ["name", "homepage", "linkedin", "description"]
+        # --- Определение полей CSV (как в backend/main.py) --- 
+        base_ordered_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
+        additional_llm_fields = []
+        if isinstance(llm_config.get("response_format"), dict) and \
+           llm_config["response_format"].get("type") == "json_object":
+            try:
+                if "expected_json_keys" in llm_config: 
+                    llm_keys = [f"llm_{k}" for k in llm_config["expected_json_keys"]]
+                    additional_llm_fields.extend(llm_keys)
+                # Можно добавить другую логику извлечения ключей из llm_config, если необходимо
+            except Exception as e_llm_keys:
+                session_logger.warning(f"[BG Task {session_id}] Could not dynamically determine LLM output keys: {e_llm_keys}")
+        
+        temp_fieldnames = list(base_ordered_fields) 
+        for field in additional_llm_fields:
+            if field not in temp_fieldnames:
+                temp_fieldnames.append(field)
+        expected_cols = temp_fieldnames # <--- ИСПОЛЬЗУЕМ НОВЫЙ СПИСОК
+        session_logger.info(f"[BG Task {session_id}] Determined expected_csv_fieldnames: {expected_cols}")
+        # --- Конец определения полей CSV ---
 
         # --- 6. Execute Pipeline --- 
         session_logger.info("Starting core pipeline execution...")
@@ -139,8 +160,9 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     llm_config=llm_config,
                     openai_client=openai_client,
                     serper_api_key=serper_api_key,
-                    expected_csv_fieldnames=expected_cols,
-                    broadcast_update=broadcast_update
+                    expected_csv_fieldnames=expected_cols, # <--- ПЕРЕДАЕМ ПРАВИЛЬНЫЙ СПИСОК
+                    broadcast_update=broadcast_update,
+                    main_batch_size=session_data.get("batch_size", 50) # Пример: берем batch_size из метаданных или по умолчанию 50
                 )
             session_logger.info(f"Pipeline execution finished. Success: {success_count}, Failed: {failure_count}")
             session_data['status'] = 'completed'
@@ -177,10 +199,10 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                 final_session_data_ptr['scoring_log_path'] = session_data['scoring_log_path']
             else:
                 # This shouldn't happen if initial load worked, but handle defensively
-                 logging.error(f"[BG Task {session_id}] Cannot find session in final metadata load. Appending potentially duplicate/outdated info.")
+                 session_logger.error(f"[BG Task {session_id}] Cannot find session in final metadata load. Appending potentially duplicate/outdated info.")
                  final_metadata.append(session_data) # Add potentially outdated info
 
             save_session_metadata(final_metadata)
-            logging.info(f"Background task finished for session: {session_id}. Final status: {session_data['status']}")
+            session_logger.info(f"Background task finished for session: {session_id}. Final status: {session_data['status']}")
         except Exception as e_save:
-            logging.error(f"[BG Task {session_id}] CRITICAL: Failed to save final session metadata: {e_save}") 
+            session_logger.error(f"[BG Task {session_id}] CRITICAL: Failed to save final session metadata: {e_save}") 
