@@ -80,3 +80,10 @@ company-description/
 ## Лицензия
 
 MIT
+
+Output format:
+- Company name
+- Homepage link
+- Linkedin link
+- Description
+- `timestamp`: Дата обработки записи в формате ГГГГ-ММ-ДД.
