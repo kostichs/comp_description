@@ -16,6 +16,7 @@ import json
 from datetime import datetime
 from src.pipeline import process_companies
 from src.config import OUTPUT_DIR
+from typing import Dict, List, Any, Optional
 
 # Adjust sys.path to allow importing from src
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -61,6 +62,90 @@ app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 # Store active WebSocket connections
 active_connections: list[WebSocket] = []
+
+# --- Начало изменений: Управление фоновыми задачами ---
+# Словарь для хранения активных задач обработки
+# Ключ: session_id (str), Значение: asyncio.Task
+active_processing_tasks: Dict[str, asyncio.Task] = {}
+
+# Гипотетическая функция, запускающая ваш пайплайн. 
+# АДАПТИРУЙТЕ ЕЕ И ЕЕ ПАРАМЕТРЫ ПОД ВАШУ РЕАЛЬНУЮ ФУНКЦИЮ
+async def execute_pipeline_for_session_async(
+    session_id: str, 
+    input_file: Path, 
+    output_csv_file: Path,
+    pipeline_log_path: Path, # Путь к логу пайплайна для этой сессии
+    scoring_log_path: Path,  # Путь к скоринг логу для этой сессии
+    context_text: Optional[str]
+    # ... другие необходимые параметры: llm_config, api_keys, клиенты ...
+):
+    logger.info(f"Starting pipeline execution for session_id: {session_id}")
+    # Пример вызова вашей основной функции пайплайна
+    # Здесь должны быть инициализированы все клиенты и конфигурации, если они не передаются
+    
+    # Загрузка конфигураций и ключей (пример, может быть сделано выше и передано)
+    scrapingbee_api_key, openai_api_key, serper_api_key = load_env_vars()
+    llm_config = load_llm_config("llm_config.yaml") # Путь к конфигу может быть другим
+    
+    # Определение полей CSV (пример, адаптируйте)
+    # Это должно быть согласовано с тем, что возвращает ваш process_company и ожидает save_results_csv
+    expected_csv_fieldnames = ["name", "homepage", "linkedin", "description"] 
+    
+    # --- Важно: Инициализация aiohttp.ClientSession ---
+    # Сессию лучше создавать здесь и передавать в run_pipeline_for_file,
+    # чтобы она была активна на протяжении всей обработки сессии.
+    async with aiohttp.ClientSession() as aiohttp_session:
+        sb_client = ScrapingBeeClient(api_key=scrapingbee_api_key) # Синхронный клиент
+        openai_async_client = AsyncOpenAI(api_key=openai_api_key) # Асинхронный клиент
+        
+        try:
+            await run_pipeline_for_file( # Замените на имя вашей функции и ее параметры
+                input_file_path=input_file,
+                output_csv_path=output_csv_file,
+                pipeline_log_path=str(pipeline_log_path), # Убедитесь, что передаются строки, если функция ожидает их
+                scoring_log_path=str(scoring_log_path),
+                context_text=context_text,
+                company_col_index=0, # Пример
+                aiohttp_session=aiohttp_session, # Передаем сессию
+                sb_client=sb_client, # Передаем клиент
+                llm_config=llm_config,
+                openai_client=openai_async_client, # Передаем клиент
+                serper_api_key=serper_api_key,
+                expected_csv_fieldnames=expected_csv_fieldnames,
+                broadcast_update=None # Или ваша функция broadcast_update, если она асинхронная
+            )
+            logger.info(f"Pipeline execution for session_id: {session_id} completed.")
+            # Здесь можно обновить метаданные сессии, указав статус "completed"
+        except asyncio.CancelledError:
+            logger.info(f"Pipeline execution for session_id: {session_id} was cancelled.")
+            # Здесь можно обновить метаданные сессии, указав статус "cancelled"
+            raise # Важно перевыбросить, чтобы задача завершилась как отмененная
+        except Exception as e:
+            logger.error(f"Error during pipeline execution for session_id {session_id}: {e}", exc_info=True)
+            # Здесь можно обновить метаданные сессии, указав статус "error"
+            # Не перевыбрасываем, чтобы done_callback мог залогировать это как ошибку задачи
+
+# Callback-функция для задач
+def _processing_task_done_callback(task: asyncio.Task, session_id: str):
+    try:
+        task.result()  # Проверяем, не было ли исключений в задаче
+        logger.info(f"Processing task for session {session_id} finished successfully (via callback).")
+        # Обновить метаданные: статус = "completed"
+        # update_session_status(session_id, "completed") # Пример
+    except asyncio.CancelledError:
+        logger.info(f"Processing task for session {session_id} was cancelled (via callback).")
+        # Обновить метаданные: статус = "cancelled"
+        # update_session_status(session_id, "cancelled") # Пример
+    except Exception as e:
+        logger.error(f"Processing task for session {session_id} failed with error (via callback): {e}", exc_info=True)
+        # Обновить метаданные: статус = "error", message = str(e)
+        # update_session_status(session_id, "error", str(e)) # Пример
+    finally:
+        if session_id in active_processing_tasks:
+            del active_processing_tasks[session_id]
+            logger.debug(f"Removed task for session {session_id} from active_processing_tasks.")
+
+# --- Конец изменений: Управление фоновыми задачами ---
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -390,6 +475,150 @@ async def read_js():
 @app.get("/style.css")
 async def read_css():
     return FileResponse("frontend/style.css")
+
+# Пример существующего эндпоинта для запуска сессии (адаптируйте под ваш)
+@app.post("/api/sessions/{session_id}/start", tags=["Sessions"], summary="Start processing for a session")
+async def start_processing_session(session_id: str): # Убрал BackgroundTasks, так как управляем явно
+    # 1. Проверка существования сессии и ее статуса (не "processing" или "completed")
+    #    Это важно, чтобы не запускать обработку для уже обработанной или обрабатываемой сессии.
+    #    (Логика получения метаданных сессии, например, из JSON файла)
+    #    sessions_metadata = load_session_metadata()
+    #    session_meta = next((s for s in sessions_metadata if s["id"] == session_id), None)
+    #    if not session_meta:
+    #        raise HTTPException(status_code=404, detail="Session not found")
+    #    if session_meta.get("status") == "processing":
+    #        raise HTTPException(status_code=400, detail="Session is already processing")
+    #    if session_meta.get("status") == "completed":
+    #        logger.info(f"Session {session_id} is already completed. No action taken.")
+    #        return {"status": "already_completed", "session_id": session_id}
+
+    logger.info(f"Request to start processing for session_id: {session_id}")
+
+    # 2. Отмена предыдущей задачи, если она существует и активна для этой сессии
+    if session_id in active_processing_tasks and not active_processing_tasks[session_id].done():
+        logger.warning(f"Session {session_id} has an active processing task. Cancelling it before starting a new one.")
+        active_processing_tasks[session_id].cancel()
+        try:
+            await asyncio.wait_for(active_processing_tasks[session_id], timeout=5.0) # Даем время на отмену
+        except asyncio.CancelledError:
+            logger.info(f"Previous task for session {session_id} was successfully cancelled.")
+        except asyncio.TimeoutError:
+            logger.error(f"Timeout waiting for previous task for session {session_id} to cancel. It might still be running.")
+        except Exception as e:
+            logger.error(f"Error awaiting previous cancelled task for session {session_id}: {e}")
+        # Удаление из словаря произойдет в колбэке отмененной задачи
+    
+    # 3. Подготовка путей и параметров для пайплайна
+    #    Эти пути должны быть уникальными для сессии!
+    #    Пример:
+    base_session_dir = Path("sessions_data") / session_id
+    base_session_dir.mkdir(parents=True, exist_ok=True) # Создаем директорию сессии
+
+    input_file_name = "uploaded_file.csv" # Имя файла должно браться из метаданных сессии
+    input_file = base_session_dir / input_file_name # Путь к загруженному файлу для этой сессии
+    
+    # Убедитесь, что input_file существует (был загружен ранее)
+    if not input_file.exists():
+        logger.error(f"Input file {input_file} not found for session {session_id}.")
+        raise HTTPException(status_code=404, detail=f"Input file for session {session_id} not found.")
+
+    output_csv_file = base_session_dir / "results.csv"
+    
+    # Уникальные логи для сессии
+    logs_dir = Path("output") / "logs" / session_id
+    logs_dir.mkdir(parents=True, exist_ok=True)
+    pipeline_log_path = logs_dir / f"pipeline_{session_id}.log"
+    scoring_log_path = logs_dir / f"scoring_{session_id}.log"
+
+    # Получение контекста (если есть)
+    # context_text = session_meta.get("context_text") 
+    context_text: Optional[str] = None # Заглушка
+
+    # Обновление статуса сессии на "processing"
+    # update_session_status(session_id, "processing") # Пример
+
+    # 4. Создание и запуск новой задачи
+    logger.info(f"Creating processing task for session: {session_id}")
+    task = asyncio.create_task(
+        execute_pipeline_for_session_async(
+            session_id, 
+            input_file, 
+            output_csv_file,
+            pipeline_log_path,
+            scoring_log_path,
+            context_text
+            # ... передайте сюда остальные необходимые клиенты и конфигурации ...
+        )
+    )
+    active_processing_tasks[session_id] = task
+    task.add_done_callback(lambda t: _processing_task_done_callback(t, session_id))
+
+    logger.info(f"Processing task for session {session_id} created and started.")
+    return {"status": "processing_started", "session_id": session_id}
+
+@app.post("/api/sessions/{session_id}/cancel", tags=["Sessions"], summary="Cancel processing for a session")
+async def cancel_processing_session(session_id: str):
+    logger.info(f"Request to cancel processing for session_id: {session_id}")
+    if session_id in active_processing_tasks:
+        task = active_processing_tasks[session_id]
+        if not task.done():
+            task.cancel()
+            logger.info(f"Cancellation request sent to task for session {session_id}.")
+            # Удаление из active_processing_tasks произойдет в _processing_task_done_callback
+            return {"status": "cancellation_requested", "session_id": session_id}
+        else:
+            logger.info(f"Task for session {session_id} is already done. Nothing to cancel.")
+            # Можно удалить из словаря, если колбэк по какой-то причине не сработал
+            if session_id in active_processing_tasks: del active_processing_tasks[session_id]
+            return {"status": "task_already_done", "session_id": session_id}
+    else:
+        logger.warning(f"No active task found for session {session_id} to cancel.")
+        return {"status": "no_active_task", "session_id": session_id, "message": "No active processing task found for this session."}
+
+# Пример эндпоинта для получения статуса (нужно адаптировать)
+@app.get("/api/sessions/{session_id}/status", tags=["Sessions"], summary="Get session status")
+async def get_session_status(session_id: str):
+    # Здесь должна быть логика чтения метаданных сессии (например, из JSON файла)
+    # sessions_metadata = load_session_metadata()
+    # session_meta = next((s for s in sessions_metadata if s["id"] == session_id), None)
+    # if not session_meta:
+    #     raise HTTPException(status_code=404, detail="Session not found")
+
+    status = "unknown" # session_meta.get("status", "unknown")
+    message = "" # session_meta.get("message", "")
+    
+    if session_id in active_processing_tasks and not active_processing_tasks[session_id].done():
+        status = "processing"
+        message = "Processing is ongoing."
+    
+    # Дополнительно: можно добавить информацию о прогрессе, если ваш пайплайн ее как-то обновляет
+    # progress = get_session_progress(session_id) # Ваша функция для получения прогресса
+
+    return {"session_id": session_id, "status": status, "message": message} #, "progress": progress}
+
+# Важно: При завершении работы сервера FastAPI (graceful shutdown),
+# нужно попытаться отменить все активные задачи.
+@app.on_event("shutdown")
+async def app_shutdown():
+    logger.info("Application shutdown initiated. Cancelling all active processing tasks...")
+    for session_id, task in list(active_processing_tasks.items()): # list() для копии, т.к. словарь может меняться
+        if not task.done():
+            logger.info(f"Cancelling task for session {session_id} during app shutdown.")
+            task.cancel()
+            try:
+                # Даем немного времени на обработку отмены
+                await asyncio.wait_for(task, timeout=10.0) 
+            except asyncio.CancelledError:
+                logger.info(f"Task for session {session_id} successfully cancelled during shutdown.")
+            except asyncio.TimeoutError:
+                logger.error(f"Timeout waiting for task {session_id} to cancel during shutdown. It might not have fully cleaned up.")
+            except Exception as e:
+                logger.error(f"Error during task cancellation for session {session_id} on shutdown: {e}")
+        if session_id in active_processing_tasks: # Проверяем снова, т.к. колбэк мог уже удалить
+            del active_processing_tasks[session_id]
+    logger.info("All active tasks processed for cancellation during shutdown.")
+
+# --- Конец примера изменений ---
 
 if __name__ == "__main__":
     # This is for local development testing

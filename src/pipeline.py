@@ -281,6 +281,12 @@ async def process_company(company_name: str,
              pipeline_logger.warning(f"  > {company_name}: No usable text source found. LLM description cannot be generated.")
              manual_check_flag = True # Already flagged above, but redundant doesn't hurt
              
+    except asyncio.CancelledError:
+        pipeline_logger.info(f"Processing of company '{company_name}' was cancelled.")
+        result_data["homepage"] = result_data.get("homepage", "Processing cancelled")
+        result_data["linkedin"] = result_data.get("linkedin", "Processing cancelled")
+        result_data["description"] = "Processing cancelled"
+        raise
     except Exception as e_outer:
         logging.critical(f"CRITICAL ERROR processing {company_name}: {type(e_outer).__name__} - {e_outer}")
         logging.debug(traceback.format_exc())
@@ -574,6 +580,9 @@ async def run_pipeline_for_file(
                 else:
                     logging.error(f"Unexpected result type: {type(result_data)}")
                     failure_count += 1
+            except asyncio.CancelledError:
+                logging.warning(f"Task for company '{result_data['name']}' in {input_file_path} was cancelled.")
+                failure_count += 1
             except Exception as e:
                 logging.error(f"Task failed: {type(e).__name__} - {e}")
                 failure_count += 1
@@ -588,9 +597,14 @@ async def run_pipeline_for_file(
         logging.info(f"Finished processing {input_file_path}. Successes: {success_count}, Failures: {failure_count}")
         return success_count, failure_count, results_list
 
+    except asyncio.CancelledError:
+        logging.info(f"Processing of file {input_file_path} was cancelled externally.")
+        return success_count, failure_count, results_list
     except Exception as e:
-        logging.error(f"Error processing file {input_file_path}: {type(e).__name__} - {e}")
+        logging.error(f"Critical error processing file {input_file_path}: {type(e).__name__} - {e}")
         logging.debug(traceback.format_exc())
+        if broadcast_update:
+             await broadcast_update({"type": "error", "data": {"message": f"Critical error processing file {Path(input_file_path).name}: {str(e)}"}})
         return success_count, failure_count, results_list
 
 def setup_session_logging(pipeline_log_path: str, scoring_log_path: str):
