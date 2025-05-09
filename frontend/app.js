@@ -38,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentSessionId = null;
     let pollingInterval = null;
+    let ws = null;
+    let resultsTable = null;
 
     // --- Loading Indicator Functions ---
     function showLoading() {
@@ -172,18 +174,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchSessionData(sessionId) {
         if (!sessionId) return;
-
         showLoading();
         try {
             const response = await fetch(`/api/sessions/${sessionId}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
             const sessionData = await response.json();
             showCurrentSessionUI(sessionId);
             updateStatus(`Status: ${sessionData.status}`);
-
+            // Сохраняем ожидаемое количество компаний для прогресс-бара
+            window.expectedTotalCompanies = sessionData.total_companies || sessionData.last_processed_count || 0;
             if (sessionData.status === 'completed') {
                 await fetchAndDisplayResults(sessionId);
+                updateProgressBar(window.expectedTotalCompanies, window.expectedTotalCompanies, true);
             }
         } catch (error) {
             console.error('Error fetching session data:', error);
@@ -197,20 +199,18 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading();
         try {
             const response = await fetch(`/api/sessions/${sessionId}/results`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            
+            if (!response.ok) return; // Не показываем ошибку, если результатов ещё нет
             const results = await response.json();
             displayResultsInTable(results);
+            // Обновляем прогресс
+            const total = window.expectedTotalCompanies || results.length;
+            updateProgressBar(results.length, total, false);
             resultsSection.style.display = 'block';
             showResultsControls();
-            if (progressStatus) progressStatus.style.display = 'none';
+            if (progressStatus) progressStatus.style.display = 'block';
             if (newSessionBtn) newSessionBtn.style.display = 'inline-block';
         } catch (error) {
-            if (progressStatus) {
-                progressStatus.style.display = 'block';
-                progressStatus.textContent = `Error loading results: ${error.message}`;
-                progressStatus.style.color = 'red';
-            }
+            // Не показываем тревожных сообщений, если результатов ещё нет
         } finally {
             hideLoading();
         }
@@ -251,28 +251,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pollingInterval) {
             clearInterval(pollingInterval);
         }
-        
         pollingInterval = setInterval(async () => {
             try {
                 const response = await fetch(`/api/sessions/${sessionId}`);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                
+                if (!response.ok) return;
                 const sessionData = await response.json();
                 updateStatus(`Status: ${sessionData.status}`);
-
+                // Сохраняем ожидаемое количество компаний для прогресс-бара
+                window.expectedTotalCompanies = sessionData.total_companies || sessionData.last_processed_count || window.expectedTotalCompanies || 0;
+                await fetchAndDisplayResults(sessionId);
                 if (sessionData.status === 'completed') {
                     stopPollingStatus();
                     await fetchAndDisplayResults(sessionId);
+                    updateProgressBar(window.expectedTotalCompanies, window.expectedTotalCompanies, true);
                 } else if (sessionData.status === 'error') {
                     stopPollingStatus();
                     updateStatus(`Error: ${sessionData.error_message || 'Processing failed'}`);
                 }
             } catch (error) {
-                console.error('Error polling status:', error);
-                stopPollingStatus();
-                updateStatus(`Error checking status: ${error.message}`);
+                // Не показываем тревожных сообщений, если результатов ещё нет
             }
-        }, 2000); // Poll every 2 seconds
+        }, 2000);
     }
 
     function stopPollingStatus() {
@@ -400,6 +399,68 @@ document.addEventListener('DOMContentLoaded', () => {
         const rows = results.map(row => keys.map(k => '"' + (row[k] ? String(row[k]).replace(/"/g, '""') : '') + '"').join(','));
         return header + '\n' + rows.join('\n');
     }
+
+    function updateProgressBar(processed, total, completed) {
+        let progressStatus = document.getElementById('progressStatus');
+        if (!progressStatus) return;
+        if (!completed) {
+            progressStatus.style.display = 'block';
+            progressStatus.style.color = '#007bff';
+            progressStatus.textContent = `Processing... ${processed} of ${total} processed`;
+        } else {
+            progressStatus.style.display = 'block';
+            progressStatus.style.color = 'green';
+            progressStatus.textContent = `Completed: ${processed} of ${total} processed`;
+        }
+    }
+
+    function connectWebSocket() {
+        ws = new WebSocket(`ws://${window.location.host}/ws`);
+        
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            if (data.type === "update") {
+                updateTableRow(data.data);
+            } else if (data.type === "complete") {
+                console.log("Processing completed");
+                document.getElementById("status").textContent = "Processing completed";
+            }
+        };
+        
+        ws.onclose = function() {
+            console.log("WebSocket connection closed");
+            // Try to reconnect after 5 seconds
+            setTimeout(connectWebSocket, 5000);
+        };
+    }
+
+    function updateTableRow(data) {
+        if (!resultsTable) {
+            resultsTable = document.getElementById("resultsTable");
+        }
+        
+        let row = document.getElementById(`row-${data.name}`);
+        if (!row) {
+            // Create new row if it doesn't exist
+            row = resultsTable.insertRow();
+            row.id = `row-${data.name}`;
+            
+            // Add cells
+            row.insertCell(0).textContent = data.name;
+            row.insertCell(1).textContent = data.homepage;
+            row.insertCell(2).textContent = data.linkedin;
+            row.insertCell(3).textContent = data.description;
+        } else {
+            // Update existing row
+            row.cells[1].textContent = data.homepage;
+            row.cells[2].textContent = data.linkedin;
+            row.cells[3].textContent = data.description;
+        }
+    }
+
+    // Connect WebSocket when page loads
+    connectWebSocket();
 
     // Initial load
     console.log('Starting initial load'); // Отладочная информация

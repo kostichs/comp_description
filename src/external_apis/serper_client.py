@@ -7,6 +7,8 @@ from openai import AsyncOpenAI # To pass the client for LLM selection
 import logging # Added for logging
 from urllib.parse import urlparse, unquote # Added for path depth checking and URL decoding
 from ..config import SPECIAL_COMPANY_HANDLING # Import the special handling rules
+import socket
+from typing import Optional, List
 
 # Global list of blacklisted domains (registered domain part)
 BLACKLISTED_DOMAINS_FOR_HP = [ # More aggressive blacklist for HP
@@ -47,6 +49,8 @@ NEGATIVE_KEYWORDS_FOR_HP_URL_PATH = [
 
 # Function to normalize company name for simple comparison (used in LI scoring)
 def normalize_name_for_domain_comparison(name: str) -> str:
+    # Remove anything in parentheses
+    name = re.sub(r'\s*\([^)]*\)', '', name)
     name = name.lower()
     common_suffixes = [
         ', inc.', ' inc.', ', llc', ' llc', ', ltd.', ' ltd.', ' ltd', ', gmbh', ' gmbh',
@@ -59,6 +63,29 @@ def normalize_name_for_domain_comparison(name: str) -> str:
             name = name[:-len(suffix)]
     name = re.sub(r'[^\w-]', '', name)
     return name.strip('-')
+
+def check_direct_domain_match(url: str, company_name: str) -> bool:
+    """Check if URL directly matches company name pattern (www.companyname.com or companyname.com)"""
+    try:
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc.lower()
+        if domain.startswith('www.'):
+            domain = domain[4:]
+        
+        # Get clean company name without parentheses
+        clean_company_name = normalize_name_for_domain_comparison(company_name)
+        
+        # Check for exact match
+        if domain == f"{clean_company_name}.com":
+            return True
+            
+        # Check for regional TLDs
+        if domain.startswith(f"{clean_company_name}."):
+            return True
+            
+        return False
+    except Exception:
+        return False
 
 async def _execute_serper_query(
     session: aiohttp.ClientSession,
@@ -115,7 +142,7 @@ def normalize_linkedin_url(url: str) -> str | None:
     """
     if not url or not isinstance(url, str):
         return None
-    
+
     url_lower = url.lower()
     
     # Try to match /company/, /school/, /showcase/
@@ -158,6 +185,55 @@ def normalize_linkedin_url(url: str) -> str | None:
     # The main goal is to have a consistent URL structure for scraping attempts.
     return f"https://www.linkedin.com/{profile_type}/{cleaned_slug}/about/"
 
+async def check_domain_availability(domain: str, timeout: float = 2.0) -> bool:
+    """Check if domain is available and returns valid HTTP response"""
+    try:
+        # First try to resolve DNS
+        try:
+            socket.gethostbyname(domain)
+        except socket.gaierror:
+            return False
+
+        # Try HTTPS first
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.head(f"https://{domain}", timeout=timeout, allow_redirects=True) as response:
+                    if 200 <= response.status < 400:
+                        return True
+            except:
+                pass
+
+            # If HTTPS fails, try HTTP
+            try:
+                async with session.head(f"http://{domain}", timeout=timeout, allow_redirects=True) as response:
+                    if 200 <= response.status < 400:
+                        return True
+            except:
+                pass
+
+        return False
+    except Exception:
+        return False
+
+async def find_domain_by_tld(company_name: str) -> Optional[str]:
+    """Try to find company domain by checking common TLDs"""
+    # Common TLDs ordered by popularity
+    common_tlds = [
+        "com", "net", "org", "io", "co", "ai", "app", "dev", "tech", "digital",
+        "cloud", "online", "site", "website", "info", "biz", "me", "tv", "studio",
+        "agency", "group", "team", "solutions", "services", "systems", "technology"
+    ]
+    
+    # Clean company name
+    clean_name = normalize_name_for_domain_comparison(company_name)
+    
+    # Try each TLD
+    for tld in common_tlds:
+        domain = f"{clean_name}.{tld}"
+        if await check_domain_availability(domain):
+            return f"https://{domain}"
+    
+        return None
 
 async def find_urls_with_serper_async(
     session: aiohttp.ClientSession,
@@ -192,6 +268,7 @@ async def find_urls_with_serper_async(
     selected_linkedin_url: str | None = None
     linkedin_snippet: str | None = None
     wikipedia_url: str | None = None
+    guessed_homepage: str | None = None  # Initialize here
     
     scoring_logger_obj.info(f"\n--- Searching for LinkedIn URL for '{company_name}' (Scoring Method) ---")
     linkedin_candidates = []
@@ -236,263 +313,130 @@ async def find_urls_with_serper_async(
         "instagram.com", "pinterest.com", "reddit.com", "tiktok.com",
         "wikipedia.org", "wikimedia.org" 
     ]
+    
+    # First check for direct domain match
     for res in organic_results:
         link = res.get("link")
-        title = res.get("title", "")
-        snippet = res.get("snippet", "")
-        if not link or not isinstance(link, str): continue 
+        if not link or not isinstance(link, str): continue
+        
         try:
             parsed_url = urlparse(link)
             if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"]:
-                 scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Invalid scheme")
-                 continue
+                continue
             if not parsed_url.netloc:
-                 scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Missing domain")
-                 continue
+                continue
+                
+            # Check for direct domain match
+            if check_direct_domain_match(link, company_name):
+                selected_homepage_url = link
+                scoring_logger_obj.info(f"Found direct domain match for homepage: {selected_homepage_url}")
+                return selected_homepage_url, selected_linkedin_url, linkedin_snippet, wikipedia_url
+                
+            # Continue with normal filtering for LLM candidates
             extracted_parts = tldextract.extract(link)
             registered_domain = extracted_parts.registered_domain.lower()
             is_core_blacklisted = any(blacklisted in registered_domain for blacklisted in CORE_BLACKLIST)
             if is_core_blacklisted:
                 scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Domain '{registered_domain}' is in CORE blacklist.")
                 continue
-            homepage_candidates_for_llm.append({"link": link, "title": title, "snippet": snippet})
+            homepage_candidates_for_llm.append({"link": link, "title": res.get("title", ""), "snippet": res.get("snippet", "")})
         except Exception as e:
             scoring_logger_obj.warning(f"Error pre-filtering HP candidate link {link} for LLM: {type(e).__name__} - {e}")
             continue
 
-    if not homepage_candidates_for_llm:
-        scoring_logger_obj.warning(f"No suitable homepage candidates found to send to LLM for '{company_name}' after pre-filtering.")
-    elif not openai_client:
-        scoring_logger_obj.warning(f"OpenAI client not available, cannot use LLM to select homepage for '{company_name}'.")
-    else:
-        MAX_CANDIDATES_FOR_LLM = 15 
-        if len(homepage_candidates_for_llm) > MAX_CANDIDATES_FOR_LLM:
-             scoring_logger_obj.debug(f"Trimming homepage candidates for LLM from {len(homepage_candidates_for_llm)} to {MAX_CANDIDATES_FOR_LLM}")
-             homepage_candidates_for_llm = homepage_candidates_for_llm[:MAX_CANDIDATES_FOR_LLM]
-        
-        scoring_logger_obj.info(f"Homepage candidates for LLM for '{company_name}' ({len(homepage_candidates_for_llm)} total):")
-        for idx, cand_item in enumerate(homepage_candidates_for_llm):
-            scoring_logger_obj.info(f"  #{idx+1}: URL: {cand_item['link']}, Title: {cand_item['title'][:70]}..., Snippet: {cand_item['snippet'][:100]}...")
-             
-        candidates_str = "\n".join([f"- {c['link']}\n  Title: {c['title']}\n  Snippet: {c['snippet']}" for c in homepage_candidates_for_llm])
-        
-        # --- Prepare context for LLM Homepage Selection (including Wiki URL if found) ---
-        llm_context_info = context_text or "General Business"
-        if wikipedia_url:
-            llm_context_info += f". Wikipedia page found: {wikipedia_url}"
-            scoring_logger_obj.info(f"  Adding found Wikipedia URL to context for LLM Homepage selection.")
+    # If no direct match found, try TLD checking
+    if not selected_homepage_url:
+        scoring_logger_obj.info(f"Trying to find homepage by checking common TLDs for '{company_name}'")
+        guessed_domain = await find_domain_by_tld(company_name)
+        if guessed_domain:
+            scoring_logger_obj.info(f"Found potential homepage through TLD checking: {guessed_domain}")
+            # Store the guessed domain but continue with LLM check
+            guessed_homepage = guessed_domain
 
-        system_prompt_content = f"""You are a reliable assistant that, given a list of URLs for a single company, name the one official homepage for the company {company_name}. 
-Always output EXACTLY the URL on a single line, without any extra commentary."""
-        
-        few_shot_user_content = f"""
-Example 1:
-Company: Acme Corp
-Context: Technology solutions provider
-Candidates:
-- https://acme.com
-  Title: Acme Corp - Innovative Solutions
-  Snippet: Acme Corp provides cutting-edge technology solutions for businesses全球.
-- https://acme.blog.com
-  Title: Acme Blog
-  Snippet: Latest news and updates from Acme Corp.
-- https://linkedin.com/company/acme/about/
-  Title: Acme Corp | LinkedIn
-  Snippet: About Acme Corp on LinkedIn.
-Answer: https://acme.com
-
-Example 2:
-Company: Foo Bar Inc.
-Context: Local bakery. Wikipedia page found: https://en.wikipedia.org/wiki/Foo_Bar_Inc
-Candidates:
-- https://linkedin.com/company/foo-bar-inc/about/
-  Title: Foo Bar Inc. | LinkedIn
-  Snippet: Foo Bar Inc. LinkedIn page.
-- https://en.wikipedia.org/wiki/Foo_Bar_Inc
-  Title: Foo Bar Inc. - Wikipedia
-  Snippet: Wikipedia article about Foo Bar Inc.
-- https://www.some_directory.com/foo-bar-inc
-  Title: Foo Bar Inc. - Business Directory
-  Snippet: Foo Bar Inc. listed in Some Directory.
-Answer: None
-
-Now:
-Company: {company_name}
-Context: {llm_context_info} 
-Candidates:
-{candidates_str}
-Answer:
-"""
-        
-        messages_for_llm = [
-            {"role": "system", "content": system_prompt_content},
-            {"role": "user", "content": few_shot_user_content}
-        ]
-        
-        scoring_logger_obj.info(f"Calling LLM with few-shot prompt to select homepage from {len(homepage_candidates_for_llm)} candidates for '{company_name}'.")
-        scoring_logger_obj.debug(f"LLM User Prompt for '{company_name}':\n{few_shot_user_content}")
-
-        try:
-            response = await openai_client.chat.completions.create(
-                model="gpt-4o-mini", 
-                messages=messages_for_llm,
-                max_tokens=150,
-                temperature=0.0,
-                top_p=1.0,
-                n=1,
-                stop=None
-            )
+    # Continue with LLM check if we have candidates
+    if homepage_candidates_for_llm:
+        if not openai_client:
+            scoring_logger_obj.warning(f"OpenAI client not available, cannot use LLM to select homepage for '{company_name}'.")
+        else:
+            MAX_CANDIDATES_FOR_LLM = 15 
+            if len(homepage_candidates_for_llm) > MAX_CANDIDATES_FOR_LLM:
+                 scoring_logger_obj.debug(f"Trimming homepage candidates for LLM from {len(homepage_candidates_for_llm)} to {MAX_CANDIDATES_FOR_LLM}")
+                 homepage_candidates_for_llm = homepage_candidates_for_llm[:MAX_CANDIDATES_FOR_LLM]
             
-            llm_choice_content = ""
-            finish_reason = "unknown"
-            full_message_object_str = "N/A"
-
-            if response.choices and len(response.choices) > 0:
-                choice = response.choices[0]
-                llm_choice_content = choice.message.content.strip() if choice.message and choice.message.content else ""
-                finish_reason = choice.finish_reason
-                full_message_object_str = str(choice.message) 
-                scoring_logger_obj.info(f"LLM raw choice for '{company_name}': '{llm_choice_content}', Finish Reason: {finish_reason}")
-                scoring_logger_obj.debug(f"LLM full message object for '{company_name}': {full_message_object_str}")
-            else:
-                scoring_logger_obj.warning(f"LLM response for '{company_name}' had no choices or empty choice.")
-
-            # Validate LLM's choice (Relaxed validation)
-            if llm_choice_content and llm_choice_content.lower() != 'none':
-                # Check if it's a valid URL format
-                if re.match(r'^https?://', llm_choice_content):
-                    # Check if it was one of the candidates (case-insensitive, whitespace stripped)
-                    normalized_llm_choice = llm_choice_content.strip().lower()
+            scoring_logger_obj.info(f"Homepage candidates for LLM for '{company_name}' ({len(homepage_candidates_for_llm)} total):")
+            for idx, cand_item in enumerate(homepage_candidates_for_llm):
+                scoring_logger_obj.info(f"  #{idx+1}: URL: {cand_item['link']}, Title: {cand_item['title'][:70]}..., Snippet: {cand_item['snippet'][:100]}...")
+             
+            # --- Новый упрощённый prompt для LLM ---
+            simple_url_list = '\n'.join([c['link'] for c in homepage_candidates_for_llm])
+            system_prompt_content = f"Given the following homepage candidates for {company_name}, output only the single official URL on one line. Do not add any other text."
+            user_prompt_content = f"Candidates:\n{simple_url_list}\n\nAnswer:"
+            messages_for_llm = [
+                {"role": "system", "content": system_prompt_content},
+                {"role": "user", "content": user_prompt_content}
+            ]
+            scoring_logger_obj.info(f"Calling LLM with simple prompt to select homepage from {len(homepage_candidates_for_llm)} candidates for '{company_name}'.")
+            try:
+                response = await openai_client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=messages_for_llm,
+                    max_tokens=150,
+                    temperature=0.0,
+                    top_p=1.0,
+                    n=1,
+                    stop=["\n"]
+                )
+                llm_choice_content = ""
+                finish_reason = "unknown"
+                full_message_object_str = "N/A"
+                if response.choices and len(response.choices) > 0:
+                    choice = response.choices[0]
+                    llm_choice_content = choice.message.content.strip() if choice.message and choice.message.content else ""
+                    finish_reason = choice.finish_reason
+                    full_message_object_str = str(choice.message)
+                    scoring_logger_obj.info(f"LLM raw choice for '{company_name}': '{llm_choice_content}', Finish Reason: {finish_reason}")
+                    scoring_logger_obj.debug(f"LLM full message object for '{company_name}': {full_message_object_str}")
+                else:
+                    scoring_logger_obj.warning(f"LLM response for '{company_name}' had no choices or empty choice.")
+                
+                # If LLM didn't return a valid URL and we have a guessed domain, use it
+                if not llm_choice_content and guessed_homepage:
+                    selected_homepage_url = guessed_homepage
+                    scoring_logger_obj.info(f"Using guessed homepage as fallback: {selected_homepage_url}")
+                else:
+                    # --- Гибкая валидация по домену ---
+                    def strip_scheme_and_trailing_slash(url):
+                        url = url.strip().lower()
+                        if url.startswith('http://'):
+                            url = url[7:]
+                        elif url.startswith('https://'):
+                            url = url[8:]
+                        if url.endswith('/'):
+                            url = url[:-1]
+                        return url
+                    norm_choice = strip_scheme_and_trailing_slash(llm_choice_content)
                     is_candidate = False
                     matching_candidate_url = None
                     for candidate in homepage_candidates_for_llm:
-                         if candidate['link'].strip().lower() == normalized_llm_choice:
-                             is_candidate = True
-                             matching_candidate_url = candidate['link'] # Use the original candidate URL
-                             break # Found a match
-
+                        if strip_scheme_and_trailing_slash(candidate['link']) == norm_choice:
+                            is_candidate = True
+                            matching_candidate_url = candidate['link']
+                            break
                     if is_candidate and matching_candidate_url:
-                        selected_homepage_url = matching_candidate_url # Assign the original candidate URL
-                        scoring_logger_obj.info(f"Selected Homepage URL (LLM Attempt 1, Validated): {selected_homepage_url}")
+                        selected_homepage_url = matching_candidate_url
+                        scoring_logger_obj.info(f"Selected Homepage URL (LLM, validated by domain): {selected_homepage_url}")
                     else:
-                        scoring_logger_obj.warning(f"LLM Attempt 1 returned URL '{llm_choice_content}' which did NOT EXACTLY match (after normalization) any candidate link for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
-                else:
-                    scoring_logger_obj.warning(f"LLM Attempt 1 returned NON-URL choice '{llm_choice_content}' for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
-            elif llm_choice_content.lower() == 'none':
-                 scoring_logger_obj.info(f"LLM Attempt 1 explicitly returned 'None' - no suitable homepage found for '{company_name}'. Full LLM Message: {full_message_object_str}")
-            elif not llm_choice_content: 
-                 scoring_logger_obj.warning(f"LLM Attempt 1 returned an EMPTY string response for '{company_name}'. Finish Reason: {finish_reason}. Full LLM Message: {full_message_object_str}. Treating as no selection.")
-            else: # Other unexpected content
-                 scoring_logger_obj.warning(f"LLM Attempt 1 returned UNEXPECTED response for '{company_name}': '{llm_choice_content}'. Finish Reason: {finish_reason}. Full LLM Message: {full_message_object_str}. Treating as no selection.")
-                 
-        except Exception as e:
-            scoring_logger_obj.error(f"Error during LLM Attempt 1 for homepage selection for '{company_name}': {type(e).__name__} - {str(e)}")
-
-        # --- LLM Retry Logic --- 
-        if not selected_homepage_url and homepage_candidates_for_llm:
-            scoring_logger_obj.warning(f"LLM Attempt 1 failed to select a valid homepage for '{company_name}'. Trying LLM Attempt 2 with a more direct prompt.")
-            
-            # New, more forceful prompt
-            retry_system_prompt_content = f"""You are an assistant that MUST select the single most likely official homepage URL for the company {company_name} from the provided list. 
-Output ONLY the URL itself, nothing else. Do NOT output 'None'."""
-            
-            # Re-use the same few-shot examples structure but without the option for 'None' in the final answer instruction
-            retry_user_content = f"""
-Example 1:
-Company: Acme Corp
-Context: Technology solutions provider
-Candidates:
-- https://acme.com
-  Title: Acme Corp - Innovative Solutions
-  Snippet: Acme Corp provides cutting-edge technology solutions for businesses全球.
-- https://acme.blog.com
-  Title: Acme Blog
-  Snippet: Latest news and updates from Acme Corp.
-- https://linkedin.com/company/acme/about/
-  Title: Acme Corp | LinkedIn
-  Snippet: About Acme Corp on LinkedIn.
-Answer: https://acme.com
-
-Example 2:
-Company: Foo Bar Inc.
-Context: Local bakery. Wikipedia page found: https://en.wikipedia.org/wiki/Foo_Bar_Inc
-Candidates:
-- https://linkedin.com/company/foo-bar-inc/about/
-  Title: Foo Bar Inc. | LinkedIn
-  Snippet: Foo Bar Inc. LinkedIn page.
-- https://en.wikipedia.org/wiki/Foo_Bar_Inc
-  Title: Foo Bar Inc. - Wikipedia
-  Snippet: Wikipedia article about Foo Bar Inc.
-- https://www.some_directory.com/foo-bar-inc
-  Title: Foo Bar Inc. - Business Directory
-  Snippet: Foo Bar Inc. listed in Some Directory.
-Answer: https://www.some_directory.com/foo-bar-inc # Example adjustment: Force a choice even if weak
-
-Now:
-Company: {company_name}
-Context: {llm_context_info}
-Candidates:
-{candidates_str}
-Instruction: Select the single most likely official homepage from the list above.
-Answer:""" # Removed the final Answer: prompt to let model complete
-            
-            retry_messages = [
-                 {"role": "system", "content": retry_system_prompt_content},
-                 {"role": "user", "content": retry_user_content}
-            ]
-            
-            scoring_logger_obj.info(f"Calling LLM Attempt 2 with forceful prompt for '{company_name}'.")
-            scoring_logger_obj.debug(f"LLM Retry User Prompt for '{company_name}':\n{retry_user_content}")
-            
-            try:
-                retry_response = await openai_client.chat.completions.create(
-                    model="gpt-4o-mini", 
-                    messages=retry_messages,
-                    max_tokens=150, 
-                    temperature=0.0, # Keep deterministic
-                    top_p=1.0,
-                    n=1,
-                    stop=None
-                )
-                
-                retry_choice_content = ""
-                retry_finish_reason = "unknown"
-                retry_full_message_object_str = "N/A"
-
-                if retry_response.choices and len(retry_response.choices) > 0:
-                    retry_choice = retry_response.choices[0]
-                    retry_choice_content = retry_choice.message.content.strip() if retry_choice.message and retry_choice.message.content else ""
-                    retry_finish_reason = retry_choice.finish_reason
-                    retry_full_message_object_str = str(retry_choice.message)
-                    scoring_logger_obj.info(f"LLM Attempt 2 raw choice for '{company_name}': '{retry_choice_content}', Finish Reason: {retry_finish_reason}")
-                    scoring_logger_obj.debug(f"LLM Attempt 2 full message object for '{company_name}': {retry_full_message_object_str}")
-                else:
-                    scoring_logger_obj.warning(f"LLM Attempt 2 response for '{company_name}' had no choices or empty choice.")
-
-                # Validate Retry LLM's choice (still needs validation)
-                if retry_choice_content and retry_choice_content.lower() != 'none': # Should ideally not output None, but check anyway
-                    if re.match(r'^https?://', retry_choice_content):
-                        normalized_retry_choice = retry_choice_content.strip().lower()
-                        is_retry_candidate = False
-                        matching_retry_candidate_url = None
-                        for candidate in homepage_candidates_for_llm:
-                            if candidate['link'].strip().lower() == normalized_retry_choice:
-                                is_retry_candidate = True
-                                matching_retry_candidate_url = candidate['link']
-                                break
-                        
-                        if is_retry_candidate and matching_retry_candidate_url:
-                            selected_homepage_url = matching_retry_candidate_url # Assign the validated URL
-                            scoring_logger_obj.info(f"Selected Homepage URL (LLM Attempt 2, Validated): {selected_homepage_url}")
-                        else:
-                             scoring_logger_obj.error(f"LLM Attempt 2 returned URL '{retry_choice_content}' which was NOT in candidate list for '{company_name}'. Cannot use. Full LLM Message: {retry_full_message_object_str}")
-                    else:
-                        scoring_logger_obj.error(f"LLM Attempt 2 returned NON-URL choice '{retry_choice_content}' for '{company_name}'. Cannot use. Full LLM Message: {retry_full_message_object_str}")
-                else: # Includes None or empty string
-                    scoring_logger_obj.error(f"LLM Attempt 2 FAILED to provide a usable URL choice for '{company_name}', despite forceful prompt. Response: '{retry_choice_content}'. Full LLM Message: {retry_full_message_object_str}")
-
-            except Exception as e_retry:
-                scoring_logger_obj.error(f"Error during LLM Attempt 2 for homepage selection for '{company_name}': {type(e_retry).__name__} - {str(e_retry)}")
+                        scoring_logger_obj.warning(f"LLM returned URL '{llm_choice_content}' which did NOT match any candidate by domain for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
+                    # If LLM failed and we have a guessed domain, use it
+                    if guessed_homepage:
+                        selected_homepage_url = guessed_homepage
+                        scoring_logger_obj.info(f"Using guessed homepage as fallback after LLM failure: {selected_homepage_url}")
+            except Exception as e:
+                scoring_logger_obj.error(f"Error during LLM homepage selection for '{company_name}': {type(e).__name__} - {str(e)}")
+                # If LLM failed and we have a guessed domain, use it
+                if guessed_homepage:
+                    selected_homepage_url = guessed_homepage
+                    scoring_logger_obj.info(f"Using guessed homepage as fallback after LLM error: {selected_homepage_url}")
 
     # 4. Find Wikipedia URL (Simple search)
     wikipedia_url = None # <<< MOVED INITIALIZATION HERE

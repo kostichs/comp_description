@@ -2,6 +2,8 @@ import os
 import yaml
 from dotenv import load_dotenv
 
+OUTPUT_DIR = "output"
+
 def load_env_vars() -> tuple[str | None, str | None, str | None]:
     """Loads required API keys from .env file."""
     load_dotenv()

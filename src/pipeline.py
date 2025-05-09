@@ -396,6 +396,11 @@ async def run_pipeline():
     sb_client = ScrapingBeeClient(api_key=scrapingbee_api_key) 
     openai_client = AsyncOpenAI(api_key=openai_api_key) 
     
+    async def broadcast_update(update_data):
+        # This is a placeholder for the broadcast_update function
+        # It should be implemented to send updates to clients
+        pass
+
     async with aiohttp.ClientSession() as session:
         for filename in os.listdir(input_dir):
             original_input_path = os.path.join(input_dir, filename)
@@ -519,7 +524,8 @@ async def run_pipeline_for_file(
     llm_config: dict,
     openai_client: AsyncOpenAI,
     serper_api_key: str,
-    expected_csv_fieldnames: list[str]
+    expected_csv_fieldnames: list[str],
+    broadcast_update: callable = None
 ) -> tuple[int, int, list[dict]]:
     """
     Processes a single input file and saves results to CSV.
@@ -559,12 +565,25 @@ async def run_pipeline_for_file(
                         fieldnames=expected_csv_fieldnames
                     )
                     success_count += 1
+                    # Broadcast update если передан
+                    if broadcast_update:
+                        await broadcast_update({
+                            "type": "update",
+                            "data": result_data
+                        })
                 else:
                     logging.error(f"Unexpected result type: {type(result_data)}")
                     failure_count += 1
             except Exception as e:
                 logging.error(f"Task failed: {type(e).__name__} - {e}")
                 failure_count += 1
+
+        # После завершения всех компаний — broadcast завершения
+        if broadcast_update:
+            await broadcast_update({
+                "type": "complete",
+                "data": {"message": "Processing completed"}
+            })
 
         logging.info(f"Finished processing {input_file_path}. Successes: {success_count}, Failures: {failure_count}")
         return success_count, failure_count, results_list
@@ -610,6 +629,79 @@ def setup_session_logging(pipeline_log_path: str, scoring_log_path: str):
     scoring_logger.addHandler(scoring_handler)
     
     logging.info(f"Logging configured. Pipeline log: {pipeline_log_path}, Scoring log: {scoring_log_path}")
+
+async def process_companies(file_path: str, session_dir: str, broadcast_update: callable):
+    """Process all companies from a file and broadcast updates."""
+    try:
+        # Load company names from file
+        company_names = load_and_prepare_company_names(file_path, 0)  # Assuming company name is in first column
+        if not company_names:
+            logging.warning("No valid company names found in file")
+            return
+
+        # Initialize API clients
+        scrapingbee_api_key, openai_api_key, serper_api_key = load_env_vars()
+        if not all([scrapingbee_api_key, openai_api_key, serper_api_key]):
+            logging.error("Missing API keys")
+            return
+
+        sb_client = ScrapingBeeClient(api_key=scrapingbee_api_key)
+        openai_client = AsyncOpenAI(api_key=openai_api_key)
+        llm_config = load_llm_config("llm_config.yaml")
+
+        # Create output CSV path
+        output_csv_path = os.path.join(session_dir, "results.csv")
+        
+        # Process each company
+        async with aiohttp.ClientSession() as session:
+            for company_name in company_names:
+                try:
+                    # Process company
+                    result = await process_company(
+                        company_name=company_name,
+                        aiohttp_session=session,
+                        sb_client=sb_client,
+                        llm_config=llm_config,
+                        openai_client=openai_client,
+                        context_text=None,  # No context for now
+                        serper_api_key=serper_api_key
+                    )
+                    
+                    # Save result to CSV
+                    save_results_csv([result], output_csv_path, append_mode=True)
+                    
+                    # Broadcast update
+                    await broadcast_update({
+                        "type": "update",
+                        "data": result
+                    })
+                    
+                except Exception as e:
+                    logging.error(f"Error processing company {company_name}: {e}")
+                    # Broadcast error
+                    await broadcast_update({
+                        "type": "update",
+                        "data": {
+                            "name": company_name,
+                            "homepage": "Error",
+                            "linkedin": "Error",
+                            "description": f"Error in processing: {str(e)}"
+                        }
+                    })
+
+        # Broadcast completion
+        await broadcast_update({
+            "type": "complete",
+            "data": {"message": "Processing completed"}
+        })
+
+    except Exception as e:
+        logging.error(f"Error in process_companies: {e}")
+        # Broadcast error
+        await broadcast_update({
+            "type": "error",
+            "data": {"message": f"Error in processing: {str(e)}"}
+        })
 
 if __name__ == "__main__":
     if os.name == 'nt': asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())

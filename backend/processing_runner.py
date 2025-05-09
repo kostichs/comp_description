@@ -16,7 +16,7 @@ from openai import AsyncOpenAI
 from scrapingbee import ScrapingBeeClient
 import aiohttp
 
-async def run_session_pipeline(session_id: str):
+async def run_session_pipeline(session_id: str, broadcast_update=None):
     """
     Runs the full data processing pipeline for a given session ID in the background.
     Updates the session metadata with status (running, completed, error).
@@ -139,7 +139,8 @@ async def run_session_pipeline(session_id: str):
                     llm_config=llm_config,
                     openai_client=openai_client,
                     serper_api_key=serper_api_key,
-                    expected_csv_fieldnames=expected_cols
+                    expected_csv_fieldnames=expected_cols,
+                    broadcast_update=broadcast_update
                 )
             session_logger.info(f"Pipeline execution finished. Success: {success_count}, Failed: {failure_count}")
             session_data['status'] = 'completed'

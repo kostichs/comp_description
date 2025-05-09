@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import os
@@ -11,6 +11,11 @@ import logging
 import pandas as pd
 from fastapi.responses import PlainTextResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+import asyncio
+import json
+from datetime import datetime
+from src.pipeline import process_companies
+from src.config import OUTPUT_DIR
 
 # Adjust sys.path to allow importing from src
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -53,6 +58,29 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # Монтируем статические файлы
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
+
+# Store active WebSocket connections
+active_connections: list[WebSocket] = []
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    active_connections.append(websocket)
+    try:
+        while True:
+            # Keep connection alive
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        active_connections.remove(websocket)
+
+async def broadcast_update(data: dict):
+    """Broadcast update to all connected clients"""
+    for connection in active_connections:
+        try:
+            await connection.send_json(data)
+        except:
+            # Remove dead connections
+            active_connections.remove(connection)
 
 # Маршрут для главной страницы
 @app.get("/")
@@ -148,6 +176,15 @@ async def create_new_session(file: UploadFile = File(...), context_text: str = F
 
     # Create and save metadata entry ONLY if file saved
     if file_saved_successfully:
+        # Определяем количество компаний в файле
+        try:
+            if str(input_file_path).endswith('.csv'):
+                df = pd.read_csv(input_file_path)
+            else:
+                df = pd.read_excel(input_file_path)
+            total_companies = len(df)
+        except Exception:
+            total_companies = None
         new_session_data = {
             "session_id": session_id,
             "timestamp_created": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -160,6 +197,7 @@ async def create_new_session(file: UploadFile = File(...), context_text: str = F
             "pipeline_log_path": None,
             "scoring_log_path": None,
             "last_processed_count": 0,
+            "total_companies": total_companies,
             "error_message": None if context_saved_successfully else "Failed to save context file"
         }
         
@@ -219,7 +257,7 @@ async def start_session_processing(session_id: str, background_tasks: Background
         # Might be better to update status to 'running' inside the task itself.
         # For now, we just add the task.
         
-        background_tasks.add_task(run_session_pipeline, session_id)
+        background_tasks.add_task(run_session_pipeline, session_id, broadcast_update)
         logging.info(f"Added pipeline run for session {session_id} to background tasks.")
         
         # Update status IN METADATA immediately after successfully adding task?
@@ -321,6 +359,37 @@ async def get_session_log(session_id: str, log_type: str):
 # Example:
 # from .routers import sessions # Assuming routes are split into routers
 # app.include_router(sessions.router)
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    # Create session directory
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    session_dir = os.path.join(OUTPUT_DIR, f"{timestamp}_input_{file.filename}")
+    os.makedirs(session_dir, exist_ok=True)
+    
+    # Save uploaded file
+    file_path = os.path.join(session_dir, file.filename)
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    
+    # Start processing in background
+    asyncio.create_task(process_companies(file_path, session_dir, broadcast_update))
+    
+    return {"message": "File uploaded and processing started", "session_dir": session_dir}
+
+@app.get("/download/{session_dir}/{filename}")
+async def download_file(session_dir: str, filename: str):
+    file_path = os.path.join(OUTPUT_DIR, session_dir, filename)
+    return FileResponse(file_path, filename=filename)
+
+@app.get("/app.js")
+async def read_js():
+    return FileResponse("frontend/app.js")
+
+@app.get("/style.css")
+async def read_css():
+    return FileResponse("frontend/style.css")
 
 if __name__ == "__main__":
     # This is for local development testing
