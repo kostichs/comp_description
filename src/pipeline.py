@@ -531,81 +531,111 @@ async def run_pipeline_for_file(
     openai_client: AsyncOpenAI,
     serper_api_key: str,
     expected_csv_fieldnames: list[str],
-    broadcast_update: callable = None
+    broadcast_update: callable = None,
+    main_batch_size: int = 50
 ) -> tuple[int, int, list[dict]]:
     """
-    Processes a single input file and saves results to CSV.
+    Processes a single input file in batches of companies and saves results to CSV.
     Returns tuple of (success_count, failure_count, results_list).
     """
-    logging.info(f"Starting processing for file: {input_file_path}")
-    success_count = 0
-    failure_count = 0
-    results_list = []
+    file_logger = logging.getLogger(f"pipeline.file.{Path(input_file_path).name}")
+    file_logger.info(f"Starting processing for file: {input_file_path} -> {output_csv_path} with batch size: {main_batch_size}")
+    overall_success_count = 0
+    overall_failure_count = 0
+    overall_results_list = [] 
 
     try:
-        # Load company names from input file
-        company_names = load_and_prepare_company_names(input_file_path, company_col_index)
-        if not company_names:
-            logging.warning(f"No valid company names found in {input_file_path}")
+        all_company_names = load_and_prepare_company_names(input_file_path, company_col_index)
+        if not all_company_names:
+            file_logger.warning(f"No valid company names found in {input_file_path}")
             return 0, 0, []
 
-        logging.info(f"Found {len(company_names)} companies. Processing each...")
+        total_companies_to_process = len(all_company_names)
+        file_logger.info(f"Found {total_companies_to_process} total companies. Processing in batches of {main_batch_size}...")
         
-        # Process each company
-        tasks = [
-            asyncio.create_task(
-                process_company(name, aiohttp_session, sb_client, llm_config, openai_client, context_text, serper_api_key)
-            ) for name in company_names
-        ]
+        if not Path(output_csv_path).exists() or Path(output_csv_path).stat().st_size == 0:
+            save_results_csv([], output_csv_path, append_mode=False, fieldnames=expected_csv_fieldnames)
+            file_logger.info(f"Initialized CSV file with headers: {output_csv_path}")
 
-        for future in asyncio.as_completed(tasks):
-            try:
-                result_data = await future
-                if isinstance(result_data, dict):
-                    results_list.append(result_data)
-                    # Save/append this single result immediately
-                    save_results_csv(
-                        [result_data],
-                        output_csv_path,
-                        append_mode=True,
-                        fieldnames=expected_csv_fieldnames
-                    )
-                    success_count += 1
-                    # Broadcast update если передан
-                    if broadcast_update:
-                        await broadcast_update({
-                            "type": "update",
-                            "data": result_data
-                        })
-                else:
-                    logging.error(f"Unexpected result type: {type(result_data)}")
-                    failure_count += 1
-            except asyncio.CancelledError:
-                logging.warning(f"Task for company '{result_data['name']}' in {input_file_path} was cancelled.")
-                failure_count += 1
-            except Exception as e:
-                logging.error(f"Task failed: {type(e).__name__} - {e}")
-                failure_count += 1
+        processed_companies_count = 0
 
-        # После завершения всех компаний — broadcast завершения
+        for i in range(0, total_companies_to_process, main_batch_size):
+            company_names_batch = all_company_names[i:i + main_batch_size]
+            batch_number = (i // main_batch_size) + 1
+            total_batches = (total_companies_to_process + main_batch_size - 1) // main_batch_size
+            file_logger.info(f"Processing batch {batch_number}/{total_batches} ({len(company_names_batch)} companies)... ")
+
+            tasks = [
+                asyncio.create_task(
+                    process_company(name, aiohttp_session, sb_client, llm_config, openai_client, context_text, serper_api_key)
+                ) for name in company_names_batch
+            ]
+
+            batch_results_temp = []
+            for future_index, future in enumerate(asyncio.as_completed(tasks)):
+                current_overall_processed = processed_companies_count + future_index + 1
+                # Проверка на отмену перед ожиданием следующей задачи
+                if asyncio.current_task().cancelled(): # type: ignore[attr-defined]
+                    file_logger.warning(f"Task for run_pipeline_for_file was cancelled during batch {batch_number}. Stopping further processing of companies for {input_file_path}.")
+                    for task_to_cancel in tasks:
+                        if not task_to_cancel.done():
+                            task_to_cancel.cancel()
+                    await asyncio.gather(*tasks, return_exceptions=True)
+                    raise asyncio.CancelledError 
+                
+                company_name_for_log = company_names_batch[future_index] # Приблизительно, т.к. as_completed не гарантирует порядок
+                try:
+                    result_data = await future
+                    if isinstance(result_data, dict):
+                        batch_results_temp.append(result_data) 
+                        save_results_csv([result_data], output_csv_path, append_mode=True, fieldnames=expected_csv_fieldnames)
+                        overall_success_count += 1
+                        if broadcast_update:
+                            progress_data = {
+                                "type": "progress", 
+                                "current_company_name": result_data.get("name"),
+                                "processed_count": current_overall_processed,
+                                "total_companies": total_companies_to_process
+                            }
+                            await broadcast_update(progress_data)
+                            await broadcast_update({"type": "update", "data": result_data})
+                    else:
+                        file_logger.error(f"Unexpected result type: {type(result_data)} for company '{company_name_for_log}' in batch {batch_number} of {input_file_path}")
+                        overall_failure_count += 1
+                except asyncio.CancelledError:
+                    file_logger.warning(f"Processing for company '{company_name_for_log}' in batch {batch_number} was cancelled.")
+                    overall_failure_count += 1
+                except Exception as e_task:
+                    file_logger.error(f"Task for company '{company_name_for_log}' in batch {batch_number} of {input_file_path} failed: {type(e_task).__name__} - {e_task}", exc_info=True)
+                    overall_failure_count += 1
+                    # Сохраняем информацию об ошибке для этой компании
+                    error_result = {"name": company_name_for_log, "homepage": "Error", "linkedin": "Error", "description": f"Processing Error: {type(e_task).__name__}"}
+                    for field in expected_csv_fieldnames:
+                        if field not in error_result: error_result[field] = "ERROR_STATE"
+                    save_results_csv([error_result], output_csv_path, append_mode=True, fieldnames=expected_csv_fieldnames)
+                    batch_results_temp.append(error_result) # Добавляем в результаты батча для общего списка
+            
+            overall_results_list.extend(batch_results_temp)
+            processed_companies_count += len(company_names_batch)
+            file_logger.info(f"Finished batch {batch_number}/{total_batches}. Total processed so far: {processed_companies_count}/{total_companies_to_process}")
+            # Можно добавить небольшую паузу между пакетами, если есть опасения по поводу rate limiting
+            # await asyncio.sleep(5) # Например, 5 секунд
+        
+        file_logger.info(f"Finished all batches for {input_file_path}. Overall Successes: {overall_success_count}, Failures: {overall_failure_count}")
         if broadcast_update:
-            await broadcast_update({
-                "type": "complete",
-                "data": {"message": "Processing completed"}
-            })
+            await broadcast_update({"type": "complete", "data": {"message": f"Processing of {Path(input_file_path).name} completed.", "success_count": overall_success_count, "failure_count": overall_failure_count, "total_companies": total_companies_to_process}})
+        
+        return overall_success_count, overall_failure_count, overall_results_list
 
-        logging.info(f"Finished processing {input_file_path}. Successes: {success_count}, Failures: {failure_count}")
-        return success_count, failure_count, results_list
-
-    except asyncio.CancelledError:
-        logging.info(f"Processing of file {input_file_path} was cancelled externally.")
-        return success_count, failure_count, results_list
-    except Exception as e:
-        logging.error(f"Critical error processing file {input_file_path}: {type(e).__name__} - {e}")
-        logging.debug(traceback.format_exc())
+    except asyncio.CancelledError: 
+        file_logger.info(f"Processing of file {input_file_path} was cancelled externally.")
+        # При отмене возвращаем то, что успели обработать
+        return overall_success_count, overall_failure_count, overall_results_list
+    except Exception as e_main:
+        file_logger.error(f"Critical error processing file {input_file_path}: {type(e_main).__name__} - {e_main}", exc_info=True)
         if broadcast_update:
-             await broadcast_update({"type": "error", "data": {"message": f"Critical error processing file {Path(input_file_path).name}: {str(e)}"}})
-        return success_count, failure_count, results_list
+             await broadcast_update({"type": "error", "data": {"message": f"Critical error processing file {Path(input_file_path).name}: {str(e_main)}"}})
+        return overall_success_count, overall_failure_count, overall_results_list
 
 def setup_session_logging(pipeline_log_path: str, scoring_log_path: str):
     """Configures logging handlers for a specific session run."""

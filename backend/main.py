@@ -499,7 +499,7 @@ async def start_processing_session(session_id: str): # Убрал BackgroundTask
         logger.warning(f"Session {session_id} has an active processing task. Cancelling it before starting a new one.")
         active_processing_tasks[session_id].cancel()
         try:
-            await asyncio.wait_for(active_processing_tasks[session_id], timeout=5.0) # Даем время на отмену
+            await asyncio.wait_for(active_processing_tasks[session_id], timeout=10.0) # Даем время на отмену
         except asyncio.CancelledError:
             logger.info(f"Previous task for session {session_id} was successfully cancelled.")
         except asyncio.TimeoutError:
