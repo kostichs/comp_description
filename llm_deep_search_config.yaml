@@ -1,0 +1,25 @@
+# Конфигурация для LLM Deep Search
+
+# Список конкретных вопросов для LLM
+specific_queries:
+  - "What is the company's Annual Recurring Revenue (ARR)?"
+  - "How many employees does the company have?"
+  - "What are the company's main products or services?"
+  - "Who are the company's main competitors?"
+  - "What is the company's funding status and total funding amount?"
+  - "What is the company's business model?"
+  - "What is the company's target market?"
+  - "What are the company's key achievements or milestones?"
+
+# Настройки для LLM
+llm_settings:
+  model: "gpt-4-turbo-preview"
+  temperature: 0.3
+  max_tokens: 500
+  system_prompt: "You are a helpful assistant that extracts specific information about companies."
+
+# Настройки для сбора данных
+data_collection:
+  max_retries: 3
+  timeout: 30
+  min_text_length: 100 

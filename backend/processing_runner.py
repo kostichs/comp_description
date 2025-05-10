@@ -31,6 +31,12 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         if not session_data:
             session_logger.error(f"[BG Task {session_id}] Session metadata not found. Aborting.")
             return # Cannot proceed without metadata
+
+        # ++ Читаем флаги выбора пайплайнов из метаданных ++
+        run_standard_pipeline = session_data.get("run_standard_pipeline", True) # По умолчанию True
+        run_llm_deep_search_pipeline = session_data.get("run_llm_deep_search_pipeline", False) # По умолчанию False
+        session_logger.info(f"[BG Task {session_id}] Standard pipeline: {run_standard_pipeline}, LLM Deep Search: {run_llm_deep_search_pipeline}")
+
     except Exception as e:
         session_logger.error(f"[BG Task {session_id}] Error loading session metadata: {e}. Aborting.")
         return
@@ -109,6 +115,23 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         try:
             scrapingbee_api_key, openai_api_key, serper_api_key = load_env_vars()
             llm_config = load_llm_config("llm_config.yaml") 
+            # ++ Загружаем конфиг для LLM Deep Search, если он будет использоваться ++
+            llm_deep_search_specific_queries = []
+            if run_llm_deep_search_pipeline:
+                # Для примера, статический список запросов. В будущем можно вынести в конфиг.
+                # Эти ключи будут использованы для формирования имен колонок.
+                llm_deep_search_specific_queries = [
+                    "Каков годовой доход (ARR) компании?",
+                    "Сколько сотрудников работает в компании?",
+                    "Каковы детали последнего раунда финансирования (сумма, дата, инвесторы)?",
+                    "Какие ключевые продукты или услуги предлагает компания?",
+                    "Кто основные конкуренты компании?"
+                ]
+                # Можно также загружать их из llm_deep_search_config.yaml, если он будет создан
+                # deep_search_llm_config = load_llm_config("llm_deep_search_config.yaml")
+                # llm_deep_search_specific_queries = deep_search_llm_config.get("specific_queries", [])
+                session_logger.info(f"[BG Task {session_id}] LLM Deep Search specific queries: {llm_deep_search_specific_queries}")
+
             if not all([scrapingbee_api_key, openai_api_key, serper_api_key, llm_config]):
                 raise ValueError("One or more required API keys or LLM config missing.")
         except Exception as e_conf:
@@ -123,26 +146,34 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             pipeline_error = f"API Client initialization failed: {e_client}"
             raise # Re-raise
         
-        # --- Определение полей CSV (как в backend/main.py) --- 
+        # --- Определение полей CSV --- 
         base_ordered_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
-        additional_llm_fields = []
-        if isinstance(llm_config.get("response_format"), dict) and \
+        additional_llm_fields = [] # Для стандартного LLM JSON вывода, если он есть
+        
+        # Эта часть относится к СТАНДАРТНОМУ LLM пайплайну, если он используется для JSON вывода
+        if run_standard_pipeline and isinstance(llm_config.get("response_format"), dict) and \
            llm_config["response_format"].get("type") == "json_object":
             try:
                 if "expected_json_keys" in llm_config: 
                     llm_keys = [f"llm_{k}" for k in llm_config["expected_json_keys"]]
                     additional_llm_fields.extend(llm_keys)
-                # Можно добавить другую логику извлечения ключей из llm_config, если необходимо
             except Exception as e_llm_keys:
-                session_logger.warning(f"[BG Task {session_id}] Could not dynamically determine LLM output keys: {e_llm_keys}")
+                session_logger.warning(f"[BG Task {session_id}] Could not dynamically determine standard LLM output keys: {e_llm_keys}")
         
         temp_fieldnames = list(base_ordered_fields) 
         for field in additional_llm_fields:
             if field not in temp_fieldnames:
                 temp_fieldnames.append(field)
-        expected_cols = temp_fieldnames # <--- ИСПОЛЬЗУЕМ НОВЫЙ СПИСОК
+        
+        expected_cols = temp_fieldnames 
         session_logger.info(f"[BG Task {session_id}] Determined expected_csv_fieldnames: {expected_cols}")
         # --- Конец определения полей CSV ---
+
+        # --- Передаем также llm_deep_search_specific_queries, если он активен ---
+        # Это необходимо для src/pipeline.py -> process_company
+        deep_search_config_for_pipeline = {
+            "specific_queries": llm_deep_search_specific_queries
+        } if run_llm_deep_search_pipeline else None
 
         # --- 6. Execute Pipeline --- 
         session_logger.info("Starting core pipeline execution...")
@@ -162,7 +193,11 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     serper_api_key=serper_api_key,
                     expected_csv_fieldnames=expected_cols, # <--- ПЕРЕДАЕМ ПРАВИЛЬНЫЙ СПИСОК
                     broadcast_update=broadcast_update,
-                    main_batch_size=session_data.get("batch_size", 50) # Пример: берем batch_size из метаданных или по умолчанию 50
+                    main_batch_size=session_data.get("batch_size", 50), # Пример: берем batch_size из метаданных или по умолчанию 50
+                    # ++ Передаем флаги и конфиг для LLM Deep Search ++
+                    run_standard_pipeline=run_standard_pipeline,
+                    run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
+                    llm_deep_search_config=deep_search_config_for_pipeline
                 )
             session_logger.info(f"Pipeline execution finished. Success: {success_count}, Failed: {failure_count}")
             session_data['status'] = 'completed'

@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 import logging # Added for logging
 from pathlib import Path
 from datetime import datetime
+from typing import Optional, Dict, Any
 
 from scrapingbee import ScrapingBeeClient # Need sync client for thread
 from openai import AsyncOpenAI
@@ -30,6 +31,9 @@ from .processing import (validate_page,
                          parse_linkedin_about_section_flexible,
                          find_and_scrape_about_page_async,
                          get_wikipedia_summary_async) # Added get_wikipedia_summary_async
+
+# ++ Импорт для LLM Deep Search ++
+from .llm_deep_search import query_llm_for_deep_info
 
 # --- Setup Logging --- 
 # Remove any existing handlers for the root logger
@@ -87,223 +91,223 @@ async def process_company(company_name: str,
                           llm_config: dict, 
                           openai_client: AsyncOpenAI,
                           context_text: str | None, 
-                          serper_api_key: str | None) -> dict:
+                          serper_api_key: str | None,
+                          run_standard_pipeline: bool = True,
+                          run_llm_deep_search_pipeline: bool = False,
+                          llm_deep_search_config: Optional[Dict[str, Any]] = None) -> dict:
     """Async: Processes a single company. Returns a dictionary for the output row."""
     pipeline_logger = logging.getLogger(__name__)
-    pipeline_logger.info(f"Starting async process for: {company_name} (Context: {bool(context_text)})")
-    start_time_processing = time.time() # Используем другую переменную, чтобы не конфликтовать с глобальным start_time, если он есть
+    pipeline_logger.info(f"Starting process for: {company_name} (Std: {run_standard_pipeline}, Deep: {run_llm_deep_search_pipeline}) Context: {bool(context_text)}")
+    start_time_processing = time.time()
     
-    # Получаем текущую дату и форматируем ее
-    current_date_iso = datetime.now().strftime("%Y-%m-%d") # Формат ГГГГ-ММ-ДД
+    current_date_iso = datetime.now().strftime("%Y-%m-%d")
 
+    # Инициализация result_data стандартными полями
     result_data = {
-        "name": company_name, 
+        "name": company_name,
         "homepage": "Not found", 
         "linkedin": "Not found", 
-        "description": "Description not generated",
-        "timestamp": current_date_iso # <--- НОВОЕ ПОЛЕ
+        "description": "Description not generated", # Будет перезаписано
+        "timestamp": current_date_iso
     }
     
-    # --- Variables to store collected data ---
+    # --- Переменные для сбора данных ---
     hp_url_found_serper: str | None = None
-    li_url_found_serper: str | None = None
-    li_snippet_serper: str | None = None
+    li_url_found_serper: str | None = None 
+    li_snippet_serper: str | None = None 
     wiki_url_found_serper: str | None = None
     hp_html_content: str | None = None
     hp_title: str | None = None
     hp_root: str | None = None
     about_page_text: str | None = None
     wiki_summary: str | None = None
-    text_src: str | None = None
-    page_validated_for_text_extraction: bool = False
+    hp_text_for_llm: str | None = None
+    text_src_for_llms: str = "" # Инициализируем пустой строкой, будем конкатенировать
     manual_check_flag: bool = False
 
     try:
-        # --- 1. Find URLs using Serper API ---
-        pipeline_logger.info(f"  > {company_name}: Finding URLs via Serper...")
-        serper_urls = await find_urls_with_serper_async(
-            aiohttp_session, company_name, context_text, serper_api_key, openai_client, pipeline_logger 
-        )
-        if serper_urls:
-            hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = serper_urls
-        else:
-            pipeline_logger.error(f"  > {company_name}: Critical error in find_urls_with_serper_async, returned None.")
-            result_data["homepage"] = "Not found"
-            result_data["linkedin"] = "Not found"
-            manual_check_flag = True
-
-        # <<< START: Extract base URL for homepage column >>>
-        base_homepage_url = "Homepage not found (Serper API issue)" 
-        if hp_url_found_serper:
-            try:
-                parsed_hp_url = urlparse(hp_url_found_serper)
-                base_homepage_url = f"{parsed_hp_url.scheme}://{parsed_hp_url.netloc}" 
-                result_data["homepage"] = base_homepage_url
-                pipeline_logger.info(f"  > {company_name}: Homepage URL found: {hp_url_found_serper} (Base: {base_homepage_url})")
-            except Exception as e_parse:
-                pipeline_logger.warning(f"  > {company_name}: Could not parse homepage URL '{hp_url_found_serper}': {e_parse}")
-                result_data["homepage"] = hp_url_found_serper 
-        else:
-            pipeline_logger.warning(f"  > {company_name}: Homepage URL NOT found by Serper/LLM after retries.")
-            result_data["homepage"] = "Not found"
-            manual_check_flag = True
-            
-        # <<< START: Clean LinkedIn URL for output >>>
-        cleaned_linkedin_url = "LinkedIn URL not found (Serper API issue)" 
-        if li_url_found_serper:
-            if li_url_found_serper.endswith('/about/'): cleaned_linkedin_url = li_url_found_serper[:-len('/about/')]
-            elif li_url_found_serper.endswith('/'): cleaned_linkedin_url = li_url_found_serper[:-1]
-            else: cleaned_linkedin_url = li_url_found_serper 
-            result_data["linkedin"] = cleaned_linkedin_url
-            pipeline_logger.info(f"  > {company_name}: LinkedIn URL found: {li_url_found_serper} (Cleaned: {cleaned_linkedin_url})")
-            if li_snippet_serper: pipeline_logger.info(f"  > {company_name}: LinkedIn Snippet: '{li_snippet_serper[:100]}...'")
-        else:
-            pipeline_logger.warning(f"  > {company_name}: LinkedIn URL NOT found by Serper after retries.")
-            result_data["linkedin"] = "Not found"
-            
-        if wiki_url_found_serper:
-            pipeline_logger.info(f"  > {company_name}: Wikipedia URL found: {wiki_url_found_serper}")
-        else:
-            pipeline_logger.info(f"  > {company_name}: Wikipedia URL NOT found by Serper.")
-
-        # --- 2. Scrape Homepage (if URL found) ---
-        if hp_url_found_serper:
-            try:
-                pipeline_logger.info(f"  > {company_name}: Scraping homepage: {hp_url_found_serper}")
-                # Use the async wrapper for ScrapingBee
-                hp_data = await scrape_page_data_async(hp_url_found_serper, sb_client)
-                if hp_data and hp_data[2]: # Check if HTML content exists
-                    hp_title = hp_data[0]
-                    hp_root = hp_data[1]
-                    hp_html_content = hp_data[2]
-                    pipeline_logger.info(f"  > {company_name}: Homepage scraped. Title: '{hp_title}', Root: {hp_root}, HTML len: {len(hp_html_content)}")
-                else: 
-                    pipeline_logger.warning(f"  > {company_name}: Scraping homepage '{hp_url_found_serper}' failed or returned no HTML after retries.")
-                    manual_check_flag = True
-            except Exception as e_scrape_hp:
-                pipeline_logger.error(f"  > {company_name}: Error scraping homepage {hp_url_found_serper}: {e_scrape_hp}")
-                manual_check_flag = True
-
-        # --- 3. Find and Scrape 'About Us' page (if homepage HTML available) ---
-        if hp_html_content and hp_url_found_serper:
-            try:
-                pipeline_logger.info(f"  > {company_name}: Attempting to find and scrape 'About Us' page...")
-                about_page_text = await find_and_scrape_about_page_async(
-                    hp_html_content, 
-                    hp_url_found_serper, 
-                    company_name, 
-                    aiohttp_session, 
-                    sb_client, 
-                    openai_client, # Pass the client
-                    pipeline_logger
-                )
-                if about_page_text:
-                    pipeline_logger.info(f"  > {company_name}: Found text from 'About Us' page (length: {len(about_page_text)}).")
-                else: 
-                    pipeline_logger.info(f"  > {company_name}: No meaningful text from 'About Us' page (or page not found/scraped after retries).")
-            except Exception as e_about:
-                pipeline_logger.error(f"  > {company_name}: Error in find_and_scrape_about_page_async: {e_about}")
-                # Continue, fallback to other sources
-                
-        # --- 4. Fetch Wikipedia Summary (if URL found) ---
-        if wiki_url_found_serper:
-            try:
-                # Extract title from URL (last part after '/')
-                wiki_page_title = unquote(urlparse(wiki_url_found_serper).path.split('/')[-1])
-                if wiki_page_title:
-                    pipeline_logger.info(f"  > {company_name}: Attempting to fetch Wikipedia summary for page title: '{wiki_page_title}'")
-                    wiki_summary = await get_wikipedia_summary_async(wiki_page_title, pipeline_logger)
-                    if wiki_summary:
-                        pipeline_logger.info(f"  > {company_name}: Wikipedia summary fetched successfully (length: {len(wiki_summary)}).")
-                    else:
-                        pipeline_logger.warning(f"  > {company_name}: Wikipedia summary fetch FAILED for '{wiki_page_title}' after retries.")
-                else:
-                    pipeline_logger.warning(f"  > {company_name}: Could not extract page title from Wikipedia URL: {wiki_url_found_serper}")
-            except Exception as e_wiki:
-                 pipeline_logger.error(f"  > {company_name}: Error fetching Wikipedia summary: {e_wiki}")
-
-        # --- 5. Extract Text from Homepage & Validate (if About page text is missing) ---
-        hp_text = None
-        if not about_page_text and hp_html_content and hp_url_found_serper:
-            pipeline_logger.info(f"  > {company_name}: Extracting text from homepage for potential use...")
-            hp_text = extract_text_for_description(hp_html_content)
-            if hp_text and len(hp_text) > 100:
-                pipeline_logger.info(f"  > {company_name}: Text extracted from homepage (length: {len(hp_text)}). Validating homepage...")
-                page_validated_for_text_extraction = validate_page(company_name, hp_title, hp_root, hp_html_content, hp_url_found_serper)
-                if page_validated_for_text_extraction:
-                    pipeline_logger.info(f"  > {company_name}: Homepage content IS validated.")
-                else:
-                    pipeline_logger.warning(f"  > {company_name}: Homepage content validation FAILED. Will not use homepage text.")
-                    hp_text = None # Discard text if validation fails
+        # --- ШАГ 0: Поиск URL (Serper) ---
+        # Необходимо, если включен стандартный пайплайн (для homepage/linkedin полей)
+        # или если включен любой из LLM пайплайнов (для сбора текстовых источников)
+        if run_standard_pipeline or run_llm_deep_search_pipeline:
+            pipeline_logger.info(f"  > {company_name}: Finding URLs via Serper...")
+            serper_urls = await find_urls_with_serper_async(
+                aiohttp_session, company_name, context_text, serper_api_key, openai_client, pipeline_logger
+            )
+            if serper_urls:
+                hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = serper_urls
             else:
-                pipeline_logger.warning(f"  > {company_name}: No description-like text extracted from homepage.")
-                hp_text = None
-        elif about_page_text:
-             # If we got text from 'About Us', we consider validation passed for text source
-             page_validated_for_text_extraction = True
-             pipeline_logger.info(f"  > {company_name}: Using text from 'About Us' page, skipping homepage validation for description text.")
+                pipeline_logger.error(f"  > {company_name}: Critical error in find_urls_with_serper_async, returned None.")
+                if run_standard_pipeline: manual_check_flag = True # Для стандартных полей, если они ожидаются
 
-        # --- 6. Combine Text Sources for LLM --- 
-        combined_sources = []
-        if about_page_text:
-            combined_sources.append("[From About Page]:\n" + about_page_text)
-        if wiki_summary:
-            combined_sources.append("[From Wikipedia Summary]:\n" + wiki_summary)
-        if li_url_found_serper and li_snippet_serper:
-             combined_sources.append(f"[From LinkedIn Serper Snippet ({li_url_found_serper})]:\n{li_snippet_serper}")
-        if not about_page_text and not wiki_summary and hp_text and page_validated_for_text_extraction:
-             combined_sources.append("[From Homepage]:\n" + hp_text)
-             
-        if combined_sources:
-            text_src = "\n\n---\n\n".join(combined_sources)
-            pipeline_logger.debug(f"  > {company_name}: Final combined text_src length: {len(text_src)}")
+        # --- Заполнение полей homepage и linkedin для СТАНДАРТНОГО пайплайна (если он активен) ---
+        if run_standard_pipeline:
+            if hp_url_found_serper:
+                try:
+                    parsed_hp_url = urlparse(hp_url_found_serper)
+                    result_data["homepage"] = f"{parsed_hp_url.scheme}://{parsed_hp_url.netloc}"
+                except Exception: result_data["homepage"] = hp_url_found_serper
+            else:
+                result_data["homepage"] = "Not found"
+                manual_check_flag = True
+            
+            if li_url_found_serper:
+                cleaned_li = li_url_found_serper
+                if cleaned_li.endswith('/about/'): cleaned_li = cleaned_li[:-len('/about/')]
+                if cleaned_li.endswith('/'): cleaned_li = cleaned_li[:-1]
+                result_data["linkedin"] = cleaned_li
+            else:
+                result_data["linkedin"] = "Not found"
+        else: # Если стандартный пайплайн не запускается, но эти колонки все равно есть
+            result_data["homepage"] = "Standard pipeline not run"
+            result_data["linkedin"] = "Standard pipeline not run"
+
+        # --- Сбор текстовых данных для LLM (стандартного и/или deep search) ---
+        # Необходимо, если включен хотя бы один из LLM-зависимых этапов
+        # (генерация стандартного описания или LLM Deep Search, который использует query_llm_for_deep_info)
+        needs_text_sources_collection = run_standard_pipeline or run_llm_deep_search_pipeline
+
+        if needs_text_sources_collection:
+            pipeline_logger.info(f"  > {company_name}: Text source collection for LLMs needed.")
+            # (Логика сбора hp_html_content, about_page_text, wiki_summary, hp_text_for_llm - остается как была раньше)
+            if hp_url_found_serper:
+                try:
+                    pipeline_logger.info(f"  > {company_name}: Scraping homepage: {hp_url_found_serper}")
+                    hp_data = await scrape_page_data_async(hp_url_found_serper, sb_client)
+                    if hp_data and hp_data[2]:
+                        hp_title = hp_data[0]; hp_root = hp_data[1]; hp_html_content = hp_data[2]
+                        pipeline_logger.info(f"  > {company_name}: Homepage scraped. Title: '{hp_title}', HTML len: {len(hp_html_content)}")
+                    else: pipeline_logger.warning(f"  > {company_name}: Scraping homepage '{hp_url_found_serper}' failed or no HTML.")
+                except Exception as e_scrape_hp: pipeline_logger.error(f"  > {company_name}: Error scraping HP: {e_scrape_hp}")
+
+            if hp_html_content and hp_url_found_serper:
+                try:
+                    about_page_text = await find_and_scrape_about_page_async(hp_html_content, hp_url_found_serper, company_name, aiohttp_session, sb_client, openai_client, pipeline_logger)
+                    if about_page_text: pipeline_logger.info(f"  > {company_name}: Found text from 'About Us' (len: {len(about_page_text)}).")
+                except Exception as e_about: pipeline_logger.error(f"  > {company_name}: Error finding/scraping About page: {e_about}")
+
+            if wiki_url_found_serper:
+                try:
+                    wiki_page_title = unquote(urlparse(wiki_url_found_serper).path.split('/')[-1])
+                    if wiki_page_title: wiki_summary = await get_wikipedia_summary_async(wiki_page_title, pipeline_logger)
+                    if wiki_summary: pipeline_logger.info(f"  > {company_name}: Wikipedia summary fetched (len: {len(wiki_summary)}).")
+                except Exception as e_wiki: pipeline_logger.error(f"  > {company_name}: Error fetching Wikipedia: {e_wiki}")
+            
+            page_validated_for_text_extraction = False
+            if not about_page_text and hp_html_content and hp_url_found_serper:
+                current_hp_text = extract_text_for_description(hp_html_content)
+                if current_hp_text and len(current_hp_text) > 100:
+                    page_validated_for_text_extraction = validate_page(company_name, hp_title, hp_root, hp_html_content, hp_url_found_serper)
+                    if page_validated_for_text_extraction: hp_text_for_llm = current_hp_text; pipeline_logger.info(f"  > {company_name}: HP content validated.")
+                    else: pipeline_logger.warning(f"  > {company_name}: HP content validation FAILED.")
+            elif about_page_text: page_validated_for_text_extraction = True
+
+            # --- Комбинирование источников текста (стандартная часть) ---
+            standard_text_sources_list = []
+            if about_page_text: standard_text_sources_list.append("[From About Page]:\n" + about_page_text)
+            if wiki_summary: standard_text_sources_list.append("[From Wikipedia Summary]:\n" + wiki_summary)
+            if li_url_found_serper and li_snippet_serper: standard_text_sources_list.append(f"[From LinkedIn Serper Snippet ({li_url_found_serper})]:\n{li_snippet_serper}")
+            if not about_page_text and not wiki_summary and hp_text_for_llm and page_validated_for_text_extraction: standard_text_sources_list.append("[From Homepage]:\n" + hp_text_for_llm)
+            
+            if standard_text_sources_list:
+                text_src_for_llms += "\n\n---\n\n".join(standard_text_sources_list)
+                pipeline_logger.debug(f"  > {company_name}: Standard text sources combined (len: {len(text_src_for_llms)})")
+            else:
+                pipeline_logger.warning(f"  > {company_name}: No standard text sources found for LLMs.")
         else:
-            pipeline_logger.warning(f"  > {company_name}: No text source available after checking About page, Wikipedia, and Homepage.")
-            manual_check_flag = True
+            pipeline_logger.info(f"  > {company_name}: Text source collection for LLMs SKIPPED.")
 
-        # --- 7. Generate Description using LLM --- 
-        llm_generated_output = None
-        if text_src:
-            pipeline_logger.info(f"  > {company_name}: Combined text source found (length: {len(text_src)}), generating LLM description...")
+        # --- LLM DEEP SEARCH (если включен) --- 
+        # Результаты этого шага будут добавлены к text_src_for_llms
+        if run_llm_deep_search_pipeline:
+            pipeline_logger.info(f"  > {company_name}: Running LLM DEEP SEARCH to augment description context...")
+            if llm_deep_search_config and llm_deep_search_config.get("specific_queries"):
+                specific_queries = llm_deep_search_config["specific_queries"]
+                # Используем существующий text_src_for_llms как основу для query_llm_for_deep_info,
+                # так как эта функция по плану ожидает text_sources_for_deep_search.
+                # Если text_src_for_llms пуст, то deep search будет работать только на основе своего промпта.
+                # Это соответствует текущей реализации query_llm_for_deep_info, которая комбинирует company_name, text_sources и query.
+                base_text_for_deep_search = text_src_for_llms if text_src_for_llms else "No prior text context available."
+                
+                pipeline_logger.info(f"  > {company_name}: LLM Deep Search: Calling query_llm_for_deep_info with base_text (len: {len(base_text_for_deep_search)}).")
+                deep_search_results_dict = await query_llm_for_deep_info(
+                    openai_client=openai_client,
+                    company_name=company_name,
+                    text_sources_for_deep_search=base_text_for_deep_search, 
+                    specific_queries=specific_queries
+                )
+                
+                if deep_search_results_dict and not deep_search_results_dict.get("error"):
+                    formatted_deep_search_text = "\n\n--- Additional Information from Deep Search ---\n"
+                    for original_query, answer in deep_search_results_dict.items():
+                        formatted_deep_search_text += f"- Query: {original_query}\n  Answer: {answer}\n"
+                    text_src_for_llms += formatted_deep_search_text # Добавляем к общему источнику
+                    pipeline_logger.info(f"  > {company_name}: LLM Deep Search results appended to text_src_for_llms. New total len: {len(text_src_for_llms)}.")
+                elif deep_search_results_dict.get("error"):
+                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned an error: {deep_search_results_dict.get('error')}")
+                else:
+                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned no results or an unexpected format.")
+            else:
+                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search: No specific_queries configured. Skipping augmentation.")
+        
+        # --- ФИНАЛЬНАЯ ГЕНЕРАЦИЯ ОПИСАНИЯ --- 
+        # Выполняется всегда, если есть хоть какой-то text_src_for_llms или если стандартный пайплайн был включен (он мог сгенерировать заглушку, которую надо перезаписать)
+        # По факту, если run_standard_pipeline = False и run_llm_deep_search_pipeline = False, то text_src_for_llms будет пуст, и LLM не вызовется.
+        # Если хотя бы один из них True, то text_src_for_llms может содержать данные.
+        
+        if text_src_for_llms: # Если есть хоть какой-то текст для LLM
+            pipeline_logger.info(f"  > {company_name}: Generating FINAL description using LLM with combined text (len: {len(text_src_for_llms)})...")
             try:
-                 llm_generated_output = await generate_description_openai_async(
-                     openai_client=openai_client, 
-                     llm_config=llm_config, 
-                     company_name=company_name, 
-                     about_snippet=text_src, # Pass the combined text
+                final_description = await generate_description_openai_async(
+                     openai_client=openai_client, llm_config=llm_config, company_name=company_name,
+                     about_snippet=text_src_for_llms, # Передаем потенциально обогащенный текст
                      homepage_root=hp_root, 
                      linkedin_url=li_url_found_serper, 
                      context_text=context_text
-                 )
-                 if llm_generated_output:
-                     result_data["description"] = llm_generated_output
-                     pipeline_logger.info(f"  > {company_name}: LLM description generated successfully (length {len(llm_generated_output)}).")
-                 else:
-                     pipeline_logger.warning(f"  > {company_name}: LLM generation returned empty result.")
-                     manual_check_flag = True
-            except Exception as e_llm:
-                pipeline_logger.error(f"  > {company_name}: LLM description generation FAILED: {e_llm}")
-                pipeline_logger.debug(traceback.format_exc()) # Log full traceback for LLM errors
+                )
+                if final_description:
+                    result_data["description"] = final_description
+                    pipeline_logger.info(f"  > {company_name}: Final description generated (len {len(final_description)}).")
+                else:
+                    pipeline_logger.warning(f"  > {company_name}: Final LLM description generation returned empty result.")
+                    # Если run_standard_pipeline был false, то тут будет "Description not generated" или "Standard pipeline not run" (если не перезаписано)
+                    # Если run_standard_pipeline был true, то он уже мог записать свою версию или ошибку.
+                    # Оставляем как есть, если LLM вернул пустоту на финальном этапе.
+                    if result_data["description"] == "Description not generated": # Только если не было попытки от стандартного
+                         result_data["description"] = "Final LLM: No description generated"
+                    manual_check_flag = True # В любом случае, если финальный LLM не сработал - повод для проверки
+            except Exception as e_llm_final:
+                pipeline_logger.error(f"  > {company_name}: Final LLM description generation FAILED: {e_llm_final}")
+                # Аналогично, сохраняем предыдущее состояние description или ставим ошибку
+                if result_data["description"] == "Description not generated":
+                    result_data["description"] = "Final LLM: Error during generation"
                 manual_check_flag = True
-        else:
-             pipeline_logger.warning(f"  > {company_name}: No usable text source found. LLM description cannot be generated.")
-             manual_check_flag = True # Already flagged above, but redundant doesn't hurt
-             
+        elif run_standard_pipeline: # Если text_src_for_llms пуст, но стандартный пайплайн был включен
+            # Значит, стандартный пайплайн не смог собрать текст и уже должен был записать 
+            # "Standard LLM: No text source for generation" или аналогичное в result_data["description"]
+            # или "Not found" если даже URL не было. Ничего дополнительно тут не делаем.
+            pipeline_logger.warning(f"  > {company_name}: No text_src_for_llms available for final LLM, and standard pipeline was run (its result for description stands).")
+            # manual_check_flag уже должен быть True из блока стандартного пайплайна
+        else: # Если оба пайплайна выключены или не дали текста
+             pipeline_logger.warning(f"  > {company_name}: No text_src_for_llms available. Final description cannot be generated.")
+             # result_data["description"] уже будет "Description not generated" или "Standard pipeline not run"
+             if not run_standard_pipeline : result_data["description"] = "No pipeline run to generate description"
+             manual_check_flag = True
+
     except asyncio.CancelledError:
-        pipeline_logger.info(f"Processing of company '{company_name}' was cancelled.")
+        pipeline_logger.warning(f"Processing of company '{company_name}' was cancelled.")
         result_data["homepage"] = result_data.get("homepage", "Processing cancelled")
         result_data["linkedin"] = result_data.get("linkedin", "Processing cancelled")
-        result_data["description"] = "Processing cancelled"
+        result_data["description"] = result_data.get("description", "Processing cancelled")
         raise
     except Exception as e_outer:
-        logging.critical(f"CRITICAL ERROR processing {company_name}: {type(e_outer).__name__} - {e_outer}")
-        logging.debug(traceback.format_exc())
-        result_data["description"] = "Error in processing - check logs"
-        result_data["homepage"] = hp_url_found_serper if hp_url_found_serper else result_data.get("homepage", "Error")
-        result_data["linkedin"] = li_url_found_serper if li_url_found_serper else result_data.get("linkedin", "Error")
-    
+        pipeline_logger.critical(f"CRITICAL ERROR processing {company_name}: {type(e_outer).__name__} - {e_outer}", exc_info=True)
+        result_data["description"] = f"Error: {type(e_outer).__name__}"
+        result_data["homepage"] = "Error"
+        result_data["linkedin"] = "Error"
+
     processing_duration = time.time() - start_time_processing
-    logging.info(f"Finished processing {company_name} in {processing_duration:.2f} seconds. Result: Homepage: '{result_data['homepage'][:70]}...', LI: '{result_data['linkedin'][:70]}...', Desc len: {len(result_data['description']) if result_data['description'] else 0}, Date: {result_data['timestamp']}")
+    pipeline_logger.info(f"Finished processing {company_name} in {processing_duration:.2f}s. Std: {run_standard_pipeline}, Deep: {run_llm_deep_search_pipeline}. Result keys: {list(result_data.keys())}")
     return result_data
 
 
@@ -467,7 +471,14 @@ async def run_pipeline():
 
                 tasks = [
                     asyncio.create_task(
-                        process_company(name, session, sb_client, llm_config, openai_client, current_run_context, serper_api_key)
+                        process_company(name, session, sb_client, llm_config, openai_client, current_run_context, serper_api_key,
+                                        # ++ Передаем фактические значения, а не True/False по умолчанию ++
+                                        # Эти значения должны приходить из run_pipeline_for_file, а run_pipeline (консольный) должен решить, какие значения использовать
+                                        # Пока для run_pipeline оставим стандартный запуск
+                                        run_standard_pipeline=True, # Для консольного run_pipeline всегда стандартный
+                                        run_llm_deep_search_pipeline=False, # Для консольного run_pipeline пока без LLM Deep Search
+                                        llm_deep_search_config=None # Соответственно, конфиг тоже None
+                                        )
                     ) for name in company_names
                 ]
 
@@ -539,12 +550,16 @@ async def run_pipeline_for_file(
     company_col_index: int,
     aiohttp_session: aiohttp.ClientSession,
     sb_client: ScrapingBeeClient,
-    llm_config: dict, # llm_config теперь используется только для process_company
+    llm_config: dict, # llm_config теперь используется только для process_company (стандартного)
     openai_client: AsyncOpenAI,
     serper_api_key: str,
     expected_csv_fieldnames: list[str], # <--- Этот параметр теперь ЕДИНСТВЕННЫЙ ИСТОЧНИК fieldnames
     broadcast_update: callable = None,
-    main_batch_size: int = 50
+    main_batch_size: int = 50,
+    # ++ Новые параметры для выбора пайплайнов ++
+    run_standard_pipeline: bool = True,
+    run_llm_deep_search_pipeline: bool = False,
+    llm_deep_search_config: Optional[Dict[str, Any]] = None # Содержит specific_queries
 ) -> tuple[int, int, list[dict]]:
     
     file_specific_logger = logging.getLogger(f"pipeline.session.{Path(input_file_path).stem}") 
@@ -584,7 +599,19 @@ async def run_pipeline_for_file(
 
             tasks = [
                 asyncio.create_task(
-                    process_company(name, aiohttp_session, sb_client, llm_config, openai_client, context_text, serper_api_key)
+                    process_company(
+                        company_name=name,
+                        aiohttp_session=aiohttp_session,
+                        sb_client=sb_client,
+                        llm_config=llm_config, # Для стандартного пайплайна
+                        openai_client=openai_client,
+                        context_text=context_text,
+                        serper_api_key=serper_api_key,
+                        # ++ Передаем фактические значения из аргументов функции ++
+                        run_standard_pipeline=run_standard_pipeline,
+                        run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
+                        llm_deep_search_config=llm_deep_search_config
+                    )
                 ) for name in company_names_batch
             ]
 
@@ -726,7 +753,11 @@ async def process_companies(file_path: str, session_dir: str, broadcast_update: 
                         llm_config=llm_config,
                         openai_client=openai_client,
                         context_text=None,  # No context for now
-                        serper_api_key=serper_api_key
+                        serper_api_key=serper_api_key,
+                        # ++ Параметры для process_companies - пока стандартный запуск ++
+                        run_standard_pipeline=True, 
+                        run_llm_deep_search_pipeline=False,
+                        llm_deep_search_config=None 
                     )
                     
                     # Save result to CSV

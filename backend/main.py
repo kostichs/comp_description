@@ -232,10 +232,15 @@ async def get_session_details(session_id: str):
     return session_data
 
 @app.post("/api/sessions", tags=["Sessions"], summary="Create a new processing session")
-async def create_new_session(file: UploadFile = File(...), context_text: str = Form(None)):
+async def create_new_session(
+    file: UploadFile = File(...), 
+    context_text: Optional[str] = Form(None), # Сделал context_text действительно опциональным
+    run_standard_pipeline: bool = Form(True),
+    run_llm_deep_search_pipeline: bool = Form(False)
+):
     """
     Creates a new processing session by uploading an input file (CSV/XLSX) 
-    and optional context text.
+    and optional context text. Allows selection of pipelines to run.
     """
     # Basic validation for filename/extension
     if not file.filename:
@@ -323,7 +328,10 @@ async def create_new_session(file: UploadFile = File(...), context_text: str = F
             "scoring_log_path": None,
             "last_processed_count": 0,
             "total_companies": total_companies,
-            "error_message": None if context_saved_successfully else "Failed to save context file"
+            "error_message": None if context_saved_successfully else "Failed to save context file",
+            # Сохраняем флаги выбора пайплайнов
+            "run_standard_pipeline": run_standard_pipeline,
+            "run_llm_deep_search_pipeline": run_llm_deep_search_pipeline 
         }
         
         # Append and save
