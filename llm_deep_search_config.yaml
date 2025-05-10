@@ -1,25 +1,68 @@
-# Конфигурация для LLM Deep Search
+# LLM Deep Search Configuration (English)
 
-# Список конкретных вопросов для LLM
-specific_queries:
-  - "What is the company's Annual Recurring Revenue (ARR)?"
-  - "How many employees does the company have?"
-  - "What are the company's main products or services?"
-  - "Who are the company's main competitors?"
-  - "What is the company's funding status and total funding amount?"
-  - "What is the company's business model?"
-  - "What is the company's target market?"
-  - "What are the company's key achievements or milestones?"
+# These aspects will be used to fill the {additional_aspects_placeholder} in the user_prompt_template.
+specific_aspects_for_report_guidance:
+  - "latest reported annual revenue or ARR (with year)"
+  - "approximate current number of employees"
+  - "details of the most recent funding round (amount, date, key investors), if applicable"
+  - "key products, services, or core technologies offered"
+  - "names of main competitors"
+  - "primary business segments and target customer focus (e.g., consumer, B2B, government)"
+  - "key geographical regions of operation and any stated global strategy"
+  - "overview of pricing models for 1-2 key offerings, if publicly available and recent"
+  - "specific solutions related to connectivity, security, or IoT, if a core part of their business"
+  - "any recent (last 12-18 months, focusing on {year_focus_window}) significant company news, major product launches, or M&A activities"
 
-# Настройки для LLM
-llm_settings:
-  model: "gpt-4-turbo-preview"
-  temperature: 0.3
-  max_tokens: 500
-  system_prompt: "You are a helpful assistant that extracts specific information about companies."
+llm_api_settings:
+  model_name: "gpt-4o-mini-search-preview" # Ensure this is the model you want
+  system_prompt: "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company, in English. Utilize your web search capabilities to find the most current information, focusing on {year_focus_window} data where possible. Adhere strictly to the requested report structure and level of detail. Cite all specific data points (financials, subscriber counts, pricing, etc.) with their sources, either inline or in a dedicated 'Sources' section at the end. Be concise, data-driven, and avoid conversational intros, outros, or disclaimers. Respond only in English."
+  max_tokens: 3800
+  temperature: 0.0
 
-# Настройки для сбора данных
-data_collection:
-  max_retries: 3
-  timeout: 30
-  min_text_length: 100 
+# Main user prompt template.
+# Placeholders: {company_name_placeholder}, {additional_aspects_placeholder}, {year_focus_window}, {current_year_for_pricing}
+user_prompt_template: |
+  Please generate a detailed Business Analytics Report for the company: '{company_name_placeholder}'.
+
+  Your primary goal is to extract and present factual data, focusing on information from {year_focus_window} where available. The report MUST strictly follow the structure outlined below and include the requested details for each section. Use your web search capabilities to find the most current information.
+
+  Report Structure:
+
+  1.  **Customer Segments:**
+      *   Identify and detail main customer categories (e.g., Consumer, Business, Wholesale, Government/Public Sector).
+      *   Provide key metrics: wireless retail connections, post-paid vs. prepaid figures, total broadband subscribers (broken down by type like Fios fiber vs. fixed-wireless if applicable), and relevant market share if found (aim for {year_focus_window} data).
+      *   Note any specialized services for distinct communities (e.g., first-responder networks).
+
+  2.  **Geographic Reach:**
+      *   Describe core network operational areas and retail footprint (e.g., US-centric, specific states/regions for key services like Fios).
+      *   Detail global presence for enterprise services, including owned infrastructure vs. partner Points of Presence (POPs) and countries covered.
+
+  3.  **Business Units / Segments (Financials & Activities):**
+      *   List main operational business units or segments.
+      *   For each: Provide latest reported annual revenue (specify year, e.g., 2024 revenue) and list core activities/offerings.
+
+  4.  **Products and Indicative Prices (Latest Available, e.g., data around {current_year_for_pricing}):**
+      *   Key Products/Services: List flagship offerings (e.g., 5G mobile plans like 'myPlan Unlimited', Fios Internet tiers, 5G Home Internet, Business unlimited mobility, Private 5G solutions).
+      *   Indicative Pricing: For major offerings, provide entry-level monthly pricing. Note any conditions: discounts (e.g., Mobile + Home), price lock durations, contract requirements, setup fees, included equipment. Mention any significant promotional offers (e.g., free devices/services with specific plans).
+
+  5.  **Core Offers & Promotions (Strategic Summary):**
+      *   Summarize key ongoing offers defining their market strategy (e.g., device trade-in credits, bundling discounts, special programs for demographics like low-income households - e.g., Verizon Forward + Lifeline).
+
+  6.  **Customer Needs Addressed (Solution Mapping):**
+      *   For key customer needs (e.g., ubiquitous reliable mobility, high-speed home/business broadband, mission-critical communications, enterprise digital transformation, low-income connectivity), describe how the company's specific offerings (Verizon responses) meet these needs.
+
+  7.  **Solution Portfolio Snapshot (Technical Capabilities & Ecosystem):**
+      *   Network Technology: Spectrum bands utilized (e.g., 700 MHz, C-Band, mmWave), backbone type (e.g., 100% fiber), core network features (e.g., SDN-enabled).
+      *   5G Details: Specifics of 5G offerings (e.g., Ultra Wideband vs. Nationwide, C-Band coverage, mmWave for hot-zones, support for network slicing, Mobile Edge Compute - MEC).
+      *   Fixed Wireless Access (FWA): Technology (5G/LTE), CPE details, typical speeds.
+      *   Private Networks: Offerings for enterprises (e.g., Private 5G On-Site, NaaS models), target verticals (e.g., ports, factories, stadiums), integration with AI/edge compute.
+      *   IoT Platform: (e.g., ThingSpace), SIM/eSIM capabilities, device management, analytics, global IoT footprint.
+      *   Security Services: Portfolio for enterprise/business (e.g., managed firewalls, DDoS protection, SASE/SSE, zero-trust, partner ecosystem for security).
+      *   Unified Communications (UCaaS): Current strategy and offerings (e.g., if native solutions like BlueJeans are retired, what partner platforms are promoted).
+
+  8.  **Competitive Posture & Market Strategy:**
+      *   Summarize the company's competitive strategy, focusing on network strengths (reliability, coverage), customer base (post-paid focus), cross-selling (FWA, fiber), and how they counter price-led competition and retain enterprise clients (e.g., price locks, subsidies, specialization like first-responder networks, private 5G/IoT stickiness).
+
+  {additional_aspects_placeholder}
+
+  Provide a concise, data-driven report. Avoid conversational filler, disclaimers, or speculative statements. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list. Respond only in English.

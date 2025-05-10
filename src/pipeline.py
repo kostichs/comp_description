@@ -218,37 +218,46 @@ async def process_company(company_name: str,
             pipeline_logger.info(f"  > {company_name}: Text source collection for LLMs SKIPPED.")
 
         # --- LLM DEEP SEARCH (если включен) --- 
-        # Результаты этого шага будут добавлены к text_src_for_llms
+        # This section has been updated to English comments as per user request.
+        # The results of this step will be added to text_src_for_llms
         if run_llm_deep_search_pipeline:
-            pipeline_logger.info(f"  > {company_name}: Running LLM DEEP SEARCH to augment description context...")
+            pipeline_logger.info(f"  > {company_name}: Running LLM DEEP SEARCH (using gpt-4o-mini-search-preview) to augment description context...")
             if llm_deep_search_config and llm_deep_search_config.get("specific_queries"):
-                specific_queries = llm_deep_search_config["specific_queries"]
-                # Используем существующий text_src_for_llms как основу для query_llm_for_deep_info,
-                # так как эта функция по плану ожидает text_sources_for_deep_search.
-                # Если text_src_for_llms пуст, то deep search будет работать только на основе своего промпта.
-                # Это соответствует текущей реализации query_llm_for_deep_info, которая комбинирует company_name, text_sources и query.
-                base_text_for_deep_search = text_src_for_llms if text_src_for_llms else "No prior text context available."
+                # The key "specific_queries" comes from llm_deep_search_config in processing_runner.py
+                # This list is now passed as specific_aspects_to_cover to query_llm_for_deep_info
+                aspects_for_report = llm_deep_search_config["specific_queries"]
                 
-                pipeline_logger.info(f"  > {company_name}: LLM Deep Search: Calling query_llm_for_deep_info with base_text (len: {len(base_text_for_deep_search)}).")
-                deep_search_results_dict = await query_llm_for_deep_info(
+                pipeline_logger.info(f"  > {company_name}: LLM Deep Search: Calling query_llm_for_deep_info for a single comprehensive web search query.")
+                comprehensive_deep_search_report = await query_llm_for_deep_info(
                     openai_client=openai_client,
                     company_name=company_name,
-                    text_sources_for_deep_search=base_text_for_deep_search, 
-                    specific_queries=specific_queries
+                    # specific_aspects_to_cover=aspects_for_report # Corrected keyword argument
                 )
                 
-                if deep_search_results_dict and not deep_search_results_dict.get("error"):
-                    formatted_deep_search_text = "\n\n--- Additional Information from Deep Search ---\n"
-                    for original_query, answer in deep_search_results_dict.items():
-                        formatted_deep_search_text += f"- Query: {original_query}\n  Answer: {answer}\n"
-                    text_src_for_llms += formatted_deep_search_text # Добавляем к общему источнику
-                    pipeline_logger.info(f"  > {company_name}: LLM Deep Search results appended to text_src_for_llms. New total len: {len(text_src_for_llms)}.")
-                elif deep_search_results_dict.get("error"):
-                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned an error: {deep_search_results_dict.get('error')}")
-                else:
-                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned no results or an unexpected format.")
+                known_error_prefixes = (
+                    "Deep Search Error:", 
+                    "Deep Search Skipped:",
+                    "OpenAI API Error", # Added for completeness from previous versions
+                    "Timeout Error",
+                    "Unexpected Error"
+                )
+                is_error_report = comprehensive_deep_search_report.startswith(known_error_prefixes)
+
+                if not is_error_report and comprehensive_deep_search_report:
+                    formatted_deep_search_text = f"\n\n--- Business Analytics Report (via gpt-4o-mini-search-preview) ---\n{comprehensive_deep_search_report}"
+                    
+                    if text_src_for_llms:
+                        text_src_for_llms += formatted_deep_search_text
+                    else: 
+                        text_src_for_llms = formatted_deep_search_text.strip()
+                        
+                    pipeline_logger.info(f"  > {company_name}: LLM Deep Search report appended. Total text_src_for_llms length: {len(text_src_for_llms)}.")
+                elif comprehensive_deep_search_report: 
+                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned an error message or was skipped: {comprehensive_deep_search_report}")
+                else: 
+                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned no information for '{company_name}'.")
             else:
-                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search: No specific_queries configured. Skipping augmentation.")
+                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search: No specific_queries (aspects) configured in llm_deep_search_config. Skipping augmentation.")
         
         # --- ФИНАЛЬНАЯ ГЕНЕРАЦИЯ ОПИСАНИЯ --- 
         # Выполняется всегда, если есть хоть какой-то text_src_for_llms или если стандартный пайплайн был включен (он мог сгенерировать заглушку, которую надо перезаписать)
@@ -475,9 +484,15 @@ async def run_pipeline():
                                         # ++ Передаем фактические значения, а не True/False по умолчанию ++
                                         # Эти значения должны приходить из run_pipeline_for_file, а run_pipeline (консольный) должен решить, какие значения использовать
                                         # Пока для run_pipeline оставим стандартный запуск
-                                        run_standard_pipeline=True, # Для консольного run_pipeline всегда стандартный
-                                        run_llm_deep_search_pipeline=False, # Для консольного run_pipeline пока без LLM Deep Search
-                                        llm_deep_search_config=None # Соответственно, конфиг тоже None
+                                        run_standard_pipeline=False, # Для консольного run_pipeline всегда стандартный
+                                        run_llm_deep_search_pipeline=True, # Для консольного run_pipeline пока без LLM Deep Search
+                                        llm_deep_search_config={
+                                            "specific_queries": [
+                                                "2024 financial results",
+                                                "flagship products",
+                                                "competitive strategy in EMEA"
+                                            ]
+                                         } # Соответственно, конфиг тоже None
                                         )
                     ) for name in company_names
                 ]

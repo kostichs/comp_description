@@ -2252,3 +2252,61 @@ FastAPI приложение, предоставляющее REST API. Осно�
 - **Проверка полного пайплайна**
 - **Тестирование производительности**
 
+// ... (существующий текст ARCHITECTURE.md) ...
+
+### X.X LLM Deep Search Module (`src/llm_deep_search.py`)
+This module is responsible for performing an in-depth, web-search-augmented query to an LLM to gather comprehensive business insights about a company.
+
+#### X.X.1 `async def query_llm_for_deep_info(openai_client: AsyncOpenAI, company_name: str) -> str`
+
+**Purpose:**
+Uses the `gpt-4o-mini-search-preview` model to generate a structured business analytics report for the given `company_name`. This function aims to emulate the detailed structure of a professional business report (similar to the Verizon example discussed).
+
+**Input Parameters:**
+- `openai_client`: AsyncOpenAI - The asynchronous OpenAI client instance.
+- `company_name`: str - The name of the company to research.
+- **Note:** The function internally uses a hardcoded list of 10 specific marketing-focused questions (in English) to guide the LLM's response structure and content. It no longer accepts a list of queries as a parameter.
+
+**Process:**
+1.  Constructs a single, comprehensive prompt (in English) for the `gpt-4o-mini-search-preview` model. This prompt instructs the LLM to:
+    *   Generate a detailed business analytics report covering predefined sections (e.g., Customer Segments, Geographic Reach, Business Units, Products/Pricing, Core Offers, Customer Needs, Solution Portfolio, Competitive Posture).
+    *   Focus on data from 2024-2025 where possible.
+    *   Address a hardcoded list of 10 B2B marketing-relevant aspects (e.g., "Industry and primary business activities", "Key customer segments (B2B or B2C)", "IT stack and infrastructure scale", etc.).
+    *   Provide factual, concise information with citations.
+    *   The system prompt configures the LLM as a "senior B2B go-to-market analyst".
+2.  Makes a single API call to `openai_client.chat.completions.create` using the `gpt-4o-mini-search-preview` model, including `web_search_options={"search_context_size": "high"}`.
+3.  Processes the LLM's response, extracting the main content and any `url_citation` annotations.
+4.  Appends formatted citation information to the main answer.
+
+**Returns:**
+- `str`: A single string containing the generated report (including appended source citations) or an error message if the process failed.
+
+**Called from:**
+- `src/pipeline.py` -> `process_company()`
+
+#### 1.1 Pipeline (`src/pipeline.py`)
+// ... (существующее описание) ...
+
+##### 1.1.1 `process_company(...)` (Обновленное описание взаимодействия с LLM Deep Search)
+// ... (существующее описание других шагов) ...
+
+**LLM Deep Search Integration (if `run_llm_deep_search_pipeline` is True):**
+-   The `llm_deep_search_config` dictionary (passed from `run_pipeline_for_file`) is checked. However, the list of specific queries from this config is **no longer directly used** by `query_llm_for_deep_info` as of recent changes. Instead, `query_llm_for_deep_info` uses its own internal, hardcoded list of 10 marketing questions. The `llm_deep_search_config` might still be passed for other potential future uses or if other settings from it were intended.
+-   Calls `await query_llm_for_deep_info(openai_client, company_name)` (note: no `specific_aspects_to_cover` or `specific_queries` argument is passed as the function signature in `src/llm_deep_search.py` was updated to not accept it).
+-   The string returned by `query_llm_for_deep_info` (which is either the comprehensive report or an error message) is then appended to the `text_src_for_llms` variable. This augmented `text_src_for_llms` is subsequently used by `generate_description_openai_async` to produce the final company description.
+-   No new columns are added to the output CSV for LLM Deep Search results; its output is integrated into the main `description` field.
+
+// ... (остальное описание process_company и других функций pipeline.py) ...
+
+### X.Y Configuration Files
+
+#### X.Y.1 `llm_deep_search_config.yaml`
+
+**Purpose:**
+This file was originally intended to configure the LLM Deep Search pipeline, including a list of specific queries for the LLM.
+
+**Current Status (based on recent changes to `src/llm_deep_search.py`):**
+- The `specific_queries` list within this YAML file is **no longer directly consumed** by the `query_llm_for_deep_info` function for generating its prompts. That function now uses an internal, hardcoded list of 10 marketing-focused questions.
+- Other settings in this file (e.g., `llm_settings`, `data_collection`) might still be relevant if other parts of the application (or future versions of deep search) are designed to use them. If not, this configuration file might be partially or fully deprecated for the LLM Deep Search functionality as currently implemented in `query_llm_for_deep_info`. The `llm_config` dictionary loaded from `llm_config.yaml` is still used for the standard description generation (`generate_description_openai_async`).
+
+// ... (остальной текст ARCHITECTURE.md) ...

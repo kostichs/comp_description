@@ -2,7 +2,7 @@
 
 model: "gpt-4o-mini"
 temperature: 0.2 # Slightly lower temperature for more deterministic factual output
-max_tokens: 400 # Safety limit for output length
+# max_tokens: 400 # Safety limit for output length
 top_p: 0.9
 
 messages:
