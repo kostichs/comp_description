@@ -227,18 +227,22 @@
         <div id="progressStatus" style="display:none; margin: 20px 0; font-size: 1.1em; color: #007bff; font-weight: bold;">Processing...</div>
 
         <div id="resultsSection" style="display: none;">
-            <h2>Results</h2>
-            <table id="resultsTable">
-                <thead>
-                    <tr>
-                        <th style="width: 18%">Company Name</th>
-                        <th style="width: 15%">Homepage</th>
-                        <th style="width: 15%">LinkedIn</th>
-                        <th style="width: 52%">Description</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="table-container section">
+                <h2>Results</h2>
+                <table id="resultsTable">
+                    <colgroup>
+                        <col style="width: 25%;">
+                        <col style="width: 75%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 

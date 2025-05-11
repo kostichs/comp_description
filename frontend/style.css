@@ -87,25 +87,79 @@ button:disabled {
     overflow-x: auto;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+/* #resultsTable {
+  width: 100%;
+  table-layout: fixed !important; 
+  border-collapse: collapse;
 }
 
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+
+#resultsTable th,
+#resultsTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
+  overflow: hidden;           
+  text-overflow: ellipsis;    
 }
 
-th {
-    background-color: #f8f8f8;
-    font-weight: bold;
+
+#resultsTable th:nth-child(2),
+#resultsTable td:nth-child(2),
+#resultsTable th:nth-child(3),
+#resultsTable td:nth-child(3) {
+  white-space: nowrap;
 }
 
-tr:hover {
-    background-color: #f5f5f5;
+
+#resultsTable th:nth-child(1),
+#resultsTable td:nth-child(1),
+#resultsTable th:nth-child(4),
+#resultsTable td:nth-child(4) {
+  white-space: normal;        
+  word-break: break-word;     
+}
+
+
+#resultsTable td,
+#resultsTable td a {
+  
+  word-break: break-all;
+  
+  overflow-wrap: anywhere;
+} */
+
+/* Новый CSS от пользователя */
+#resultsTable {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+#resultsTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
+}
+
+/* Первая колонка (Name) и Вторая колонка (Description) — нормальный перенос */
+#resultsTable th:nth-child(1),
+#resultsTable td:nth-child(1),
+#resultsTable th:nth-child(2), /* Бывшая 4-я, теперь 2-я (Description) */
+#resultsTable td:nth-child(2) { /* Бывшая 4-я, теперь 2-я (Description) */
+  white-space: normal;
+  word-break: break-word; /* Это позволит ссылкам в описании переноситься */
+}
+
+/* Удалены стили для бывших td:nth-child(2), td:nth-child(3) и их ссылок a */
+
+#resultsTable td a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+#resultsTable td a:hover {
+    text-decoration: underline;
 }
 
 /* Status Display */

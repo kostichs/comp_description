@@ -602,7 +602,7 @@ async def run_pipeline_for_file(
     serper_api_key: str,
     expected_csv_fieldnames: list[str],
     broadcast_update: callable = None,
-    main_batch_size: int = 4,
+    main_batch_size: int = 10,
     run_standard_pipeline: bool = True,
     run_llm_deep_search_pipeline: bool = False,
     llm_deep_search_config: Optional[Dict[str, Any]] = None

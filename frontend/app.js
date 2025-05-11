@@ -244,24 +244,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayResultsInTable(results) {
         clearResultsTable();
         if (!results || results.length === 0) {
-            resultsTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Still in progress... No results found.</td></tr>';
+            resultsTableBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Still in progress... No results found.</td></tr>';
             return;
         }
 
         results.forEach(row => {
             const tr = document.createElement('tr');
-            const homepage = row.homepage && row.homepage !== 'Not found' && !row.homepage.startsWith("Standard pipeline") ? `<a href="${escapeHtml(row.homepage)}" target="_blank">${escapeHtml(row.homepage)}</a>` : escapeHtml(row.homepage || 'Not found');
-            const linkedin = row.linkedin && row.linkedin !== 'Not found' && !row.linkedin.startsWith("Standard pipeline") ? `<a href="${escapeHtml(row.linkedin)}" target="_blank">${escapeHtml(row.linkedin)}</a>` : escapeHtml(row.linkedin || 'Not found');
-            
-            // Подготавливаем описание: сначала экранируем, потом заменяем переносы строк
+
             let descriptionHtml = escapeHtml(row.description || '');
             descriptionHtml = descriptionHtml.replace(/\n/g, '<br>');
 
+            // Add Homepage link to description
+            if (row.homepage && row.homepage !== 'Not found' && !row.homepage.startsWith("Standard pipeline")) {
+                const homepageLink = `<a href="${escapeHtml(row.homepage)}" target="_blank">${escapeHtml(row.homepage)}</a>`;
+                descriptionHtml += `<br><br>Homepage: ${homepageLink}`;
+            }
+
+            // Add LinkedIn link to description
+            if (row.linkedin && row.linkedin !== 'Not found' && !row.linkedin.startsWith("Standard pipeline")) {
+                const linkedinLink = `<a href="${escapeHtml(row.linkedin)}" target="_blank">${escapeHtml(row.linkedin)}</a>`;
+                descriptionHtml += `<br>LinkedIn: ${linkedinLink}`;
+            }
+
             tr.innerHTML = `
                 <td>${escapeHtml(row.name || '')}</td>
-                <td>${homepage}</td>
-                <td>${linkedin}</td>
-                <td>${descriptionHtml}</td> <!-- Используем подготовленный HTML для описания -->
+                <td>${descriptionHtml}</td>
             `;
             resultsTableBody.appendChild(tr);
         });

@@ -156,7 +156,7 @@ async def execute_pipeline_for_session_async(
                 serper_api_key=serper_api_key,
                 expected_csv_fieldnames=expected_csv_fieldnames, 
                 broadcast_update=None, # Ваша функция broadcast_update
-                main_batch_size=4 
+                main_batch_size=10 
             )
             logger.info(f"[EXECUTE_PIPELINE] Pipeline execution for session_id: {session_id} completed.")
         except asyncio.CancelledError:
