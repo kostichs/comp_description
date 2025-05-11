@@ -275,27 +275,28 @@ async def process_company(
 
         # --- GENERATE TEXT SUMMARY FROM THE ASSEMBLED JSON --- 
         if not final_structured_json or extraction_error_occurred:
-            pipeline_logger.error(f"  > {company_name}: Structured JSON is empty or errors occurred during extraction. Cannot generate text summary. Storing error/partial JSON.")
-            # Storing the (potentially partial or error-filled) JSON as string if summary generation is skipped
+            pipeline_logger.error(f"  > {company_name}: Structured JSON is empty or errors occurred. Storing error/partial JSON in description.")
             result_data["description"] = json.dumps(final_structured_json if final_structured_json else {"error": "No data extracted for summary generation"}, ensure_ascii=False, indent=2)
-            manual_check_flag = True # Ensure this is set if you use it
         else:
             pipeline_logger.info(f"  > {company_name}: Successfully assembled structured JSON. Generating final text summary...")
             text_summary = await generate_text_summary_from_json_async(
                 company_name=company_name,
                 structured_data=final_structured_json,
                 openai_client=openai_client,
-                llm_config=llm_config # llm_config can contain model_for_summary, temperature_for_summary etc.
+                llm_config=llm_config 
             )
 
             if text_summary and not text_summary.startswith("Error:"):
-                result_data["description"] = text_summary
-                pipeline_logger.info(f"  > {company_name}: Successfully generated three-paragraph text summary.")
+                # Corrected logging for raw summary
+                replacement_marker = "[NL]"
+                loggable_summary = text_summary.replace('\n', replacement_marker)
+                pipeline_logger.info(f"  > {company_name}: Raw text_summary from LLM (newlines as {replacement_marker}): {loggable_summary}")
+                
+                result_data["description"] = text_summary 
+                pipeline_logger.info(f"  > {company_name}: Successfully generated text summary (length: {len(text_summary)}).")
             else:
                 pipeline_logger.error(f"  > {company_name}: Failed to generate three-paragraph text summary. Fallback: {text_summary}. Storing structured JSON instead.")
-                # Fallback to storing the structured JSON if text summary generation fails
                 result_data["description"] = json.dumps(final_structured_json, ensure_ascii=False, indent=2)
-                manual_check_flag = True
 
     except asyncio.CancelledError:
         pipeline_logger.warning(f"Processing of company '{company_name}' was cancelled.")
