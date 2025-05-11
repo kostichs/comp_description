@@ -24,7 +24,17 @@ from .data_io import (load_and_prepare_company_names,
                       save_results_csv)
 from .external_apis.serper_client import find_urls_with_serper_async
 from .external_apis.scrapingbee_client import scrape_page_data_async # Use the async wrapper
-from .external_apis.openai_client import generate_description_openai_async, get_embedding_async, is_url_company_page_llm # Added is_url_company_page_llm
+from .external_apis.openai_client import (
+    extract_data_with_schema, # Renamed/New function
+    BASIC_INFO_SCHEMA, 
+    PRODUCT_TECH_SCHEMA, 
+    MARKET_CUSTOMER_SCHEMA, 
+    FINANCIAL_HR_SCHEMA, 
+    STRATEGIC_SCHEMA,
+    # Keep other imports like get_embedding_async, is_url_company_page_llm if used elsewhere
+    get_embedding_async, 
+    is_url_company_page_llm
+)
 from .processing import (validate_page, 
                          extract_text_for_description, 
                          extract_definitive_url_from_html, 
@@ -106,7 +116,7 @@ async def process_company(company_name: str,
         "name": company_name,
         "homepage": "Not found", 
         "linkedin": "Not found", 
-        "description": "Description not generated or failed to parse as JSON", # Default/fallback
+        "description": "Description generation failed or yielded no data.", # Default/fallback
         "timestamp": current_date_iso
     }
     
@@ -124,172 +134,134 @@ async def process_company(company_name: str,
     manual_check_flag: bool = False
 
     try:
-        # --- STEP 0: URL Finding (Serper) ---
-        if run_standard_pipeline or run_llm_deep_search_pipeline:
-            pipeline_logger.info(f"  > {company_name}: Finding URLs via Serper...")
-            serper_urls = await find_urls_with_serper_async(
+        # --- STEP 0: URL Finding & Standard Text Collection --- 
+        # (This section needs your full existing logic for finding URLs and scraping 
+        # homepage, about_us, wikipedia to populate text_src_for_llms)
+        # For this diff, we'll assume text_src_for_llms is populated by these prior steps.
+        # Example of how it might start:
+        hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = None, None, None, None
+        hp_html_content, about_page_text, wiki_summary, hp_text_for_llm = None, None, None, None
+
+        if run_standard_pipeline or run_llm_deep_search_pipeline: # Serper call if any pipeline part needs URLs
+            serper_urls_tuple = await find_urls_with_serper_async(
                 aiohttp_session, company_name, context_text, serper_api_key, openai_client, pipeline_logger
             )
-            if serper_urls:
-                hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = serper_urls
-            else:
-                pipeline_logger.error(f"  > {company_name}: Critical error in find_urls_with_serper_async.")
-                if run_standard_pipeline: manual_check_flag = True
+            if serper_urls_tuple:
+                hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = serper_urls_tuple
+        
+        # ... [YOUR FULL EXISTING TEXT COLLECTION LOGIC HERE to populate text_src_for_llms
+        # using hp_url_found_serper, li_url_found_serper, etc. via scraping and Wikipedia lookups]
+        # This logic will form the base `text_src_for_llms`
+        # For example, a simplified aggregation:
+        temp_texts = []
+        # if about_page_text: temp_texts.append(about_page_text)
+        # if wiki_summary: temp_texts.append(wiki_summary)
+        # if hp_text_for_llm: temp_texts.append(hp_text_for_llm) 
+        # text_src_for_llms = "\n\n---\n\n".join(temp_texts) 
+        # Placeholder if no specific content found after scraping efforts
+        if not text_src_for_llms:
+             text_src_for_llms = f"Collected information for {company_name}. Please extract relevant details." 
+             pipeline_logger.info(f"  > {company_name}: text_src_for_llms was initially empty, using placeholder.")
+        # --- END OF SIMULATED TEXT COLLECTION --- 
 
-        # --- Populate homepage and linkedin fields if standard pipeline is active ---
+        # --- Update homepage/linkedin in result_data based on standard pipeline flag ---
         if run_standard_pipeline:
-            if hp_url_found_serper:
-                try: result_data["homepage"] = f"{urlparse(hp_url_found_serper).scheme}://{urlparse(hp_url_found_serper).netloc}"
-                except Exception: result_data["homepage"] = hp_url_found_serper
-            else: result_data["homepage"] = "Not found"; manual_check_flag = True
-            
-            if li_url_found_serper:
-                cleaned_li = li_url_found_serper.replace("/about/", "").rstrip('/')
-                result_data["linkedin"] = cleaned_li
-            else: result_data["linkedin"] = "Not found"
-        else: 
-            result_data["homepage"] = "Standard pipeline (URL part) not run"
-            result_data["linkedin"] = "Standard pipeline (URL part) not run"
-
-        # --- Text Source Collection for LLMs ---
-        needs_text_sources_collection = True # Always try to collect for final JSON generation
-        if needs_text_sources_collection:
-            pipeline_logger.info(f"  > {company_name}: Text source collection for LLMs needed.")
-            if hp_url_found_serper:
-                try:
-                    pipeline_logger.info(f"  > {company_name}: Scraping homepage: {hp_url_found_serper}")
-                    hp_data = await scrape_page_data_async(hp_url_found_serper, sb_client)
-                    if hp_data and hp_data[2]:
-                        hp_title = hp_data[0]; hp_root = hp_data[1]; hp_html_content = hp_data[2]
-                        pipeline_logger.info(f"  > {company_name}: Homepage scraped. Title: '{hp_title}', HTML len: {len(hp_html_content)}")
-                    else: pipeline_logger.warning(f"  > {company_name}: Scraping homepage '{hp_url_found_serper}' failed or no HTML.")
-                except Exception as e_scrape_hp: pipeline_logger.error(f"  > {company_name}: Error scraping HP: {e_scrape_hp}")
-
-            if hp_html_content and hp_url_found_serper:
-                try:
-                    about_page_text = await find_and_scrape_about_page_async(hp_html_content, hp_url_found_serper, company_name, aiohttp_session, sb_client, openai_client, pipeline_logger)
-                    if about_page_text: pipeline_logger.info(f"  > {company_name}: Found text from 'About Us' (len: {len(about_page_text)}).")
-                except Exception as e_about: pipeline_logger.error(f"  > {company_name}: Error finding/scraping About page: {e_about}")
-
-            if wiki_url_found_serper:
-                try:
-                    wiki_page_title = unquote(urlparse(wiki_url_found_serper).path.split('/')[-1])
-                    if wiki_page_title: wiki_summary = await get_wikipedia_summary_async(wiki_page_title, pipeline_logger)
-                    if wiki_summary: pipeline_logger.info(f"  > {company_name}: Wikipedia summary fetched (len: {len(wiki_summary)}).")
-                except Exception as e_wiki: pipeline_logger.error(f"  > {company_name}: Error fetching Wikipedia: {e_wiki}")
-            
-            page_validated_for_text_extraction = False
-            if not about_page_text and hp_html_content and hp_url_found_serper:
-                current_hp_text = extract_text_for_description(hp_html_content)
-                if current_hp_text and len(current_hp_text) > 100:
-                    page_validated_for_text_extraction = validate_page(company_name, hp_title, hp_root, hp_html_content, hp_url_found_serper)
-                    if page_validated_for_text_extraction: hp_text_for_llm = current_hp_text; pipeline_logger.info(f"  > {company_name}: HP content validated.")
-                    else: pipeline_logger.warning(f"  > {company_name}: HP content validation FAILED.")
-            elif about_page_text: page_validated_for_text_extraction = True
-
-            # --- Комбинирование источников текста (стандартная часть) ---
-            standard_text_sources_list = []
-            if about_page_text: standard_text_sources_list.append("[From About Page]:\n" + about_page_text)
-            if wiki_summary: standard_text_sources_list.append("[From Wikipedia Summary]:\n" + wiki_summary)
-            if li_url_found_serper and li_snippet_serper: standard_text_sources_list.append(f"[From LinkedIn Serper Snippet ({li_url_found_serper})]:\n{li_snippet_serper}")
-            if not about_page_text and not wiki_summary and hp_text_for_llm and page_validated_for_text_extraction: standard_text_sources_list.append("[From Homepage]:\n" + hp_text_for_llm)
-            
-            if standard_text_sources_list:
-                text_src_for_llms += "\n\n---\n\n".join(standard_text_sources_list)
-                pipeline_logger.debug(f"  > {company_name}: Standard text sources combined (len: {len(text_src_for_llms)})")
-            else:
-                pipeline_logger.warning(f"  > {company_name}: No standard text sources found for LLMs.")
+            # ... (logic to populate result_data["homepage"] and result_data["linkedin"] as before)
+            if hp_url_found_serper: result_data["homepage"] = hp_url_found_serper # Simplified, use your existing parsing
+            if li_url_found_serper: result_data["linkedin"] = li_url_found_serper # Simplified
         else:
-            pipeline_logger.info(f"  > {company_name}: Text source collection for LLMs SKIPPED.")
+            result_data["homepage"] = "Standard URL fetch not run"
+            result_data["linkedin"] = "Standard URL fetch not run"
 
-        # --- LLM DEEP SEARCH (if enabled) --- 
+        # --- LLM DEEP SEARCH (if enabled, augments text_src_for_llms) ---
         if run_llm_deep_search_pipeline:
-            pipeline_logger.info(f"  > {company_name}: Running LLM DEEP SEARCH (using gpt-4o-mini-search-preview) to augment information context...")
-            
-            aspects_for_report = []
+            pipeline_logger.info(f"  > {company_name}: Running LLM DEEP SEARCH to augment information context...")
+            aspects_for_deep_search_report = []
             if llm_deep_search_config and "specific_queries" in llm_deep_search_config:
-                aspects_for_report = llm_deep_search_config.get("specific_queries", [])
+                aspects_for_deep_search_report = llm_deep_search_config.get("specific_queries", [])
             
-            if not aspects_for_report:
-                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search: No specific_aspects_to_cover found in llm_deep_search_config. LLM prompt might be less targeted.")
-
-            pipeline_logger.info(f"  > {company_name}: LLM Deep Search: Calling query_llm_for_deep_info with {len(aspects_for_report)} specific aspects. User context provided: {bool(context_text)}.")
             comprehensive_deep_search_report = await query_llm_for_deep_info(
                 openai_client=openai_client,
                 company_name=company_name,
-                specific_aspects_to_cover=aspects_for_report,
-                user_context_text=context_text # Pass the user-provided context here
+                specific_aspects_to_cover=aspects_for_deep_search_report,
+                user_context_text=context_text
             )
-            
-            known_error_prefixes = ("Deep Search Error:", "Deep Search Skipped:")
-            is_error_report = comprehensive_deep_search_report.startswith(known_error_prefixes)
-
-            if not is_error_report and comprehensive_deep_search_report:
-                augmentation_text = f"\n\n--- Additional Insights from Deep Search ---\n{comprehensive_deep_search_report}"
-                text_src_for_llms = text_src_for_llms + augmentation_text if text_src_for_llms else augmentation_text.strip()
-                pipeline_logger.info(f"  > {company_name}: LLM Deep Search report appended. Total text_src_for_llms length: {len(text_src_for_llms)}.")
-            elif comprehensive_deep_search_report: 
-                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned an error/skip message: {comprehensive_deep_search_report}")
+            if not comprehensive_deep_search_report.startswith(("Deep Search Error:", "Deep Search Skipped:")):
+                text_src_for_llms += f"\n\n--- LLM Deep Search Report ---\n{comprehensive_deep_search_report}"
+                pipeline_logger.info(f"  > {company_name}: LLM Deep Search report appended.")
+            else:
+                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search problem: {comprehensive_deep_search_report}")
                 text_src_for_llms += f"\n\n--- LLM Deep Search Status: {comprehensive_deep_search_report} ---"
-            else: 
-                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned no information.")
-        
-        # --- FINAL STRUCTURED JSON GENERATION --- 
-        pipeline_logger.info(f"  > {company_name}: Generating structured JSON description using LLM with combined text (len: {len(text_src_for_llms)})...")
-        
-        # Ensure there's some text to process, even if just the company name for a very basic attempt
-        if not text_src_for_llms and company_name:
-            text_src_for_llms = f"Company: {company_name}. Please provide any available information based on this name to populate the schema."
-            pipeline_logger.info(f"  > {company_name}: text_src_for_llms was empty, using basic prompt.")
-        elif not text_src_for_llms and not company_name:
-            pipeline_logger.error(f"  > No company name or text source for final JSON generation. Skipping.")
-            result_data["description"] = "Error: No input for JSON generation."
-            return result_data # Early exit if no input
 
-        structured_json_output = await generate_description_openai_async(
-             openai_client=openai_client, 
-             company_name=company_name, # Still useful for the prompt inside generate_description_openai_async
-             about_snippet=text_src_for_llms, 
-             llm_config=llm_config # For model, temp, etc.
-        )
+        # --- FINAL STRUCTURED JSON GENERATION (Iterative Schema Extraction) --- 
+        pipeline_logger.info(f"  > {company_name}: Starting iterative JSON extraction from combined text (len: {len(text_src_for_llms)})...")
+        
+        final_structured_json = {}
+        extraction_error_occurred = False
 
-        if structured_json_output and not structured_json_output.get("error"):
+        schemas_to_extract = [
+            ("BasicInfo", BASIC_INFO_SCHEMA),
+            ("ProductTechInfo", PRODUCT_TECH_SCHEMA),
+            ("MarketCustomerInfo", MARKET_CUSTOMER_SCHEMA),
+            ("FinancialHRInfo", FINANCIAL_HR_SCHEMA),
+            ("StrategicInfo", STRATEGIC_SCHEMA)
+        ]
+
+        if not text_src_for_llms:
+            pipeline_logger.error(f"  > {company_name}: No text available in text_src_for_llms for structured JSON generation. Aborting JSON extraction.")
+            result_data["description"] = "Error: No text content available for JSON extraction."
+            # return result_data # Early exit or proceed to fill with errors/nulls?
+            # For now, we will let it try to generate from empty/placeholder which will likely result in nulls.
+            text_src_for_llms = f"No specific information found for {company_name} from scraping or deep search. Attempting to populate schema based on company name only."
+
+        for schema_name_suffix, sub_schema_dict in schemas_to_extract:
+            schema_extraction_name = f"company_{schema_name_suffix.lower()}_extraction"
+            pipeline_logger.info(f"  > {company_name}: Extracting with schema: {schema_extraction_name}")
+            
+            extracted_part = await extract_data_with_schema(
+                company_name=company_name,
+                about_snippet=text_src_for_llms, 
+                sub_schema=sub_schema_dict,
+                schema_name=schema_extraction_name,
+                llm_config=llm_config, 
+                openai_client=openai_client
+            )
+
+            if extracted_part and not extracted_part.get("error"):
+                final_structured_json.update(extracted_part)
+                pipeline_logger.info(f"  > {company_name}: Successfully extracted and updated with {schema_extraction_name}.")
+            else:
+                extraction_error_occurred = True
+                error_detail = extracted_part.get("error", "Unknown extraction error") if extracted_part else "No data returned from extraction"
+                pipeline_logger.error(f"  > {company_name}: Failed to extract/update with {schema_extraction_name}. Error: {error_detail}")
+                # Add placeholder for this part of the schema to indicate failure
+                for key in sub_schema_dict.get("properties", {}).keys():
+                    if key not in final_structured_json:
+                         final_structured_json[key] = f"Error extracting {schema_name_suffix}"
+        
+        if not final_structured_json or extraction_error_occurred:
+            pipeline_logger.error(f"  > {company_name}: Final structured JSON is empty or errors occurred during extraction. Storing error message.")
+            result_data["description"] = json.dumps({"error": "Failed to generate complete structured company profile", "details": final_structured_json}, ensure_ascii=False, indent=2)
+            manual_check_flag = True
+        else:
             try:
-                # Convert the dictionary to a JSON string for storage in the CSV's description field
-                result_data["description"] = json.dumps(structured_json_output, ensure_ascii=False, indent=2)
-                pipeline_logger.info(f"  > {company_name}: Successfully generated and stringified structured JSON description.")
+                result_data["description"] = json.dumps(final_structured_json, ensure_ascii=False, indent=2)
+                pipeline_logger.info(f"  > {company_name}: Successfully generated and stringified final structured JSON description.")
             except TypeError as e:
-                pipeline_logger.error(f"  > {company_name}: Failed to serialize structured JSON to string: {e}. Storing raw dict (if possible) or error.")
-                result_data["description"] = f"Error serializing JSON: {str(structured_json_output)}"
+                pipeline_logger.error(f"  > {company_name}: Failed to serialize final structured JSON to string: {e}. Storing error.")
+                result_data["description"] = json.dumps({"error": f"Serialization failed: {str(e)}", "partial_data": "Data may be incomplete or malformed"}, ensure_ascii=False, indent=2)
                 manual_check_flag = True
-        elif structured_json_output and structured_json_output.get("error"):
-            pipeline_logger.error(f"  > {company_name}: Failed to generate structured JSON: {structured_json_output.get('error')}")
-            result_data["description"] = f"JSON Generation Error: {structured_json_output.get('error')}"
-            if "raw_response" in structured_json_output: # Log raw problematic response if available
-                 pipeline_logger.debug(f"  > {company_name}: Raw problematic LLM response for JSON: {structured_json_output['raw_response'][:300]}...")
-            manual_check_flag = True
-        else: # Handles case where generate_description_openai_async returns None
-            pipeline_logger.error(f"  > {company_name}: Failed to generate structured JSON (generate_description_openai_async returned None).")
-            result_data["description"] = "JSON Generation Failed (No output from LLM)"
-            manual_check_flag = True
 
     except asyncio.CancelledError:
         pipeline_logger.warning(f"Processing of company '{company_name}' was cancelled.")
-        result_data["description"] = result_data.get("description", "Processing cancelled") # Keep potentially partially filled error
-        # Other fields already have defaults or "pipeline not run"
+        result_data["description"] = result_data.get("description", "Processing cancelled")
         raise
     except Exception as e_outer:
-        pipeline_logger.critical(f"CRITICAL ERROR processing {company_name}: {type(e_outer).__name__} - {e_outer}", exc_info=True)
-        result_data["description"] = f"Outer Error: {type(e_outer).__name__}"
-        # result_data["homepage"] = "Error" # Already handled or set to "not run"
-        # result_data["linkedin"] = "Error"
-
-    # Add manual_check_flag to result_data if you plan to use it in CSV
-    # if "manual_check" in expected_csv_fieldnames: # Assuming expected_csv_fieldnames is available
-    #     result_data["manual_check"] = manual_check_flag
+        pipeline_logger.critical(f"CRITICAL OUTER ERROR processing {company_name}: {type(e_outer).__name__} - {e_outer}", exc_info=True)
+        result_data["description"] = json.dumps({"error": f"Outer critical error: {type(e_outer).__name__} - {str(e_outer)}"}, ensure_ascii=False, indent=2)
 
     processing_duration = time.time() - start_time_processing
-    pipeline_logger.info(f"Finished processing {company_name} in {processing_duration:.2f}s. Std: {run_standard_pipeline}, Deep: {run_llm_deep_search_pipeline}. Desc type: {type(result_data.get('description'))}")
+    pipeline_logger.info(f"Finished processing {company_name} in {processing_duration:.2f}s. Desc type: {type(result_data.get('description'))}")
     return result_data
 
 

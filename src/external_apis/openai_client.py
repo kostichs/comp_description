@@ -163,6 +163,119 @@ COMPANY_PROFILE_SCHEMA = {
     ]
 }
 
+# --- Individual Sub-Schemas --- 
+
+BASIC_INFO_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "company_name": {"type": "string", "description": "Official legal name of the company."},
+        "founding_year": {"type": ["integer", "null"], "description": "Year the company was founded."},
+        "headquarters_city": {"type": ["string", "null"], "description": "City of the company's headquarters."},
+        "headquarters_country": {"type": ["string", "null"], "description": "Country of the company's headquarters."},
+        "founders": {"type": "array", "description": "List of company founders.", "items": {"type": "string"}},
+        "ownership_background": {"type": ["string", "null"], "description": "Information about owners or parent fund/company."}
+    },
+    "required": ["company_name", "founding_year", "headquarters_city", "headquarters_country", "founders", "ownership_background"]
+}
+
+PRODUCT_TECH_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "core_products_services": {
+            "type": "array",
+            "description": "Main products or services.",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {
+                    "name": {"type": "string", "description": "Name of product/service."},
+                    "launch_year": {"type": ["integer", "null"], "description": "Launch year."}
+                },
+                "required": ["name", "launch_year"]
+            }
+        },
+        "underlying_technologies": {"type": "array", "description": "Key technologies used.", "items": {"type": "string"}}
+    },
+    "required": ["core_products_services", "underlying_technologies"]
+}
+
+MARKET_CUSTOMER_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "customer_types": {"type": "array", "description": "Primary customer types (B2B, B2C, B2G).", "items": {"type": "string"}},
+        "industries_served": {"type": "array", "description": "Industries served.", "items": {"type": "string"}},
+        "geographic_markets": {"type": "array", "description": "Geographical markets.", "items": {"type": "string"}}
+    },
+    "required": ["customer_types", "industries_served", "geographic_markets"]
+}
+
+FINANCIAL_HR_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "financial_details": {
+            "type": ["object", "null"],
+            "description": "Key financial indicators.",
+            "additionalProperties": False,
+            "properties": {
+                "ARR": {
+                    "type": ["object", "null"],
+                    "description": "Annual Recurring Revenue.",
+                    "additionalProperties": False,
+                    "properties": {
+                        "amount": {"type": ["number", "null"]},
+                        "currency": {"type": ["string", "null"]},
+                        "year_reported": {"type": ["integer", "null"]},
+                        "note": {"type": ["string", "null"]}
+                    },
+                    "required": ["amount", "currency", "year_reported", "note"]
+                },
+                "total_funding": {
+                    "type": ["object", "null"],
+                    "description": "Total funding raised.",
+                    "additionalProperties": False,
+                    "properties": {
+                        "amount": {"type": ["number", "null"]},
+                        "currency": {"type": ["string", "null"]},
+                        "note": {"type": ["string", "null"]}
+                    },
+                    "required": ["amount", "currency", "note"]
+                },
+                "latest_annual_revenue": {
+                    "type": ["object", "null"],
+                    "description": "Latest annual revenue.",
+                    "additionalProperties": False,
+                    "properties": {
+                        "amount": {"type": ["number", "null"]},
+                        "currency": {"type": ["string", "null"]},
+                        "year_reported": {"type": ["integer", "null"]},
+                        "note": {"type": ["string", "null"]}
+                    },
+                    "required": ["amount", "currency", "year_reported", "note"]
+                }
+            },
+            "required": ["ARR", "total_funding", "latest_annual_revenue"]
+        },
+        "employee_count": {"type": ["integer", "null"], "description": "Number of employees."}
+    },
+    "required": ["financial_details", "employee_count"]
+}
+
+STRATEGIC_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "major_clients_or_case_studies": {"type": "array", "description": "Major clients/case studies.", "items": {"type": "string"}},
+        "strategic_initiatives": {"type": "array", "description": "Strategic moves (partnerships, M&A).", "items": {"type": "string"}},
+        "key_competitors_mentioned": {"type": "array", "description": "Main competitors mentioned.", "items": {"type": "string"}},
+        "overall_summary": {"type": ["string", "null"], "description": "Brief company summary based on extracted info."}
+    },
+    "required": ["major_clients_or_case_studies", "strategic_initiatives", "key_competitors_mentioned", "overall_summary"]
+}
+
 async def get_embedding_async(text: str, openai_client: AsyncOpenAI, model: str = "text-embedding-3-small") -> list[float] | None:
     """Generates an embedding for the given text using OpenAI."""
     if not text or not openai_client: return None
@@ -200,50 +313,41 @@ async def is_url_company_page_llm(company_name: str, page_snippet: str, openai_c
         print(f"  Error during LLM page check for {company_name}: {type(e).__name__} - {e}")
         return False # Default to false on error to be conservative
 
-async def generate_description_openai_async(
+async def extract_data_with_schema(
     company_name: str, 
-    # homepage_root: str | None, # No longer directly used in prompt
-    # linkedin_url: str | None,  # No longer directly used in prompt
-    about_snippet: str | None, # This is the combined text_src_for_llms
-    llm_config: dict, # Still useful for model name, temperature, etc.
+    about_snippet: str | None, 
+    sub_schema: Dict[str, Any], # Specific sub-schema for this extraction task
+    schema_name: str, # Name for the schema, e.g., "basic_info_extraction"
+    llm_config: dict, 
     openai_client: AsyncOpenAI,
-    # context_text: str | None # No longer directly used in prompt
-    # Return type is now Dict or None
 ) -> Optional[Dict[str, Any]]:
     """
-    Async: Extracts structured company information into a predefined JSON schema 
-    using the provided text snippet (about_snippet) and an LLM.
+    Async: Extracts structured company information into a *specific sub-schema* 
+    using the provided text snippet and an LLM.
     """
     if not about_snippet:
-        logger.warning(f"No text (about_snippet) provided for LLM input for {company_name}. Cannot generate structured data.")
-        return None
+        logger.warning(f"No text (about_snippet) for {company_name} for schema '{schema_name}'. Returning empty dict.")
+        return {} # Return empty dict to allow merging, or None if preferred
     if not llm_config or not isinstance(llm_config, dict):
-        logger.error(f"Invalid LLM config for {company_name}. Cannot generate structured data.")
-        return None
+        logger.error(f"Invalid LLM config for {company_name} (schema '{schema_name}'). Returning error dict.")
+        return {"error": f"Invalid LLM config for schema {schema_name}"}
     
-    # Use a model suitable for JSON mode and complex extraction, e.g., gpt-4o-mini or gpt-4-turbo
-    # The llm_config.yaml might specify this, or we default.
-    # Forcing gpt-4o-mini as per user's example for JSON schema mode.
     model_name = llm_config.get('model', "gpt-4o-mini") 
-    if model_name not in ["gpt-4o-mini", "gpt-4-turbo", "gpt-4o", "gpt-3.5-turbo"]: # Add other compatible models
-        logger.warning(f"Model {model_name} from config might not be ideal for JSON schema mode. Consider gpt-4o-mini or gpt-4-turbo.")
-        # Defaulting to gpt-4o-mini if an incompatible model is specified for this specific task.
+    if model_name not in ["gpt-4o-mini", "gpt-4-turbo", "gpt-4o", "gpt-3.5-turbo"]:
+        logger.warning(f"Model {model_name} from config might not be ideal for JSON schema mode. Defaulting to gpt-4o-mini for {schema_name}.")
         model_name = "gpt-4o-mini"
 
-
     system_prompt_content = (
-        "You are a highly accurate data extraction and structuring AI. "
-        "Your task is to meticulously analyze the provided text snippet about a company and populate a JSON object "
-        "according to the given schema. Extract information ONLY from the provided text. "
-        "If information for a specific field is not found in the text, use 'null' for that field. "
-        "Adhere strictly to the schema's data types and structure. Do not add any fields not present in the schema."
+        "You are a highly accurate data extraction AI. Your task is to meticulously analyze the provided text about a company "
+       f"and populate a JSON object strictly according to the fields defined in the provided '{schema_name}' schema. "
+        "Extract information ONLY from the provided text. If information for a field is not found, use 'null' for that field. "
+        "Adhere strictly to the schema's data types. Do not add any fields not present in the schema."
     )
     
     user_prompt_content = (
         f"Please extract information about the company '{company_name}' from the following text snippet and structure it "
-        f"according to the 'company_profile' JSON schema provided. "
-        f"Ensure all required fields in the schema are addressed. If information is absent for non-required fields, use null.\\n\\n"
-        f"Text Snippet to Analyze:\\n```\\n{about_snippet[:120000]} \\n```" # Max context for some models
+       f"according to the '{schema_name}' JSON schema provided. Focus only on the fields defined in this specific schema.\n\n"
+        f"Text Snippet to Analyze:\n```\n{about_snippet[:120000]} \n```"
     )
 
     messages = [
@@ -254,38 +358,37 @@ async def generate_description_openai_async(
     api_params = {
         "model": model_name,
         "messages": messages,
-        "temperature": llm_config.get("temperature", 0.1), # Low temperature for factual extraction
-        "top_p": llm_config.get("top_p", 0.9),
-        "max_tokens": llm_config.get("max_tokens", 4000), # Ensure enough tokens for JSON
+        "temperature": llm_config.get("temperature", 0.05), # Very low temperature for focused extraction
+        "top_p": llm_config.get("top_p", 0.5),
+        "max_tokens": llm_config.get("max_tokens", 2000), # Max tokens might be lower for smaller sub-schemas
         "response_format": {
             "type": "json_schema",
             "json_schema": {
-                "name": "company_profile_extraction", # Function/schema name for OpenAI
-                "strict": True, # Enforce schema strictly
-                "schema": COMPANY_PROFILE_SCHEMA
+                "name": schema_name, 
+                "strict": True, 
+                "schema": sub_schema # Use the passed sub_schema
             }
         }
     }
     
-    logger.info(f"Attempting to generate structured JSON for {company_name} using model {model_name}.")
+    logger.info(f"Attempting to extract for schema '{schema_name}' for {company_name} using model {model_name}.")
     try:
         response = await openai_client.chat.completions.create(**api_params)
         if response.choices and response.choices[0].message and response.choices[0].message.content:
             response_content = response.choices[0].message.content.strip()
             try: 
                 parsed_json = json.loads(response_content)
-                logger.info(f"LLM successfully generated structured JSON for {company_name}.")
-                # You could add validation against the schema here if desired, using a library like jsonschema
+                logger.info(f"LLM successfully generated JSON for schema '{schema_name}' for {company_name}.")
                 return parsed_json
             except json.JSONDecodeError: 
-                logger.error(f"Error: LLM response for {company_name} was not valid JSON. Response: {response_content[:500]}...")
-                return {"error": "LLM response not valid JSON", "raw_response": response_content}
+                logger.error(f"Error: LLM response for {company_name} (schema '{schema_name}') not valid JSON. Response: {response_content[:500]}...")
+                return {"error": f"LLM response not valid JSON for schema {schema_name}", "raw_response": response_content}
         else: 
-            logger.warning(f"OpenAI returned no choices/content for structured JSON for {company_name}.")
-            return {"error": "OpenAI returned no choices/content"}
+            logger.warning(f"OpenAI returned no choices/content for schema '{schema_name}' for {company_name}.")
+            return {"error": f"OpenAI returned no choices/content for schema {schema_name}"}
     except APIError as e:
-        logger.error(f"OpenAI APIError for structured JSON ({company_name}): {type(e).__name__} - {str(e)}")
-        return {"error": f"OpenAI APIError: {str(e)}"}
+        logger.error(f"OpenAI APIError for {company_name} (schema '{schema_name}'): {type(e).__name__} - {str(e)}")
+        return {"error": f"OpenAI APIError for schema {schema_name}: {str(e)}"}
     except Exception as e: 
-        logger.error(f"Unexpected error during structured JSON generation for {company_name}: {type(e).__name__} - {str(e)}", exc_info=True)
-        return {"error": f"Unexpected error: {str(e)}"} 
+        logger.error(f"Unexpected error for {company_name} (schema '{schema_name}'): {type(e).__name__} - {str(e)}", exc_info=True)
+        return {"error": f"Unexpected error for schema {schema_name}: {str(e)}"} 
