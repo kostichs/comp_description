@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Descriptor</title>
+    <title>CompanyCanvas</title>
     <script>
         console.log('HTML head loaded');
         window.onerror = function(msg, url, lineNo, columnNo, error) {
@@ -12,6 +12,7 @@
         };
     </script>
     <style>
+        
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -119,6 +120,59 @@
             0% { transform: translate(-50%, -50%) rotate(0deg); }
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
+        #dropZoneContainer {
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 500px;
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease-in-out;
+        }
+        #dropZoneContainer.dragover {
+            background-color: #e9ecef;
+            border-color: #0056b3;
+        }
+        .dropZone-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+        .dropZone-instructions {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        #inputFile {
+            display: none;
+        }
+        #customChooseFileButton {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+            margin-bottom: 10px;
+        }
+        #customChooseFileButton:hover {
+            background-color: #0056b3;
+        }
+        #fileNameDisplay {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #495057;
+            min-height: 1.2em;
+        }
+        #runBtnContainer {
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -127,36 +181,32 @@
     </script>
     <div class="container">
         <div class="header">
-            <h1>Company Descriptor</h1>
+            <h1>CompanyCanvas</h1>
             <button id="newSessionBtn" style="display:none; margin-left:auto;">Start new session</button>
         </div>
 
         <form id="uploadForm">
-            <div class="form-group">
-                <label for="inputFile">Input or drop file here (CSV/Excel):</label>
+            <div id="dropZoneContainer" 
+                 ondragover="this.classList.add('dragover'); event.preventDefault();" 
+                 ondragleave="this.classList.remove('dragover');"
+                 ondrop="this.classList.remove('dragover'); event.preventDefault();">
+                <label class="dropZone-label">Drag & Drop Your File Here or Use the Button</label>
+                <p class="dropZone-instructions">Supported formats: CSV, XLSX.<br>Company names should be in the first column. The first row (header) will be ignored.</p>
+                
+                <button type="button" id="customChooseFileButton">Choose File</button>
+                <p id="fileNameDisplay"></p>
+                
                 <input type="file" id="inputFile" accept=".csv,.xlsx,.xls" required>
             </div>
 
             <div class="form-group">
-                <label for="contextText">Additional Context (Optional - e.g., specific regions, industries, focus areas):</label>
-                <textarea id="contextText" name="context_text" placeholder="Enter any additional context to guide the search and description generation..."></textarea>
+                <label for="contextText">Additional Context (Optional — e.g. region, industry, focus area):</label>
+                <textarea id="contextText" name="context_text" placeholder="Enter any additional context..."></textarea>
             </div>
 
-            <!-- 
-            <div class="form-group">
-                <label>Pipeline Selection:</label>
-                <div>
-                    <input type="checkbox" id="standardPipeline" name="standard_pipeline" checked>
-                    <label for="standardPipeline" style="font-weight: normal; display: inline;">Standard Pipeline</label>
-                </div>
-                <div>
-                    <input type="checkbox" id="llmDeepSearchPipeline" name="llm_deep_search_pipeline">
-                    <label for="llmDeepSearchPipeline" style="font-weight: normal; display: inline;">LLM Deep Search Pipeline</label>
-                </div>
+            <div id="runBtnContainer">
+                <button type="submit" id="runBtn">Run</button>
             </div>
-            -->
-
-            <button type="submit" id="runBtn">Run</button>
         </form>
 
         <div id="sessionControls" style="display: none;">

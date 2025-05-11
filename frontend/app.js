@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingIndicator = document.getElementById('loading-indicator');
     const runBtn = document.getElementById('runBtn');
     const progressStatus = document.getElementById('progressStatus');
+    const dropZoneContainer = document.getElementById('dropZoneContainer');
+    const customChooseFileButton = document.getElementById('customChooseFileButton');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
 
     console.log('Elements found:', { // Отладочная информация
         sessionSelect: !!sessionSelect,
@@ -33,7 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsTableBody: !!resultsTableBody,
         loadingIndicator: !!loadingIndicator,
         runBtn: !!runBtn,
-        progressStatus: !!progressStatus
+        progressStatus: !!progressStatus,
+        dropZoneContainer: !!dropZoneContainer,
+        customChooseFileButton: !!customChooseFileButton,
+        fileNameDisplay: !!fileNameDisplay
     });
 
     let currentSessionId = null;
@@ -431,4 +437,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load
     console.log('Starting initial load');
+
+    // --- Drag & Drop Event Listeners for dropZoneContainer ---
+    if (dropZoneContainer && inputFile && customChooseFileButton && fileNameDisplay) {
+        customChooseFileButton.addEventListener('click', () => {
+            inputFile.click();
+        });
+
+        dropZoneContainer.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            dropZoneContainer.classList.add('dragover');
+        });
+
+        dropZoneContainer.addEventListener('dragleave', (event) => {
+            dropZoneContainer.classList.remove('dragover');
+        });
+
+        dropZoneContainer.addEventListener('drop', (event) => {
+            event.preventDefault();
+            dropZoneContainer.classList.remove('dragover');
+
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                inputFile.files = files;
+                const fileName = files[0].name;
+                fileNameDisplay.textContent = `File selected: ${fileName}`;
+                fileNameDisplay.style.color = '#28a745';
+                console.log('File(s) dropped and assigned to input:', files);
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+
+        inputFile.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                fileNameDisplay.textContent = `File selected: ${this.files[0].name}`;
+                fileNameDisplay.style.color = '#28a745';
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        });
+    }
 });
