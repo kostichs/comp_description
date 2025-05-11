@@ -19,92 +19,227 @@ def escape_string_for_prompt(text: str) -> str:
 async def query_llm_for_deep_info(
     openai_client: AsyncOpenAI,
     company_name: str,
-) -> str:
+    specific_aspects_to_cover: List[str] # Parameter re-added as it's passed from pipeline
+) -> str: 
     """
-    Uses gpt-4o-mini-search-preview to fetch marketing-relevant insights about a company.
-    Optimized for maximum signal extraction using search tools.
+    Asynchronously requests a comprehensive, structured business report for a company
+    from OpenAI's gpt-4o-mini-search-preview model using a single, detailed query.
+    The query is guided by the provided list of specific aspects to cover.
+    Sources found by the LLM are logged but not included in the returned report text.
+
+    Args:
+        openai_client: The AsyncOpenAI client.
+        company_name: The name of the company.
+        specific_aspects_to_cover: A list of topics/questions to ensure the report addresses.
+
+    Returns:
+        A string containing the comprehensive LLM report (TEXT ONLY, without appended sources),
+        or an error message string.
     """
-    specific_queries = [
-        "1. Industry and primary business activities",
-        "2. Key customer segments (B2B or B2C)",
-        "3. IT stack and infrastructure scale",
-        "4. Use of AI, cloud, automation, or data tools",
-        "5. Digital transformation initiatives",
-        "6. Recent technology partnerships or vendors",
-        "7. Key decision makers (CIO, CTO, etc.)",
-        "8. Openness to new vendor solutions",
-        "9. Current operational or IT pain points",
-        "10. Estimated budget or revenue scale"
-    ]
-
-    formatted_query = (
-        f"Evaluate the company: {company_name}. For each of the following aspects, provide factual, recent, structured insights:\n\n"
-        + "\n".join(specific_queries) +
-        "\n\nUse content from 2023–2025 if possible. Be concise but specific. Mention concrete examples or vendors when available."
-    )
-
     llm_model = "gpt-4o-mini-search-preview"
 
+    safe_company_name = escape_string_for_prompt(company_name)
+    
+    # Use the passed specific_aspects_to_cover to build the prompt
+    additional_aspects_str = ""
+    if specific_aspects_to_cover: # Check if the list is not empty
+        escaped_additional_aspects = [escape_string_for_prompt(aspect) for aspect in specific_aspects_to_cover]
+        additional_aspects_str = "\n\nAdditionally, ensure these specific aspects are thoroughly investigated and included within the relevant sections of your report:\n- " + "\n- ".join(escaped_additional_aspects)
+    else:
+        logger.warning(f"[DeepSearch] specific_aspects_to_cover list is empty for '{company_name}'. The report might be less targeted.")
+        # No specific aspects to add to the prompt if the list is empty
+
+    prompt_template = """Please generate a detailed Business Analytics Report for the company: '{company_name_placeholder}'.
+
+Your primary goal is to extract and present factual data, focusing on information from 2024-2025 where available. The report MUST strictly follow the structure outlined below and include the requested details for each section. Use your web search capabilities to find the most current information.
+
+Report Structure:
+
+1.  **Customer Segments:**
+    *   Identify and detail main customer categories (e.g., Consumer, Business, Wholesale, Government/Public Sector).
+    *   Provide key metrics: wireless retail connections, post-paid vs. prepaid figures, total broadband subscribers (broken down by type like Fios fiber vs. fixed-wireless if applicable), and relevant market share if found.
+    *   Note any specialized services for distinct communities (e.g., first-responder networks).
+
+2.  **Geographic Reach:**
+    *   Describe core network operational areas and retail footprint (e.g., US-centric, specific states/regions for key services like Fios).
+    *   Detail global presence for enterprise services, including owned infrastructure vs. partner Points of Presence (POPs) and countries covered.
+
+3.  **Business Units / Segments (Financials & Activities):**
+    *   List main operational business units or segments.
+    *   For each: Provide latest reported annual revenue (specify year, e.g., 2024 revenue) and list core activities/offerings.
+
+4.  **Products and Indicative Prices (Latest Available, e.g., May 2025):
+    *   Key Products/Services: List flagship offerings (e.g., 5G mobile plans like 'myPlan Unlimited', Fios Internet tiers, 5G Home Internet, Business unlimited mobility, Private 5G solutions).
+    *   Indicative Pricing: For major offerings, provide entry-level monthly pricing. Note any conditions: discounts (e.g., Mobile + Home), price lock durations, contract requirements, setup fees, included equipment. Mention any significant promotional offers (e.g., free devices/services with specific plans).
+
+5.  **Core Offers & Promotions (Strategic Summary):**
+    *   Summarize key ongoing offers defining their market strategy (e.g., device trade-in credits, bundling discounts, special programs for demographics like low-income households - e.g., Verizon Forward + Lifeline).
+
+6.  **Customer Needs Addressed (Solution Mapping):**
+    *   For key customer needs (e.g., ubiquitous reliable mobility, high-speed home/business broadband, mission-critical communications, enterprise digital transformation, low-income connectivity), describe how the company's specific offerings (Verizon responses) meet these needs.
+
+7.  **Solution Portfolio Snapshot (Technical Capabilities & Ecosystem):**
+    *   Network Technology: Spectrum bands utilized (e.g., 700 MHz, C-Band, mmWave), backbone type (e.g., 100% fiber), core network features (e.g., SDN-enabled).
+    *   5G Details: Specifics of 5G offerings (e.g., Ultra Wideband vs. Nationwide, C-Band coverage, mmWave for hot-zones, support for network slicing, Mobile Edge Compute - MEC).
+    *   Fixed Wireless Access (FWA): Technology (5G/LTE), CPE details, typical speeds.
+    *   Private Networks: Offerings for enterprises (e.g., Private 5G On-Site, NaaS models), target verticals (e.g., ports, factories, stadiums), integration with AI/edge compute.
+    *   IoT Platform: (e.g., ThingSpace), SIM/eSIM capabilities, device management, analytics, global IoT footprint.
+    *   Security Services: Portfolio for enterprise/business (e.g., managed firewalls, DDoS protection, SASE/SSE, zero-trust, partner ecosystem for security).
+    *   Unified Communications (UCaaS): Current strategy and offerings (e.g., if native solutions like BlueJeans are retired, what partner platforms are promoted).
+
+8.  **Competitive Posture & Market Strategy:**
+    *   Summarize the company's competitive strategy, focusing on network strengths (reliability, coverage), customer base (post-paid focus), cross-selling (FWA, fiber), and how they counter price-led competition and retain enterprise clients (e.g., price locks, subsidies, specialization like first-responder networks, private 5G/IoT stickiness).
+
+{additional_aspects_placeholder}
+
+Provide a concise, data-driven report. Avoid conversational filler, disclaimers, or speculative statements. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list. Respond only in English."""
+
+    user_content = prompt_template.format(company_name_placeholder=safe_company_name, additional_aspects_placeholder=additional_aspects_str)
+
     system_prompt = (
-    "You are a senior B2B go-to-market analyst. Your task is to extract strategic, actionable insights about a company "
-    "to help a technology vendor evaluate partnership or sales potential. Focus on: industry focus, business lines, infrastructure scale, "
-    "digital maturity, openness to third-party vendors, existing partnerships, and signs of investment in cloud, AI, automation, "
-    "or data platforms. Identify buyer personas (e.g., CTO, CIO, CDO), typical deal sizes if available, and pain points in tech operations. "
-    "Prefer recent (2023–2025) verifiable data. Include sources when possible."
+        "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company, in English. "
+        "Utilize your web search capabilities to find the most current information (2024-2025 focus). "
+        "Adhere strictly to the requested report structure and level of detail. Cite all specific data points (financials, subscriber counts, pricing, etc.) with their sources. "
+        "Be concise and data-driven. Do not include conversational intros, outros, or disclaimers. Respond only in English."
     )
 
-    user_query = formatted_query
+    logger.info(f"[DeepSearch] Starting single comprehensive query for '{company_name}' using model '{llm_model}'. Aspects: {specific_aspects_to_cover}")
+    logger.debug(f"[DeepSearch] Compiled user_content for '{company_name}' (first 500 chars): '{user_content[:500]}...'")
 
     try:
         completion = await openai_client.chat.completions.create(
             model=llm_model,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_query},
+                {"role": "user", "content": user_content}
             ],
-            web_search_options={"search_context_size": "high"},
-            max_tokens=3800,
+            max_tokens=3800, 
+            web_search_options={"search_context_size":"high"}
         )
+
+        answer_content = "LLM did not provide a comprehensive answer."
         
-        message = completion.choices[0].message
-        response_text = message.content.strip() if message and message.content else "No response."
+        if completion.choices and completion.choices[0].message:
+            message = completion.choices[0].message
+            if message.content:
+                answer_content = message.content.strip()
+            
+            if message.annotations:
+                citations_log_list = []
+                for ann_index, ann in enumerate(message.annotations):
+                    if ann.type == "url_citation" and ann.url_citation:
+                        cited_title = ann.url_citation.title or "N/A"
+                        cited_url = ann.url_citation.url or "N/A"
+                        citations_log_list.append(f"  [Source {ann_index+1}] Title: {cited_title}, URL: {cited_url}")
+                if citations_log_list:
+                    logger.info(f"[DeepSearch] Sources found for '{company_name}':\n" + "\n".join(citations_log_list))
+            else:
+                logger.info(f"[DeepSearch] No annotations/sources provided by LLM for '{company_name}'.")
+        
+        logger.info(f"[DeepSearch] For '{company_name}', comprehensive LLM report text generated (first 100 chars): '{answer_content[:100]}...'")
+        return answer_content 
 
-        if message and message.annotations:
-            citations_list = []
-            for i, ann in enumerate(message.annotations):
-                if ann.type == "url_citation" and ann.url_citation:
-                    title = ann.url_citation.title or "N/A"
-                    url = ann.url_citation.url or "N/A"
-                    citations_list.append(f"[Source {i + 1}: {title} ({url})]")
-            if citations_list:
-                response_text += "\n\n--- Sources ---\n" + "\n".join(citations_list)
-
-        return response_text
-
+    except APIError as e:
+        logger.error(f"[DeepSearch] OpenAI API error for '{company_name}' (comprehensive query): {e}")
+        return f"Deep Search Error: OpenAI API issue - {str(e)}"
+    except Timeout as e:
+        logger.error(f"[DeepSearch] Timeout error for '{company_name}' (comprehensive query): {e}")
+        return f"Deep Search Error: Timeout - {str(e)}"
     except Exception as e:
-        logger.error(f"[MarketingSearch] Failed for '{company_name}': {e}", exc_info=True)
-        return f"Marketing Search Error: {str(e)}"
+        logger.error(f"[DeepSearch] Unexpected error for '{company_name}' (comprehensive query): {e}", exc_info=True)
+        return f"Deep Search Error: Unexpected issue - {str(e)}"
 
+async def main_test():
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
+    logger.info("Starting main_test for llm_deep_search.py (single comprehensive English prompt)")
+
+    class MockChatCompletionsMessage:
+        content: Optional[str] = None
+        annotations: Optional[List[Any]] = None
+        def __init__(self, content=None, annotations=None):
+            self.content = content
+            self.annotations = annotations if annotations else []
+
+    class MockChatCompletionsChoice:
+        message: MockChatCompletionsMessage
+        def __init__(self, message_content, message_annotations=None):
+            self.message = MockChatCompletionsMessage(content=message_content, annotations=message_annotations)
+            
+    class MockChatCompletionsResponse:
+        choices: List[MockChatCompletionsChoice]
+        def __init__(self, choices):
+            self.choices = choices
+
+    class MockAsyncOpenAI:
+        async def chat_completions_create(self, model, messages, max_tokens, web_search_options=None):
+            user_query_content = ""
+            for m in messages:
+                if m["role"] == "user":
+                    user_query_content = m["content"]
+                    break
+            
+            report_content = (
+                f"Comprehensive Business Report for company mentioned in query: '{escape_string_for_prompt(user_query_content[:60])}...'\n\n"
+                f"1. Customer Segments...\nThis is the main text of the report."
+            )
+            class MockAnnotation:
+                type: str = "url_citation"
+                url_citation: Any
+                def __init__(self, title, url, start_index=0, end_index=0):
+                    self.url_citation = type('MockUrlCitation', (object,), {
+                        'title': title, 'url': url, 
+                        'start_index': start_index, 'end_index': end_index
+                    })()
+            annotations_data = [
+                MockAnnotation(title="Mock Source 1", url="https://mock.com/source1"),
+                MockAnnotation(title="Mock Source 2", url="https://mock.com/source2"),
+            ]
+            choice = MockChatCompletionsChoice(message_content=report_content, message_annotations=annotations_data)
+            return MockChatCompletionsResponse(choices=[choice])
+        
+        chat = type('MockChat', (object,), {})
+        chat.completions = type('MockCompletions', (object,), {'create': chat_completions_create})
+
+    mock_client = MockAsyncOpenAI()
+
+    test_company = "ExampleTech Inc."
+    test_aspects_list = [
+        "2024 financial results",
+        "new product lines"
+    ]
+
+    logger.info(f"Running mock deep search for company: {test_company}")
+    report_text = await query_llm_for_deep_info(
+        openai_client=mock_client, 
+        company_name=test_company,
+        specific_aspects_to_cover=test_aspects_list # Now passing the list
+    )
+    print("\n--- Mock Comprehensive Report Text (Sources are Logged Separately) ---")
+    print(report_text)
+    logger.info("Finished main_test for llm_deep_search.py")
 
 if __name__ == '__main__':
-    is_real_run = False
-
+    is_real_run = False 
     if is_real_run:
         if not os.getenv("OPENAI_API_KEY"):
             print("ERROR: OPENAI_API_KEY environment variable is not set for a real run.")
             sys.exit(1)
-
         logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
         logger.info("Attempting REAL OpenAI API call for testing query_llm_for_deep_info with structured prompt.")
-
         actual_client = AsyncOpenAI()
         sample_company = "ServiceNow"
-
+        sample_aspects_list = [
+            "latest AI platform enhancements",
+            "growth in public sector contracts in 2024",
+        ]
         async def actual_run():
-            report = await query_llm_for_deep_info(actual_client, sample_company)
-            print("\n--- REAL OpenAI API Report (Structured English) ---")
+            report = await query_llm_for_deep_info(
+                actual_client, 
+                sample_company, 
+                specific_aspects_to_cover=sample_aspects_list # Now passing the list
+            )
+            print("\n--- REAL OpenAI API Report Text (Sources are Logged Separately) ---")
             print(report)
-
         asyncio.run(actual_run())
     else:
-        print("Dry run mode. No test function defined.")
+        asyncio.run(main_test())

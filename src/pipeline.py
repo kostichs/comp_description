@@ -102,16 +102,14 @@ async def process_company(company_name: str,
     
     current_date_iso = datetime.now().strftime("%Y-%m-%d")
 
-    # Инициализация result_data стандартными полями
     result_data = {
         "name": company_name,
         "homepage": "Not found", 
         "linkedin": "Not found", 
-        "description": "Description not generated", # Будет перезаписано
+        "description": "Description not generated or failed to parse as JSON", # Default/fallback
         "timestamp": current_date_iso
     }
     
-    # --- Переменные для сбора данных ---
     hp_url_found_serper: str | None = None
     li_url_found_serper: str | None = None 
     li_snippet_serper: str | None = None 
@@ -122,13 +120,11 @@ async def process_company(company_name: str,
     about_page_text: str | None = None
     wiki_summary: str | None = None
     hp_text_for_llm: str | None = None
-    text_src_for_llms: str = "" # Инициализируем пустой строкой, будем конкатенировать
+    text_src_for_llms: str = "" 
     manual_check_flag: bool = False
 
     try:
-        # --- ШАГ 0: Поиск URL (Serper) ---
-        # Необходимо, если включен стандартный пайплайн (для homepage/linkedin полей)
-        # или если включен любой из LLM пайплайнов (для сбора текстовых источников)
+        # --- STEP 0: URL Finding (Serper) ---
         if run_standard_pipeline or run_llm_deep_search_pipeline:
             pipeline_logger.info(f"  > {company_name}: Finding URLs via Serper...")
             serper_urls = await find_urls_with_serper_async(
@@ -137,39 +133,28 @@ async def process_company(company_name: str,
             if serper_urls:
                 hp_url_found_serper, li_url_found_serper, li_snippet_serper, wiki_url_found_serper = serper_urls
             else:
-                pipeline_logger.error(f"  > {company_name}: Critical error in find_urls_with_serper_async, returned None.")
-                if run_standard_pipeline: manual_check_flag = True # Для стандартных полей, если они ожидаются
+                pipeline_logger.error(f"  > {company_name}: Critical error in find_urls_with_serper_async.")
+                if run_standard_pipeline: manual_check_flag = True
 
-        # --- Заполнение полей homepage и linkedin для СТАНДАРТНОГО пайплайна (если он активен) ---
+        # --- Populate homepage and linkedin fields if standard pipeline is active ---
         if run_standard_pipeline:
             if hp_url_found_serper:
-                try:
-                    parsed_hp_url = urlparse(hp_url_found_serper)
-                    result_data["homepage"] = f"{parsed_hp_url.scheme}://{parsed_hp_url.netloc}"
+                try: result_data["homepage"] = f"{urlparse(hp_url_found_serper).scheme}://{urlparse(hp_url_found_serper).netloc}"
                 except Exception: result_data["homepage"] = hp_url_found_serper
-            else:
-                result_data["homepage"] = "Not found"
-                manual_check_flag = True
+            else: result_data["homepage"] = "Not found"; manual_check_flag = True
             
             if li_url_found_serper:
-                cleaned_li = li_url_found_serper
-                if cleaned_li.endswith('/about/'): cleaned_li = cleaned_li[:-len('/about/')]
-                if cleaned_li.endswith('/'): cleaned_li = cleaned_li[:-1]
+                cleaned_li = li_url_found_serper.replace("/about/", "").rstrip('/')
                 result_data["linkedin"] = cleaned_li
-            else:
-                result_data["linkedin"] = "Not found"
-        else: # Если стандартный пайплайн не запускается, но эти колонки все равно есть
-            result_data["homepage"] = "Standard pipeline not run"
-            result_data["linkedin"] = "Standard pipeline not run"
+            else: result_data["linkedin"] = "Not found"
+        else: 
+            result_data["homepage"] = "Standard pipeline (URL part) not run"
+            result_data["linkedin"] = "Standard pipeline (URL part) not run"
 
-        # --- Сбор текстовых данных для LLM (стандартного и/или deep search) ---
-        # Необходимо, если включен хотя бы один из LLM-зависимых этапов
-        # (генерация стандартного описания или LLM Deep Search, который использует query_llm_for_deep_info)
-        needs_text_sources_collection = run_standard_pipeline or run_llm_deep_search_pipeline
-
+        # --- Text Source Collection for LLMs ---
+        needs_text_sources_collection = True # Always try to collect for final JSON generation
         if needs_text_sources_collection:
             pipeline_logger.info(f"  > {company_name}: Text source collection for LLMs needed.")
-            # (Логика сбора hp_html_content, about_page_text, wiki_summary, hp_text_for_llm - остается как была раньше)
             if hp_url_found_serper:
                 try:
                     pipeline_logger.info(f"  > {company_name}: Scraping homepage: {hp_url_found_serper}")
@@ -217,106 +202,95 @@ async def process_company(company_name: str,
         else:
             pipeline_logger.info(f"  > {company_name}: Text source collection for LLMs SKIPPED.")
 
-        # --- LLM DEEP SEARCH (если включен) --- 
-        # This section has been updated to English comments as per user request.
-        # The results of this step will be added to text_src_for_llms
+        # --- LLM DEEP SEARCH (if enabled) --- 
         if run_llm_deep_search_pipeline:
-            pipeline_logger.info(f"  > {company_name}: Running LLM DEEP SEARCH (using gpt-4o-mini-search-preview) to augment description context...")
-            if llm_deep_search_config and llm_deep_search_config.get("specific_queries"):
-                # The key "specific_queries" comes from llm_deep_search_config in processing_runner.py
-                # This list is now passed as specific_aspects_to_cover to query_llm_for_deep_info
-                aspects_for_report = llm_deep_search_config["specific_queries"]
-                
-                pipeline_logger.info(f"  > {company_name}: LLM Deep Search: Calling query_llm_for_deep_info for a single comprehensive web search query.")
-                comprehensive_deep_search_report = await query_llm_for_deep_info(
-                    openai_client=openai_client,
-                    company_name=company_name,
-                    # specific_aspects_to_cover=aspects_for_report # Corrected keyword argument
-                )
-                
-                known_error_prefixes = (
-                    "Deep Search Error:", 
-                    "Deep Search Skipped:",
-                    "OpenAI API Error", # Added for completeness from previous versions
-                    "Timeout Error",
-                    "Unexpected Error"
-                )
-                is_error_report = comprehensive_deep_search_report.startswith(known_error_prefixes)
+            pipeline_logger.info(f"  > {company_name}: Running LLM DEEP SEARCH (using gpt-4o-mini-search-preview) to augment information context...")
+            
+            aspects_for_report = []
+            if llm_deep_search_config and "specific_queries" in llm_deep_search_config:
+                aspects_for_report = llm_deep_search_config.get("specific_queries", [])
+            
+            if not aspects_for_report:
+                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search: No specific_aspects_to_cover found in llm_deep_search_config. LLM prompt might be less targeted.")
+                # Optionally, define a default minimal list if aspects_for_report is empty and it's critical
+                # aspects_for_report = ["general company overview"]
 
-                if not is_error_report and comprehensive_deep_search_report:
-                    formatted_deep_search_text = f"\n\n--- Business Analytics Report (via gpt-4o-mini-search-preview) ---\n{comprehensive_deep_search_report}"
-                    
-                    if text_src_for_llms:
-                        text_src_for_llms += formatted_deep_search_text
-                    else: 
-                        text_src_for_llms = formatted_deep_search_text.strip()
-                        
-                    pipeline_logger.info(f"  > {company_name}: LLM Deep Search report appended. Total text_src_for_llms length: {len(text_src_for_llms)}.")
-                elif comprehensive_deep_search_report: 
-                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned an error message or was skipped: {comprehensive_deep_search_report}")
-                else: 
-                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned no information for '{company_name}'.")
-            else:
-                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search: No specific_queries (aspects) configured in llm_deep_search_config. Skipping augmentation.")
+            pipeline_logger.info(f"  > {company_name}: LLM Deep Search: Calling query_llm_for_deep_info with {len(aspects_for_report)} specific aspects.")
+            comprehensive_deep_search_report = await query_llm_for_deep_info(
+                openai_client=openai_client,
+                company_name=company_name,
+                specific_aspects_to_cover=aspects_for_report # Correctly passing the aspects
+            )
+            
+            known_error_prefixes = ("Deep Search Error:", "Deep Search Skipped:")
+            is_error_report = comprehensive_deep_search_report.startswith(known_error_prefixes)
+
+            if not is_error_report and comprehensive_deep_search_report:
+                augmentation_text = f"\n\n--- Additional Insights from Deep Search ---\n{comprehensive_deep_search_report}"
+                text_src_for_llms = text_src_for_llms + augmentation_text if text_src_for_llms else augmentation_text.strip()
+                pipeline_logger.info(f"  > {company_name}: LLM Deep Search report appended. Total text_src_for_llms length: {len(text_src_for_llms)}.")
+            elif comprehensive_deep_search_report: 
+                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned an error/skip message: {comprehensive_deep_search_report}")
+                text_src_for_llms += f"\n\n--- LLM Deep Search Status: {comprehensive_deep_search_report} ---"
+            else: 
+                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned no information.")
         
-        # --- ФИНАЛЬНАЯ ГЕНЕРАЦИЯ ОПИСАНИЯ --- 
-        # Выполняется всегда, если есть хоть какой-то text_src_for_llms или если стандартный пайплайн был включен (он мог сгенерировать заглушку, которую надо перезаписать)
-        # По факту, если run_standard_pipeline = False и run_llm_deep_search_pipeline = False, то text_src_for_llms будет пуст, и LLM не вызовется.
-        # Если хотя бы один из них True, то text_src_for_llms может содержать данные.
+        # --- FINAL STRUCTURED JSON GENERATION --- 
+        pipeline_logger.info(f"  > {company_name}: Generating structured JSON description using LLM with combined text (len: {len(text_src_for_llms)})...")
         
-        if text_src_for_llms: # Если есть хоть какой-то текст для LLM
-            pipeline_logger.info(f"  > {company_name}: Generating FINAL description using LLM with combined text (len: {len(text_src_for_llms)})...")
+        # Ensure there's some text to process, even if just the company name for a very basic attempt
+        if not text_src_for_llms and company_name:
+            text_src_for_llms = f"Company: {company_name}. Please provide any available information based on this name to populate the schema."
+            pipeline_logger.info(f"  > {company_name}: text_src_for_llms was empty, using basic prompt.")
+        elif not text_src_for_llms and not company_name:
+            pipeline_logger.error(f"  > No company name or text source for final JSON generation. Skipping.")
+            result_data["description"] = "Error: No input for JSON generation."
+            return result_data # Early exit if no input
+
+        structured_json_output = await generate_description_openai_async(
+             openai_client=openai_client, 
+             company_name=company_name, # Still useful for the prompt inside generate_description_openai_async
+             about_snippet=text_src_for_llms, 
+             llm_config=llm_config # For model, temp, etc.
+        )
+
+        if structured_json_output and not structured_json_output.get("error"):
             try:
-                final_description = await generate_description_openai_async(
-                     openai_client=openai_client, llm_config=llm_config, company_name=company_name,
-                     about_snippet=text_src_for_llms, # Передаем потенциально обогащенный текст
-                     homepage_root=hp_root, 
-                     linkedin_url=li_url_found_serper, 
-                     context_text=context_text
-                )
-                if final_description:
-                    result_data["description"] = final_description
-                    pipeline_logger.info(f"  > {company_name}: Final description generated (len {len(final_description)}).")
-                else:
-                    pipeline_logger.warning(f"  > {company_name}: Final LLM description generation returned empty result.")
-                    # Если run_standard_pipeline был false, то тут будет "Description not generated" или "Standard pipeline not run" (если не перезаписано)
-                    # Если run_standard_pipeline был true, то он уже мог записать свою версию или ошибку.
-                    # Оставляем как есть, если LLM вернул пустоту на финальном этапе.
-                    if result_data["description"] == "Description not generated": # Только если не было попытки от стандартного
-                         result_data["description"] = "Final LLM: No description generated"
-                    manual_check_flag = True # В любом случае, если финальный LLM не сработал - повод для проверки
-            except Exception as e_llm_final:
-                pipeline_logger.error(f"  > {company_name}: Final LLM description generation FAILED: {e_llm_final}")
-                # Аналогично, сохраняем предыдущее состояние description или ставим ошибку
-                if result_data["description"] == "Description not generated":
-                    result_data["description"] = "Final LLM: Error during generation"
+                # Convert the dictionary to a JSON string for storage in the CSV's description field
+                result_data["description"] = json.dumps(structured_json_output, ensure_ascii=False, indent=2)
+                pipeline_logger.info(f"  > {company_name}: Successfully generated and stringified structured JSON description.")
+            except TypeError as e:
+                pipeline_logger.error(f"  > {company_name}: Failed to serialize structured JSON to string: {e}. Storing raw dict (if possible) or error.")
+                result_data["description"] = f"Error serializing JSON: {str(structured_json_output)}"
                 manual_check_flag = True
-        elif run_standard_pipeline: # Если text_src_for_llms пуст, но стандартный пайплайн был включен
-            # Значит, стандартный пайплайн не смог собрать текст и уже должен был записать 
-            # "Standard LLM: No text source for generation" или аналогичное в result_data["description"]
-            # или "Not found" если даже URL не было. Ничего дополнительно тут не делаем.
-            pipeline_logger.warning(f"  > {company_name}: No text_src_for_llms available for final LLM, and standard pipeline was run (its result for description stands).")
-            # manual_check_flag уже должен быть True из блока стандартного пайплайна
-        else: # Если оба пайплайна выключены или не дали текста
-             pipeline_logger.warning(f"  > {company_name}: No text_src_for_llms available. Final description cannot be generated.")
-             # result_data["description"] уже будет "Description not generated" или "Standard pipeline not run"
-             if not run_standard_pipeline : result_data["description"] = "No pipeline run to generate description"
-             manual_check_flag = True
+        elif structured_json_output and structured_json_output.get("error"):
+            pipeline_logger.error(f"  > {company_name}: Failed to generate structured JSON: {structured_json_output.get('error')}")
+            result_data["description"] = f"JSON Generation Error: {structured_json_output.get('error')}"
+            if "raw_response" in structured_json_output: # Log raw problematic response if available
+                 pipeline_logger.debug(f"  > {company_name}: Raw problematic LLM response for JSON: {structured_json_output['raw_response'][:300]}...")
+            manual_check_flag = True
+        else: # Handles case where generate_description_openai_async returns None
+            pipeline_logger.error(f"  > {company_name}: Failed to generate structured JSON (generate_description_openai_async returned None).")
+            result_data["description"] = "JSON Generation Failed (No output from LLM)"
+            manual_check_flag = True
 
     except asyncio.CancelledError:
         pipeline_logger.warning(f"Processing of company '{company_name}' was cancelled.")
-        result_data["homepage"] = result_data.get("homepage", "Processing cancelled")
-        result_data["linkedin"] = result_data.get("linkedin", "Processing cancelled")
-        result_data["description"] = result_data.get("description", "Processing cancelled")
+        result_data["description"] = result_data.get("description", "Processing cancelled") # Keep potentially partially filled error
+        # Other fields already have defaults or "pipeline not run"
         raise
     except Exception as e_outer:
         pipeline_logger.critical(f"CRITICAL ERROR processing {company_name}: {type(e_outer).__name__} - {e_outer}", exc_info=True)
-        result_data["description"] = f"Error: {type(e_outer).__name__}"
-        result_data["homepage"] = "Error"
-        result_data["linkedin"] = "Error"
+        result_data["description"] = f"Outer Error: {type(e_outer).__name__}"
+        # result_data["homepage"] = "Error" # Already handled or set to "not run"
+        # result_data["linkedin"] = "Error"
+
+    # Add manual_check_flag to result_data if you plan to use it in CSV
+    # if "manual_check" in expected_csv_fieldnames: # Assuming expected_csv_fieldnames is available
+    #     result_data["manual_check"] = manual_check_flag
 
     processing_duration = time.time() - start_time_processing
-    pipeline_logger.info(f"Finished processing {company_name} in {processing_duration:.2f}s. Std: {run_standard_pipeline}, Deep: {run_llm_deep_search_pipeline}. Result keys: {list(result_data.keys())}")
+    pipeline_logger.info(f"Finished processing {company_name} in {processing_duration:.2f}s. Std: {run_standard_pipeline}, Deep: {run_llm_deep_search_pipeline}. Desc type: {type(result_data.get('description'))}")
     return result_data
 
 

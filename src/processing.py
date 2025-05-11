@@ -589,6 +589,7 @@ async def find_and_scrape_about_page_async(
             f"If no link seems clearly relevant to detailed company information, or if all links are for products, blogs, news, contact, careers, or privacy policies, output the exact word 'None'.\n"
             f"Do not select links that are primarily for 'Contact Us', 'Careers', 'Privacy Policy', 'Terms of Service', 'Blog', 'News', or specific products/services unless they also strongly imply they contain general company overview.\n"
             f"Output only the selected URL or the word 'None'. No other text, no explanations."
+
         )
         user_prompt = (
             f"Here is the list of candidate links for the company '{company_name}':\n"
