@@ -88,7 +88,7 @@ COMPANY_PROFILE_SCHEMA = {
                         "amount": {"type": ["number", "null"], "description": "Numerical value of ARR."},
                         "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
                         "year_reported": {"type": ["integer", "null"], "description": "Year the ARR figure was reported for."},
-                        "note": {"type": ["string", "null"], "description": "Original textual representation if non-standard (e.g., 'approx. $10M ARR in 2023')."}
+                        "note": {"type": ["string", "null"], "description": "Original textual representation with the sentence that contains this information."}
                     },
                     "required": ["amount", "currency", "year_reported", "note"]
                 },
@@ -99,7 +99,7 @@ COMPANY_PROFILE_SCHEMA = {
                     "properties": {
                         "amount": {"type": ["number", "null"], "description": "Numerical value of total funding."},
                         "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
-                        "note": {"type": ["string", "null"], "description": "Original textual representation if non-standard (e.g., 'Series A: $5M USD')."}
+                        "note": {"type": ["string", "null"], "description": "Original textual representation with the sentence that contains this information."}
                     },
                     "required": ["amount", "currency", "note"]
                 },
@@ -111,7 +111,7 @@ COMPANY_PROFILE_SCHEMA = {
                         "amount": {"type": ["number", "null"], "description": "Numerical value of the revenue."},
                         "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
                         "year_reported": {"type": ["integer", "null"], "description": "Year the revenue figure was reported for."},
-                        "note": {"type": ["string", "null"], "description": "Original textual representation of the revenue figure if it's non-standard (e.g., 'approx. €4.05B in 2023')."}
+                        "note": {"type": ["string", "null"], "description": "Original textual representation with the sentence that contains this information."}
                     },
                     "required": ["amount", "currency", "year_reported", "note"]
                 }

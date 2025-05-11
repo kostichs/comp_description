@@ -212,14 +212,13 @@ async def process_company(company_name: str,
             
             if not aspects_for_report:
                 pipeline_logger.warning(f"  > {company_name}: LLM Deep Search: No specific_aspects_to_cover found in llm_deep_search_config. LLM prompt might be less targeted.")
-                # Optionally, define a default minimal list if aspects_for_report is empty and it's critical
-                # aspects_for_report = ["general company overview"]
 
-            pipeline_logger.info(f"  > {company_name}: LLM Deep Search: Calling query_llm_for_deep_info with {len(aspects_for_report)} specific aspects.")
+            pipeline_logger.info(f"  > {company_name}: LLM Deep Search: Calling query_llm_for_deep_info with {len(aspects_for_report)} specific aspects. User context provided: {bool(context_text)}.")
             comprehensive_deep_search_report = await query_llm_for_deep_info(
                 openai_client=openai_client,
                 company_name=company_name,
-                specific_aspects_to_cover=aspects_for_report # Correctly passing the aspects
+                specific_aspects_to_cover=aspects_for_report,
+                user_context_text=context_text # Pass the user-provided context here
             )
             
             known_error_prefixes = ("Deep Search Error:", "Deep Search Skipped:")

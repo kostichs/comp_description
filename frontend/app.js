@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newSessionBtn = document.getElementById('newSessionBtn');
     const uploadForm = document.getElementById('uploadForm');
     const inputFile = document.getElementById('inputFile');
-    const context = document.getElementById('context');
+    const contextTextarea = document.getElementById('contextText');
     const sessionControls = document.getElementById('sessionControls');
     const startProcessingBtn = document.getElementById('startProcessingBtn');
     const viewLogsBtn = document.getElementById('viewLogsBtn');
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         newSessionBtn: !!newSessionBtn,
         uploadForm: !!uploadForm,
         inputFile: !!inputFile,
-        context: !!context,
+        contextTextarea: !!contextTextarea,
         sessionControls: !!sessionControls,
         startProcessingBtn: !!startProcessingBtn,
         viewLogsBtn: !!viewLogsBtn,
@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (inputFile && inputFile.files[0]) {
                 formData.append('file', inputFile.files[0]);
             }
-            if (context && context.value) {
-                formData.append('context_text', context.value);
+            if (contextTextarea && contextTextarea.value.trim() !== "") {
+                formData.append('context_text', contextTextarea.value.trim());
             }
 
             // Добавляем состояния чекбоксов
@@ -426,54 +426,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function connectWebSocket() {
-        ws = new WebSocket(`ws://${window.location.host}/ws`);
-        
-        ws.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            
-            if (data.type === "update") {
-                updateTableRow(data.data);
-            } else if (data.type === "complete") {
-                console.log("Processing completed");
-                document.getElementById("status").textContent = "Processing completed";
-            }
-        };
-        
-        ws.onclose = function() {
-            console.log("WebSocket connection closed");
-            // Try to reconnect after 5 seconds
-            setTimeout(connectWebSocket, 5000);
-        };
-    }
-
-    function updateTableRow(data) {
-        if (!resultsTable) {
-            resultsTable = document.getElementById("resultsTable");
-        }
-        
-        let row = document.getElementById(`row-${data.name}`);
-        if (!row) {
-            // Create new row if it doesn't exist
-            row = resultsTable.insertRow();
-            row.id = `row-${data.name}`;
-            
-            // Add cells
-            row.insertCell(0).textContent = data.name;
-            row.insertCell(1).textContent = data.homepage;
-            row.insertCell(2).textContent = data.linkedin;
-            row.insertCell(3).textContent = data.description;
-        } else {
-            // Update existing row
-            row.cells[1].textContent = data.homepage;
-            row.cells[2].textContent = data.linkedin;
-            row.cells[3].textContent = data.description;
-        }
-    }
-
     // Connect WebSocket when page loads
-    connectWebSocket();
+    // connectWebSocket(); // Assuming this was commented out or removed intentionally earlier
 
     // Initial load
-    console.log('Starting initial load'); // Отладочная информация
-}); 
+    console.log('Starting initial load');
+});

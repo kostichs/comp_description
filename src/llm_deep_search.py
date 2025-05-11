@@ -19,24 +19,26 @@ def escape_string_for_prompt(text: str) -> str:
 async def query_llm_for_deep_info(
     openai_client: AsyncOpenAI,
     company_name: str,
-    specific_aspects_to_cover: List[str] # Parameter re-added as it's passed from pipeline
+    specific_aspects_to_cover: List[str],
+    user_context_text: Optional[str] = None # Added user_context_text parameter
 ) -> str: 
     """
     Asynchronously requests a comprehensive, structured business report for a company
     from OpenAI's gpt-4o-mini-search-preview model using a single, detailed query.
-    The query is guided by the provided list of specific aspects to cover.
+    The query is guided by the provided list of specific aspects and optional user context.
     Sources found by the LLM are logged but not included in the returned report text.
 
     Args:
         openai_client: The AsyncOpenAI client.
         company_name: The name of the company.
         specific_aspects_to_cover: A list of topics/questions to ensure the report addresses.
+        user_context_text: Optional user-provided context to further guide the search.
 
     Returns:
         A string containing the comprehensive LLM report (TEXT ONLY, without appended sources),
         or an error message string.
     """
-    llm_model = "gpt-4o-search-preview"
+    llm_model = "gpt-4o-mini-search-preview"
 
     safe_company_name = escape_string_for_prompt(company_name)
     
@@ -48,6 +50,12 @@ async def query_llm_for_deep_info(
     else:
         logger.warning(f"[DeepSearch] specific_aspects_to_cover list is empty for '{company_name}'. The report might be less targeted.")
         # No specific aspects to add to the prompt if the list is empty
+
+    context_injection_str = ""
+    if user_context_text:
+        safe_user_context = escape_string_for_prompt(user_context_text)
+        context_injection_str = f"\n\nConsider the following user-provided context for your research and report generation: '{safe_user_context}'"
+        logger.info(f"[DeepSearch] Using user-provided context for '{company_name}': '{user_context_text[:100]}...'")
 
     prompt_template = """Please generate a detailed Business Analytics Report for the company: '{company_name_placeholder}'.
 
@@ -90,11 +98,15 @@ Report Structure:
 8.  **Competitive Posture & Market Strategy:**
     *   Summarize the company's competitive strategy, focusing on network strengths (reliability, coverage), customer base (post-paid focus), cross-selling (FWA, fiber), and how they counter price-led competition and retain enterprise clients (e.g., price locks, subsidies, specialization like first-responder networks, private 5G/IoT stickiness).
 
-{additional_aspects_placeholder}
+{additional_aspects_placeholder}{user_context_placeholder}
 
 Provide a concise, data-driven report. Avoid conversational filler, disclaimers, or speculative statements. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list. Respond only in English."""
 
-    user_content = prompt_template.format(company_name_placeholder=safe_company_name, additional_aspects_placeholder=additional_aspects_str)
+    user_content = prompt_template.format(
+        company_name_placeholder=safe_company_name, 
+        additional_aspects_placeholder=additional_aspects_str,
+        user_context_placeholder=context_injection_str
+    )
 
     system_prompt = (
         "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company, in English. "
@@ -103,7 +115,7 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
         "Be concise and data-driven. Do not include conversational intros, outros, or disclaimers. Respond only in English."
     )
 
-    logger.info(f"[DeepSearch] Starting single comprehensive query for '{company_name}' using model '{llm_model}'. Aspects: {specific_aspects_to_cover}")
+    logger.info(f"[DeepSearch] Starting multi-turn comprehensive query for '{company_name}' using model '{llm_model}'. Aspects: {specific_aspects_to_cover}")
     logger.debug(f"[DeepSearch] Compiled user_content for '{company_name}' (first 500 chars): '{user_content[:500]}...'")
 
     try:
@@ -172,28 +184,20 @@ async def main_test():
 
     class MockAsyncOpenAI:
         async def chat_completions_create(self, model, messages, max_tokens, web_search_options=None):
-            user_query_content = ""
+            # Simulate response based on the multi-turn message structure
+            user_context_sim = "No specific user context provided in mock."
+            final_instruction_sim = "No final instruction provided in mock."
             for m in messages:
                 if m["role"] == "user":
-                    user_query_content = m["content"]
-                    break
+                    if "user-provided context" in m["content"]:
+                        user_context_sim = m["content"]
+                    elif "Report Structure:" in m["content"]:
+                        final_instruction_sim = m["content"]
             
             report_content = (
-                f"Comprehensive Business Report for company mentioned in query: '{escape_string_for_prompt(user_query_content[:60])}...'\n\n"
-                f"1. Customer Segments...\nThis is the main text of the report."
+                f"Mock report considering multi-turn. User context hint: '{user_context_sim[:100]}...'. Final instruction hint: '{final_instruction_sim[:100]}...'"
             )
-            class MockAnnotation:
-                type: str = "url_citation"
-                url_citation: Any
-                def __init__(self, title, url, start_index=0, end_index=0):
-                    self.url_citation = type('MockUrlCitation', (object,), {
-                        'title': title, 'url': url, 
-                        'start_index': start_index, 'end_index': end_index
-                    })()
-            annotations_data = [
-                MockAnnotation(title="Mock Source 1", url="https://mock.com/source1"),
-                MockAnnotation(title="Mock Source 2", url="https://mock.com/source2"),
-            ]
+            annotations_data = [] 
             choice = MockChatCompletionsChoice(message_content=report_content, message_annotations=annotations_data)
             return MockChatCompletionsResponse(choices=[choice])
         
@@ -203,19 +207,28 @@ async def main_test():
     mock_client = MockAsyncOpenAI()
 
     test_company = "ExampleTech Inc."
-    test_aspects_list = [
-        "2024 financial results",
-        "new product lines"
-    ]
+    test_aspects_list = ["2024 financial results", "new product lines"]
+    test_user_context = "Focus on their expansion into the European market and any AI-related products."
 
-    logger.info(f"Running mock deep search for company: {test_company}")
-    report_text = await query_llm_for_deep_info(
+    logger.info(f"Running mock deep search for company: {test_company} WITH user context (multi-turn sim).")
+    report_text_with_context = await query_llm_for_deep_info(
         openai_client=mock_client, 
         company_name=test_company,
-        specific_aspects_to_cover=test_aspects_list # Now passing the list
+        specific_aspects_to_cover=test_aspects_list,
+        user_context_text=test_user_context
     )
-    print("\n--- Mock Comprehensive Report Text (Sources are Logged Separately) ---")
-    print(report_text)
+    print("\n--- Mock Report (WITH User Context, Multi-Turn Sim) ---")
+    print(report_text_with_context)
+
+    logger.info(f"Running mock deep search for company: {test_company} WITHOUT user context (multi-turn sim).")
+    report_text_no_context = await query_llm_for_deep_info(
+        openai_client=mock_client, 
+        company_name=test_company,
+        specific_aspects_to_cover=test_aspects_list
+    )
+    print("\n--- Mock Report (WITHOUT User Context, Multi-Turn Sim) ---")
+    print(report_text_no_context)
+
     logger.info("Finished main_test for llm_deep_search.py")
 
 if __name__ == '__main__':
@@ -228,18 +241,18 @@ if __name__ == '__main__':
         logger.info("Attempting REAL OpenAI API call for testing query_llm_for_deep_info with structured prompt.")
         actual_client = AsyncOpenAI()
         sample_company = "ServiceNow"
-        sample_aspects_list = [
-            "latest AI platform enhancements",
-            "growth in public sector contracts in 2024",
-        ]
+        sample_aspects_list = ["latest AI platform enhancements", "growth in public sector contracts in 2024"]
+        sample_context = "Please emphasize their go-to-market strategy for the financial services industry."
+        
         async def actual_run():
-            report = await query_llm_for_deep_info(
-                actual_client, 
-                sample_company, 
-                specific_aspects_to_cover=sample_aspects_list # Now passing the list
-            )
-            print("\n--- REAL OpenAI API Report Text (Sources are Logged Separately) ---")
-            print(report)
+            print(f"--- REAL OpenAI API Report for {sample_company} (WITH context, Multi-Turn) ---")
+            report_with_ctx = await query_llm_for_deep_info(actual_client, sample_company, specific_aspects_to_cover=sample_aspects_list, user_context_text=sample_context)
+            print(report_with_ctx)
+
+            print(f"\n--- REAL OpenAI API Report for {sample_company} (WITHOUT context, Multi-Turn) ---")
+            report_no_ctx = await query_llm_for_deep_info(actual_client, sample_company, specific_aspects_to_cover=sample_aspects_list)
+            print(report_no_ctx)
+
         asyncio.run(actual_run())
     else:
         asyncio.run(main_test())
