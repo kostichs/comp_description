@@ -50,7 +50,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         input_file_path = PROJECT_ROOT / input_file_path_rel
         
         session_dir = PROJECT_ROOT / "output" / "sessions" / session_id
-        output_csv_path = session_dir / "results.csv"
+        output_csv_path = session_dir / f"{session_id}_results.csv"
         pipeline_log_path = session_dir / "pipeline.log"
         scoring_log_path = session_dir / "scoring.log"
         

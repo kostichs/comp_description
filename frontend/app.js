@@ -369,23 +369,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (downloadResultsBtn) {
         downloadResultsBtn.onclick = async () => {
-            if (!currentSessionId) return;
+            if (!currentSessionId) {
+                alert('No active session selected to download results.');
+                return;
+            }
             try {
                 const response = await fetch(`/api/sessions/${currentSessionId}/results`);
-                if (!response.ok) throw new Error('Failed to download results');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to fetch results for download');
+                }
                 const results = await response.json();
+                if (!results || results.length === 0) {
+                    alert('No results available to download for this session.');
+                    return;
+                }
+
                 const csv = convertResultsToCSV(results);
-                const blob = new Blob([csv], { type: 'text/csv' });
+                const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' }); // Added BOM for Excel UTF-8 compatibility
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'results.csv';
+                // Формируем имя файла для скачивания, используя currentSessionId
+                a.download = `${currentSessionId}_results.csv`; 
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
             } catch (e) {
-                alert('Failed to download results');
+                console.error('Download results error:', e);
+                alert(`Failed to download results: ${e.message}`);
             }
         };
     }
