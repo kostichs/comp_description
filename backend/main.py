@@ -234,13 +234,13 @@ async def get_session_details(session_id: str):
 @app.post("/api/sessions", tags=["Sessions"], summary="Create a new processing session")
 async def create_new_session(
     file: UploadFile = File(...), 
-    context_text: Optional[str] = Form(None), # Сделал context_text действительно опциональным
+    context_text: Optional[str] = Form(None), 
     run_standard_pipeline: bool = Form(True),
-    run_llm_deep_search_pipeline: bool = Form(False)
+    run_llm_deep_search_pipeline: bool = Form(True)
 ):
     """
     Creates a new processing session by uploading an input file (CSV/XLSX) 
-    and optional context text. Allows selection of pipelines to run.
+    and optional context text. Both standard and LLM deep search pipelines will run by default.
     """
     # Basic validation for filename/extension
     if not file.filename:
@@ -251,19 +251,16 @@ async def create_new_session(
 
     # Generate session ID
     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    base_filename = Path(file.filename).stem # Get filename without extension
+    base_filename = Path(file.filename).stem
     session_id = f"{timestamp}_{base_filename}"
     session_dir = SESSIONS_DIR / session_id
 
-    # Check for duplicate session ID (highly unlikely with timestamp, but good practice)
     metadata = load_session_metadata()
     if any(s.get('session_id') == session_id for s in metadata):
-        # Handle collision, e.g., append a counter or use UUID
-        session_id += f"_{int(time.time() * 1000) % 1000}" # Simple collision avoidance
+        session_id += f"_{int(time.time() * 1000) % 1000}"
         session_dir = SESSIONS_DIR / session_id
         logging.warning(f"Session ID collision detected, generated new ID: {session_id}")
 
-    # Create session directory
     try:
         session_dir.mkdir(parents=True, exist_ok=True)
         logging.info(f"Created session directory: {session_dir}")
@@ -271,29 +268,25 @@ async def create_new_session(
         logging.error(f"Could not create session directory {session_dir}. Error: {e}")
         raise HTTPException(status_code=500, detail="Failed to create session directory.")
 
-    # Define file paths within the session directory
-    input_file_path = session_dir / f"input_{file.filename}" # Prefix to avoid name clashes
+    input_file_path = session_dir / f"input_{file.filename}"
     context_file_path = session_dir / "context_used.txt"
 
-    # Save uploaded file asynchronously
     file_saved_successfully = False
     try:
         async with aiofiles.open(input_file_path, 'wb') as out_file:
-            while content := await file.read(1024 * 1024): # Read chunk by chunk (1MB)
+            while content := await file.read(1024 * 1024):
                 await out_file.write(content)
         logging.info(f"Saved uploaded file to: {input_file_path}")
         file_saved_successfully = True
     except Exception as e:
         logging.error(f"Failed to save uploaded file {input_file_path}: {e}")
-        # Clean up created directory if file saving fails?
         try: shutil.rmtree(session_dir); logging.info(f"Cleaned up session dir due to file save error: {session_dir}")
         except Exception as e_clean: logging.error(f"Failed to cleanup session dir {session_dir}: {e_clean}")
         raise HTTPException(status_code=500, detail="Failed to save uploaded file.")
     finally:
-        await file.close() # Ensure file is closed
+        await file.close()
 
-    # Save context text if provided
-    context_saved_successfully = True # Assume success if no context provided
+    context_saved_successfully = True
     if context_text:
         try:
             async with aiofiles.open(context_file_path, 'w', encoding='utf-8') as context_file:
@@ -302,11 +295,8 @@ async def create_new_session(
         except Exception as e:
             logging.error(f"Failed to save context file {context_file_path}: {e}")
             context_saved_successfully = False
-            # Don't fail the request, but maybe log prominently or reflect in metadata?
 
-    # Create and save metadata entry ONLY if file saved
     if file_saved_successfully:
-        # Определяем количество компаний в файле
         try:
             if str(input_file_path).endswith('.csv'):
                 df = pd.read_csv(input_file_path)
@@ -315,6 +305,7 @@ async def create_new_session(
             total_companies = len(df)
         except Exception:
             total_companies = None
+        
         new_session_data = {
             "session_id": session_id,
             "timestamp_created": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -329,27 +320,22 @@ async def create_new_session(
             "last_processed_count": 0,
             "total_companies": total_companies,
             "error_message": None if context_saved_successfully else "Failed to save context file",
-            # Сохраняем флаги выбора пайплайнов
             "run_standard_pipeline": run_standard_pipeline,
-            "run_llm_deep_search_pipeline": run_llm_deep_search_pipeline 
+            "run_llm_deep_search_pipeline": run_llm_deep_search_pipeline
         }
         
-        # Append and save
         metadata.append(new_session_data)
         try:
             save_session_metadata(metadata)
             logging.info(f"Added new session metadata for ID: {session_id}")
         except Exception as e:
              logging.error(f"Failed to save session metadata after creating session {session_id}: {e}")
-             # Inconsistent state: files exist but metadata doesn't. Handle cleanup or logging.
              raise HTTPException(status_code=500, detail="Failed to save session metadata.")
 
         return new_session_data
     else:
-        # This case should ideally not be reached due to the raise earlier, but defensively:
         logging.error(f"File saving reported failure, metadata not saved for potential session {session_id}.")
-        # Status code 500 was likely already raised.
-        return { "detail": "Internal server error during file processing." } # Should not be reached
+        return { "detail": "Internal server error during file processing." }
 
 @app.post("/api/sessions/{session_id}/start", tags=["Sessions"], summary="Start processing for a session")
 async def start_session_processing(session_id: str, background_tasks: BackgroundTasks):
