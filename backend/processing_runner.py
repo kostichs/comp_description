@@ -34,7 +34,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
 
         # ++ Read pipeline selection flags from metadata ++
         run_standard_pipeline = session_data.get("run_standard_pipeline", True) # Default to True
-        run_llm_deep_search_pipeline = session_data.get("run_llm_deep_search_pipeline", False) # Default to False
+        run_llm_deep_search_pipeline = session_data.get("run_llm_deep_search_pipeline", True) # Default to True
         session_logger.info(f"[BG Task {session_id}] Standard pipeline: {run_standard_pipeline}, LLM Deep Search: {run_llm_deep_search_pipeline}")
 
     except Exception as e:
@@ -188,6 +188,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     output_csv_path=output_csv_path,
                     pipeline_log_path=str(pipeline_log_path), 
                     scoring_log_path=str(scoring_log_path), 
+                    session_dir_path=session_dir,
                     context_text=context_text,
                     company_col_index=0,
                     aiohttp_session=aio_session,

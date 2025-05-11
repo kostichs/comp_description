@@ -392,3 +392,115 @@ async def extract_data_with_schema(
     except Exception as e: 
         logger.error(f"Unexpected error for {company_name} (schema '{schema_name}'): {type(e).__name__} - {str(e)}", exc_info=True)
         return {"error": f"Unexpected error for schema {schema_name}: {str(e)}"} 
+
+async def generate_text_summary_from_json_async(
+    company_name: str,
+    structured_data: Dict[str, Any],
+    openai_client: AsyncOpenAI,
+    llm_config: dict, # For model, temperature, etc.
+    # Removed schema_name and sub_schema as they are not directly used for generation prompt
+) -> Optional[str]:
+    """
+    Async: Generates a readable three-paragraph text summary from structured JSON data about a company.
+
+    Args:
+        company_name: The name of the company.
+        structured_data: The structured company data (Python dictionary from JSON).
+        openai_client: The AsyncOpenAI client.
+        llm_config: Configuration for the LLM (model, temperature, etc.).
+
+    Returns:
+        A string containing the three-paragraph summary, or None if generation fails.
+    """
+    if not structured_data:
+        logger.warning(f"No structured data provided for {company_name} to generate text summary.")
+        return "Error: No structured data to summarize."
+
+    # Model for text synthesis - gpt-4o-mini should be good, or gpt-4-turbo for higher quality
+    model_name = llm_config.get('model_for_summary', llm_config.get('model', "gpt-4o-mini")) 
+    # Allow specifying a different model for summarization in llm_config, fallback to main model or default
+
+    try:
+        # Serialize the structured data to a compact JSON string for the prompt
+        # Using ensure_ascii=False and indent=None for a more compact representation in the prompt
+        json_input_for_prompt = json.dumps(structured_data, ensure_ascii=False, indent=None)
+    except TypeError as e:
+        logger.error(f"Failed to serialize structured_data for {company_name}: {e}")
+        return f"Error: Could not serialize structured data for {company_name}."
+
+    system_prompt_content = (
+        "You are a skilled business writer specializing in synthesizing structured data into concise, professional company profiles. "
+        "Your output must be a three-paragraph summary in English, based ONLY on the provided JSON data. "
+        "Do not add external information or speculate. Adhere strictly to the three-paragraph format with formal language."
+    )
+
+    # Construct user prompt with the JSON data and formatting instructions
+    user_prompt_content = f"""Company Name: {company_name}
+
+Structured Company Data (JSON):
+```json
+{json_input_for_prompt}
+```
+
+Task: Based SOLELY on the structured JSON data provided above, generate a concise three-paragraph company profile in English.
+
+Strict formatting rules:
+- The output must be exactly three paragraphs.
+- Each paragraph should be a dense, well-written block of text.
+- Separate paragraphs with a single blank line.
+- Do not use markdown formatting (like bolding or bullet points) or section headers in your output text.
+- Write in a formal, third-person perspective.
+- Ensure all information comes directly from the provided JSON data. Do not infer or add external knowledge.
+- Spell out acronyms on first use if their full form is available in the JSON (e.g., if JSON has ARR: \"Annual Recurring Revenue\", use it fully first time).
+
+Paragraph Structure Guide (use the data fields mentioned if available in the JSON):
+1.  Paragraph 1: Focus on fundamental company details (e.g., from JSON fields like company_name, founding_year, headquarters_city, headquarters_country, founders, ownership_background).
+2.  Paragraph 2: Detail core business aspects (e.g., from JSON fields like core_products_services, underlying_technologies, customer_types, industries_served, geographic_markets).
+3.  Paragraph 3: Cover operational and strategic highlights (e.g., from JSON fields like financial_details, employee_count, major_clients_or_case_studies, strategic_initiatives, key_competitors_mentioned, and a concluding sentence perhaps based on overall_summary).
+"""
+
+    messages = [
+        {"role": "system", "content": system_prompt_content},
+        {"role": "user", "content": user_prompt_content}
+    ]
+
+    api_params = {
+        "model": model_name,
+        "messages": messages,
+        "temperature": llm_config.get("temperature_for_summary", llm_config.get("temperature", 0.5)), # Allow specific temp for summary
+        "top_p": llm_config.get("top_p_for_summary", llm_config.get("top_p", 0.9)),
+        "max_tokens": llm_config.get("max_tokens_for_summary", 1000) # Adjust as needed for 3 paragraphs
+        # No response_format here, as we want natural text output
+    }
+
+    logger.info(f"Attempting to generate three-paragraph summary for {company_name} using model {model_name}.")
+    try:
+        response = await openai_client.chat.completions.create(**api_params)
+        if response.choices and response.choices[0].message and response.choices[0].message.content:
+            text_summary = response.choices[0].message.content.strip()
+            # Basic check for three paragraphs (count double newlines, or single if paragraphs are tight)
+            # This is a simple heuristic.
+            paragraph_separators = text_summary.count("\n\n") # Common separation
+            if paragraph_separators < 1 and len(text_summary.split('\n')) > 3 : # Heuristic for tightly packed paragraphs
+                 paragraph_separators = text_summary.count("\n") - (len(text_summary.split('\n')) -1) // 2 # rough approx
+            
+            if paragraph_separators >= 2 or (paragraph_separators == 1 and len(text_summary.split('\n')) == 3): # crude check for 3 paragraphs
+                logger.info(f"Successfully generated three-paragraph summary for {company_name} (Length: {len(text_summary)}).")
+            else:
+                logger.warning(f"Generated summary for {company_name} might not be exactly three paragraphs (Found ~{paragraph_separators + 1} blocks). Length: {len(text_summary)}. Review output.")
+            return text_summary
+        else:
+            logger.warning(f"OpenAI returned no choices/content for text summary for {company_name}.")
+            return f"Error: LLM returned no content for summary."
+    except APIError as e:
+        logger.error(f"OpenAI APIError during text summary generation for {company_name}: {type(e).__name__} - {str(e)}")
+        return f"Error generating summary (APIError): {str(e)}"
+    except Exception as e:
+        logger.error(f"Unexpected error during text summary generation for {company_name}: {type(e).__name__} - {str(e)}", exc_info=True)
+        return f"Error generating summary (Exception): {str(e)}"
+
+# Make sure the previous schemas and extract_data_with_schema are defined above this.
+# COMPANY_PROFILE_SCHEMA and sub-schemas should be defined above.
+# async def get_embedding_async ...
+# async def is_url_company_page_llm ...
+# async def extract_data_with_schema ... 

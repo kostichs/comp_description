@@ -26,6 +26,7 @@ from .external_apis.serper_client import find_urls_with_serper_async
 from .external_apis.scrapingbee_client import scrape_page_data_async # Use the async wrapper
 from .external_apis.openai_client import (
     extract_data_with_schema, # Renamed/New function
+    generate_text_summary_from_json_async, # Added new function
     BASIC_INFO_SCHEMA, 
     PRODUCT_TECH_SCHEMA, 
     MARKET_CUSTOMER_SCHEMA, 
@@ -95,16 +96,19 @@ fh_scoring.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(messa
 scoring_logger.addHandler(fh_scoring)
 # --- End Logging Setup ---
 
-async def process_company(company_name: str, 
-                          aiohttp_session: aiohttp.ClientSession, 
-                          sb_client: ScrapingBeeClient, 
-                          llm_config: dict, 
-                          openai_client: AsyncOpenAI,
-                          context_text: str | None, 
-                          serper_api_key: str | None,
-                          run_standard_pipeline: bool = True,
-                          run_llm_deep_search_pipeline: bool = False,
-                          llm_deep_search_config: Optional[Dict[str, Any]] = None) -> dict:
+async def process_company(
+    company_name: str, 
+    aiohttp_session: aiohttp.ClientSession, 
+    sb_client: ScrapingBeeClient, 
+    llm_config: dict, 
+    openai_client: AsyncOpenAI,
+    context_text: str | None, 
+    serper_api_key: str | None,
+    run_standard_pipeline: bool = True,
+    run_llm_deep_search_pipeline: bool = False,
+    llm_deep_search_config: Optional[Dict[str, Any]] = None,
+    session_dir_path: Optional[Path] = None 
+) -> dict:
     """Async: Processes a single company. Returns a dictionary for the output row."""
     pipeline_logger = logging.getLogger(__name__)
     pipeline_logger.info(f"Starting process for: {company_name} (Std: {run_standard_pipeline}, Deep: {run_llm_deep_search_pipeline}) Context: {bool(context_text)}")
@@ -250,6 +254,47 @@ async def process_company(company_name: str,
             except TypeError as e:
                 pipeline_logger.error(f"  > {company_name}: Failed to serialize final structured JSON to string: {e}. Storing error.")
                 result_data["description"] = json.dumps({"error": f"Serialization failed: {str(e)}", "partial_data": "Data may be incomplete or malformed"}, ensure_ascii=False, indent=2)
+                manual_check_flag = True
+
+        # --- SAVE THE INDIVIDUAL COMPANY JSON --- 
+        if session_dir_path and final_structured_json: # Only save if we have data and a path
+            try:
+                json_details_dir = session_dir_path / "json_details"
+                json_details_dir.mkdir(parents=True, exist_ok=True) # Create subdir if not exists
+                
+                # Sanitize company name for filename
+                safe_filename = re.sub(r'[^\w\-_\.]', '_', company_name) # Replace non-alphanumeric/hyphen/underscore/dot with underscore
+                if not safe_filename: safe_filename = "unnamed_company"
+                json_file_path = json_details_dir / f"{safe_filename[:100]}.json" # Limit filename length
+
+                with open(json_file_path, 'w', encoding='utf-8') as f_json:
+                    json.dump(final_structured_json, f_json, ensure_ascii=False, indent=2)
+                pipeline_logger.info(f"  > {company_name}: Successfully saved structured JSON to {json_file_path}")
+            except Exception as e_save_json:
+                pipeline_logger.error(f"  > {company_name}: Failed to save individual company JSON: {e_save_json}")
+
+        # --- GENERATE TEXT SUMMARY FROM THE ASSEMBLED JSON --- 
+        if not final_structured_json or extraction_error_occurred:
+            pipeline_logger.error(f"  > {company_name}: Structured JSON is empty or errors occurred during extraction. Cannot generate text summary. Storing error/partial JSON.")
+            # Storing the (potentially partial or error-filled) JSON as string if summary generation is skipped
+            result_data["description"] = json.dumps(final_structured_json if final_structured_json else {"error": "No data extracted for summary generation"}, ensure_ascii=False, indent=2)
+            manual_check_flag = True # Ensure this is set if you use it
+        else:
+            pipeline_logger.info(f"  > {company_name}: Successfully assembled structured JSON. Generating final text summary...")
+            text_summary = await generate_text_summary_from_json_async(
+                company_name=company_name,
+                structured_data=final_structured_json,
+                openai_client=openai_client,
+                llm_config=llm_config # llm_config can contain model_for_summary, temperature_for_summary etc.
+            )
+
+            if text_summary and not text_summary.startswith("Error:"):
+                result_data["description"] = text_summary
+                pipeline_logger.info(f"  > {company_name}: Successfully generated three-paragraph text summary.")
+            else:
+                pipeline_logger.error(f"  > {company_name}: Failed to generate three-paragraph text summary. Fallback: {text_summary}. Storing structured JSON instead.")
+                # Fallback to storing the structured JSON if text summary generation fails
+                result_data["description"] = json.dumps(final_structured_json, ensure_ascii=False, indent=2)
                 manual_check_flag = True
 
     except asyncio.CancelledError:
@@ -437,7 +482,8 @@ async def run_pipeline():
                                                 "flagship products",
                                                 "competitive strategy in EMEA"
                                             ]
-                                         } # Соответственно, конфиг тоже None
+                                         }, # Соответственно, конфиг тоже None
+                                        session_dir_path=Path(output_file_path).parent # Pass session_dir_path
                                         )
                     ) for name in company_names
                 ]
@@ -506,20 +552,20 @@ async def run_pipeline_for_file(
     output_csv_path: str | Path,
     pipeline_log_path: str,
     scoring_log_path: str,
+    session_dir_path: Path,
     context_text: str | None,
     company_col_index: int,
     aiohttp_session: aiohttp.ClientSession,
     sb_client: ScrapingBeeClient,
-    llm_config: dict, # llm_config теперь используется только для process_company (стандартного)
+    llm_config: dict,
     openai_client: AsyncOpenAI,
     serper_api_key: str,
-    expected_csv_fieldnames: list[str], # <--- Этот параметр теперь ЕДИНСТВЕННЫЙ ИСТОЧНИК fieldnames
+    expected_csv_fieldnames: list[str],
     broadcast_update: callable = None,
     main_batch_size: int = 50,
-    # ++ Новые параметры для выбора пайплайнов ++
     run_standard_pipeline: bool = True,
     run_llm_deep_search_pipeline: bool = False,
-    llm_deep_search_config: Optional[Dict[str, Any]] = None # Содержит specific_queries
+    llm_deep_search_config: Optional[Dict[str, Any]] = None
 ) -> tuple[int, int, list[dict]]:
     
     file_specific_logger = logging.getLogger(f"pipeline.session.{Path(input_file_path).stem}") 
@@ -563,14 +609,14 @@ async def run_pipeline_for_file(
                         company_name=name,
                         aiohttp_session=aiohttp_session,
                         sb_client=sb_client,
-                        llm_config=llm_config, # Для стандартного пайплайна
+                        llm_config=llm_config,
                         openai_client=openai_client,
                         context_text=context_text,
                         serper_api_key=serper_api_key,
-                        # ++ Передаем фактические значения из аргументов функции ++
                         run_standard_pipeline=run_standard_pipeline,
                         run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
-                        llm_deep_search_config=llm_deep_search_config
+                        llm_deep_search_config=llm_deep_search_config,
+                        session_dir_path=session_dir_path
                     )
                 ) for name in company_names_batch
             ]
@@ -717,7 +763,8 @@ async def process_companies(file_path: str, session_dir: str, broadcast_update: 
                         # ++ Параметры для process_companies - пока стандартный запуск ++
                         run_standard_pipeline=True, 
                         run_llm_deep_search_pipeline=False,
-                        llm_deep_search_config=None 
+                        llm_deep_search_config=None,
+                        session_dir_path=Path(output_csv_path).parent  # Pass session_dir_path
                     )
                     
                     # Save result to CSV
