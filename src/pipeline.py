@@ -458,7 +458,7 @@ async def run_pipeline():
                                         # ++ Передаем фактические значения, а не True/False по умолчанию ++
                                         # Эти значения должны приходить из run_pipeline_for_file, а run_pipeline (консольный) должен решить, какие значения использовать
                                         # Пока для run_pipeline оставим стандартный запуск
-                                        run_standard_pipeline=False, # Для консольного run_pipeline всегда стандартный
+                                        run_standard_pipeline=True, # Для консольного run_pipeline всегда стандартный
                                         run_llm_deep_search_pipeline=True, # Для консольного run_pipeline пока без LLM Deep Search
                                         llm_deep_search_config={
                                             "specific_queries": [

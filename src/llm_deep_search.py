@@ -36,7 +36,7 @@ async def query_llm_for_deep_info(
         A string containing the comprehensive LLM report (TEXT ONLY, without appended sources),
         or an error message string.
     """
-    llm_model = "gpt-4o-mini-search-preview"
+    llm_model = "gpt-4o-search-preview"
 
     safe_company_name = escape_string_for_prompt(company_name)
     

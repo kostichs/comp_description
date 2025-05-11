@@ -115,27 +115,27 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         try:
             scrapingbee_api_key, openai_api_key, serper_api_key = load_env_vars()
             llm_config = load_llm_config("llm_config.yaml") 
-            # ++ Load config for LLM Deep Search if it will be used ++
-            llm_deep_search_specific_queries = []
+            
+            llm_deep_search_specific_aspects = [] # Renamed for clarity
             if run_llm_deep_search_pipeline:
-                # Example: static list of aspects. Could be moved to a config file in the future.
-                # These aspects will guide the comprehensive prompt generation.
-                llm_deep_search_specific_queries = [
-                    "latest reported annual revenue or ARR",
+                # Updated list of specific aspects in English, including more foundational queries
+                llm_deep_search_specific_aspects = [
+                    "company founding year",
+                    "headquarters location (city and country)",
+                    "names of founders",
+                    "ownership structure (e.g., public, private, VC-backed, parent company)",
+                    "latest reported annual revenue or ARR (specify currency and year if possible)",
                     "approximate number of employees",
-                    "details of the latest funding round (amount, date, investors)",
-                    "key products, services, or technologies offered",
-                    "main competitors",
-                    "primary business segments and customer focus (e.g., consumer, business, government)",
-                    "geographical regions of operation and global strategy",
-                    "overview of pricing models for key offerings, if publicly available",
-                    "solutions related to connectivity, security, and IoT",
-                    "recent significant company news, product launches, or M&A activities"
+                    "details of the latest funding round (amount, date, key investors, series - if applicable)",
+                    "key products, services, or core technologies offered",
+                    "main competitors identified by reliable sources",
+                    "primary business segments and target customer focus (e.g., B2C, B2B, B2G)",
+                    "geographical regions of operation and overall global strategy",
+                    "overview of pricing models or typical engagement costs for key offerings, if publicly available or inferable",
+                    "solutions or services related to connectivity, cloud, AI, security, and IoT",
+                    "recent significant company news, product launches, or M&A activities (last 12-18 months)"
                 ]
-                # Could also be loaded from llm_deep_search_config.yaml if created
-                # deep_search_llm_config = load_llm_config("llm_deep_search_config.yaml")
-                # llm_deep_search_specific_queries = deep_search_llm_config.get("specific_queries", [])
-                session_logger.info(f"[BG Task {session_id}] LLM Deep Search specific aspects for comprehensive report: {llm_deep_search_specific_queries}")
+                session_logger.info(f"[BG Task {session_id}] LLM Deep Search specific aspects for comprehensive report: {llm_deep_search_specific_aspects}")
 
             if not all([scrapingbee_api_key, openai_api_key, serper_api_key, llm_config]):
                 raise ValueError("One or more required API keys or LLM config missing.")
@@ -174,11 +174,10 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         session_logger.info(f"[BG Task {session_id}] Determined expected_csv_fieldnames: {expected_cols}")
         # --- End CSV field definition ---
 
-        # --- Pass llm_deep_search_specific_queries if active ---
-        # This is needed for src/pipeline.py -> process_company
+        # --- Pass llm_deep_search_specific_aspects if active ---
         deep_search_config_for_pipeline = {
-            "specific_queries": llm_deep_search_specific_queries
-        } if run_llm_deep_search_pipeline and llm_deep_search_specific_queries else None # Ensure queries exist
+            "specific_queries": llm_deep_search_specific_aspects # Ensure this key matches what pipeline.py expects
+        } if run_llm_deep_search_pipeline and llm_deep_search_specific_aspects else None
 
         # --- 6. Execute Pipeline --- 
         session_logger.info("Starting core pipeline execution...")
@@ -187,8 +186,8 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                 success_count, failure_count, _ = await run_pipeline_for_file(
                     input_file_path=input_file_path,
                     output_csv_path=output_csv_path,
-                    pipeline_log_path=str(pipeline_log_path), # Pass as string
-                    scoring_log_path=str(scoring_log_path), # Pass as string
+                    pipeline_log_path=str(pipeline_log_path), 
+                    scoring_log_path=str(scoring_log_path), 
                     context_text=context_text,
                     company_col_index=0,
                     aiohttp_session=aio_session,
@@ -196,13 +195,12 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     llm_config=llm_config,
                     openai_client=openai_client,
                     serper_api_key=serper_api_key,
-                    expected_csv_fieldnames=expected_cols, # Pass the correct list
+                    expected_csv_fieldnames=expected_cols, 
                     broadcast_update=broadcast_update,
-                    main_batch_size=session_data.get("batch_size", 50), # Example: get batch_size from metadata or default to 50
-                    # ++ Pass flags and config for LLM Deep Search ++
+                    main_batch_size=session_data.get("batch_size", 50), 
                     run_standard_pipeline=run_standard_pipeline,
                     run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
-                    llm_deep_search_config=deep_search_config_for_pipeline
+                    llm_deep_search_config=deep_search_config_for_pipeline # This now contains the updated aspects
                 )
             session_logger.info(f"Pipeline execution finished. Success: {success_count}, Failed: {failure_count}")
             session_data['status'] = 'completed'
