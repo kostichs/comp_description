@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showCurrentSessionUI(sessionId) {
         console.log('Showing current session UI:', sessionId); // Отладочная информация
         if (uploadForm) uploadForm.style.display = 'none';
-        if (sessionControls) sessionControls.style.display = 'none';
+        if (sessionControls) sessionControls.style.display = 'none'; // Скрываем sessionControls по умолчанию
         currentSessionId = sessionId;
     }
 
@@ -199,13 +199,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/api/sessions/${sessionId}`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const sessionData = await response.json();
-            showCurrentSessionUI(sessionId);
+            showCurrentSessionUI(sessionId); // Это скроет sessionControls
             updateStatus(`Status: ${sessionData.status}`);
-            // Сохраняем ожидаемое количество компаний для прогресс-бара
             window.expectedTotalCompanies = sessionData.total_companies || sessionData.last_processed_count || 0;
-            if (sessionData.status === 'completed') {
+            
+            if (sessionData.status === 'completed' || sessionData.status === 'error') {
                 await fetchAndDisplayResults(sessionId);
-                updateProgressBar(window.expectedTotalCompanies, window.expectedTotalCompanies, true);
+                if (sessionData.status === 'completed') {
+                    updateProgressBar(window.expectedTotalCompanies, window.expectedTotalCompanies, true);
+                }
+                ensureResultsControlsAvailable(); // Создаем кнопки, если их нет
+                makeResultsControlsVisible(true); // Делаем их видимыми
+            } else {
+                makeResultsControlsVisible(false); // Скрываем для других статусов
             }
         } catch (error) {
             console.error('Error fetching session data:', error);
@@ -226,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const total = window.expectedTotalCompanies || results.length;
             updateProgressBar(results.length, total, false);
             resultsSection.style.display = 'block';
-            showResultsControls();
             if (progressStatus) progressStatus.style.display = 'block';
             if (newSessionBtn) newSessionBtn.style.display = 'inline-block';
         } catch (error) {
@@ -239,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function displayResultsInTable(results) {
         clearResultsTable();
         if (!results || results.length === 0) {
-            resultsTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No results found.</td></tr>';
+            resultsTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Still in progress... No results found.</td></tr>';
             return;
         }
 
@@ -285,13 +290,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Сохраняем ожидаемое количество компаний для прогресс-бара
                 window.expectedTotalCompanies = sessionData.total_companies || sessionData.last_processed_count || window.expectedTotalCompanies || 0;
                 await fetchAndDisplayResults(sessionId);
-                if (sessionData.status === 'completed') {
+                if (sessionData.status === 'completed' || sessionData.status === 'error') {
                     stopPollingStatus();
                     await fetchAndDisplayResults(sessionId);
-                    updateProgressBar(window.expectedTotalCompanies, window.expectedTotalCompanies, true);
-                } else if (sessionData.status === 'error') {
-                    stopPollingStatus();
-                    updateStatus(`Error: ${sessionData.error_message || 'Processing failed'}`);
+                    if (sessionData.status === 'completed'){
+                        updateProgressBar(window.expectedTotalCompanies, window.expectedTotalCompanies, true);
+                    }
+                    ensureResultsControlsAvailable();
+                    makeResultsControlsVisible(true);
                 }
             } catch (error) {
                 // Не показываем тревожных сообщений, если результатов ещё нет
@@ -351,11 +357,38 @@ document.addEventListener('DOMContentLoaded', () => {
             startProcessingBtn.style.display = 'none';
             viewLogsBtn.style.display = 'inline-block';
             downloadResultsBtn.style.display = 'inline-block';
-            downloadResultsBtn.textContent = 'Download results';
+            downloadResultsBtn.textContent = 'Download results (CSV)';
+
+            // --- Add Download Archive Button ---
+            let downloadArchiveBtn = document.getElementById('downloadArchiveBtn');
+            if (!downloadArchiveBtn) {
+                downloadArchiveBtn = document.createElement('button');
+                downloadArchiveBtn.id = 'downloadArchiveBtn';
+                downloadArchiveBtn.textContent = 'Download Full Archive (ZIP)';
+                downloadArchiveBtn.className = 'button results-button'; // Используем тот же класс, что и другие кнопки результатов
+                downloadArchiveBtn.style.marginLeft = '10px'; // Небольшой отступ
+                sessionControls.appendChild(downloadArchiveBtn);
+            }
+            downloadArchiveBtn.style.display = 'inline-block';
+            downloadArchiveBtn.onclick = () => downloadSessionArchive(currentSessionId);
+            // --- End Add Download Archive Button ---
+
             let restartBtn = document.getElementById('restartProcessingBtn');
             if (restartBtn) restartBtn.remove();
         }
     }
+
+    // --- Function to Download Session Archive ---
+    function downloadSessionArchive(sessionId) {
+        if (!sessionId) {
+            alert('No active session selected to download archive.');
+            return;
+        }
+        console.log(`Attempting to download archive for session: ${sessionId}`);
+        // Используем window.location.href для простого инициирования скачивания
+        window.location.href = `/api/sessions/${sessionId}/download_archive`;
+    }
+    // --- End Function to Download Session Archive ---
 
     if (newSessionBtn) {
         newSessionBtn.addEventListener('click', () => {
@@ -369,6 +402,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (progressStatus) progressStatus.style.display = 'none';
             if (newSessionBtn) newSessionBtn.style.display = 'none';
             currentSessionId = null;
+            // Скрываем кнопку скачивания архива при создании новой сессии
+            const downloadArchiveBtn = document.getElementById('downloadArchiveBtn');
+            if (downloadArchiveBtn) {
+                downloadArchiveBtn.style.display = 'none';
+            }
+            makeResultsControlsVisible(false); // Скрываем все кнопки результатов
         });
     }
 
@@ -520,5 +559,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileNameDisplay.textContent = '';
             }
         });
+    }
+
+    // --- Function to ensure result control buttons are in the DOM ---
+    function ensureResultsControlsAvailable() {
+        if (!sessionControls) return;
+
+        if (!document.getElementById('viewLogsBtn')) { // Предполагаем, что эта кнопка всегда должна быть, если есть sessionControls
+            // Это условие может потребовать пересмотра, если viewLogsBtn не всегда создается заранее
+            console.warn("viewLogsBtn not found during ensureResultsControlsAvailable. Controls might not be fully initialized.");
+        }
+
+        if (!document.getElementById('downloadResultsBtn')) {
+            console.warn("downloadResultsBtn not found during ensureResultsControlsAvailable.");
+        }
+        
+        let downloadArchiveBtn = document.getElementById('downloadArchiveBtn');
+        if (!downloadArchiveBtn) {
+            downloadArchiveBtn = document.createElement('button');
+            downloadArchiveBtn.id = 'downloadArchiveBtn';
+            downloadArchiveBtn.textContent = 'Download Full Archive (ZIP)';
+            downloadArchiveBtn.className = 'button results-button'; 
+            downloadArchiveBtn.style.marginLeft = '10px'; 
+            sessionControls.appendChild(downloadArchiveBtn);
+            downloadArchiveBtn.onclick = () => downloadSessionArchive(currentSessionId);
+        }
+        // При создании кнопки по умолчанию скрыты, их видимостью управляет makeResultsControlsVisible
+        viewLogsBtn.style.display = 'none';
+        downloadResultsBtn.style.display = 'none';
+        downloadArchiveBtn.style.display = 'none';
+    }
+
+    // --- Function to manage visibility of result control buttons ---
+    function makeResultsControlsVisible(visible) {
+        if (sessionControls) {
+            sessionControls.style.display = visible ? 'block' : 'none';
+            if (viewLogsBtn) viewLogsBtn.style.display = visible ? 'inline-block' : 'none';
+            if (downloadResultsBtn) {
+                downloadResultsBtn.style.display = visible ? 'inline-block' : 'none';
+                downloadResultsBtn.textContent = 'Download results (CSV)';
+            }
+            const downloadArchiveBtn = document.getElementById('downloadArchiveBtn');
+            if (downloadArchiveBtn) downloadArchiveBtn.style.display = visible ? 'inline-block' : 'none';
+            
+            // Кнопка Start Processing должна быть скрыта, если видны кнопки результатов
+            if (startProcessingBtn) startProcessingBtn.style.display = visible ? 'none' : 'inline-block'; 
+        }
     }
 });

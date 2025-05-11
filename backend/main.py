@@ -21,6 +21,7 @@ import aiohttp
 from openai import AsyncOpenAI
 from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR # Example import
 from scrapingbee import ScrapingBeeClient
+import tempfile # Added for temporary file for zip archive
 
 # Need to ensure SESSIONS_DIR and SESSIONS_METADATA_FILE are correctly handled within data_io.py
 
@@ -473,6 +474,69 @@ async def get_session_log(session_id: str, log_type: str):
     except Exception as e:
         logging.error(f"Error reading log file {log_file_path} for session {session_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to read {log_type} log file for session '{session_id}'.")
+
+@app.get("/api/sessions/{session_id}/download_archive", tags=["Sessions"], summary="Download session archive")
+async def download_session_archive(session_id: str, background_tasks: BackgroundTasks):
+    """
+    Downloads a ZIP archive of the entire specified session directory.
+    """
+    all_metadata = load_session_metadata()
+    session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
+
+    if not session_data:
+        raise HTTPException(status_code=404, detail=f"Session with ID '{session_id}' not found.")
+
+    session_dir_path = SESSIONS_DIR / session_id
+    if not session_dir_path.is_dir():
+        logger.error(f"Session directory not found for session_id: {session_id} at path: {session_dir_path}")
+        raise HTTPException(status_code=404, detail=f"Session directory for ID '{session_id}' not found on server.")
+
+    # Create a temporary file for the archive
+    try:
+        # We need a temporary file path that shutil.make_archive can write to.
+        # tempfile.NamedTemporaryFile creates a file, make_archive needs a base name for the archive.
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".zip") as tmpfile:
+            temp_zip_path_obj = Path(tmpfile.name)
+        
+        # shutil.make_archive will append '.zip' to base_name if format is 'zip'
+        # So, we give it the path without the .zip suffix.
+        archive_base_name = temp_zip_path_obj.with_suffix('') 
+        
+        archive_path_str = shutil.make_archive(
+            base_name=str(archive_base_name), 
+            format='zip', 
+            root_dir=str(SESSIONS_DIR), # Archive contents relative to SESSIONS_DIR
+            base_dir=session_id        # The directory to archive within SESSIONS_DIR
+        )
+        
+        archive_path = Path(archive_path_str) # Convert back to Path object
+
+        if not archive_path.exists():
+            logger.error(f"Failed to create archive for session {session_id} at {archive_path}")
+            raise HTTPException(status_code=500, detail="Failed to create session archive.")
+
+        # Schedule the removal of the temporary archive file after the response is sent
+        background_tasks.add_task(os.remove, archive_path)
+
+        return FileResponse(
+            path=archive_path,
+            filename=f"{session_id}_archive.zip",
+            media_type='application/zip'
+        )
+    except Exception as e:
+        logger.error(f"Error creating or serving session archive for {session_id}: {e}", exc_info=True)
+        # Clean up temp file if it exists and an error occurred before FileResponse
+        if 'archive_path' in locals() and archive_path.exists(): # type: ignore
+            try:
+                os.remove(archive_path) # type: ignore
+            except Exception as e_clean:
+                logger.error(f"Failed to clean up temporary archive {archive_path} after error: {e_clean}") # type: ignore
+        elif 'temp_zip_path_obj' in locals() and temp_zip_path_obj.exists(): # type: ignore
+             try:
+                os.remove(temp_zip_path_obj) # type: ignore
+             except Exception as e_clean:
+                logger.error(f"Failed to clean up temporary file {temp_zip_path_obj} after error: {e_clean}") # type: ignore
+        raise HTTPException(status_code=500, detail=f"Could not create or serve session archive: {str(e)}")
 
 # --- Placeholder for future routes --- 
 # Example:
