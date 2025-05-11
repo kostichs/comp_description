@@ -209,7 +209,8 @@
 
             <div class="form-group">
                 <label for="contextText">Additional Context (Optional — e.g. region, industry, focus area):</label>
-                <textarea id="contextText" name="context_text" placeholder="Enter any additional context..."></textarea>
+                <textarea id="contextText" name="context_text" placeholder="Enter any additional context (max 120 chars)..." maxlength="120" style="font-size:16px; line-height:1.4;"></textarea>
+                <div id="charCounterContext" style="font-size: 0.8em; text-align: right; color: #6c757d;"></div>
             </div>
 
             <div id="runBtnContainer">

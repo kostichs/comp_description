@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropZoneContainer = document.getElementById('dropZoneContainer');
     const customChooseFileButton = document.getElementById('customChooseFileButton');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const charCounterContext = document.getElementById('charCounterContext'); // Получаем элемент счетчика
 
     console.log('Elements found:', { // Отладочная информация
         sessionSelect: !!sessionSelect,
@@ -39,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
         progressStatus: !!progressStatus,
         dropZoneContainer: !!dropZoneContainer,
         customChooseFileButton: !!customChooseFileButton,
-        fileNameDisplay: !!fileNameDisplay
+        fileNameDisplay: !!fileNameDisplay,
+        charCounterContext: !!charCounterContext // Логируем счетчик
     });
 
     let currentSessionId = null;
@@ -437,6 +439,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load
     console.log('Starting initial load');
+
+    // --- Character Counter for Context Textarea ---
+    if (contextTextarea && charCounterContext) {
+        const maxLength = contextTextarea.maxLength;
+        charCounterContext.textContent = `${maxLength} characters remaining`; // Начальное значение
+
+        contextTextarea.addEventListener('input', () => {
+            const currentLength = contextTextarea.value.length;
+            const remaining = maxLength - currentLength;
+            charCounterContext.textContent = `${remaining} characters remaining`;
+
+            if (remaining < 0) {
+                charCounterContext.style.color = 'red';
+                // Текст уже не должен вводиться сверх maxlength, но для надежности:
+                // contextTextarea.value = contextTextarea.value.substring(0, maxLength);
+                // charCounterContext.textContent = `0 characters remaining`;
+            } else if (remaining < 20) { // Если остается мало символов, подсветим
+                charCounterContext.style.color = 'orange';
+            } else {
+                charCounterContext.style.color = '#6c757d'; // Стандартный цвет
+            }
+        });
+    }
 
     // --- Drag & Drop Event Listeners for dropZoneContainer ---
     if (dropZoneContainer && inputFile && customChooseFileButton && fileNameDisplay) {
