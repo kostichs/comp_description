@@ -77,14 +77,46 @@ COMPANY_PROFILE_SCHEMA = {
         },
         "financial_details": {
             "type": ["object", "null"],
-            "description": "Key financial indicators.",
+            "description": "Key financial indicators. All sub-fields should be populated if the financial_details object itself is not null.",
             "additionalProperties": False,
             "properties": {
-                "ARR_USD": {"type": ["number", "null"], "description": "Annual Recurring Revenue in USD."},
-                "total_funding_USD": {"type": ["number", "null"], "description": "Total funding amount raised in USD."},
-                "latest_annual_revenue_USD": {"type": ["number", "null"], "description": "Latest reported annual revenue in USD (specify year if possible in a general notes field if we add one)."}
+                "ARR": {
+                    "type": ["object", "null"],
+                    "description": "Annual Recurring Revenue details.",
+                    "additionalProperties": False,
+                    "properties": {
+                        "amount": {"type": ["number", "null"], "description": "Numerical value of ARR."},
+                        "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
+                        "year_reported": {"type": ["integer", "null"], "description": "Year the ARR figure was reported for."},
+                        "note": {"type": ["string", "null"], "description": "Original textual representation if non-standard (e.g., 'approx. $10M ARR in 2023')."}
+                    },
+                    "required": ["amount", "currency", "year_reported", "note"]
+                },
+                "total_funding": {
+                    "type": ["object", "null"],
+                    "description": "Total funding amount raised.",
+                    "additionalProperties": False,
+                    "properties": {
+                        "amount": {"type": ["number", "null"], "description": "Numerical value of total funding."},
+                        "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
+                        "note": {"type": ["string", "null"], "description": "Original textual representation if non-standard (e.g., 'Series A: $5M USD')."}
+                    },
+                    "required": ["amount", "currency", "note"]
+                },
+                "latest_annual_revenue": {
+                    "type": ["object", "null"],
+                    "description": "Latest reported annual revenue.",
+                    "additionalProperties": False,
+                    "properties": {
+                        "amount": {"type": ["number", "null"], "description": "Numerical value of the revenue."},
+                        "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
+                        "year_reported": {"type": ["integer", "null"], "description": "Year the revenue figure was reported for."},
+                        "note": {"type": ["string", "null"], "description": "Original textual representation of the revenue figure if it's non-standard (e.g., 'approx. €4.05B in 2023')."}
+                    },
+                    "required": ["amount", "currency", "year_reported", "note"]
+                }
             },
-            "required": ["ARR_USD", "total_funding_USD", "latest_annual_revenue_USD"]
+            "required": ["ARR", "total_funding", "latest_annual_revenue"]
         },
         "employee_count": { # Renamed for clarity
             "type": ["integer", "null"],
