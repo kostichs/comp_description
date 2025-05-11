@@ -245,13 +245,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         results.forEach(row => {
             const tr = document.createElement('tr');
-            const homepage = row.homepage && row.homepage !== 'Not found' ? `<a href="${escapeHtml(row.homepage)}" target="_blank">${escapeHtml(row.homepage)}</a>` : 'Not found';
-            const linkedin = row.linkedin && row.linkedin !== 'Not found' ? `<a href="${escapeHtml(row.linkedin)}" target="_blank">${escapeHtml(row.linkedin)}</a>` : 'Not found';
+            const homepage = row.homepage && row.homepage !== 'Not found' && !row.homepage.startsWith("Standard pipeline") ? `<a href="${escapeHtml(row.homepage)}" target="_blank">${escapeHtml(row.homepage)}</a>` : escapeHtml(row.homepage || 'Not found');
+            const linkedin = row.linkedin && row.linkedin !== 'Not found' && !row.linkedin.startsWith("Standard pipeline") ? `<a href="${escapeHtml(row.linkedin)}" target="_blank">${escapeHtml(row.linkedin)}</a>` : escapeHtml(row.linkedin || 'Not found');
+            
+            // Подготавливаем описание: сначала экранируем, потом заменяем переносы строк
+            let descriptionHtml = escapeHtml(row.description || '');
+            descriptionHtml = descriptionHtml.replace(/\n/g, '<br>');
+
             tr.innerHTML = `
                 <td>${escapeHtml(row.name || '')}</td>
                 <td>${homepage}</td>
                 <td>${linkedin}</td>
-                <td>${escapeHtml(row.description || '')}</td>
+                <td>${descriptionHtml}</td> <!-- Используем подготовленный HTML для описания -->
             `;
             resultsTableBody.appendChild(tr);
         });
