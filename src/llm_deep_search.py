@@ -125,7 +125,7 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_content}
             ],
-            max_tokens=3800, 
+            # max_tokens=3800, 
             web_search_options={"search_context_size":"high"}
         )
 

@@ -16,8 +16,8 @@ specific_aspects_for_report_guidance:
 llm_api_settings:
   model_name: "gpt-4o-mini-search-preview" # Ensure this is the model you want
   system_prompt: "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company, in English. Utilize your web search capabilities to find the most current information, focusing on {year_focus_window} data where possible. Adhere strictly to the requested report structure and level of detail. Cite all specific data points (financials, subscriber counts, pricing, etc.) with their sources, either inline or in a dedicated 'Sources' section at the end. Be concise, data-driven, and avoid conversational intros, outros, or disclaimers. Respond only in English."
-  max_tokens: 3800
-  temperature: 0.0
+  # max_tokens: 3800
+  # temperature: 0.0
 
 # Main user prompt template.
 # Placeholders: {company_name_placeholder}, {additional_aspects_placeholder}, {year_focus_window}, {current_year_for_pricing}
