@@ -1,8 +1,8 @@
 # llm_config.yaml
 
 model: "gpt-4o-mini"
-temperature: 0.2
-top_p: 0.9
+temperature: 0.1
+# top_p: 0.9
 
 messages:
   - role: system

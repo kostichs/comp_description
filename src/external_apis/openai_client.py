@@ -11,159 +11,7 @@ from typing import List, Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
-# 1. Define the strict JSON schema in English
-# This schema is based on the user's provided YAML structure.
-COMPANY_PROFILE_SCHEMA = {
-    "type": "object",
-    "additionalProperties": False,
-    "properties": {
-        "company_name": {
-            "type": "string",
-            "description": "Official legal name of the company."
-        },
-        "founding_year": {
-            "type": ["integer", "null"], # Allow null if not found
-            "description": "Year the company was founded."
-        },
-        "headquarters_city": {
-            "type": ["string", "null"],
-            "description": "City where the company's headquarters is located."
-        },
-        "headquarters_country": {
-            "type": ["string", "null"],
-            "description": "Country where the company's headquarters is located."
-        },
-        "founders": {
-            "type": "array",
-            "description": "List of company founders. Can be empty or null if not found.",
-            "items": {"type": "string"}
-        },
-        "ownership_background": {
-            "type": ["string", "null"],
-            "description": "Information about the owners or parent fund/company."
-        },
-        "core_products_services": { # Renamed for clarity
-            "type": "array",
-            "description": "Main products or services offered by the company.",
-            "items": {
-                "type": "object",
-                "additionalProperties": False,
-                "properties": {
-                    "name": {"type": "string", "description": "Name of the product/service."},
-                    "launch_year": {"type": ["integer", "null"], "description": "Year the product/service was launched (if specified)."}
-                },
-                "required": ["name", "launch_year"]
-            }
-        },
-        "underlying_technologies": {
-            "type": "array",
-            "description": "Key technologies used or developed by the company.",
-            "items": {"type": "string"}
-        },
-        "customer_types": {
-            "type": "array",
-            "description": "Primary types of customers (e.g., B2B, B2C, B2G).",
-            "items": {"type": "string"}
-        },
-        "industries_served": { # Renamed for clarity
-            "type": "array",
-            "description": "Industries the company serves.",
-            "items": {"type": "string"}
-        },
-        "geographic_markets": {
-            "type": "array",
-            "description": "Geographical markets where the company operates.",
-            "items": {"type": "string"}
-        },
-        "financial_details": {
-            "type": ["object", "null"],
-            "description": "Key financial indicators. All sub-fields should be populated if the financial_details object itself is not null.",
-            "additionalProperties": False,
-            "properties": {
-                "ARR": {
-                    "type": ["object", "null"],
-                    "description": "Annual Recurring Revenue details.",
-                    "additionalProperties": False,
-                    "properties": {
-                        "amount": {"type": ["number", "null"], "description": "Numerical value of ARR."},
-                        "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
-                        "year_reported": {"type": ["integer", "null"], "description": "Year the ARR figure was reported for."},
-                        "note": {"type": ["string", "null"], "description": "Original textual representation with the sentence that contains this information."}
-                    },
-                    "required": ["amount", "currency", "year_reported", "note"]
-                },
-                "total_funding": {
-                    "type": ["object", "null"],
-                    "description": "Total funding amount raised.",
-                    "additionalProperties": False,
-                    "properties": {
-                        "amount": {"type": ["number", "null"], "description": "Numerical value of total funding."},
-                        "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
-                        "note": {"type": ["string", "null"], "description": "Original textual representation with the sentence that contains this information."}
-                    },
-                    "required": ["amount", "currency", "note"]
-                },
-                "latest_annual_revenue": {
-                    "type": ["object", "null"],
-                    "description": "Latest reported annual revenue.",
-                    "additionalProperties": False,
-                    "properties": {
-                        "amount": {"type": ["number", "null"], "description": "Numerical value of the revenue."},
-                        "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
-                        "year_reported": {"type": ["integer", "null"], "description": "Year the revenue figure was reported for."},
-                        "note": {"type": ["string", "null"], "description": "Original textual representation with the sentence that contains this information."}
-                    },
-                    "required": ["amount", "currency", "year_reported", "note"]
-                }
-            },
-            "required": ["ARR", "total_funding", "latest_annual_revenue"]
-        },
-        "employee_count": { # Renamed for clarity
-            "type": ["integer", "null"],
-            "description": "Approximate number of employees."
-        },
-        "major_clients_or_case_studies": { # Renamed for clarity
-            "type": "array",
-            "description": "Notable clients or publicly mentioned case studies/implementations.",
-            "items": {"type": "string"}
-        },
-        "strategic_initiatives": { # Renamed for clarity
-            "type": "array",
-            "description": "Key strategic moves, partnerships, or acquisitions.",
-            "items": {"type": "string"}
-        },
-        "key_competitors_mentioned": { # Renamed for clarity
-            "type": "array",
-            "description": "Main competitors mentioned in the provided text.",
-            "items": {"type": "string"}
-        },
-        "overall_summary": {
-             "type": ["string", "null"],
-             "description": "A brief one or two-sentence summary of the company based on the extracted information."
-        }
-    },
-    "required": [
-        "company_name",
-        "founding_year",
-        "headquarters_city",
-        "headquarters_country",
-        "founders",
-        "ownership_background",
-        "core_products_services",
-        "underlying_technologies",
-        "customer_types",
-        "industries_served",
-        "geographic_markets",
-        "financial_details",
-        "employee_count",
-        "major_clients_or_case_studies",
-        "strategic_initiatives",
-        "key_competitors_mentioned",
-        "overall_summary"
-    ]
-}
-
-# --- Individual Sub-Schemas --- 
+# --- Individual Sub-Schemas (MUST BE DEFINED BEFORE COMPANY_PROFILE_SCHEMA) --- 
 
 BASIC_INFO_SCHEMA = {
     "type": "object",
@@ -218,50 +66,58 @@ FINANCIAL_HR_SCHEMA = {
     "properties": {
         "financial_details": {
             "type": ["object", "null"],
-            "description": "Key financial indicators.",
+            "description": "Key financial indicators. May include data for multiple recent years if available.",
             "additionalProperties": False,
             "properties": {
-                "ARR": {
-                    "type": ["object", "null"],
-                    "description": "Annual Recurring Revenue.",
-                    "additionalProperties": False,
-                    "properties": {
-                        "amount": {"type": ["number", "null"]},
-                        "currency": {"type": ["string", "null"]},
-                        "year_reported": {"type": ["integer", "null"]},
-                        "note": {"type": ["string", "null"]}
-                    },
-                    "required": ["amount", "currency", "year_reported", "note"]
+                "annual_revenue_history": { 
+                    "type": "array",
+                    "description": "Array of annual revenue figures for different reported years (could be total revenue or ARR).",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "properties": {
+                            "year_reported": {"type": ["integer", "null"], "description": "The fiscal year the revenue data pertains to."},
+                            "amount": {"type": ["number", "null"], "description": "Numerical value of the revenue."},
+                            "currency": {"type": ["string", "null"], "description": "Currency code (e.g., USD, EUR) or symbol."},
+                            "revenue_type": {"type": ["string", "null"], "description": "Type of revenue (e.g., 'Total Annual Revenue', 'ARR')."},
+                            "note": {"type": ["string", "null"], "description": "Original textual representation or context."}
+                        },
+                        "required": ["year_reported", "amount", "currency", "revenue_type", "note"]
+                    }
                 },
-                "total_funding": {
-                    "type": ["object", "null"],
-                    "description": "Total funding raised.",
-                    "additionalProperties": False,
-                    "properties": {
-                        "amount": {"type": ["number", "null"]},
-                        "currency": {"type": ["string", "null"]},
-                        "note": {"type": ["string", "null"]}
-                    },
-                    "required": ["amount", "currency", "note"]
-                },
-                "latest_annual_revenue": {
-                    "type": ["object", "null"],
-                    "description": "Latest annual revenue.",
-                    "additionalProperties": False,
-                    "properties": {
-                        "amount": {"type": ["number", "null"]},
-                        "currency": {"type": ["string", "null"]},
-                        "year_reported": {"type": ["integer", "null"]},
-                        "note": {"type": ["string", "null"]}
-                    },
-                    "required": ["amount", "currency", "year_reported", "note"]
+                "funding_rounds": { 
+                    "type": "array",
+                    "description": "Array of funding round details.",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "properties": {
+                            "round_name": {"type": ["string", "null"], "description": "Name of the funding round."},
+                            "year_closed": {"type": ["integer", "null"], "description": "Year funding was closed/reported."},
+                            "amount": {"type": ["number", "null"], "description": "Numerical value of funding."},
+                            "currency": {"type": ["string", "null"], "description": "Currency code or symbol."},
+                            "key_investors": {"type": "array", "items": {"type": "string"}, "description": "List of key investors."},
+                            "note": {"type": ["string", "null"], "description": "Other relevant notes."}
+                        },
+                        "required": ["year_closed", "amount", "currency", "round_name", "key_investors", "note"]
+                    }
                 }
             },
-            "required": ["ARR", "total_funding", "latest_annual_revenue"]
+            "required": ["annual_revenue_history", "funding_rounds"]
         },
-        "employee_count": {"type": ["integer", "null"], "description": "Number of employees."}
+        "employee_count_details": {
+            "type": ["object", "null"],
+            "description": "Details about employee count.",
+            "additionalProperties": False,
+            "properties": {
+                "count": {"type": ["integer", "null"], "description": "Approximate number of employees."},
+                "year_reported": {"type": ["integer", "null"], "description": "Year this count was reported for."},
+                "note": {"type": ["string", "null"], "description": "Context if employee count is an estimate or specific to a region."}
+            },
+            "required": ["count", "year_reported", "note"]
+        }
     },
-    "required": ["financial_details", "employee_count"]
+    "required": ["financial_details", "employee_count_details"]
 }
 
 STRATEGIC_SCHEMA = {
@@ -274,6 +130,38 @@ STRATEGIC_SCHEMA = {
         "overall_summary": {"type": ["string", "null"], "description": "Brief company summary based on extracted info."}
     },
     "required": ["major_clients_or_case_studies", "strategic_initiatives", "key_competitors_mentioned", "overall_summary"]
+}
+
+# COMPANY_PROFILE_SCHEMA now correctly references the above sub-schemas
+COMPANY_PROFILE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "company_name": BASIC_INFO_SCHEMA["properties"]["company_name"],
+        "founding_year": BASIC_INFO_SCHEMA["properties"]["founding_year"],
+        "headquarters_city": BASIC_INFO_SCHEMA["properties"]["headquarters_city"],
+        "headquarters_country": BASIC_INFO_SCHEMA["properties"]["headquarters_country"],
+        "founders": BASIC_INFO_SCHEMA["properties"]["founders"],
+        "ownership_background": BASIC_INFO_SCHEMA["properties"]["ownership_background"],
+        "core_products_services": PRODUCT_TECH_SCHEMA["properties"]["core_products_services"],
+        "underlying_technologies": PRODUCT_TECH_SCHEMA["properties"]["underlying_technologies"],
+        "customer_types": MARKET_CUSTOMER_SCHEMA["properties"]["customer_types"],
+        "industries_served": MARKET_CUSTOMER_SCHEMA["properties"]["industries_served"],
+        "geographic_markets": MARKET_CUSTOMER_SCHEMA["properties"]["geographic_markets"],
+        "financial_details": FINANCIAL_HR_SCHEMA["properties"]["financial_details"], 
+        "employee_count_details": FINANCIAL_HR_SCHEMA["properties"]["employee_count_details"],
+        "major_clients_or_case_studies": STRATEGIC_SCHEMA["properties"]["major_clients_or_case_studies"],
+        "strategic_initiatives": STRATEGIC_SCHEMA["properties"]["strategic_initiatives"],
+        "key_competitors_mentioned": STRATEGIC_SCHEMA["properties"]["key_competitors_mentioned"],
+        "overall_summary": STRATEGIC_SCHEMA["properties"]["overall_summary"]
+    },
+    "required": [
+        "company_name", "founding_year", "headquarters_city", "headquarters_country",
+        "founders", "ownership_background", "core_products_services", "underlying_technologies",
+        "customer_types", "industries_served", "geographic_markets", "financial_details",
+        "employee_count_details", "major_clients_or_case_studies", "strategic_initiatives",
+        "key_competitors_mentioned", "overall_summary"
+    ]
 }
 
 async def get_embedding_async(text: str, openai_client: AsyncOpenAI, model: str = "text-embedding-3-small") -> list[float] | None:
@@ -316,8 +204,8 @@ async def is_url_company_page_llm(company_name: str, page_snippet: str, openai_c
 async def extract_data_with_schema(
     company_name: str, 
     about_snippet: str | None, 
-    sub_schema: Dict[str, Any], # Specific sub-schema for this extraction task
-    schema_name: str, # Name for the schema, e.g., "basic_info_extraction"
+    sub_schema: Dict[str, Any],
+    schema_name: str, 
     llm_config: dict, 
     openai_client: AsyncOpenAI,
 ) -> Optional[Dict[str, Any]]:
@@ -327,7 +215,7 @@ async def extract_data_with_schema(
     """
     if not about_snippet:
         logger.warning(f"No text (about_snippet) for {company_name} for schema '{schema_name}'. Returning empty dict.")
-        return {} # Return empty dict to allow merging, or None if preferred
+        return {}
     if not llm_config or not isinstance(llm_config, dict):
         logger.error(f"Invalid LLM config for {company_name} (schema '{schema_name}'). Returning error dict.")
         return {"error": f"Invalid LLM config for schema {schema_name}"}
@@ -337,16 +225,23 @@ async def extract_data_with_schema(
         logger.warning(f"Model {model_name} from config might not be ideal for JSON schema mode. Defaulting to gpt-4o-mini for {schema_name}.")
         model_name = "gpt-4o-mini"
 
+    # Updated System Prompt for schema extraction
     system_prompt_content = (
-        "You are a highly accurate data extraction AI. Your task is to meticulously analyze the provided text about a company "
-       f"and populate a JSON object strictly according to the fields defined in the provided '{schema_name}' schema. "
-        "Extract information ONLY from the provided text. If information for a field is not found, use 'null' for that field. "
-        "Adhere strictly to the schema's data types. Do not add any fields not present in the schema."
+        "You are a meticulous data extraction AI. Your task is to analyze the provided text about a company and populate a JSON object "
+       f"strictly according to the fields and structure defined in the provided JSON schema named '{schema_name}'. "
+        "Extract information ONLY from the provided text. "
+        "If information for a specific field (especially optional or array/object sub-fields) is not found in the text, you MUST use 'null' for that field or an empty array [] for array types, as appropriate, to ensure all keys defined in the schema's 'properties' are present in your output if they are also in the schema's 'required' list, or if the schema implies their presence due to 'additionalProperties: false'."
+        "For array fields (e.g., annual_revenue_history, funding_rounds, core_products_services), extract all distinct relevant items found in the text that fit the item's sub-schema. If no items are found for an array, return an empty array []."
+        "Pay close attention to nested structures and ensure all required fields within nested objects are populated (using null if data is absent)."
+        "Adhere strictly to the schema's data types. Do not add any fields not defined in the schema."
     )
     
+    # Updated User Prompt for schema extraction
     user_prompt_content = (
-        f"Please extract information about the company '{company_name}' from the following text snippet and structure it "
-       f"according to the '{schema_name}' JSON schema provided. Focus only on the fields defined in this specific schema.\n\n"
+        f"Please extract information about the company '{company_name}' from the following text snippet. "
+        f"Structure your response strictly according to the JSON schema named '{schema_name}' which will be provided to you via the function calling mechanism. "
+        f"Focus ONLY on the fields defined in this specific schema. "
+        f"For any fields where information cannot be found in the text, use a JSON 'null' value. For array fields, if no items are found, use an empty array [].\n\n"
         f"Text Snippet to Analyze:\n```\n{about_snippet[:120000]} \n```"
     )
 
@@ -358,15 +253,15 @@ async def extract_data_with_schema(
     api_params = {
         "model": model_name,
         "messages": messages,
-        "temperature": llm_config.get("temperature", 0.05), # Very low temperature for focused extraction
-        "top_p": llm_config.get("top_p", 0.5),
-        "max_tokens": llm_config.get("max_tokens", 2000), # Max tokens might be lower for smaller sub-schemas
+        "temperature": llm_config.get("temperature_json_extract", llm_config.get("temperature", 0.05)), 
+        "top_p": llm_config.get("top_p_json_extract", llm_config.get("top_p", 0.5)),
+        "max_tokens": llm_config.get("max_tokens_json_extract", 2500), # Max tokens for sub-schema extraction
         "response_format": {
             "type": "json_schema",
             "json_schema": {
                 "name": schema_name, 
                 "strict": True, 
-                "schema": sub_schema # Use the passed sub_schema
+                "schema": sub_schema 
             }
         }
     }
@@ -391,38 +286,23 @@ async def extract_data_with_schema(
         return {"error": f"OpenAI APIError for schema {schema_name}: {str(e)}"}
     except Exception as e: 
         logger.error(f"Unexpected error for {company_name} (schema '{schema_name}'): {type(e).__name__} - {str(e)}", exc_info=True)
-        return {"error": f"Unexpected error for schema {schema_name}: {str(e)}"} 
+        return {"error": f"Unexpected error for schema {schema_name}: {str(e)}"}
 
 async def generate_text_summary_from_json_async(
     company_name: str,
     structured_data: Dict[str, Any],
     openai_client: AsyncOpenAI,
-    llm_config: dict, # For model, temperature, etc.
-    # Removed schema_name and sub_schema as they are not directly used for generation prompt
+    llm_config: dict,
 ) -> Optional[str]:
     """
     Async: Generates a readable three-paragraph text summary from structured JSON data about a company.
-
-    Args:
-        company_name: The name of the company.
-        structured_data: The structured company data (Python dictionary from JSON).
-        openai_client: The AsyncOpenAI client.
-        llm_config: Configuration for the LLM (model, temperature, etc.).
-
-    Returns:
-        A string containing the three-paragraph summary, or None if generation fails.
+    Handles new array structures for financial data.
     """
     if not structured_data:
         logger.warning(f"No structured data provided for {company_name} to generate text summary.")
         return "Error: No structured data to summarize."
-
-    # Model for text synthesis - gpt-4o-mini should be good, or gpt-4-turbo for higher quality
-    model_name = llm_config.get('model_for_summary', llm_config.get('model', "gpt-4o-mini")) 
-    # Allow specifying a different model for summarization in llm_config, fallback to main model or default
-
+    model_name = llm_config.get('model_for_summary', llm_config.get('model', "gpt-4o-mini"))
     try:
-        # Serialize the structured data to a compact JSON string for the prompt
-        # Using ensure_ascii=False and indent=None for a more compact representation in the prompt
         json_input_for_prompt = json.dumps(structured_data, ensure_ascii=False, indent=None)
     except TypeError as e:
         logger.error(f"Failed to serialize structured_data for {company_name}: {e}")
@@ -431,10 +311,11 @@ async def generate_text_summary_from_json_async(
     system_prompt_content = (
         "You are a skilled business writer specializing in synthesizing structured data into concise, professional company profiles. "
         "Your output must be a three-paragraph summary in English, based ONLY on the provided JSON data. "
-        "Do not add external information or speculate. Adhere strictly to the three-paragraph format with formal language."
+        "Do not add external information or speculate. Adhere strictly to the three-paragraph format with formal language. "
+        "When summarizing financial history arrays (like revenue or funding), typically focus on the most recent and significant single data point unless multiple distinct years are particularly noteworthy for a narrative. Clearly state years and currencies."
     )
-
-    # Construct user prompt with the JSON data and formatting instructions
+    
+    # Updated User Prompt to guide handling of financial arrays
     user_prompt_content = f"""Company Name: {company_name}
 
 Structured Company Data (JSON):
@@ -451,12 +332,17 @@ Strict formatting rules:
 - Do not use markdown formatting (like bolding or bullet points) or section headers in your output text.
 - Write in a formal, third-person perspective.
 - Ensure all information comes directly from the provided JSON data. Do not infer or add external knowledge.
-- Spell out acronyms on first use if their full form is available in the JSON (e.g., if JSON has ARR: \"Annual Recurring Revenue\", use it fully first time).
+- Spell out acronyms on first use if their full form is available in the JSON.
 
 Paragraph Structure Guide (use the data fields mentioned if available in the JSON):
-1.  Paragraph 1: Focus on fundamental company details (e.g., from JSON fields like company_name, founding_year, headquarters_city, headquarters_country, founders, ownership_background).
-2.  Paragraph 2: Detail core business aspects (e.g., from JSON fields like core_products_services, underlying_technologies, customer_types, industries_served, geographic_markets).
-3.  Paragraph 3: Cover operational and strategic highlights (e.g., from JSON fields like financial_details, employee_count, major_clients_or_case_studies, strategic_initiatives, key_competitors_mentioned, and a concluding sentence perhaps based on overall_summary).
+1.  Paragraph 1 (Foundational Details): company_name, founding_year, headquarters_city, headquarters_country, founders, ownership_background.
+2.  Paragraph 2 (Core Business): core_products_services, underlying_technologies, customer_types, industries_served, geographic_markets.
+3.  Paragraph 3 (Operational & Strategic Highlights): 
+    - For `financial_details.annual_revenue_history`: Mention the revenue for the most recent `year_reported`. If multiple distinct years are present and significant, you can briefly note a trend or the most recent two. Always state the year and currency. Example: "The company reported an annual revenue of €X million in 2024."
+    - For `financial_details.funding_rounds`: Mention significant or recent funding. Example: "It recently secured $Y million in a Series B round in 2023 led by InvestorZ."
+    - Incorporate `employee_count_details` (e.g., "with Z employees as of 2023").
+    - Weave in `major_clients_or_case_studies`, `strategic_initiatives`, `key_competitors_mentioned`.
+    - Conclude with a sentence based on `overall_summary`.
 """
 
     messages = [
@@ -467,10 +353,9 @@ Paragraph Structure Guide (use the data fields mentioned if available in the JSO
     api_params = {
         "model": model_name,
         "messages": messages,
-        "temperature": llm_config.get("temperature_for_summary", llm_config.get("temperature", 0.5)), # Allow specific temp for summary
+        "temperature": llm_config.get("temperature_for_summary", llm_config.get("temperature", 0.5)), 
         "top_p": llm_config.get("top_p_for_summary", llm_config.get("top_p", 0.9)),
-        "max_tokens": llm_config.get("max_tokens_for_summary", 1000) # Adjust as needed for 3 paragraphs
-        # No response_format here, as we want natural text output
+        "max_tokens": llm_config.get("max_tokens_for_summary", 1000) 
     }
 
     logger.info(f"Attempting to generate three-paragraph summary for {company_name} using model {model_name}.")
@@ -478,13 +363,10 @@ Paragraph Structure Guide (use the data fields mentioned if available in the JSO
         response = await openai_client.chat.completions.create(**api_params)
         if response.choices and response.choices[0].message and response.choices[0].message.content:
             text_summary = response.choices[0].message.content.strip()
-            # Basic check for three paragraphs (count double newlines, or single if paragraphs are tight)
-            # This is a simple heuristic.
-            paragraph_separators = text_summary.count("\n\n") # Common separation
-            if paragraph_separators < 1 and len(text_summary.split('\n')) > 3 : # Heuristic for tightly packed paragraphs
-                 paragraph_separators = text_summary.count("\n") - (len(text_summary.split('\n')) -1) // 2 # rough approx
-            
-            if paragraph_separators >= 2 or (paragraph_separators == 1 and len(text_summary.split('\n')) == 3): # crude check for 3 paragraphs
+            paragraph_separators = text_summary.count("\n\n") 
+            if paragraph_separators < 1 and len(text_summary.split('\n')) > 3 :
+                 paragraph_separators = text_summary.count("\n") - (len(text_summary.split('\n')) -1) // 2
+            if paragraph_separators >= 2 or (paragraph_separators == 1 and len(text_summary.split('\n')) == 3):
                 logger.info(f"Successfully generated three-paragraph summary for {company_name} (Length: {len(text_summary)}).")
             else:
                 logger.warning(f"Generated summary for {company_name} might not be exactly three paragraphs (Found ~{paragraph_separators + 1} blocks). Length: {len(text_summary)}. Review output.")

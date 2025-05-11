@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 import logging # Added for logging
 from pathlib import Path
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 from scrapingbee import ScrapingBeeClient # Need sync client for thread
 from openai import AsyncOpenAI
@@ -184,18 +184,57 @@ async def process_company(
             if llm_deep_search_config and "specific_queries" in llm_deep_search_config:
                 aspects_for_deep_search_report = llm_deep_search_config.get("specific_queries", [])
             
-            comprehensive_deep_search_report = await query_llm_for_deep_info(
+            deep_search_result_dict = await query_llm_for_deep_info(
                 openai_client=openai_client,
                 company_name=company_name,
                 specific_aspects_to_cover=aspects_for_deep_search_report,
                 user_context_text=context_text
             )
-            if not comprehensive_deep_search_report.startswith(("Deep Search Error:", "Deep Search Skipped:")):
-                text_src_for_llms += f"\n\n--- LLM Deep Search Report ---\n{comprehensive_deep_search_report}"
-                pipeline_logger.info(f"  > {company_name}: LLM Deep Search report appended.")
+
+            llm_report_text: Optional[str] = None
+            llm_report_sources: List[Dict[str, str]] = []
+
+            if "error" in deep_search_result_dict:
+                error_message = deep_search_result_dict["error"]
+                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search problem: {error_message}")
+                text_src_for_llms += f"\n\n--- LLM Deep Search Status: {error_message} ---"
             else:
-                pipeline_logger.warning(f"  > {company_name}: LLM Deep Search problem: {comprehensive_deep_search_report}")
-                text_src_for_llms += f"\n\n--- LLM Deep Search Status: {comprehensive_deep_search_report} ---"
+                llm_report_text = deep_search_result_dict.get("report_text")
+                llm_report_sources = deep_search_result_dict.get("sources", [])
+                if llm_report_text:
+                    text_src_for_llms += f"\n\n--- LLM Deep Search Report ---\n{llm_report_text}"
+                    pipeline_logger.info(f"  > {company_name}: LLM Deep Search report text appended to context for JSON extraction.")
+                else:
+                    pipeline_logger.warning(f"  > {company_name}: LLM Deep Search returned no report text.")
+                    text_src_for_llms += f"\n\n--- LLM Deep Search Status: No report text returned ---"
+
+                # --- SAVE LLM DEEP SEARCH RAW REPORT TO MARKDOWN ---
+                if llm_report_text and session_dir_path:
+                    try:
+                        md_reports_dir = session_dir_path / "md_reports"
+                        md_reports_dir.mkdir(parents=True, exist_ok=True)
+                        
+                        safe_filename = re.sub(r'[^\w\-_\.]', '_', company_name)
+                        if not safe_filename: safe_filename = "unnamed_company"
+                        md_file_path = md_reports_dir / f"{safe_filename[:100]}_deep_search.md"
+
+                        md_content = f"# LLM Deep Search Report for {company_name}\n\n"
+                        md_content += f"## Full Report Text (Context)\n\n{llm_report_text}\n\n"
+                        
+                        if llm_report_sources:
+                            md_content += "## Sources\n\n"
+                            for idx, source in enumerate(llm_report_sources):
+                                title = source.get("title", "N/A")
+                                url = source.get("url", "N/A")
+                                md_content += f"*   **Source {idx + 1}:** [{title}]({url})\n"
+                        else:
+                            md_content += "## Sources\n\nNo sources provided by LLM.\n"
+                        
+                        with open(md_file_path, 'w', encoding='utf-8') as f_md:
+                            f_md.write(md_content)
+                        pipeline_logger.info(f"  > {company_name}: Successfully saved LLM Deep Search raw report to {md_file_path}")
+                    except Exception as e_save_md:
+                        pipeline_logger.error(f"  > {company_name}: Failed to save LLM Deep Search raw report to Markdown: {e_save_md}")
 
         # --- FINAL STRUCTURED JSON GENERATION (Iterative Schema Extraction) --- 
         pipeline_logger.info(f"  > {company_name}: Starting iterative JSON extraction from combined text (len: {len(text_src_for_llms)})...")
@@ -563,7 +602,7 @@ async def run_pipeline_for_file(
     serper_api_key: str,
     expected_csv_fieldnames: list[str],
     broadcast_update: callable = None,
-    main_batch_size: int = 50,
+    main_batch_size: int = 4,
     run_standard_pipeline: bool = True,
     run_llm_deep_search_pipeline: bool = False,
     llm_deep_search_config: Optional[Dict[str, Any]] = None

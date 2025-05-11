@@ -21,12 +21,12 @@ async def query_llm_for_deep_info(
     company_name: str,
     specific_aspects_to_cover: List[str],
     user_context_text: Optional[str] = None # Added user_context_text parameter
-) -> str: 
+) -> Dict[str, Any]: 
     """
     Asynchronously requests a comprehensive, structured business report for a company
     from OpenAI's gpt-4o-mini-search-preview model using a single, detailed query.
     The query is guided by the provided list of specific aspects and optional user context.
-    Sources found by the LLM are logged but not included in the returned report text.
+    Sources found by the LLM are logged.
 
     Args:
         openai_client: The AsyncOpenAI client.
@@ -35,8 +35,11 @@ async def query_llm_for_deep_info(
         user_context_text: Optional user-provided context to further guide the search.
 
     Returns:
-        A string containing the comprehensive LLM report (TEXT ONLY, without appended sources),
-        or an error message string.
+        A dictionary containing:
+            {"report_text": str, "sources": List[Dict[str, str]]} on success,
+            where "sources" is a list of dictionaries like {"title": "...", "url": "..."}.
+        Or a dictionary containing:
+            {"error": str} on failure.
     """
     llm_model = "gpt-4o-mini-search-preview"
 
@@ -54,12 +57,15 @@ async def query_llm_for_deep_info(
     context_injection_str = ""
     if user_context_text:
         safe_user_context = escape_string_for_prompt(user_context_text)
-        context_injection_str = f"\n\nConsider the following user-provided context for your research and report generation: '{safe_user_context}'"
+        context_injection_str = f"\n\nUser-provided context to guide your research: '{safe_user_context}'"
         logger.info(f"[DeepSearch] Using user-provided context for '{company_name}': '{user_context_text[:100]}...'")
 
     prompt_template = """Please generate a detailed Business Analytics Report for the company: '{company_name_placeholder}'.
 
-Your primary goal is to extract and present factual data, focusing on information from 2024-2025 where available. The report MUST strictly follow the structure outlined below and include the requested details for each section. Use your web search capabilities to find the most current information.
+Your primary goal is to extract and present factual data. 
+When reporting financial figures (like revenue, ARR, funding), prioritize data for 2024 full fiscal year (e.g., 2024 or later). If data for such a recent year is not available, provide the latest available data (e.g., for 2023). If multiple recent years of data are found for the same metric (e.g., revenue for 2024 and 2023), please include all such distinct yearly figures, clearly stating the period/year each figure refers to.
+
+The report MUST strictly follow the structure outlined below and include the requested details for each section. Use your web search capabilities to find the most current information.
 
 Report Structure:
 
@@ -74,9 +80,9 @@ Report Structure:
 
 3.  **Business Units / Segments (Financials & Activities):**
     *   List main operational business units or segments.
-    *   For each: Provide latest reported annual revenue (specify year, e.g., 2024 revenue) and list core activities/offerings.
+    *   For each: Provide reported annual revenue figures. If available, include data for fiscal years 2024 (or other recent distinct years), clearly indicating the year for each figure. List core activities/offerings.
 
-4.  **Products and Indicative Prices (Latest Available, e.g., May 2025):
+4.  **Products and Indicative Prices (Latest Available):
     *   Key Products/Services: List flagship offerings (e.g., 5G mobile plans like 'myPlan Unlimited', Fios Internet tiers, 5G Home Internet, Business unlimited mobility, Private 5G solutions).
     *   Indicative Pricing: For major offerings, provide entry-level monthly pricing. Note any conditions: discounts (e.g., Mobile + Home), price lock durations, contract requirements, setup fees, included equipment. Mention any significant promotional offers (e.g., free devices/services with specific plans).
 
@@ -110,8 +116,8 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
 
     system_prompt = (
         "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company, in English. "
-        "Utilize your web search capabilities to find the most current information (2024-2025 focus). "
-        "Adhere strictly to the requested report structure and level of detail. Cite all specific data points (financials, subscriber counts, pricing, etc.) with their sources. "
+        "Utilize your web search capabilities to find the most current information. When financial data is requested, if multiple recent years e.g., 2024, 2023 are found, include data for each distinct year, clearly stating the period. Prioritize the most recent full fiscal year. "
+        "Adhere strictly to the requested report structure and level of detail. Cite all specific data points with their sources. "
         "Be concise and data-driven. Do not include conversational intros, outros, or disclaimers. Respond only in English."
     )
 
@@ -123,6 +129,7 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
             model=llm_model,
             messages=[
                 {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Please generate a detailed Business Analytics Report for the company: '{safe_company_name}'. {user_context_text if user_context_text else ''}"},
                 {"role": "user", "content": user_content}
             ],
             # max_tokens=3800, 
@@ -130,6 +137,7 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
         )
 
         answer_content = "LLM did not provide a comprehensive answer."
+        extracted_sources = [] # Initialize list for sources
         
         if completion.choices and completion.choices[0].message:
             message = completion.choices[0].message
@@ -137,29 +145,30 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
                 answer_content = message.content.strip()
             
             if message.annotations:
-                citations_log_list = []
+                citations_log_list_for_logging = []
                 for ann_index, ann in enumerate(message.annotations):
                     if ann.type == "url_citation" and ann.url_citation:
                         cited_title = ann.url_citation.title or "N/A"
                         cited_url = ann.url_citation.url or "N/A"
-                        citations_log_list.append(f"  [Source {ann_index+1}] Title: {cited_title}, URL: {cited_url}")
-                if citations_log_list:
-                    logger.info(f"[DeepSearch] Sources found for '{company_name}':\n" + "\n".join(citations_log_list))
+                        extracted_sources.append({"title": cited_title, "url": cited_url})
+                        citations_log_list_for_logging.append(f"  [Source {ann_index+1}] Title: {cited_title}, URL: {cited_url}")
+                if citations_log_list_for_logging:
+                    logger.info(f"[DeepSearch] Sources found for '{company_name}':\n" + "\n".join(citations_log_list_for_logging))
             else:
                 logger.info(f"[DeepSearch] No annotations/sources provided by LLM for '{company_name}'.")
         
         logger.info(f"[DeepSearch] For '{company_name}', comprehensive LLM report text generated (first 100 chars): '{answer_content[:100]}...'")
-        return answer_content 
+        return {"report_text": answer_content, "sources": extracted_sources}
 
     except APIError as e:
         logger.error(f"[DeepSearch] OpenAI API error for '{company_name}' (comprehensive query): {e}")
-        return f"Deep Search Error: OpenAI API issue - {str(e)}"
+        return {"error": f"Deep Search Error: OpenAI API issue - {str(e)}"}
     except Timeout as e:
         logger.error(f"[DeepSearch] Timeout error for '{company_name}' (comprehensive query): {e}")
-        return f"Deep Search Error: Timeout - {str(e)}"
+        return {"error": f"Deep Search Error: Timeout - {str(e)}"}
     except Exception as e:
         logger.error(f"[DeepSearch] Unexpected error for '{company_name}' (comprehensive query): {e}", exc_info=True)
-        return f"Deep Search Error: Unexpected issue - {str(e)}"
+        return {"error": f"Deep Search Error: Unexpected issue - {str(e)}"}
 
 async def main_test():
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(name)s - %(message)s')
@@ -211,23 +220,32 @@ async def main_test():
     test_user_context = "Focus on their expansion into the European market and any AI-related products."
 
     logger.info(f"Running mock deep search for company: {test_company} WITH user context (multi-turn sim).")
-    report_text_with_context = await query_llm_for_deep_info(
+    report_data_with_context = await query_llm_for_deep_info(
         openai_client=mock_client, 
         company_name=test_company,
         specific_aspects_to_cover=test_aspects_list,
         user_context_text=test_user_context
     )
     print("\n--- Mock Report (WITH User Context, Multi-Turn Sim) ---")
-    print(report_text_with_context)
+    if "error" in report_data_with_context:
+        print(f"Error: {report_data_with_context['error']}")
+    else:
+        print(f"Report Text: {report_data_with_context.get('report_text')}")
+        print(f"Sources: {report_data_with_context.get('sources')}")
+
 
     logger.info(f"Running mock deep search for company: {test_company} WITHOUT user context (multi-turn sim).")
-    report_text_no_context = await query_llm_for_deep_info(
+    report_data_no_context = await query_llm_for_deep_info(
         openai_client=mock_client, 
         company_name=test_company,
         specific_aspects_to_cover=test_aspects_list
     )
     print("\n--- Mock Report (WITHOUT User Context, Multi-Turn Sim) ---")
-    print(report_text_no_context)
+    if "error" in report_data_no_context:
+        print(f"Error: {report_data_no_context['error']}")
+    else:
+        print(f"Report Text: {report_data_no_context.get('report_text')}")
+        print(f"Sources: {report_data_no_context.get('sources')}")
 
     logger.info("Finished main_test for llm_deep_search.py")
 
@@ -246,12 +264,21 @@ if __name__ == '__main__':
         
         async def actual_run():
             print(f"--- REAL OpenAI API Report for {sample_company} (WITH context, Multi-Turn) ---")
-            report_with_ctx = await query_llm_for_deep_info(actual_client, sample_company, specific_aspects_to_cover=sample_aspects_list, user_context_text=sample_context)
-            print(report_with_ctx)
+            report_with_ctx_data = await query_llm_for_deep_info(actual_client, sample_company, specific_aspects_to_cover=sample_aspects_list, user_context_text=sample_context)
+            if "error" in report_with_ctx_data:
+                print(f"Error: {report_with_ctx_data['error']}")
+            else:
+                print(f"Report Text: {report_with_ctx_data.get('report_text')}")
+                print(f"Sources: {report_with_ctx_data.get('sources')}")
+
 
             print(f"\n--- REAL OpenAI API Report for {sample_company} (WITHOUT context, Multi-Turn) ---")
-            report_no_ctx = await query_llm_for_deep_info(actual_client, sample_company, specific_aspects_to_cover=sample_aspects_list)
-            print(report_no_ctx)
+            report_no_ctx_data = await query_llm_for_deep_info(actual_client, sample_company, specific_aspects_to_cover=sample_aspects_list)
+            if "error" in report_no_ctx_data:
+                print(f"Error: {report_no_ctx_data['error']}")
+            else:
+                print(f"Report Text: {report_no_ctx_data.get('report_text')}")
+                print(f"Sources: {report_no_ctx_data.get('sources')}")
 
         asyncio.run(actual_run())
     else:
