@@ -168,3 +168,6 @@ output/debug/*
 
 # Session metadata file
 sessions_metadata.json
+
+# How to start
+how_to_start.txt
