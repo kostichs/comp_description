@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Poetry (если вдруг остались следы)
+poetry.lock
+pyproject.toml
+
+# IDE
+.vscode/
+.idea/
+
+# Local data / logs
+output/
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db 
