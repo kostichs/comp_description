@@ -29,7 +29,7 @@ def normalize_name_for_domain_comparison(name: str) -> str:
     name = re.sub(r'[^\w-]', '', name)
     return name.strip('-')
 
-async def check_domain_availability(domain: str, timeout: float = 2.0) -> bool:
+async def check_domain_availability(domain: str, timeout: float = 3.0) -> bool:
     """Проверяет доступность домена и возвращает валидный HTTP ответ."""
     try:
         # Сначала пробуем разрешить DNS
@@ -38,46 +38,82 @@ async def check_domain_availability(domain: str, timeout: float = 2.0) -> bool:
         except socket.gaierror:
             return False
 
-        # Пробуем HTTPS сначала
+        # Пробуем HTTPS и HTTP параллельно
         async with aiohttp.ClientSession() as session:
-            try:
-                async with session.head(f"https://{domain}", timeout=timeout, allow_redirects=True) as response:
-                    if 200 <= response.status < 400:
-                        return True
-            except:
-                pass
-
-            # Если HTTPS не сработал, пробуем HTTP
-            try:
-                async with session.head(f"http://{domain}", timeout=timeout, allow_redirects=True) as response:
-                    if 200 <= response.status < 400:
-                        return True
-            except:
-                pass
+            tasks = [
+                session.head(f"https://{domain}", timeout=timeout, allow_redirects=True),
+                session.head(f"http://{domain}", timeout=timeout, allow_redirects=True)
+            ]
+            responses = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            for response in responses:
+                if isinstance(response, aiohttp.ClientResponse) and 200 <= response.status < 400:
+                    return True
 
         return False
     except Exception:
         return False
 
-async def find_domain_by_tld(company_name: str) -> str | None:
-    """Пытается найти домен компании, проверяя популярные TLD."""
+async def check_domains_batch(domains: list[str], batch_size: int = 10) -> list[str]:
+    """Проверяет доступность доменов батчами."""
+    found_domains = []
+    for i in range(0, len(domains), batch_size):
+        batch = domains[i:i + batch_size]
+        tasks = [check_domain_availability(domain) for domain in batch]
+        results = await asyncio.gather(*tasks)
+        
+        for domain, is_available in zip(batch, results):
+            if is_available:
+                found_domains.append(f"https://{domain}")
+    
+    return found_domains
+
+async def find_domain_by_tld(company_name: str) -> list[str]:
+    """Пытается найти домены компании, проверяя популярные TLD."""
     # Популярные TLD в порядке приоритета
     common_tlds = [
-        "com", "ru", "ua", "cz", "ch", "org", "io", "net", "co", "ai", "app", "dev", "tech", "digital",
-        "cloud", "online", "site", "website", "info", "biz", "me", "tv", "studio",
-        "agency", "group", "team", "solutions", "services", "systems", "technology"
+        # Глобальные (высший приоритет)
+        "com", "org", "net", "io", "co", "app", "dev", "tech", "digital", "cloud", "online", "site", "website", "info", "biz", "me", "tv", "studio",
+        "agency", "group", "team", "solutions", "services", "systems", "technology", "international", "global", "world", "media",
+        
+        # Европа
+        "eu", "uk", "de", "fr", "it", "es", "pt", "nl", "be", "ch", "at", "se", "no", "dk", "fi", "pl", "cz", "sk", "hu", "ro", "bg", "gr", "hr", "si",
+        
+        # Азия
+        "jp", "cn", "kr", "in", "sg", "my", "id", "th", "vn", "ph", "hk", "tw", "ae", "sa", "qa", "kw", "bh", "om", "tr", "il",
+        
+        # Америка
+        "us", "ca", "mx", "br", "ar", "cl", "co", "pe", "uy", "ve", "ec", "py", "bo", "cr", "pa", "do", "pr",
+        
+        # Океания
+        "au", "nz", "fj", "pg", "sb", "vu", "to", "ws", "ck", "nu",
+        
+        # Африка
+        "za", "ng", "ke", "eg", "ma", "dz", "tn", "gh", "ci", "sn", "cm", "ug", "tz", "et", "zm", "zw", "mw", "na", "bw", "sz",
+        
+        # Региональные
+        "asia", "africa", "europe", "americas", "caribbean", "pacific", "atlantic", "indian",
+        
+        # Специализированные
+        "edu", "gov", "mil", "int", "mobi", "tel", "travel", "jobs", "pro", "law", "med", "aero", "museum", "coop", "cat", "xxx", "post", "shop", "store",
+        "blog", "news", "press", "media", "marketing", "advertising", "design", "art", "photo", "video", "music", "film", "theater", "show", "live",
+        "events", "tickets", "booking", "hotel", "restaurant", "food", "cafe", "bar", "club", "fitness", "health", "beauty", "fashion", "style", "luxury",
+        "premium", "vip", "exclusive", "elite", "pro", "expert", "master", "academy", "institute", "school", "college", "university", "research", "science",
+        "tech", "digital", "software", "hardware", "cloud", "data", "ai", "ml", "blockchain", "crypto", "nft", "web3", "metaverse", "vr", "ar", "iot",
+        "mobile", "app", "game", "play", "fun", "entertainment", "leisure", "sport", "fitness", "health", "wellness", "beauty", "fashion", "style", "luxury"
     ]
+    
+    # Убираем дубликаты, сохраняя порядок
+    common_tlds = list(dict.fromkeys(common_tlds))
     
     # Очищаем название компании
     clean_name = normalize_name_for_domain_comparison(company_name)
     
-    # Пробуем каждый TLD
-    for tld in common_tlds:
-        domain = f"{clean_name}.{tld}"
-        if await check_domain_availability(domain):
-            return f"https://{domain}"
+    # Формируем список всех возможных доменов
+    domains = [f"{clean_name}.{tld}" for tld in common_tlds]
     
-    return None
+    # Проверяем домены батчами
+    return await check_domains_batch(domains, batch_size=20)
 
 def parse_wikipedia_website(wiki_url: str) -> str | None:
     """Парсит официальный сайт компании из инфобокса Wikipedia."""
@@ -316,10 +352,11 @@ async def process_company(company_name: str, serper_api_key: str):
         return "wikidata"
     
     # Если через Wikidata не нашли, пробуем найти через проверку доменов
-    domain_url = await find_domain_by_tld(company_name)
-    if domain_url:
-        print(f"\nНайден домен для {company_name}:")
-        print(f"URL: {domain_url}")
+    domain_urls = await find_domain_by_tld(company_name)
+    if domain_urls:
+        print(f"\nНайдены домены для {company_name}:")
+        for url in domain_urls:
+            print(f"URL: {url}")
         return "domains"
     
     # Если не нашли ни через Wikidata, ни через домены, ищем через Google

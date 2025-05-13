@@ -10,6 +10,10 @@ from ..config import SPECIAL_COMPANY_HANDLING # Import the special handling rule
 import socket
 from typing import Optional, List, Dict, Any
 
+# +++ Интеграция нового поиска homepage +++
+from ..homepage_finder import find_company_homepage
+# ++++++++++++++++++++++++++++++++++++++++
+
 logger = logging.getLogger(__name__) # Added for logging
 
 # Global list of blacklisted domains (registered domain part)
@@ -31,7 +35,7 @@ BLACKLISTED_DOMAINS_FOR_HP = [ # More aggressive blacklist for HP
     "telegram.org", "whatsapp.com", "vimeo.com", "dailymotion.com",
     "yahoo.com", "bing.com", "duckduckgo.com", # Search engines
     "archive.org", # Archive sites
-    # Common hosting/blog platforms if they are not the company's own
+    # Common hosting/blog platforms if they are not the company\'s own
     "wordpress.com", "blogspot.com", "wix.com", "squarespace.com", "godaddy.com",
     # Job boards
     "indeed.com", "glassdoor.com", "monster.com", "careerbuilder.com",
@@ -111,7 +115,7 @@ async def _execute_serper_query(
         async with session.post("https://google.serper.dev/search", headers=headers, data=payload, timeout=20) as resp: # Increased timeout
             if resp.status == 200:
                 results = await resp.json()
-                logger.info(f"\\n{'='*80}")
+                logger.info(f"\n{'='*80}")
                 logger.info(f"SERPER API RAW RESULTS FOR QUERY: {query}")
                 logger.info(f"{'='*80}")
                 if results and "organic" in results:
@@ -120,7 +124,7 @@ async def _execute_serper_query(
                         logger.info(f"  Result #{idx}: Link: {res_item.get('link', 'N/A')}, Title: {res_item.get('title', 'N/A')}, Snippet: {res_item.get('snippet', 'N/A')[:100]}...")
                 else:
                     logger.info("No organic results found in Serper response.")
-                logger.info(f"{'='*80}\\n")
+                logger.info(f"{'='*80}\n")
                 return results
             else:
                 error_text = await resp.text()
@@ -242,7 +246,7 @@ async def find_urls_with_serper_async(
     company_name: str,
     context_text: str | None,
     serper_api_key: str | None,
-    openai_client: AsyncOpenAI | None,
+    openai_client: AsyncOpenAI | None, # openai_client теперь используется для find_company_homepage
     scoring_logger_obj: logging.Logger
 ) -> tuple[str | None, str | None, str | None, str | None]:
     
@@ -255,24 +259,48 @@ async def find_urls_with_serper_async(
     normalized_company_name_for_match = normalize_name_for_domain_comparison(company_name)
     scoring_logger_obj.info(f"Normalized name for general matching: '{normalized_company_name_for_match}'")
 
-    search_query = f"{company_name} official website linkedin company profile"
-    scoring_logger_obj.info(f"Executing Serper API query for '{company_name}': \"{search_query}\"")
+    # --- Новый поиск Homepage через homepage_finder ---
+    selected_homepage_url: str | None = None
+    if openai_client and openai_client.api_key: # Убедимся, что ключ есть
+        scoring_logger_obj.info(f"Attempting to find homepage for '{company_name}' using homepage_finder module...")
+        homepage_info = await find_company_homepage(
+            company_name=company_name,
+            serper_api_key=serper_api_key,
+            openai_api_key=openai_client.api_key # Передаем API ключ напрямую
+        )
+        selected_homepage_url = homepage_info['url'] if homepage_info else None
+        if selected_homepage_url:
+            scoring_logger_obj.info(f"Homepage URL selected by homepage_finder for '{company_name}': {selected_homepage_url} (Source: {homepage_info.get('source', 'N/A') if homepage_info else 'N/A'})")
+        else:
+            scoring_logger_obj.warning(f"Homepage URL not found by homepage_finder for '{company_name}'.")
+    else:
+        scoring_logger_obj.warning(f"OpenAI client or API key not available, skipping homepage_finder for '{company_name}'.")
+    # --- Конец нового поиска Homepage ---
+
+    # Продолжаем поиск LinkedIn и Wikipedia через Serper, если это все еще необходимо
+    # Если homepage_finder также может находить их, эту часть можно будет оптимизировать
+    search_query = f"{company_name} official website linkedin company profile" # Можно сузить, если HP уже найден
+    if selected_homepage_url: # Если homepage уже найден, можно сделать запрос более специфичным для LinkedIn
+        search_query = f"{company_name} linkedin company profile"
+        scoring_logger_obj.info(f"Homepage found by new module ({selected_homepage_url}). Refining Serper query for LinkedIn: \"{search_query}\"")
+    else:
+        scoring_logger_obj.info(f"Executing Serper API query for '{company_name}': \"{search_query}\"")
+        
     serper_results_json = await _execute_serper_query(session, search_query, serper_api_key, headers, num_results=30)
 
     if not serper_results_json or not serper_results_json.get("organic"):
         scoring_logger_obj.warning(f"No organic results from Serper for '{company_name}' with query '{search_query}'.")
-        return None, None, None, None
+        # Возвращаем уже найденный selected_homepage_url (если есть) и None для остального
+        return selected_homepage_url, None, None, None 
     
     organic_results = serper_results_json["organic"]
     scoring_logger_obj.info(f"Received {len(organic_results)} organic results from Serper for '{company_name}'.")
 
-    selected_homepage_url: str | None = None
     selected_linkedin_url: str | None = None
     linkedin_snippet: str | None = None
     wikipedia_url: str | None = None
-    guessed_homepage: str | None = None  # Initialize here
-    
-    scoring_logger_obj.info(f"\n--- Searching for LinkedIn URL for '{company_name}' (Scoring Method) ---")
+
+    scoring_logger_obj.info(f"\n--- Searching for LinkedIn URL for '{company_name}' (Scoring Method from Serper results) ---")
     linkedin_candidates = []
     for res_li in organic_results:
         link_li = res_li.get("link")
@@ -307,166 +335,32 @@ async def find_urls_with_serper_async(
              scoring_logger_obj.info(f"  Associated LinkedIn Snippet: '{linkedin_snippet[:100]}...'")
     else: scoring_logger_obj.warning(f"No suitable LinkedIn URL found for '{company_name}'.")
 
-    scoring_logger_obj.info(f"\n--- Searching for Homepage URL for '{company_name}' (LLM Method with Few-Shot) ---")
-    
-    homepage_candidates_for_llm: list[dict] = []
-    CORE_BLACKLIST = [
-        "linkedin.com", "youtube.com", "facebook.com", "twitter.com", "x.com",
-        "instagram.com", "pinterest.com", "reddit.com", "tiktok.com",
-        "wikipedia.org", "wikimedia.org" 
-    ]
-    
-    # First check for direct domain match
-    for res in organic_results:
-        link = res.get("link")
-        if not link or not isinstance(link, str): continue
-        
-        try:
-            parsed_url = urlparse(link)
-            if not parsed_url.scheme or parsed_url.scheme not in ["http", "https"]:
-                continue
-            if not parsed_url.netloc:
-                continue
-                
-            # Check for direct domain match
-            if check_direct_domain_match(link, company_name):
-                selected_homepage_url = link
-                scoring_logger_obj.info(f"Found direct domain match for homepage: {selected_homepage_url}")
-                return selected_homepage_url, selected_linkedin_url, linkedin_snippet, wikipedia_url
-                
-            # Continue with normal filtering for LLM candidates
-            extracted_parts = tldextract.extract(link)
-            registered_domain = extracted_parts.registered_domain.lower()
-            is_core_blacklisted = any(blacklisted in registered_domain for blacklisted in CORE_BLACKLIST)
-            if is_core_blacklisted:
-                scoring_logger_obj.debug(f"  Skipping LLM HP candidate {link}: Domain '{registered_domain}' is in CORE blacklist.")
-                continue
-            homepage_candidates_for_llm.append({"link": link, "title": res.get("title", ""), "snippet": res.get("snippet", "")})
-        except Exception as e:
-            scoring_logger_obj.warning(f"Error pre-filtering HP candidate link {link} for LLM: {type(e).__name__} - {e}")
-            continue
-
-    # If no direct match found, try TLD checking
-    if not selected_homepage_url:
-        scoring_logger_obj.info(f"Trying to find homepage by checking common TLDs for '{company_name}'")
-        guessed_domain = await find_domain_by_tld(company_name)
-        if guessed_domain:
-            scoring_logger_obj.info(f"Found potential homepage through TLD checking: {guessed_domain}")
-            # Store the guessed domain but continue with LLM check
-            guessed_homepage = guessed_domain
-
-    # Continue with LLM check if we have candidates
-    if homepage_candidates_for_llm:
-        if not openai_client:
-            scoring_logger_obj.warning(f"OpenAI client not available, cannot use LLM to select homepage for '{company_name}'.")
-        else:
-            MAX_CANDIDATES_FOR_LLM = 15 
-            if len(homepage_candidates_for_llm) > MAX_CANDIDATES_FOR_LLM:
-                 scoring_logger_obj.debug(f"Trimming homepage candidates for LLM from {len(homepage_candidates_for_llm)} to {MAX_CANDIDATES_FOR_LLM}")
-                 homepage_candidates_for_llm = homepage_candidates_for_llm[:MAX_CANDIDATES_FOR_LLM]
-            
-            scoring_logger_obj.info(f"Homepage candidates for LLM for '{company_name}' ({len(homepage_candidates_for_llm)} total):")
-            for idx, cand_item in enumerate(homepage_candidates_for_llm):
-                scoring_logger_obj.info(f"  #{idx+1}: URL: {cand_item['link']}, Title: {cand_item['title'][:70]}..., Snippet: {cand_item['snippet'][:100]}...")
-             
-            # --- Новый упрощённый prompt для LLM ---
-            simple_url_list = '\n'.join([c['link'] for c in homepage_candidates_for_llm])
-            system_prompt_content = f"Given the following homepage candidates for {company_name}, output only the single official URL on one line. Do not add any other text."
-            user_prompt_content = f"Candidates:\n{simple_url_list}\n\nAnswer:"
-            messages_for_llm = [
-                {"role": "system", "content": system_prompt_content},
-                {"role": "user", "content": user_prompt_content}
-            ]
-            scoring_logger_obj.info(f"Calling LLM with simple prompt to select homepage from {len(homepage_candidates_for_llm)} candidates for '{company_name}'.")
-            try:
-                response = await openai_client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=messages_for_llm,
-                    max_tokens=150,
-                    temperature=0.0,
-                    top_p=1.0,
-                    n=1,
-                    stop=["\n"]
-                )
-                llm_choice_content = ""
-                finish_reason = "unknown"
-                full_message_object_str = "N/A"
-                if response.choices and len(response.choices) > 0:
-                    choice = response.choices[0]
-                    llm_choice_content = choice.message.content.strip() if choice.message and choice.message.content else ""
-                    finish_reason = choice.finish_reason
-                    full_message_object_str = str(choice.message)
-                    scoring_logger_obj.info(f"LLM raw choice for '{company_name}': '{llm_choice_content}', Finish Reason: {finish_reason}")
-                    scoring_logger_obj.debug(f"LLM full message object for '{company_name}': {full_message_object_str}")
-                else:
-                    scoring_logger_obj.warning(f"LLM response for '{company_name}' had no choices or empty choice.")
-                
-                # If LLM didn't return a valid URL and we have a guessed domain, use it
-                if not llm_choice_content and guessed_homepage:
-                    selected_homepage_url = guessed_homepage
-                    scoring_logger_obj.info(f"Using guessed homepage as fallback: {selected_homepage_url}")
-                else:
-                    # --- Гибкая валидация по домену ---
-                    def strip_scheme_and_trailing_slash(url):
-                        url = url.strip().lower()
-                        if url.startswith('http://'):
-                            url = url[7:]
-                        elif url.startswith('https://'):
-                            url = url[8:]
-                        if url.endswith('/'):
-                            url = url[:-1]
-                        return url
-                    norm_choice = strip_scheme_and_trailing_slash(llm_choice_content)
-                    is_candidate = False
-                    matching_candidate_url = None
-                    for candidate in homepage_candidates_for_llm:
-                        if strip_scheme_and_trailing_slash(candidate['link']) == norm_choice:
-                            is_candidate = True
-                            matching_candidate_url = candidate['link']
-                            break
-                    if is_candidate and matching_candidate_url:
-                        selected_homepage_url = matching_candidate_url
-                        scoring_logger_obj.info(f"Selected Homepage URL (LLM, validated by domain): {selected_homepage_url}")
-                    else:
-                        scoring_logger_obj.warning(f"LLM returned URL '{llm_choice_content}' which did NOT match any candidate by domain for '{company_name}'. Ignoring. Full LLM Message: {full_message_object_str}")
-                    # If LLM failed and we have a guessed domain, use it
-                    if guessed_homepage:
-                        selected_homepage_url = guessed_homepage
-                        scoring_logger_obj.info(f"Using guessed homepage as fallback after LLM failure: {selected_homepage_url}")
-            except Exception as e:
-                scoring_logger_obj.error(f"Error during LLM homepage selection for '{company_name}': {type(e).__name__} - {str(e)}")
-                # If LLM failed and we have a guessed domain, use it
-                if guessed_homepage:
-                    selected_homepage_url = guessed_homepage
-                    scoring_logger_obj.info(f"Using guessed homepage as fallback after LLM error: {selected_homepage_url}")
-
-    # 4. Find Wikipedia URL (Simple search)
-    wikipedia_url = None # <<< MOVED INITIALIZATION HERE
-    if organic_results:
-        scoring_logger_obj.debug(f"  Checking {len(organic_results)} Serper results for Wikipedia link...") # DEBUG
+    # 4. Find Wikipedia URL (Simple search using organic_results from possibly refined query)
+    wikipedia_url = None 
+    if organic_results: # organic_results теперь могут быть отфильтрованы или от нового запроса
+        scoring_logger_obj.debug(f"  Checking {len(organic_results)} Serper results for Wikipedia link...") 
         for i, result in enumerate(organic_results):
             link = result.get("link", "")
             if not link:
-                scoring_logger_obj.debug(f"    Result #{i+1}: Skipping empty link.") # DEBUG
+                scoring_logger_obj.debug(f"    Result #{i+1}: Skipping empty link.") 
                 continue
             
             try:
                 parsed_link = urlparse(link)
                 netloc_lower = parsed_link.netloc.lower()
-                scoring_logger_obj.debug(f"    Result #{i+1}: Checking link '{link}' -> netloc: '{netloc_lower}'") # DEBUG
+                scoring_logger_obj.debug(f"    Result #{i+1}: Checking link '{link}' -> netloc: '{netloc_lower}'") 
                 
-                # Basic check for wikipedia.org domain 
                 if "wikipedia.org" in netloc_lower:
-                    wikipedia_url = link # Assign the found URL
+                    wikipedia_url = link 
                     scoring_logger_obj.info(f"  Found potential Wikipedia URL: {wikipedia_url}") 
-                    break # Take the first one found
+                    break 
             except Exception as e:
-                 scoring_logger_obj.warning(f"    Result #{i+1}: Error parsing link '{link}': {e}") # DEBUG
+                 scoring_logger_obj.warning(f"    Result #{i+1}: Error parsing link '{link}': {e}") 
 
         if not wikipedia_url:
-             scoring_logger_obj.warning(f"  No Wikipedia URL found in Serper results for '{company_name}'.") # DEBUG
+             scoring_logger_obj.warning(f"  No Wikipedia URL found in Serper results for '{company_name}'.") 
 
-    scoring_logger_obj.info(f"\\n--- Final URL Selection for '{company_name}' ---")
+    scoring_logger_obj.info(f"\n--- Final URL Selection for '{company_name}' ---")
     scoring_logger_obj.info(f"  > find_urls_with_serper_async is returning HP: '{selected_homepage_url}', LI: '{selected_linkedin_url}', LI Snippet: '{linkedin_snippet[:50] if linkedin_snippet else 'None'}...', Wiki: '{wikipedia_url}' for '{company_name}'")
 
     return selected_homepage_url, selected_linkedin_url, linkedin_snippet, wikipedia_url 
