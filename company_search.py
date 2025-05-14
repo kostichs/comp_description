@@ -12,7 +12,9 @@ from finders import (
     # WikipediaFinder,
     # LinkedInFinder,
     # LLMSearchFinder
-    HomepageFinder
+    HomepageFinder,
+    LinkedInFinderNew,
+    LLMDeepSearchFinder
 )
 from orchestrator import PipelineOrchestrator
 from result_processor import ResultProcessor
@@ -26,16 +28,50 @@ def print_company_results(company_result):
     print(f"КОМПАНИЯ: {company_name}")
     print(f"{'='*50}")
     
-    successful = company_result.get("successful", False)
-    print(f"Статус поиска: {'УСПЕШНО' if successful else 'НЕ НАЙДЕНО'}")
+    # Поиск результатов по разным типам финдеров
+    homepage_result = None
+    linkedin_result = None
+    deep_search_report = None
+    deep_search_sources = []
     
     for result in company_result.get("results", []):
-        source = result.get("source", "неизвестный источник")
-        found_url = result.get("result")
+        source = result.get("source", "")
+        if source == "linkedin_finder" and result.get("result"):
+            linkedin_result = result.get("result")
+        elif source == "llm_deep_search" and result.get("result"):
+            deep_search_report = result.get("result")
+            deep_search_sources = result.get("sources", [])
+        elif "homepage_finder" not in source and result.get("result"):
+            homepage_result = result.get("result")
+    
+    # Вывод только конечных результатов
+    if homepage_result:
+        print(f"Домашняя страница: {homepage_result}")
+    else:
+        print("Домашняя страница: Не найдена")
         
-        if found_url:
-            print(f"- Источник: {source}")
-            print(f"  Результат: {found_url}")
+    if linkedin_result:
+        print(f"LinkedIn: {linkedin_result}")
+    else:
+        print("LinkedIn: Не найден")
+    
+    if deep_search_report:
+        print(f"LLM Deep Search: Получен отчет ({len(deep_search_report)} символов)")
+        if deep_search_sources:
+            print(f"Источники ({len(deep_search_sources)}):")
+            # Выводим до 5 источников с названием и URL
+            for i, source in enumerate(deep_search_sources[:5], 1):
+                title = source.get("title", "Без названия")
+                url = source.get("url", "")
+                print(f"  {i}. {title[:70]}... - {url}")
+            
+            # Если источников больше 5, сообщаем об этом
+            if len(deep_search_sources) > 5:
+                print(f"  ... и еще {len(deep_search_sources) - 5} источников")
+        else:
+            print("Источники: Не найдены")
+    else:
+        print("LLM Deep Search: Не проводился или не дал результатов")
     
     if "description" in company_result:
         print("\nОПИСАНИЕ:")
@@ -77,7 +113,7 @@ async def main():
     
     # Создаем HTTP сессию
     async with aiohttp.ClientSession() as session:
-        # Инициализация финдеров
+        # Инициализация финдеров с отключенным подробным логированием
         finders = [
             # WikidataFinder(),
             # DomainFinder(),
@@ -85,7 +121,20 @@ async def main():
             # WikipediaFinder(),
             # LinkedInFinder(),
             # LLMSearchFinder(openai_api_key)
-            HomepageFinder(serper_api_key, openai_api_key)
+            HomepageFinder(serper_api_key, openai_api_key, verbose=False),
+            LinkedInFinderNew(serper_api_key, verbose=False),
+            LLMDeepSearchFinder(openai_api_key, verbose=False)
+        ]
+        
+        # Специфические аспекты для LLM Deep Search
+        deep_search_aspects = [
+            "company founding year",
+            "headquarters location (city and country)",
+            "names of founders",
+            "latest reported annual revenue (specify currency and year)",
+            "approximate number of employees",
+            "key products, services, or technologies",
+            "main competitors"
         ]
         
         # Инициализация оркестратора
@@ -98,7 +147,7 @@ async def main():
         print("Начинаем поиск информации о компаниях...")
         
         # Обрабатываем компании пакетами для оптимизации
-        batch_size = 5  # Можно изменить в зависимости от потребностей
+        batch_size = 3  # Уменьшаем размер пакета из-за LLM Deep Search
         results = []
         
         for i in range(0, len(company_names), batch_size):
@@ -109,10 +158,11 @@ async def main():
             batch_results = await orchestrator.process_batch(
                 batch, 
                 session, 
-                openai_api_key=openai_api_key
+                openai_api_key=openai_api_key,
+                specific_aspects=deep_search_aspects
             )
             
-            # Вывод подробных результатов для каждой компании
+            # Вывод только конечных результатов для каждой компании
             print("\nРезультаты поиска:")
             for result in batch_results:
                 print_company_results(result)

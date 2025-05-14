@@ -24,16 +24,18 @@ class HomepageFinder(Finder):
     3. Google (через Serper API) -> поиск Wikipedia -> выбор через LLM -> парсинг Wikipedia
     """
     
-    def __init__(self, serper_api_key: str, openai_api_key: str = None):
+    def __init__(self, serper_api_key: str, openai_api_key: str = None, verbose: bool = False):
         """
         Инициализирует финдер с необходимыми API ключами.
         
         Args:
             serper_api_key: API ключ для Google Serper
             openai_api_key: API ключ для OpenAI (опционально)
+            verbose: Выводить подробные логи поиска (по умолчанию False)
         """
         self.serper_api_key = serper_api_key
         self.openai_api_key = openai_api_key
+        self.verbose = verbose
     
     async def find(self, company_name: str, **context) -> dict:
         """
@@ -50,14 +52,19 @@ class HomepageFinder(Finder):
         if not session:
             raise ValueError("HomepageFinder требует aiohttp.ClientSession в context['session']")
         
+        if self.verbose:
+            print(f"\n--- Поиск домашней страницы для компании '{company_name}' ---")
+        
         # 1. Сначала пробуем получить URL из Wikidata
         wikidata_url = get_wikidata_url(company_name)
         if wikidata_url:
+            print(f"Домашняя страница для '{company_name}': {wikidata_url} (источник: Wikidata)")
             return {"source": "wikidata", "result": wikidata_url}
         
         # 2. Если через Wikidata не нашли, пробуем найти через проверку доменов
         domain_url = await find_domain_by_tld(company_name, session)
         if domain_url:
+            print(f"Домашняя страница для '{company_name}': {domain_url} (источник: проверка доменов)")
             return {"source": "domains", "result": domain_url}
         
         # 3. Если не нашли ни через Wikidata, ни через домены, ищем через Google
@@ -81,24 +88,33 @@ class HomepageFinder(Finder):
                             # Пробуем найти через Wikidata используя название из Wikipedia
                             wikidata_url = get_wikidata_url(wiki_company_name)
                             if wikidata_url:
+                                print(f"Домашняя страница для '{company_name}': {wikidata_url} (источник: Wikidata через Wikipedia)")
                                 return {"source": "wikidata_via_wiki", "result": wikidata_url}
                         
                         # Если через Wikidata не нашли, пробуем парсить Wikipedia
                         website_url = await parse_wikipedia_website(selected_url, session)
                         if website_url != selected_url:  # Если нашли официальный сайт в инфобоксе
+                            print(f"Домашняя страница для '{company_name}': {website_url} (источник: Wikipedia инфобокс)")
                             return {"source": "wikipedia", "result": website_url}
                         else:  # Если вернулась ссылка на Wikipedia
+                            if self.verbose:
+                                print(f"Для '{company_name}' найдена только страница Wikipedia: {website_url}")
                             return {"source": "wikipedia_page", "result": website_url}
                 
                 # Если нет OpenAI API ключа или LLM не выбрал, берем первую ссылку
                 first_url = wiki_links[0]["link"]
                 website_url = await parse_wikipedia_website(first_url, session)
                 if website_url != first_url:
+                    print(f"Домашняя страница для '{company_name}': {website_url} (источник: Wikipedia инфобокс, первая ссылка)")
                     return {"source": "wikipedia_first", "result": website_url}
                 else:
+                    if self.verbose:
+                        print(f"Для '{company_name}' найдена только страница Wikipedia: {first_url}")
                     return {"source": "wikipedia_page_first", "result": first_url}
         
         # Ничего не нашли
+        if self.verbose:
+            print(f"Домашняя страница для '{company_name}' не найдена")
         return {"source": "homepage_finder", "result": None}
 
 
