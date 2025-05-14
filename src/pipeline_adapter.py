@@ -17,6 +17,7 @@ import time  # Добавляем для timestamp
 import yaml
 import traceback
 import json
+import ssl # <--- НОВЫЙ ИМПОРТ
 
 # Import new components
 from description_generator import DescriptionGenerator
@@ -135,13 +136,16 @@ async def _process_single_company_async(
 ) -> Dict[str, Any]:
     
     logger.info(f"Starting processing for company {company_index + 1}/{total_companies}: {company_name}")
-    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_llm_deep_search"})
-
-    company_findings = []
     
-    llm_deep_search_finder = finder_instances.get('LLMDeepSearchFinder')
-    homepage_from_llm_deep_search = None
+    company_findings = []
+    # Переменные для итогового homepage и его источника
+    final_homepage_url: Optional[str] = None
+    final_homepage_source: Optional[str] = None
+    linkedin_url_result: Optional[str] = None # Для LinkedIn URL
 
+    # --- Этап 1: LLM Deep Search (если включен) ---
+    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_llm_deep_search"})
+    llm_deep_search_finder = finder_instances.get('LLMDeepSearchFinder')
     if run_llm_deep_search_pipeline and llm_deep_search_finder:
         try:
             context = {
@@ -159,53 +163,57 @@ async def _process_single_company_async(
             if not finding.get("error") and finding.get("extracted_homepage_url"):
                 candidate_url = finding["extracted_homepage_url"]
                 logger.info(f"LLMDeepSearchFinder found homepage candidate for {company_name}: {candidate_url}")
-                if await check_url_liveness(candidate_url, aiohttp_session):
-                    homepage_from_llm_deep_search = candidate_url
-                    logger.info(f"Homepage from LLMDeepSearch for {company_name} ({homepage_from_llm_deep_search}) is LIVE.")
+                is_live = await check_url_liveness(candidate_url, aiohttp_session)
+                logger.info(f"Liveness check for LLMDeepSearch URL '{candidate_url}': {is_live}")
+                if is_live:
+                    final_homepage_url = candidate_url
+                    final_homepage_source = "llm_deep_search_extracted_live"
+                    logger.info(f"Homepage from LLMDeepSearch for {company_name} ({final_homepage_url}) is LIVE and accepted.")
                 else:
                     logger.warning(f"Homepage from LLMDeepSearch for {company_name} ({candidate_url}) is NOT LIVE. Discarding.")
             elif finding.get("error"):
                  logger.warning(f"LLMDeepSearchFinder for {company_name} returned error: {finding.get('error')}")
             else:
                 logger.info(f"LLMDeepSearchFinder for {company_name} did not find/extract a homepage URL.")
-
         except Exception as e:
             logger.error(f"Exception in LLMDeepSearchFinder for {company_name}: {e}", exc_info=True)
             company_findings.append({"source": "llm_deep_search", "result": None, "error": str(e), "_finder_instance_type": "LLMDeepSearchFinder"})
-    
-    final_homepage_url = homepage_from_llm_deep_search
-    final_homepage_source = "llm_deep_search_direct_live" if final_homepage_url else None
+    logger.info(f"After LLMDeepSearch, current homepage for {company_name}: {final_homepage_url} (Source: {final_homepage_source})")
 
+    # --- Этап 2: HomepageFinder (Wikidata, Google->Wiki) ---
     if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_homepage_finders"})
-    
     homepage_finder = finder_instances.get('HomepageFinder')
-    if run_standard_homepage_finders and homepage_finder and not final_homepage_url:
+    logger.debug(f"Checking conditions for HomepageFinder for {company_name}: run_standard_homepage_finders={run_standard_homepage_finders}, finder_exists={homepage_finder is not None}, final_homepage_url_is_None={(final_homepage_url is None)}")
+    if run_standard_homepage_finders and homepage_finder and not final_homepage_url: # <--- Ключевое условие
         try:
-            context = {'session': aiohttp_session} 
-            logger.debug(f"Calling HomepageFinder for {company_name} (because LLM Deep Search did not provide a live homepage)")
+            context = {'session': aiohttp_session}
+            logger.info(f"Calling HomepageFinder for {company_name} (as previous steps did not yield a live homepage)")
             finding = await homepage_finder.find(company_name, **context)
             company_findings.append(finding)
             if not finding.get("error") and finding.get("result"):
                 candidate_hp_url = finding["result"]
                 logger.info(f"HomepageFinder found candidate for {company_name}: {candidate_hp_url} (source: {finding.get('source')})")
-                if await check_url_liveness(candidate_hp_url, aiohttp_session):
+                is_live = await check_url_liveness(candidate_hp_url, aiohttp_session)
+                logger.info(f"Liveness check for HomepageFinder URL '{candidate_hp_url}': {is_live}")
+                if is_live:
                     final_homepage_url = candidate_hp_url
-                    final_homepage_source = finding.get("source", "homepage_finder")
-                    logger.info(f"Homepage from HomepageFinder for {company_name} ({final_homepage_url}) is LIVE.")
+                    final_homepage_source = finding.get("source", "homepage_finder") # Источник от HomepageFinder
+                    logger.info(f"Homepage from HomepageFinder for {company_name} ({final_homepage_url}) is LIVE and accepted. (Source: {final_homepage_source})")
                 else:
                     logger.warning(f"Homepage from HomepageFinder for {company_name} ({candidate_hp_url}) is NOT LIVE. Discarding.")
             elif finding.get("error"):
                  logger.warning(f"HomepageFinder for {company_name} returned error: {finding.get('error')}")
-
+            else:
+                logger.info(f"HomepageFinder for {company_name} did not find a homepage URL.")
         except Exception as e:
             logger.error(f"Exception in HomepageFinder for {company_name}: {e}", exc_info=True)
             company_findings.append({"source": "homepage_finder", "result": None, "error": str(e), "_finder_instance_type": "HomepageFinder"})
-    
+    logger.info(f"After HomepageFinder, current homepage for {company_name}: {final_homepage_url} (Source: {final_homepage_source})")
+
+    # --- Этап 3: LinkedIn Finder ---
     if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_linkedin_finder"})
-    
     linkedin_finder = finder_instances.get('LinkedInFinder')
-    linkedin_url_result = None
-    if linkedin_finder: 
+    if linkedin_finder:
         try:
             context = {
                 'session': aiohttp_session, 
@@ -224,29 +232,35 @@ async def _process_single_company_async(
             logger.error(f"Exception in LinkedInFinder for {company_name}: {e}", exc_info=True)
             company_findings.append({"source": "linkedin_finder", "result": None, "error": str(e), "_finder_instance_type": "LinkedInFinder"})
 
+    # --- Этап 4: DomainCheckFinder (если все еще нет homepage) ---
     if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_domain_check"})
-    
     domain_check_finder = finder_instances.get('DomainCheckFinder')
-    if run_domain_check_finder and domain_check_finder and not final_homepage_url:
+    logger.debug(f"Checking conditions for DomainCheckFinder for {company_name}: run_domain_check_finder={run_domain_check_finder}, finder_exists={domain_check_finder is not None}, final_homepage_url_is_None={(final_homepage_url is None)}")
+    if run_domain_check_finder and domain_check_finder and not final_homepage_url: # <--- Ключевое условие
         try:
             context = {'session': aiohttp_session}
-            logger.debug(f"Calling DomainCheckFinder for {company_name} as fallback (no live homepage found yet).")
+            logger.info(f"Calling DomainCheckFinder for {company_name} as fallback (no live homepage found yet)")
             finding = await domain_check_finder.find(company_name, **context)
             company_findings.append(finding)
             if not finding.get("error") and finding.get("result"):
                 candidate_dc_url = finding["result"]
                 logger.info(f"DomainCheckFinder found candidate for {company_name}: {candidate_dc_url}")
-                if await check_url_liveness(candidate_dc_url, aiohttp_session):
+                is_live = await check_url_liveness(candidate_dc_url, aiohttp_session)
+                logger.info(f"Liveness check for DomainCheckFinder URL '{candidate_dc_url}': {is_live}")
+                if is_live:
                     final_homepage_url = candidate_dc_url
                     final_homepage_source = "domain_check_finder"
-                    logger.info(f"Homepage from DomainCheckFinder for {company_name} ({final_homepage_url}) is LIVE.")
+                    logger.info(f"Homepage from DomainCheckFinder for {company_name} ({final_homepage_url}) is LIVE and accepted.")
                 else:
                     logger.warning(f"Homepage from DomainCheckFinder for {company_name} ({candidate_dc_url}) is NOT LIVE. Discarding.")
             elif finding.get("error"):
                  logger.warning(f"DomainCheckFinder for {company_name} returned error: {finding.get('error')}")
+            else:
+                logger.info(f"DomainCheckFinder for {company_name} did not find a homepage URL.")
         except Exception as e:
             logger.error(f"Exception in DomainCheckFinder for {company_name}: {e}", exc_info=True)
             company_findings.append({"source": "domain_check_finder", "result": None, "error": str(e), "_finder_instance_type": "DomainCheckFinder"})
+    logger.info(f"Final decision for {company_name} homepage: {final_homepage_url if final_homepage_url else 'Not found'} (Source: {final_homepage_source if final_homepage_source else 'N/A'})")
 
     if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "generating_markdown"})
     if company_findings:
@@ -504,7 +518,15 @@ async def run_pipeline():
     
     setup_session_logging(str(pipeline_log_path))
     
-    async with aiohttp.ClientSession() as session:
+    # Создаем SSL контекст, который не проверяет сертификаты
+    ssl_context = ssl.create_default_context()
+    ssl_context.check_hostname = False
+    ssl_context.verify_mode = ssl.CERT_NONE
+    
+    # Создаем коннектор с этим SSL контекстом
+    connector = aiohttp.TCPConnector(ssl=ssl_context)
+    
+    async with aiohttp.ClientSession(connector=connector) as session: # <--- Используем коннектор
         initial_expected_csv_fieldnames = ["name", "homepage", "linkedin", "description", "timestamp"]
         
         success_count, failure_count, results = await run_pipeline_for_file(
@@ -513,9 +535,10 @@ async def run_pipeline():
             session_dir_path=session_dir_path,
             llm_config=llm_config,
             context_text=None, company_col_index=company_col_index,
-            aiohttp_session=session, sb_client=sb_client, openai_client=openai_client,
+            aiohttp_session=session, # Передаем сессию с настроенным коннектором
+            sb_client=sb_client, openai_client=openai_client,
             serper_api_key=serper_api_key, 
-            expected_csv_fieldnames=initial_expected_csv_fieldnames,
+            expected_csv_fieldnames=initial_expected_csv_fieldnames, 
             broadcast_update=None,
         )
     

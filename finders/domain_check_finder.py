@@ -55,52 +55,47 @@ async def check_url_liveness(url: str, session: aiohttp.ClientSession, timeout: 
             logger.debug(f"Could not parse hostname from URL: {url}")
             return False
 
-        # 1. Проверка DNS
         logger.debug(f"Checking DNS for host: {hostname} (from URL: {url})")
         try:
             await asyncio.get_event_loop().getaddrinfo(hostname, None)
             logger.debug(f"DNS resolved for {hostname}")
         except socket.gaierror:
             logger.warning(f"DNS resolution failed for {hostname} (from URL: {url}). Marking URL as not live.")
-            return False # Если DNS не работает, ссылка точно не живая
-        except Exception as e_dns: # Другие возможные ошибки getaddrinfo
-            logger.warning(f"Unexpected DNS error for {hostname} (from URL: {url}): {e_dns}. Marking URL as not live.")
+            return False 
+        except Exception as e_dns:
+            logger.warning(f"Unexpected DNS error for {hostname} (from URL: {url}): {type(e_dns).__name__} - {e_dns}. Marking URL as not live.")
             return False
 
-        # 2. HEAD-запрос (или GET, если HEAD не поддерживается/заблокирован)
-        # HEAD-запрос предпочтительнее, так как он легче
         try:
             logger.debug(f"Attempting HEAD request to {url}")
-            # Увеличиваем общий таймаут, включающий соединение и чтение
-            # connect_timeout = timeout / 2  # Например, половина на соединение
-            # read_timeout = timeout / 2     # И половина на чтение заголовков
-            # client_timeout = aiohttp.ClientTimeout(total=timeout, connect=connect_timeout, sock_read=read_timeout)
-            client_timeout = aiohttp.ClientTimeout(total=timeout) # Общий таймаут для простоты
-
+            client_timeout = aiohttp.ClientTimeout(total=timeout)
             async with session.head(url, timeout=client_timeout, allow_redirects=True) as response:
                 logger.debug(f"HEAD request to {url} status: {response.status}")
-                # Считаем успешным, если статус 2xx или 3xx (редиректы)
                 if 200 <= response.status < 400:
                     return True
-                # Статусы 401/403 могут означать, что ресурс есть, но доступ запрещен - для homepage это может быть ОК
-                # Но если это 404 или 5xx, то ссылка точно не рабочая для homepage
                 elif response.status == 404 or response.status >= 500:
                     logger.warning(f"URL {url} returned status {response.status}. Marking as not live.")
                     return False
-                return True # Для других статусов (например, 401, 403) считаем, что сайт существует
+                # Для других клиентских или серверных ошибок (кроме 404 и 5xx) 
+                # ранее мы считали их True, но с глобальным отключением SSL это может быть не нужно.
+                # Безопаснее считать их False, если это не явный успех (2xx, 3xx).
+                logger.warning(f"URL {url} returned non-success/non-fatal status {response.status}. Marking as not live for safety.")
+                return False # <--- Изменено на False для большей строгости
         except asyncio.TimeoutError:
             logger.warning(f"HEAD request to {url} timed out after {timeout}s. Marking as not live.")
             return False
-        except aiohttp.ClientError as e_client: # Включает ClientConnectionError, ServerDisconnectedError и др.
+        except aiohttp.ClientError as e_client: 
+            # Поскольку SSL ошибки теперь должны игнорироваться на уровне сессии, 
+            # эта ошибка будет поймана только если SSL отключение не сработало или это другая ClientError.
             logger.warning(f"Aiohttp client error during HEAD request to {url}: {type(e_client).__name__} - {e_client}. Marking as not live.")
             return False
         except Exception as e_head: 
             logger.warning(f"Unexpected error during HEAD request to {url}: {type(e_head).__name__} - {e_head}. Marking as potentially not live.")
-            return False # При неопознанных ошибках лучше считать нерабочей
+            return False
 
     except Exception as e_main:
         logger.error(f"Error in check_url_liveness for {url}: {e_main}", exc_info=True)
-        return False # При любой общей ошибке считаем нерабочей
+        return False
 
 async def check_domain_availability(domain: str, session: aiohttp.ClientSession, timeout: float = 2.0) -> bool:
     """

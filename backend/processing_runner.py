@@ -4,6 +4,8 @@ import os
 import sys
 import traceback
 from pathlib import Path
+import ssl
+import aiohttp
 
 # Adjust sys.path to allow importing from src
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -15,7 +17,6 @@ from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_D
 from src.config import load_env_vars, load_llm_config # Import config loaders
 from openai import AsyncOpenAI
 from scrapingbee import ScrapingBeeClient
-import aiohttp
 
 async def run_session_pipeline(session_id: str, broadcast_update=None):
     """
@@ -132,7 +133,13 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
 
         session_logger.info("Starting core pipeline execution...")
         try:
-            async with aiohttp.ClientSession() as aio_session:
+            # Создаем SSL контекст, который не проверяет сертификаты
+            ssl_context_no_verify = ssl.create_default_context()
+            ssl_context_no_verify.check_hostname = False
+            ssl_context_no_verify.verify_mode = ssl.CERT_NONE
+            connector = aiohttp.TCPConnector(ssl=ssl_context_no_verify)
+            
+            async with aiohttp.ClientSession(connector=connector) as aio_session:
                 success_count, failure_count, all_results = await run_pipeline_for_file(
                     input_file_path=input_file_path,
                     output_csv_path=output_csv_path,
