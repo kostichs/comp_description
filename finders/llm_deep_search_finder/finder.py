@@ -3,6 +3,7 @@ import sys
 import logging
 import json
 import traceback
+import re
 from typing import Dict, List, Any, Optional
 
 # Добавляем корневую директорию проекта в путь Python
@@ -15,6 +16,78 @@ from finders.base import Finder
 from openai import AsyncOpenAI, APIError, APITimeoutError, RateLimitError
 
 logger = logging.getLogger(__name__)
+
+async def _extract_homepage_from_report_text_async(
+    company_name: str, 
+    report_text: str, 
+    openai_client: AsyncOpenAI,
+    model: str = "gpt-3.5-turbo",
+    temperature: float = 0.0
+) -> Optional[str]:
+    """
+    Извлекает наиболее вероятный URL официального сайта из текста отчета с помощью LLM
+    и затем очищает его от Markdown или лишнего текста.
+    """
+    if not report_text or not report_text.strip():
+        return None
+    
+    prompt_messages = [
+        {
+            "role": "system", 
+            "content": (
+                "You are an expert assistant that extracts the official homepage URL of a company from a given text. "
+                "The text is a business report that might contain multiple URLs, including sources, news articles, etc. "
+                "Your task is to identify and return ONLY the main official website (homepage) of the company. "
+                "If multiple potential homepages are mentioned, choose the most likely one. "
+                "If no clear official homepage URL is found, return 'None'. "
+                "The URL should be a complete, valid URL (e.g., https://www.example.com)."
+            )
+        },
+        {
+            "role": "user", 
+            "content": f"Company Name: {company_name}\n\nBusiness Report Text:\n```\n{report_text[:15000]} \n```\n\nBased on the text above, what is the official homepage URL for '{company_name}'? Return only the URL or 'None'."
+        }
+    ]
+    
+    try:
+        logger.debug(f"Attempting to extract homepage for '{company_name}' from report text using {model}.")
+        completion = await openai_client.chat.completions.create(
+            model=model,
+            messages=prompt_messages,
+            temperature=temperature,
+            max_tokens=200, # Немного увеличим, если LLM возвращает предложение
+            stop=["\n"]
+        )
+        llm_response_text = completion.choices[0].message.content.strip()
+
+        if llm_response_text and llm_response_text.lower() != 'none':
+            # Ищем URL с помощью регулярного выражения
+            # Это выражение ищет стандартные URL, а также URL в Markdown формате [текст](URL)
+            url_pattern = r'https?://[\w\.-/]+\.[a-zA-Z]{2,}(?:/[\w\康熙字典统一码擴充區乙\.\-\%_]*)?' # Базовый паттерн URL
+            markdown_url_pattern = r'\[[^\]]+\]\((https?://[^\)]+)\)' # Markdown [text](url)
+            
+            # Сначала ищем Markdown URL
+            markdown_match = re.search(markdown_url_pattern, llm_response_text)
+            if markdown_match:
+                extracted_url = markdown_match.group(1)
+                logger.info(f"Extracted homepage for '{company_name}' from report (Markdown): {extracted_url}")
+                return extracted_url
+            
+            # Если Markdown URL не найден, ищем обычный URL
+            plain_url_match = re.search(url_pattern, llm_response_text)
+            if plain_url_match:
+                extracted_url = plain_url_match.group(0)
+                logger.info(f"Extracted homepage for '{company_name}' from report (Plain URL): {extracted_url}")
+                return extracted_url
+            
+            logger.debug(f"LLM response for '{company_name}' was '{llm_response_text}', but no clean URL could be extracted.")
+            return None
+        else:
+            logger.debug(f"LLM did not find a clear homepage URL for '{company_name}' in the report (returned: {llm_response_text}).")
+            return None
+    except Exception as e:
+        logger.error(f"Error extracting homepage for '{company_name}' from report text: {e}", exc_info=True)
+        return None
 
 class LLMDeepSearchFinder(Finder):
     """
@@ -78,21 +151,26 @@ class LLMDeepSearchFinder(Finder):
                     "source": "llm_deep_search", 
                     "result": None, 
                     "error": report_dict["error"],
-                    "sources": []
+                    "sources": [],
+                    "extracted_homepage_url": None,
+                    "_finder_instance_type": self.__class__.__name__
                 }
             
             report_text = report_dict.get("report_text", "")
             sources = report_dict.get("sources", [])
+            extracted_homepage_url = report_dict.get("extracted_homepage_url")
             
             if self.verbose:
-                logger.info(f"Получен отчет ({len(report_text)} символов) с {len(sources)} источниками")
+                logger.info(f"Получен отчет ({len(report_text)} символов) с {len(sources)} источниками. Извлеченный homepage: {extracted_homepage_url}")
             else:
-                logger.info(f"LLM Deep Search для '{company_name}': получен отчет с {len(sources)} источниками")
+                logger.info(f"LLM Deep Search для '{company_name}': получен отчет с {len(sources)} источниками, homepage: {extracted_homepage_url}")
                 
             return {
                 "source": "llm_deep_search", 
                 "result": report_text, 
-                "sources": sources
+                "sources": sources,
+                "extracted_homepage_url": extracted_homepage_url,
+                "_finder_instance_type": self.__class__.__name__
             }
         except Exception as e:
             error_msg = f"Непредвиденная ошибка при поиске для '{company_name}': {str(e)}"
@@ -102,7 +180,9 @@ class LLMDeepSearchFinder(Finder):
                 "source": "llm_deep_search",
                 "result": None,
                 "error": error_msg,
-                "sources": []
+                "sources": [],
+                "extracted_homepage_url": None,
+                "_finder_instance_type": self.__class__.__name__
             }
     
     def _get_default_aspects(self) -> List[str]:
@@ -114,14 +194,14 @@ class LLMDeepSearchFinder(Finder):
             List[str]: Список аспектов
         """
         return [
-            "precise founding year of the company (exact date)",
-            "detailed headquarters location including city and country",
+            "precise founding year of the company (exact date if available)",
+            "detailed headquarters location including city, country, and address if available",
             "full names of the founding team members and current CEO",
             "detailed ownership structure (e.g., public company with stock symbol, private company with major investors, etc.)",
             "last 2-3 years of annual revenue with exact figures and currency (specify fiscal year periods)",
             "exact employee count (current or most recently reported) with source and date",
             "all funding rounds with exact amounts, dates, and lead investors",
-            "detailed product portfolio with specific product names and core features, including year of launch",
+            "detailed product portfolio with specific product names and core features, including year of launch if available",
             "underlying technologies used by the company for their products/services",
             "primary customer types (B2B, B2C, B2G) with specific industry focus",
             "industries served or targeted by the company",
@@ -182,6 +262,8 @@ class LLMDeepSearchFinder(Finder):
 Your primary goal is to extract and present factual data that will later be structured according to a specific JSON schema. 
 When reporting financial figures (like revenue, ARR, funding), prioritize data for the most recent fiscal year. If multiple years of data are found, include all such figures, clearly stating the period/year each figure refers to.
 
+**Crucially, make a specific effort to find and clearly state the company's official homepage URL. This URL is a key piece of information.**
+
 The report MUST follow this structure that corresponds to our JSON schema:
 
 1. **Basic Company Information:**
@@ -190,9 +272,10 @@ The report MUST follow this structure that corresponds to our JSON schema:
    * Headquarters Location: City and country of the company's headquarters.
    * Founders: Names of all company founders.
    * Ownership Background: Information about ownership structure (public/private, parent companies, etc.)
+   * **Official Homepage URL:** [Clearly state the primary official website URL here if found during your search]
 
 2. **Products and Technology:**
-   * Core Products & Services: List each major product/service with its launch year.
+   * Core Products & Services: List each major product/service with its launch year (if available).
    * Underlying Technologies: Key technologies, frameworks, or platforms used by the company.
 
 3. **Market and Customer Information:**
@@ -213,7 +296,7 @@ The report MUST follow this structure that corresponds to our JSON schema:
 
 {additional_aspects_placeholder}{user_context_placeholder}
 
-Provide a concise, data-driven report. Avoid conversational filler, disclaimers, or speculative statements. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list."""
+Provide a concise, data-driven report. Avoid conversational filler, disclaimers, or speculative statements. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list. Ensure the official homepage URL is explicitly mentioned if found."""
 
         # Формируем полный пользовательский промпт
         user_content = prompt_template.format(
@@ -225,8 +308,8 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
         # Системный промпт для модели
         system_prompt = (
             "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company. "
-            "Utilize your web search capabilities to find the most current information. When financial data is requested, if multiple recent years are found, "
-            "include data for each distinct year, clearly stating the period. Prioritize the most recent full fiscal year data. "
+            "Utilize your web search capabilities to find the most current information. **A key part of your task is to identify and report the company's official homepage URL.** "
+            "When financial data is requested, if multiple recent years are found, include data for each distinct year, clearly stating the period. Prioritize the most recent full fiscal year data. "
             "The report MUST follow the exact sections in the prompt, as these will be used to extract structured data into a JSON schema. "
             "Be concise and data-driven. Do not include conversational intros, outros, or disclaimers. "
             "For sections where you cannot find information, simply include a brief note like 'No specific data found on [topic]' rather than leaving the section empty."
@@ -235,6 +318,7 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
         if self.verbose:
             logger.info(f"Отправка запроса к {self.model} для компании '{company_name}'")
         
+        extracted_homepage_url_from_report = None
         try:
             # Делаем запрос к модели с правильными параметрами
             completion = await self.client.chat.completions.create(
@@ -252,6 +336,10 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
                 message = completion.choices[0].message
                 if message.content:
                     answer_content = message.content.strip()
+                    # После получения отчета, пытаемся извлечь из него homepage
+                    extracted_homepage_url_from_report = await _extract_homepage_from_report_text_async(
+                        company_name, answer_content, self.client
+                    )
                 
                 # Извлекаем источники из аннотаций, если они есть
                 if hasattr(message, 'annotations') and message.annotations:
@@ -261,28 +349,28 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
                                 cited_title = getattr(ann.url_citation, 'title', "N/A") or "N/A"
                                 cited_url = getattr(ann.url_citation, 'url', "N/A") or "N/A"
                                 extracted_sources.append({"title": cited_title, "url": cited_url})
-                            except Exception as e:
-                                logger.warning(f"Ошибка при извлечении URL-цитаты: {e}")
+                            except Exception as e_ann:
+                                logger.warning(f"Ошибка при извлечении URL-цитаты из аннотации: {e_ann}")
             
-            return {"report_text": answer_content, "sources": extracted_sources}
+            return {"report_text": answer_content, "sources": extracted_sources, "extracted_homepage_url": extracted_homepage_url_from_report}
             
         except APITimeoutError as e:
             error_msg = f"OpenAI Timeout error для '{company_name}': {str(e)}"
             logger.error(error_msg)
-            return {"error": error_msg}
+            return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}
         except RateLimitError as e:
             error_msg = f"OpenAI Rate Limit error для '{company_name}': {str(e)}"
             logger.error(error_msg)
-            return {"error": error_msg}  
+            return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}  
         except APIError as e:
             error_msg = f"OpenAI API error для '{company_name}': {str(e)}"
             logger.error(error_msg)
-            return {"error": error_msg}
+            return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}
         except Exception as e:
             error_msg = f"Unexpected error для '{company_name}': {str(e)}"
             logger.error(error_msg)
             logger.error(traceback.format_exc())
-            return {"error": error_msg}
+            return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}
 
 
 # Код для тестового запуска при прямом выполнении файла

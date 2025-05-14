@@ -23,14 +23,15 @@ from description_generator import DescriptionGenerator
 from finders.base import Finder
 from finders.llm_deep_search_finder.finder import LLMDeepSearchFinder
 from finders.linkedin_finder import LinkedInFinder
-from finders.homepage_finder import HomepageFinder
+from finders.homepage_finder.finder import HomepageFinder
+from finders.domain_check_finder import DomainCheckFinder, check_url_liveness
 from src.data_io import load_and_prepare_company_names, save_results_csv, save_results_json, load_session_metadata, save_session_metadata, save_structured_data_incrementally
 
 # Setup logging
 logger = logging.getLogger(__name__)
 
 # Constants
-DEFAULT_BATCH_SIZE = 10 # Установим значение по умолчанию для наглядности
+DEFAULT_BATCH_SIZE = 5
 
 async def _generate_and_save_raw_markdown_report_async(
     company_name: str,
@@ -116,77 +117,149 @@ async def _process_single_company_async(
     aiohttp_session: aiohttp.ClientSession,
     sb_client: ScrapingBeeClient,
     serper_api_key: str,
-    finders: List[Finder],
+    finder_instances: Dict[str, Finder],
     description_generator: DescriptionGenerator,
     llm_config: Dict[str, Any],
     raw_markdown_output_path: Path,
     output_csv_path: Optional[str],
     output_json_path: Optional[str],
     csv_fields: List[str],
-    company_index: int, # Обязательный аргумент
-    total_companies: int, # Обязательный аргумент
+    company_index: int,
+    total_companies: int,
     context_text: Optional[str] = None,
-    run_llm_deep_search_pipeline: bool = True, 
+    run_llm_deep_search_pipeline: bool = True,
+    run_standard_homepage_finders: bool = True,
+    run_domain_check_finder: bool = True,
     llm_deep_search_config_override: Optional[Dict[str, Any]] = None,
     broadcast_update: Optional[Callable] = None
 ) -> Dict[str, Any]:
+    
     logger.info(f"Starting processing for company {company_index + 1}/{total_companies}: {company_name}")
-    if broadcast_update:
-        await broadcast_update({
-            "type": "progress", "company": company_name, "current": company_index + 1,
-            "total": total_companies, "status": "processing_finders"
-        })
+    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_llm_deep_search"})
+
     company_findings = []
-    for finder_instance in finders:
+    
+    llm_deep_search_finder = finder_instances.get('LLMDeepSearchFinder')
+    homepage_from_llm_deep_search = None
+
+    if run_llm_deep_search_pipeline and llm_deep_search_finder:
         try:
             context = {
                 'session': aiohttp_session, 'serper_api_key': serper_api_key,
                 'openai_client': openai_client, 'sb_client': sb_client,
                 'context_text': context_text, 'user_context': context_text,
             }
-            if isinstance(finder_instance, LLMDeepSearchFinder) and run_llm_deep_search_pipeline:
-                logger.debug(f"LLMDeepSearchFinder active for {company_name}")
-                current_llm_deep_search_config = llm_deep_search_config_override or llm_config.get('llm_deep_search_config', {})
-                context['specific_aspects'] = current_llm_deep_search_config.get('specific_aspects_for_report_guidance', [])
-            finder_result_data = await finder_instance.find(company_name, **context)
-            if isinstance(finder_result_data, dict):
-                finder_result_data['_finder_instance_type'] = finder_instance.__class__.__name__
+            current_llm_deep_search_config = llm_deep_search_config_override or llm_config.get('llm_deep_search_config', {})
+            context['specific_aspects'] = current_llm_deep_search_config.get('specific_aspects_for_report_guidance', [])
+            
+            logger.debug(f"Calling LLMDeepSearchFinder for {company_name}")
+            finding = await llm_deep_search_finder.find(company_name, **context)
+            company_findings.append(finding)
+            
+            if not finding.get("error") and finding.get("extracted_homepage_url"):
+                candidate_url = finding["extracted_homepage_url"]
+                logger.info(f"LLMDeepSearchFinder found homepage candidate for {company_name}: {candidate_url}")
+                if await check_url_liveness(candidate_url, aiohttp_session):
+                    homepage_from_llm_deep_search = candidate_url
+                    logger.info(f"Homepage from LLMDeepSearch for {company_name} ({homepage_from_llm_deep_search}) is LIVE.")
+                else:
+                    logger.warning(f"Homepage from LLMDeepSearch for {company_name} ({candidate_url}) is NOT LIVE. Discarding.")
+            elif finding.get("error"):
+                 logger.warning(f"LLMDeepSearchFinder for {company_name} returned error: {finding.get('error')}")
             else:
-                finder_result_data = {
-                    "source": finder_instance.__class__.__name__,
-                    "result": finder_result_data,
-                    "_finder_instance_type": finder_instance.__class__.__name__
-                }
-            if finder_result_data.get("error"):
-                logger.warning(f"Finder {finder_instance.__class__.__name__} for {company_name} returned error: {finder_result_data.get('error')}")
-            company_findings.append(finder_result_data)
+                logger.info(f"LLMDeepSearchFinder for {company_name} did not find/extract a homepage URL.")
+
         except Exception as e:
-            logger.error(f"Exception in finder {finder_instance.__class__.__name__} for {company_name}: {e}", exc_info=True)
-            company_findings.append({
-                "source": finder_instance.__class__.__name__, "result": None, "error": str(e),
-                "_finder_instance_type": finder_instance.__class__.__name__
-            })
-    if broadcast_update:
-        await broadcast_update({
-            "type": "progress", "company": company_name, "current": company_index + 1,
-            "total": total_companies, "status": "generating_markdown"
-        })
+            logger.error(f"Exception in LLMDeepSearchFinder for {company_name}: {e}", exc_info=True)
+            company_findings.append({"source": "llm_deep_search", "result": None, "error": str(e), "_finder_instance_type": "LLMDeepSearchFinder"})
+    
+    final_homepage_url = homepage_from_llm_deep_search
+    final_homepage_source = "llm_deep_search_direct_live" if final_homepage_url else None
+
+    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_homepage_finders"})
+    
+    homepage_finder = finder_instances.get('HomepageFinder')
+    if run_standard_homepage_finders and homepage_finder and not final_homepage_url:
+        try:
+            context = {'session': aiohttp_session} 
+            logger.debug(f"Calling HomepageFinder for {company_name} (because LLM Deep Search did not provide a live homepage)")
+            finding = await homepage_finder.find(company_name, **context)
+            company_findings.append(finding)
+            if not finding.get("error") and finding.get("result"):
+                candidate_hp_url = finding["result"]
+                logger.info(f"HomepageFinder found candidate for {company_name}: {candidate_hp_url} (source: {finding.get('source')})")
+                if await check_url_liveness(candidate_hp_url, aiohttp_session):
+                    final_homepage_url = candidate_hp_url
+                    final_homepage_source = finding.get("source", "homepage_finder")
+                    logger.info(f"Homepage from HomepageFinder for {company_name} ({final_homepage_url}) is LIVE.")
+                else:
+                    logger.warning(f"Homepage from HomepageFinder for {company_name} ({candidate_hp_url}) is NOT LIVE. Discarding.")
+            elif finding.get("error"):
+                 logger.warning(f"HomepageFinder for {company_name} returned error: {finding.get('error')}")
+
+        except Exception as e:
+            logger.error(f"Exception in HomepageFinder for {company_name}: {e}", exc_info=True)
+            company_findings.append({"source": "homepage_finder", "result": None, "error": str(e), "_finder_instance_type": "HomepageFinder"})
+    
+    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_linkedin_finder"})
+    
+    linkedin_finder = finder_instances.get('LinkedInFinder')
+    linkedin_url_result = None
+    if linkedin_finder: 
+        try:
+            context = {
+                'session': aiohttp_session, 
+                'serper_api_key': serper_api_key, 
+                'openai_api_key': llm_config.get("openai_api_key") 
+            }
+            logger.debug(f"Calling LinkedInFinder for {company_name}")
+            finding = await linkedin_finder.find(company_name, **context)
+            company_findings.append(finding)
+            if not finding.get("error") and finding.get("result"):
+                linkedin_url_result = finding["result"]
+                logger.info(f"LinkedInFinder found URL for {company_name}: {linkedin_url_result}")
+            elif finding.get("error"):
+                 logger.warning(f"LinkedInFinder for {company_name} returned error: {finding.get('error')}")
+        except Exception as e:
+            logger.error(f"Exception in LinkedInFinder for {company_name}: {e}", exc_info=True)
+            company_findings.append({"source": "linkedin_finder", "result": None, "error": str(e), "_finder_instance_type": "LinkedInFinder"})
+
+    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_domain_check"})
+    
+    domain_check_finder = finder_instances.get('DomainCheckFinder')
+    if run_domain_check_finder and domain_check_finder and not final_homepage_url:
+        try:
+            context = {'session': aiohttp_session}
+            logger.debug(f"Calling DomainCheckFinder for {company_name} as fallback (no live homepage found yet).")
+            finding = await domain_check_finder.find(company_name, **context)
+            company_findings.append(finding)
+            if not finding.get("error") and finding.get("result"):
+                candidate_dc_url = finding["result"]
+                logger.info(f"DomainCheckFinder found candidate for {company_name}: {candidate_dc_url}")
+                if await check_url_liveness(candidate_dc_url, aiohttp_session):
+                    final_homepage_url = candidate_dc_url
+                    final_homepage_source = "domain_check_finder"
+                    logger.info(f"Homepage from DomainCheckFinder for {company_name} ({final_homepage_url}) is LIVE.")
+                else:
+                    logger.warning(f"Homepage from DomainCheckFinder for {company_name} ({candidate_dc_url}) is NOT LIVE. Discarding.")
+            elif finding.get("error"):
+                 logger.warning(f"DomainCheckFinder for {company_name} returned error: {finding.get('error')}")
+        except Exception as e:
+            logger.error(f"Exception in DomainCheckFinder for {company_name}: {e}", exc_info=True)
+            company_findings.append({"source": "domain_check_finder", "result": None, "error": str(e), "_finder_instance_type": "DomainCheckFinder"})
+
+    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "generating_markdown"})
     if company_findings:
-        await _generate_and_save_raw_markdown_report_async(
-            company_name, company_findings, openai_client, llm_config, raw_markdown_output_path
-        )
-    if broadcast_update:
-         await broadcast_update({
-            "type": "progress", "company": company_name, "current": company_index + 1,
-            "total": total_companies, "status": "generating_description"
-        })
+        await _generate_and_save_raw_markdown_report_async(company_name, company_findings, openai_client, llm_config, raw_markdown_output_path)
+    
+    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "generating_description"})
     structured_data = None
-    description = f"Error: Could not generate description for {company_name}."
+    description = f"Error: Could not generate final description for {company_name}."
     try:
         generated_result = await description_generator.generate_description(company_name, company_findings)
         if isinstance(generated_result, str) or (isinstance(generated_result, dict) and generated_result.get("error")):
             error_message = generated_result if isinstance(generated_result, str) else generated_result.get("error")
-            description = f"Error generating data: {error_message}"
+            description = f"Error generating structured data: {error_message}"
             logger.warning(f"Could not generate structured data for {company_name}. Reason: {error_message}")
         elif isinstance(generated_result, dict):
             description = generated_result.get("description", f"No text description generated for {company_name}.")
@@ -195,21 +268,18 @@ async def _process_single_company_async(
             logger.warning(f"Unexpected result type from description_generator for {company_name}: {type(generated_result)}")
     except Exception as e:
         logger.error(f"Exception in description_generator for {company_name}: {e}", exc_info=True)
-        description = f"Exception during description generation: {str(e)}"
+        description = f"Exception during final description generation: {str(e)}"
+
     result = {
-        "name": company_name, "homepage": "Not found", "linkedin": "Not found",
-        "description": description, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "name": company_name,
+        "homepage": final_homepage_url or "Not found", 
+        "linkedin": linkedin_url_result or "Not found",
+        "description": description,
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "structured_data": structured_data
     }
-    for finding in company_findings:
-        finder_type = finding.get("_finder_instance_type", finding.get("source"))
-        result_value = finding.get("result")
-        if not result_value or not isinstance(result_value, str): continue
-        if finder_type == "HomepageFinder" or finding.get("source") in ["wikidata", "domains", "wikipedia"]:
-            result["homepage"] = result_value
-        elif finder_type == "LinkedInFinder":
-            result["linkedin"] = result_value
-    logger.debug(f"CSV data for {company_name}: name='{result['name']}', homepage='{result['homepage']}', linkedin='{result['linkedin']}', desc_len={len(result['description']) if result['description'] else 0}")
+    
+    logger.debug(f"Final CSV data for {company_name}: name='{result['name']}', homepage='{result['homepage']}', linkedin='{result['linkedin']}', desc_len={len(result['description']) if result['description'] else 0}")
     if output_csv_path:
         file_exists = os.path.exists(output_csv_path)
         try:
@@ -217,17 +287,14 @@ async def _process_single_company_async(
             save_results_csv([csv_row], output_csv_path, csv_fields, append_mode=file_exists)
             logger.info(f"Saved CSV row for {company_name} to {output_csv_path}")
         except Exception as e: logger.error(f"Error saving CSV for {company_name}: {e}", exc_info=True)
+    
     if output_json_path and structured_data and not (isinstance(structured_data, dict) and structured_data.get("error")):
         try:
-            save_structured_data_incrementally(result, output_json_path)
+            save_structured_data_incrementally(result, output_json_path) 
             logger.info(f"Saved structured JSON for {company_name} to {output_json_path}")
         except Exception as e: logger.error(f"Error saving structured JSON for {company_name}: {e}", exc_info=True)
-    if broadcast_update:
-        await broadcast_update({
-            "type": "company_completed", "company": company_name, "current": company_index + 1,
-            "total": total_companies, "status": "completed",
-            "result": {key: result.get(key) for key in csv_fields} 
-        })
+    
+    if broadcast_update: await broadcast_update({"type": "company_completed", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "completed", "result": {key: result.get(key) for key in csv_fields}})
     return result
 
 async def process_companies(
@@ -240,24 +307,40 @@ async def process_companies(
     raw_markdown_output_path: Path,
     batch_size: int, 
     context_text: Optional[str] = None,
-    run_standard_pipeline: bool = True,
-    run_llm_deep_search_pipeline: bool = True,
+    run_llm_deep_search_pipeline_cfg: bool = True,
+    run_standard_pipeline_cfg: bool = True,
+    run_domain_check_finder_cfg: bool = True,
     broadcast_update: Optional[Callable] = None,
     output_csv_path: Optional[str] = None,
     output_json_path: Optional[str] = None,
     llm_deep_search_config_override: Optional[Dict[str, Any]] = None
 ) -> List[Dict[str, Any]]:
     logger.info(f"Processing {len(company_names)} companies in batches of {batch_size}")
-    finders = []
-    if run_standard_pipeline: finders.append(HomepageFinder(serper_api_key, verbose=False)); finders.append(LinkedInFinder(serper_api_key, verbose=False))
-    if run_llm_deep_search_pipeline: finders.append(LLMDeepSearchFinder(openai_client.api_key, verbose=False))
+    
+    finder_instances: Dict[str, Finder] = {}
+    if llm_config.get("openai_api_key"): 
+        finder_instances['HomepageFinder'] = HomepageFinder(serper_api_key, openai_api_key=llm_config["openai_api_key"], verbose=llm_config.get("verbose_finders", False))
+        finder_instances['LinkedInFinder'] = LinkedInFinder(serper_api_key, openai_api_key=llm_config.get("openai_api_key"), verbose=llm_config.get("verbose_finders", False))
+    else:
+        finder_instances['HomepageFinder'] = HomepageFinder(serper_api_key, verbose=llm_config.get("verbose_finders", False))
+        finder_instances['LinkedInFinder'] = LinkedInFinder(serper_api_key, verbose=llm_config.get("verbose_finders", False))
+    
+    if run_llm_deep_search_pipeline_cfg:
+        finder_instances['LLMDeepSearchFinder'] = LLMDeepSearchFinder(openai_client.api_key, verbose=llm_config.get("verbose_finders", False))
+    
+    if run_domain_check_finder_cfg:
+        finder_instances['DomainCheckFinder'] = DomainCheckFinder(custom_tlds=llm_config.get("domain_check_tlds"), verbose=llm_config.get("verbose_finders", False))
+
     description_generator = DescriptionGenerator(openai_client.api_key, model_config=llm_config.get('description_generator_model_config'))
+    
     all_results = []
     csv_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
     total_companies_count = len(company_names)
+
     for i in range(0, total_companies_count, batch_size):
         batch_company_names = company_names[i:i + batch_size]
         logger.info(f"Processing batch {i//batch_size + 1}/{(total_companies_count + batch_size - 1)//batch_size}: {batch_company_names}")
+        
         tasks = []
         for j, company_name_in_batch in enumerate(batch_company_names):
             global_company_index = i + j
@@ -265,23 +348,32 @@ async def process_companies(
                 _process_single_company_async(
                     company_name=company_name_in_batch, openai_client=openai_client,
                     aiohttp_session=aiohttp_session, sb_client=sb_client, serper_api_key=serper_api_key,
-                    finders=finders, description_generator=description_generator, llm_config=llm_config,
-                    raw_markdown_output_path=raw_markdown_output_path, output_csv_path=output_csv_path,
-                    output_json_path=output_json_path, csv_fields=csv_fields,
-                    company_index=global_company_index, total_companies=total_companies_count, # Обязательные аргументы
-                    context_text=context_text, # Аргументы по умолчанию далее
-                    run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
+                    finder_instances=finder_instances,
+                    description_generator=description_generator, 
+                    llm_config=llm_config,
+                    raw_markdown_output_path=raw_markdown_output_path, 
+                    output_csv_path=output_csv_path,
+                    output_json_path=output_json_path, 
+                    csv_fields=csv_fields,
+                    company_index=global_company_index, 
+                    total_companies=total_companies_count, 
+                    context_text=context_text, 
+                    run_llm_deep_search_pipeline=run_llm_deep_search_pipeline_cfg,
+                    run_standard_homepage_finders=run_standard_pipeline_cfg,
+                    run_domain_check_finder=run_domain_check_finder_cfg,
                     llm_deep_search_config_override=llm_deep_search_config_override,
                     broadcast_update=broadcast_update
                 )
             )
             tasks.append(task)
+        
         batch_results_with_exceptions = await asyncio.gather(*tasks, return_exceptions=True)
         for res_or_exc in batch_results_with_exceptions:
             if isinstance(res_or_exc, Exception): logger.error(f"Error processing company in batch: {res_or_exc}", exc_info=res_or_exc)
             elif isinstance(res_or_exc, dict): all_results.append(res_or_exc)
             else: logger.warning(f"Unexpected result type from batch: {type(res_or_exc)} - {res_or_exc}")
         logger.info(f"Finished processing batch {i//batch_size + 1}")
+    
     if output_json_path and all_results:
         valid_results = [r for r in all_results if r.get("structured_data") and not (isinstance(r.get("structured_data"), dict) and r.get("structured_data").get("error"))]
         if valid_results: 
@@ -316,11 +408,18 @@ async def run_pipeline_for_file(
     structured_data_json_path = structured_data_dir / "company_profiles.json"
     raw_markdown_output_dir = session_dir_path / "raw_markdown_reports"; raw_markdown_output_dir.mkdir(exist_ok=True)
     llm_deep_search_config_specific = llm_config.get('llm_deep_search_config')
+    
+    run_llm_deep_search_cfg = llm_config.get('run_llm_deep_search_pipeline', run_llm_deep_search_pipeline)
+    run_standard_cfg = llm_config.get('run_standard_pipeline', run_standard_pipeline)
+    run_domain_check_cfg = llm_config.get('run_domain_check_finder', True)
+
     results = await process_companies(
         company_names, openai_client, aiohttp_session, sb_client, serper_api_key,
         llm_config=llm_config, raw_markdown_output_path=raw_markdown_output_dir,
         batch_size=main_batch_size, context_text=context_text,
-        run_standard_pipeline=run_standard_pipeline, run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
+        run_llm_deep_search_pipeline_cfg=run_llm_deep_search_cfg,
+        run_standard_pipeline_cfg=run_standard_cfg,
+        run_domain_check_finder_cfg=run_domain_check_cfg,
         broadcast_update=broadcast_update, output_csv_path=str(output_csv_path),
         output_json_path=str(structured_data_json_path), llm_deep_search_config_override=llm_deep_search_config_specific
     )

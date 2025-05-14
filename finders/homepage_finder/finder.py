@@ -1,6 +1,7 @@
 import aiohttp
 import sys
 import os
+import logging
 
 # Добавляем корневую директорию проекта в путь Python
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -10,18 +11,18 @@ if project_root not in sys.path:
 
 from finders.base import Finder
 from finders.homepage_finder.wikidata import get_wikidata_url
-from finders.homepage_finder.domain_check import find_domain_by_tld
 from finders.homepage_finder.google_search import search_google, filter_wikipedia_links
 from finders.homepage_finder.wikipedia import extract_company_name_from_wiki_url, parse_wikipedia_website
 from finders.homepage_finder.llm import choose_best_wiki_link
 
+logger = logging.getLogger(__name__)
+
 class HomepageFinder(Finder):
     """
-    Единый алгоритм поиска официального сайта компании, реализующий логику из test_serper.py.
-    Последовательно проверяет следующие источники:
-    1. Wikidata
-    2. Проверка доменов
-    3. Google (через Serper API) -> поиск Wikipedia -> выбор через LLM -> парсинг Wikipedia
+    Единый алгоритм поиска официального сайта компании.
+    Приоритеты:
+    1. Wikidata (по исходному имени)
+    2. Google Search -> Выбор лучшей Wiki страницы (LLM) -> Wikidata (по имени из Wiki URL) -> Парсер Wiki Infobox
     """
     
     def __init__(self, serper_api_key: str, openai_api_key: str = None, verbose: bool = False):
@@ -50,72 +51,66 @@ class HomepageFinder(Finder):
         """
         session = context.get('session')
         if not session:
+            logger.error("HomepageFinder: aiohttp.ClientSession not found in context['session']")
             raise ValueError("HomepageFinder требует aiohttp.ClientSession в context['session']")
         
-        if self.verbose:
-            print(f"\n--- Поиск домашней страницы для компании '{company_name}' ---")
+        logger.info(f"--- Поиск домашней страницы для компании '{company_name}' (HomepageFinder) ---")
         
-        # 1. Сначала пробуем получить URL из Wikidata
-        wikidata_url = get_wikidata_url(company_name)
-        if wikidata_url:
-            print(f"Домашняя страница для '{company_name}': {wikidata_url} (источник: Wikidata)")
-            return {"source": "wikidata", "source_class": "HomepageFinder", "result": wikidata_url}
+        # 1. Wikidata (по исходному имени)
+        wikidata_url_initial = get_wikidata_url(company_name)
+        if wikidata_url_initial:
+            logger.info(f"Найден URL через Wikidata (исходное имя) для '{company_name}': {wikidata_url_initial}")
+            return {"source": "wikidata", "source_class": "HomepageFinder", "result": wikidata_url_initial}
         
-        # 2. Если через Wikidata не нашли, пробуем найти через проверку доменов
-        domain_url = await find_domain_by_tld(company_name, session)
-        if domain_url:
-            print(f"Домашняя страница для '{company_name}': {domain_url} (источник: проверка доменов)")
-            return {"source": "domains", "source_class": "HomepageFinder", "result": domain_url}
-        
-        # 3. Если не нашли ни через Wikidata, ни через домены, ищем через Google
-        results = await search_google(company_name, session, self.serper_api_key)
-        if results and "organic" in results:
-            # Фильтруем результаты, оставляя только ссылки на Wikipedia
-            wiki_links = filter_wikipedia_links(results["organic"], company_name)
+        found_website_from_wiki_pipeline = None
+        wiki_source_name = None
+        selected_wiki_url = None # Инициализируем здесь, чтобы было доступно в конце
+
+        # 2. Google Search -> Wikipedia pipeline
+        google_results = await search_google(company_name, session, self.serper_api_key)
+        if google_results and "organic" in google_results:
+            wiki_links = filter_wikipedia_links(google_results["organic"], company_name)
             if wiki_links:
-                # Выбираем лучшую ссылку на Wikipedia через LLM
-                if self.openai_api_key:
-                    selected_url = await choose_best_wiki_link(
-                        company_name, 
-                        wiki_links, 
-                        self.openai_api_key
-                    )
+                if self.openai_api_key and len(wiki_links) > 0:
+                    logger.debug(f"Используем LLM для выбора лучшей Wiki-ссылки для '{company_name}' из {len(wiki_links)} кандидатов.")
+                    selected_wiki_url = await choose_best_wiki_link(company_name, wiki_links, self.openai_api_key)
+                elif wiki_links:
+                    selected_wiki_url = wiki_links[0]["link"]
+                    logger.debug(f"LLM не используется, берем первую Wiki-ссылку для '{company_name}': {selected_wiki_url}")
+
+                if selected_wiki_url:
+                    logger.info(f"Выбрана Wiki-ссылка для '{company_name}': {selected_wiki_url}")
+                    wiki_company_name = extract_company_name_from_wiki_url(selected_wiki_url)
+                    if wiki_company_name:
+                        logger.debug(f"Извлечено имя из Wiki URL '{selected_wiki_url}': {wiki_company_name}")
+                        wikidata_url_from_wiki_name = get_wikidata_url(wiki_company_name)
+                        if wikidata_url_from_wiki_name:
+                            logger.info(f"Найден URL через Wikidata (имя из Wiki) для '{company_name}': {wikidata_url_from_wiki_name}")
+                            found_website_from_wiki_pipeline = wikidata_url_from_wiki_name
+                            wiki_source_name = "wikidata_via_wiki"
                     
-                    if selected_url:
-                        # Пробуем получить название компании из URL Wikipedia
-                        wiki_company_name = extract_company_name_from_wiki_url(selected_url)
-                        if wiki_company_name:
-                            # Пробуем найти через Wikidata используя название из Wikipedia
-                            wikidata_url = get_wikidata_url(wiki_company_name)
-                            if wikidata_url:
-                                print(f"Домашняя страница для '{company_name}': {wikidata_url} (источник: Wikidata через Wikipedia)")
-                                return {"source": "wikidata_via_wiki", "source_class": "HomepageFinder", "result": wikidata_url}
-                        
-                        # Если через Wikidata не нашли, пробуем парсить Wikipedia
-                        website_url = await parse_wikipedia_website(selected_url, session)
-                        if website_url != selected_url:  # Если нашли официальный сайт в инфобоксе
-                            print(f"Домашняя страница для '{company_name}': {website_url} (источник: Wikipedia инфобокс)")
-                            return {"source": "wikipedia", "source_class": "HomepageFinder", "result": website_url}
-                        else:  # Если вернулась ссылка на Wikipedia
-                            if self.verbose:
-                                print(f"Для '{company_name}' найдена только страница Wikipedia: {website_url}")
-                            return {"source": "wikipedia_page", "source_class": "HomepageFinder", "result": website_url}
-                
-                # Если нет OpenAI API ключа или LLM не выбрал, берем первую ссылку
-                first_url = wiki_links[0]["link"]
-                website_url = await parse_wikipedia_website(first_url, session)
-                if website_url != first_url:
-                    print(f"Домашняя страница для '{company_name}': {website_url} (источник: Wikipedia инфобокс, первая ссылка)")
-                    return {"source": "wikipedia_first", "source_class": "HomepageFinder", "result": website_url}
-                else:
-                    if self.verbose:
-                        print(f"Для '{company_name}' найдена только страница Wikipedia: {first_url}")
-                    return {"source": "wikipedia_page_first", "source_class": "HomepageFinder", "result": first_url}
+                    if not found_website_from_wiki_pipeline:
+                        logger.debug(f"Парсинг Wiki-страницы '{selected_wiki_url}' для '{company_name}'")
+                        parsed_website_url = await parse_wikipedia_website(selected_wiki_url, session)
+                        if parsed_website_url and parsed_website_url != selected_wiki_url:
+                            logger.info(f"Найден URL через парсинг Wiki-инфобокса для '{company_name}': {parsed_website_url}")
+                            found_website_from_wiki_pipeline = parsed_website_url
+                            wiki_source_name = "wikipedia_infobox"
+                        elif parsed_website_url == selected_wiki_url:
+                             logger.info(f"Парсер Wiki для '{company_name}' вернул ссылку на саму Wiki: {selected_wiki_url}. Игнорируем.")
+                        else:
+                            logger.info(f"Парсер Wiki для '{company_name}' не нашел сайт в инфобоксе.")
         
-        # Ничего не нашли
-        if self.verbose:
-            print(f"Домашняя страница для '{company_name}' не найдена")
-        return {"source": "homepage_finder", "source_class": "HomepageFinder", "result": None}
+        if found_website_from_wiki_pipeline:
+            return {"source": wiki_source_name, "source_class": "HomepageFinder", "result": found_website_from_wiki_pipeline}
+
+        # Если selected_wiki_url был, но не разрешился в сайт, и domain_check больше не вызывается здесь,
+        # мы НЕ возвращаем selected_wiki_url.
+        if selected_wiki_url and not found_website_from_wiki_pipeline:
+             logger.info(f"Ни Wikidata, ни парсер Wiki не дали результат для '{company_name}'. Был выбран Wiki URL: {selected_wiki_url}, но он не будет возвращен как homepage.")
+
+        logger.warning(f"Домашняя страница для '{company_name}' не найдена методами HomepageFinder.")
+        return {"source": "homepage_finder", "source_class": "HomepageFinder", "result": None, "error": f"Homepage not found for {company_name} by HomepageFinder methods."}
 
 
 # Код для тестового запуска при прямом выполнении файла
