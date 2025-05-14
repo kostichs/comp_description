@@ -98,17 +98,22 @@ class LLMDeepSearchFinder(Finder):
             List[str]: Список аспектов
         """
         return [
-            "company founding year",
-            "headquarters location (city and country)",
-            "names of founders",
-            "ownership structure (e.g., public, private, VC-backed, parent company)",
-            "latest reported annual revenue or ARR (specify currency and year if possible)",
-            "approximate number of employees",
-            "details of the latest funding round (amount, date, key investors, series - if applicable)",
-            "key products, services, or core technologies offered",
-            "main competitors identified by reliable sources",
-            "primary business segments and target customer focus (e.g., B2C, B2B, B2G)",
-            "geographical regions of operation and overall global strategy"
+            "precise founding year of the company (exact date if available)",
+            "detailed headquarters location including city, country, and address if available",
+            "full names of the founding team members and current CEO",
+            "detailed ownership structure (e.g., public company with stock symbol, private company with major investors, etc.)",
+            "last 2-3 years of annual revenue with exact figures and currency (specify fiscal year periods)",
+            "exact employee count (current or most recently reported) with source and date",
+            "all funding rounds with exact amounts, dates, and lead investors",
+            "detailed product portfolio with specific product names and core features",
+            "technical infrastructure and technologies used (programming languages, cloud providers, etc.)",
+            "specific pricing models with actual price points for main products",
+            "major enterprise/notable clients with specific use cases or case studies",
+            "precise market share figures and growth rates if available",
+            "named competitors with brief comparison of strengths/weaknesses",
+            "detailed international presence with specific countries and regional headquarters",
+            "recent major announcements, partnerships, or product launches (last 6-12 months)",
+            "any pending mergers, acquisitions, or significant organizational changes"
         ]
     
     def _escape_string_for_prompt(self, text: str) -> str:
@@ -154,46 +159,67 @@ class LLMDeepSearchFinder(Finder):
             safe_user_context = self._escape_string_for_prompt(user_context_text)
             context_injection_str = f"\n\nUser-provided context to guide your research: '{safe_user_context}'"
         
-        # Основной шаблон промпта
+        # Основной шаблон промпта (универсальный для всех типов компаний)
         prompt_template = """Please generate a detailed Business Analytics Report for the company: '{company_name_placeholder}'.
 
-Your primary goal is to extract and present factual data about the company. 
-When reporting financial figures (like revenue, funding), provide the latest available data, clearly stating the period/year each figure refers to.
+Your primary goal is to extract and present factual data. Research thoroughly to find SPECIFIC, CONCRETE information.
+When reporting financial figures (like revenue, ARR, funding), prioritize data for the most recent fiscal year. If multiple years of data are found, include all such figures, clearly stating the period/year each figure refers to.
 
-The report should include the following sections:
+EXTREMELY IMPORTANT: NEVER mention lack of information or use phrases like "not available", "not disclosed", etc. ONLY include information you ACTUALLY find.
+
+The report MUST follow this structure:
 
 1. **Company Overview:**
-   * Brief description of what the company does
-   * Founding date and founder information
-   * Headquarters location
-   * Company size (employees)
-   * Private/public status, major investors
+   * Founding year (actual year, be very specific)
+   * Founders (actual names)
+   * Headquarters location (specific city and country)
+   * Company size (specific number of employees, not ranges)
+   * Current CEO/leadership team
+   * Ownership structure (public with ticker symbol or private with investors)
 
-2. **Business Model & Revenue:**
-   * Primary business model (SaaS, marketplace, etc.)
-   * Revenue information (if available)
-   * Pricing model (subscription, one-time purchase, etc.)
-   * Customer segments (B2B, B2C, etc.)
+2. **Financial Information:**
+   * Annual revenue (exact figures with currency and fiscal year)
+   * Profitability metrics (net income, profit margins)
+   * For startups: funding rounds (amounts, dates, investors)
+   * For public companies: market cap, P/E ratio, stock performance
+   * Recent financial news (acquisitions, major investments)
 
-3. **Products and Services:**
-   * Main product/service offerings
-   * Key technologies utilized
-   * Core features and capabilities
+3. **Products & Services:**
+   * Core product/service portfolio (specific product names)
+   * Key technologies and proprietary systems
+   * Pricing models (with actual price points if available)
+   * Recent product launches or updates
+   * Product market share (specific percentages if available)
 
 4. **Market Position:**
-   * Industry category
-   * Main competitors
-   * Market share (if available)
-   * Key differentiators
+   * Primary industries served (be specific)
+   * Target customer segments (B2B, B2C, specific demographics)
+   * Named competitors with comparative strengths
+   * Competitive advantages
+   * Market share data (specific percentages)
 
-5. **Geographic Presence:**
-   * Countries/regions of operation
-   * Target markets
-   * Expansion strategy
+5. **Geographic Footprint:**
+   * Countries/regions of operation (list specific countries)
+   * International expansion strategy
+   * Regional headquarters locations
+   * Key markets by revenue contribution
+
+6. **Strategy & Growth:**
+   * Recent partnerships and alliances
+   * Innovation initiatives
+   * Expansion plans
+   * Recent mergers and acquisitions
+   * Strategic vision (as stated by company leadership)
+
+7. **Key Customers & Case Studies:**
+   * Major client relationships (name specific clients)
+   * Notable case studies or success stories
+   * Customer retention metrics
+   * Key contracts or deals
 
 {additional_aspects_placeholder}{user_context_placeholder}
 
-Provide a concise, data-driven report. Avoid conversational filler, disclaimers, or speculative statements. All factual data should be cited with sources, either inline or in a concluding 'Sources' list. Respond only in English."""
+Provide a data-rich, fact-heavy report. All data MUST be cited with sources. If you don't find specific information for a category, DO NOT mention that it's unavailable - simply omit that specific detail and focus on what you DO find."""
 
         # Формируем полный пользовательский промпт
         user_content = prompt_template.format(
@@ -204,11 +230,12 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
         
         # Системный промпт для модели
         system_prompt = (
-            "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business "
-            "report on a given company, in English. Utilize your web search capabilities to find the most current "
-            "information. Include data for the most recent available year, clearly stating the period. "
-            "Adhere strictly to the requested report structure and level of detail. Cite all specific data points "
-            "with their sources. Be concise and data-driven. Do not include conversational intros, outros, or disclaimers."
+            "You are an AI Business Analyst with excellent web research skills. Your task is to generate a detailed, "
+            "factual business report on a given company. CRITICAL INSTRUCTIONS: (1) NEVER mention missing information - "
+            "simply omit those details entirely; (2) Include ONLY specific, factual data you can verify; (3) Be "
+            "PRECISE with numbers, dates, names; (4) Cite all specific data points with sources; (5) Focus on "
+            "finding DETAILED information rather than general information. Respond in factual, direct language. "
+            "Avoid qualifiers like 'founded around' or 'approximately' - be precise whenever possible."
         )
         
         if self.verbose:

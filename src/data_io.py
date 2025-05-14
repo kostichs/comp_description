@@ -155,4 +155,118 @@ def save_results_csv(results: list[dict], output_path: str, expected_fields: lis
             writer.writerow(row)
     
     logging.info(f"Saved {len(results)} result(s) to {output_path}")
- 
+
+def save_results_json(results: List[Dict[str, Any]], output_path: str, append_mode: bool = False):
+    """
+    Сохраняет структурированные данные о компаниях в JSON файл.
+    
+    Args:
+        results: Список результатов с данными компаний
+        output_path: Путь для сохранения JSON файла
+        append_mode: Режим добавления в существующий файл вместо перезаписи
+    """
+    # Создаем директорию, если она не существует
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
+    # Подготавливаем структурированные данные
+    structured_data = []
+    
+    for result in results:
+        # Если в результате есть structured_data, используем их
+        if result.get("structured_data") and isinstance(result.get("structured_data"), dict):
+            structured_result = result["structured_data"]
+        else:
+            # Иначе создаем структуру из доступных полей
+            structured_result = {
+                "company_name": result.get("name", ""),
+                "founding_year": result.get("founding_year", None),
+                "headquarters_location": result.get("headquarters_location", None),
+                "industry": result.get("industry", None),
+                "main_products_services": result.get("main_products_services", None),
+                "employees_count": result.get("employees_count", None),
+                "description": result.get("description", ""),
+                "homepage": result.get("homepage", None),
+                "linkedin": result.get("linkedin", None),
+                "timestamp": result.get("timestamp", None)
+            }
+        
+        structured_data.append(structured_result)
+    
+    # Если в режиме добавления и файл существует, загружаем существующие данные
+    existing_data = []
+    if append_mode and os.path.exists(output_path):
+        try:
+            with open(output_path, 'r', encoding='utf-8') as f:
+                existing_data = json.load(f)
+                if not isinstance(existing_data, list):
+                    existing_data = []
+        except Exception as e:
+            logging.error(f"Error loading existing JSON data from {output_path}: {e}")
+            existing_data = []
+    
+    # Объединяем существующие и новые данные
+    final_data = existing_data + structured_data
+    
+    # Сохраняем в JSON
+    try:
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(final_data, f, indent=2, ensure_ascii=False)
+        logging.info(f"Saved {len(structured_data)} structured result(s) to {output_path}")
+        return True
+    except Exception as e:
+        logging.error(f"Error saving structured data to {output_path}: {e}")
+        return False
+
+def save_structured_data_incrementally(result: Dict[str, Any], output_path: str):
+    """
+    Сохраняет структурированные данные об одной компании в JSON файл инкрементально.
+    
+    Args:
+        result: Результат с данными одной компании
+        output_path: Путь для сохранения JSON файла
+    """
+    # Создаем директорию, если она не существует
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
+    # Подготавливаем структурированные данные
+    if result.get("structured_data") and isinstance(result.get("structured_data"), dict):
+        structured_result = result["structured_data"]
+    else:
+        # Иначе создаем структуру из доступных полей
+        structured_result = {
+            "company_name": result.get("name", ""),
+            "founding_year": result.get("founding_year", None),
+            "headquarters_location": result.get("headquarters_location", None),
+            "industry": result.get("industry", None),
+            "main_products_services": result.get("main_products_services", None),
+            "employees_count": result.get("employees_count", None),
+            "description": result.get("description", ""),
+            "homepage": result.get("homepage", None),
+            "linkedin": result.get("linkedin", None),
+            "timestamp": result.get("timestamp", None)
+        }
+    
+    # Загружаем существующие данные, если файл существует
+    existing_data = []
+    if os.path.exists(output_path):
+        try:
+            with open(output_path, 'r', encoding='utf-8') as f:
+                existing_data = json.load(f)
+                if not isinstance(existing_data, list):
+                    existing_data = []
+        except Exception as e:
+            logging.error(f"Error loading existing JSON data from {output_path}: {e}")
+            existing_data = []
+    
+    # Добавляем новые данные
+    existing_data.append(structured_result)
+    
+    # Сохраняем в JSON
+    try:
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(existing_data, f, indent=2, ensure_ascii=False)
+        logging.info(f"Added 1 structured result to {output_path}")
+        return True
+    except Exception as e:
+        logging.error(f"Error saving structured data to {output_path}: {e}")
+        return False 

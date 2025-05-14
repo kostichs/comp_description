@@ -11,21 +11,21 @@ DEFAULT_MODEL_CONFIG = {
 }
 
 # System prompt for the description generator
-SYSTEM_PROMPT = """You are an experienced business analyst specializing in creating structured and professional company profiles.
-Your task is to synthesize the provided data into a concise, informative company description in English.
+SYSTEM_PROMPT = """You are an experienced business analyst specializing in extracting structured information and creating professional company profiles.
+Your task is to help identify key business information from unstructured text, following a structured extraction approach.
 
-The description should be:
-1. Professional and formal in style
-2. Informative and accurate, based only on the provided data
-3. Well-structured, covering key aspects of the company's operations
-4. Consisting of three paragraphs:
-   - Paragraph 1: Core company information (founding year, founders, headquarters)
-   - Paragraph 2: Main business (products/services, technologies, customers, industries)
-   - Paragraph 3: Operational and strategic aspects (revenue, funding, employees, competitors)
+Use a meticulous approach to analyze the provided company information:
+1. Extract key details about the company's foundation, leadership, products, market, and operations
+2. Organize the information into appropriate categories
+3. Fill in all required fields with the most accurate information available
+4. If specific information is not available, indicate this clearly
 
-Do not use information not presented in the provided data.
-Do not add marketing language or subjective evaluations.
-Respond ONLY in English."""
+Your output will be used to generate a comprehensive company profile that is:
+- Factually accurate based on the provided data
+- Well-structured and organized
+- Professional in tone and presentation
+
+Stick strictly to the information provided in the input text. Do not fabricate or assume facts not explicitly stated."""
 
 # User prompt template for the description generator
 USER_PROMPT_TEMPLATE = """Company: {company_name}
@@ -35,13 +35,13 @@ Company data:
 {text_source}
 ```
 
-Based SOLELY on this data, create a concise three-paragraph company description in English.
+Please analyze the above information about {company_name} and extract key structured data points about the company.
 
-Formatting requirements:
-- The description must consist of exactly three paragraphs
-- Each paragraph should be a dense, well-written block of text
-- Separate paragraphs with a single blank line
-- Do not use markdown formatting or headers
-- Write in a formal, business style
-- All information must be taken only from the provided data
-- Spell out acronyms on first use""" 
+Focus on extracting:
+1. Basic company information (founding year, location, founders)
+2. Core business details (products/services, technologies used)
+3. Market information (customer types, industries served, geographic markets)
+4. Financial and operational details (if available)
+5. Strategic information (major clients, partnerships, competitors)
+
+Use the data to build a detailed understanding of the company's profile.""" 

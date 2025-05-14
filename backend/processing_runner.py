@@ -211,7 +211,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             session_logger.error(f"Pipeline execution error: {e_pipeline}", exc_info=True)
             pipeline_error = f"Pipeline execution failed: {e_pipeline}"
             raise # Re-raise to be caught by outer try/except
-            
+
     except Exception as e_outer:
         session_logger.error(f"Error during processing: {e_outer}", exc_info=True)
         session_data['status'] = 'error'
@@ -224,7 +224,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         session_data['processed_count'] = success_count
         session_data['error_count'] = failure_count
         session_data['error_message'] = None if failure_count == 0 else f"Completed with {failure_count} errors"
-        
+
     finally:
         # Update metrics in session metadata
         session_data['processed_count'] = success_count
