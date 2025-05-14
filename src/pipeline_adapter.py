@@ -30,7 +30,7 @@ from src.data_io import load_and_prepare_company_names, save_results_csv, save_r
 logger = logging.getLogger(__name__)
 
 # Constants
-DEFAULT_BATCH_SIZE = 10
+DEFAULT_BATCH_SIZE = 10 # Установим значение по умолчанию для наглядности
 
 async def _generate_and_save_raw_markdown_report_async(
     company_name: str,
@@ -44,55 +44,37 @@ async def _generate_and_save_raw_markdown_report_async(
     """
     try:
         raw_data_parts = [f"# Raw Data Report for {company_name}\n"]
-
         for i, finding in enumerate(company_findings):
             source_name = finding.get("source", f"Unknown_Source_{i+1}")
-            # Используем _finder_instance_type если есть, иначе source
             finder_type = finding.get("_finder_instance_type", source_name) 
-
             report_text_data = finding.get("result")
             error_data = finding.get("error")
-            # Отдельно извлекаем источники, если они есть (особенно для LLMDeepSearchFinder)
             sources_list = finding.get("sources") 
-
             raw_data_parts.append(f"\n## Source: {source_name} (Type: {finder_type})\n")
-
-            if error_data:
-                raw_data_parts.append(f"**Error:**\n```\n{error_data}\n```\n")
-            
+            if error_data: raw_data_parts.append(f"**Error:**\n```\n{error_data}\n```\n")
             if report_text_data:
                 raw_data_parts.append(f"**Report/Result Data:**\n")
                 if isinstance(report_text_data, dict):
                     raw_data_parts.append(f"```json\n{json.dumps(report_text_data, indent=2, ensure_ascii=False)}\n```\n")
-                else:
-                    raw_data_parts.append(f"```text\n{str(report_text_data)}\n```\n")
-            
+                else: raw_data_parts.append(f"```text\n{str(report_text_data)}\n```\n")
             if sources_list and isinstance(sources_list, list):
                 raw_data_parts.append(f"**Extracted Sources from this source:**\n")
                 for src_item in sources_list:
-                    title = src_item.get('title', 'N/A')
-                    url = src_item.get('url', 'N/A')
+                    title = src_item.get('title', 'N/A'); url = src_item.get('url', 'N/A')
                     raw_data_parts.append(f"- [{title}]({url})\n")
-            
             if not error_data and not report_text_data and not (sources_list and isinstance(sources_list, list)):
                  raw_data_parts.append("_No specific data, error, or sources reported by this finder._\n")
-
         raw_data_for_llm_prompt = "".join(raw_data_parts)
-
-        if not raw_data_for_llm_prompt.strip() or len(raw_data_for_llm_prompt) < 50: # Проверка на осмысленность данных
-            logger.warning(f"No substantial raw data to format into Markdown for {company_name}. Saving raw dump.")
-            # Просто сохраняем собранный текст без дополнительного форматирования LLM, если данных мало
-            markdown_file_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_dump.md"
-            markdown_output_path.mkdir(parents=True, exist_ok=True)
-            with open(markdown_file_path, "w", encoding="utf-8") as f:
-                f.write(raw_data_for_llm_prompt)
-            logger.info(f"Saved raw data dump (due to insufficient content for LLM formatting) for {company_name} to {markdown_file_path}")
-            return
-
-        model_for_markdown = llm_config.get("model_for_raw_markdown", "gpt-4o-mini")
-        temperature_for_markdown = llm_config.get("temperature_for_raw_markdown", 0.1)
-        max_tokens_for_markdown = llm_config.get("max_tokens_for_raw_markdown", 4000) # Увеличено, если нужно
-
+        if not raw_data_for_llm_prompt.strip() or len(raw_data_for_llm_prompt) < 50:
+            logger.warning(f"No substantial raw data to format for {company_name}. Saving raw dump.")
+            md_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_dump.md"
+            markdown_output_path.mkdir(parents=True, exist_ok=True); 
+            with open(md_path, "w", encoding="utf-8") as f: f.write(raw_data_for_llm_prompt)
+            logger.info(f"Saved raw dump for {company_name} to {md_path}"); return
+        model_config = llm_config.get("raw_markdown_formatter_config", {})
+        model = model_config.get("model", "gpt-4o-mini")
+        temp = model_config.get("temperature", 0.1)
+        max_tokens = model_config.get("max_tokens", 4000)
         system_prompt = (
             "You are an AI assistant. Your task is to take a collection of raw data entries for a company, each from a different named source, "
             "and format this information into a single, coherent, well-structured Markdown report. "
@@ -105,49 +87,148 @@ async def _generate_and_save_raw_markdown_report_async(
             "Make sure all details, including any explicitly listed URLs/sources from each original data block, are preserved and clearly presented under their respective original source headings.\n\n"
             f"Raw Data Collection:\n```markdown\n{raw_data_for_llm_prompt}\n```"
         )
-
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
-        ]
-
-        logger.info(f"Generating formatted raw Markdown report for {company_name} using model {model_for_markdown}. Input text length: {len(raw_data_for_llm_prompt)}")
-        
+        messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_prompt}]
+        logger.info(f"Generating formatted Markdown for {company_name} using {model}. Input length: {len(raw_data_for_llm_prompt)}")
         try:
-            response = await openai_client.chat.completions.create(
-                model=model_for_markdown,
-                messages=messages,
-                temperature=temperature_for_markdown,
-                max_tokens=max_tokens_for_markdown
-            )
-
+            response = await openai_client.chat.completions.create(model=model, messages=messages, temperature=temp, max_tokens=max_tokens)
             if response.choices and response.choices[0].message and response.choices[0].message.content:
-                markdown_content = response.choices[0].message.content.strip()
-                
-                markdown_file_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_formatted.md"
-                markdown_output_path.mkdir(parents=True, exist_ok=True)
-                with open(markdown_file_path, "w", encoding="utf-8") as f:
-                    f.write(markdown_content)
-                logger.info(f"Saved formatted raw Markdown report for {company_name} to {markdown_file_path}")
+                md_content = response.choices[0].message.content.strip()
+                md_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_formatted.md"
+                markdown_output_path.mkdir(parents=True, exist_ok=True); 
+                with open(md_path, "w", encoding="utf-8") as f: f.write(md_content)
+                logger.info(f"Saved formatted Markdown for {company_name} to {md_path}")
             else:
-                logger.warning(f"LLM did not generate content for formatted Markdown report for {company_name}. Saving unformatted dump.")
-                # Сохраняем исходный дамп, если LLM не вернула контент
-                markdown_file_path_dump = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_unformatted_llm_empty.md"
-                with open(markdown_file_path_dump, "w", encoding="utf-8") as f:
-                    f.write(raw_data_for_llm_prompt) # Сохраняем то, что готовили для LLM
-                logger.info(f"Saved unformatted raw data dump to {markdown_file_path_dump}")
+                logger.warning(f"LLM did not generate content for Markdown report for {company_name}. Saving unformatted dump.")
+                md_path_dump = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_unformatted_llm_empty.md"
+                with open(md_path_dump, "w", encoding="utf-8") as f: f.write(raw_data_for_llm_prompt)
+                logger.info(f"Saved unformatted dump to {md_path_dump}")
         except Exception as e_llm:
-            logger.error(f"Error during LLM formatting of raw Markdown for {company_name}: {e_llm}. Saving unformatted dump.")
-            logger.error(traceback.format_exc())
-            # Сохраняем исходный дамп при ошибке LLM
-            markdown_file_path_error_dump = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_unformatted_llm_error.md"
-            with open(markdown_file_path_error_dump, "w", encoding="utf-8") as f:
-                f.write(raw_data_for_llm_prompt)
-            logger.info(f"Saved unformatted raw data dump due to LLM error to {markdown_file_path_error_dump}")
-
+            logger.error(f"Error during LLM formatting for {company_name}: {e_llm}. Saving unformatted dump.", exc_info=True)
+            md_path_error = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_unformatted_llm_error.md"
+            with open(md_path_error, "w", encoding="utf-8") as f: f.write(raw_data_for_llm_prompt)
+            logger.info(f"Saved unformatted dump due to LLM error to {md_path_error}")
     except Exception as e:
-        logger.error(f"General error in _generate_and_save_raw_markdown_report_async for {company_name}: {e}")
-        logger.error(traceback.format_exc())
+        logger.error(f"General error in _generate_and_save_raw_markdown_report_async for {company_name}: {e}", exc_info=True)
+
+async def _process_single_company_async(
+    company_name: str,
+    openai_client: AsyncOpenAI,
+    aiohttp_session: aiohttp.ClientSession,
+    sb_client: ScrapingBeeClient,
+    serper_api_key: str,
+    finders: List[Finder],
+    description_generator: DescriptionGenerator,
+    llm_config: Dict[str, Any],
+    raw_markdown_output_path: Path,
+    output_csv_path: Optional[str],
+    output_json_path: Optional[str],
+    csv_fields: List[str],
+    company_index: int, # Обязательный аргумент
+    total_companies: int, # Обязательный аргумент
+    context_text: Optional[str] = None,
+    run_llm_deep_search_pipeline: bool = True, 
+    llm_deep_search_config_override: Optional[Dict[str, Any]] = None,
+    broadcast_update: Optional[Callable] = None
+) -> Dict[str, Any]:
+    logger.info(f"Starting processing for company {company_index + 1}/{total_companies}: {company_name}")
+    if broadcast_update:
+        await broadcast_update({
+            "type": "progress", "company": company_name, "current": company_index + 1,
+            "total": total_companies, "status": "processing_finders"
+        })
+    company_findings = []
+    for finder_instance in finders:
+        try:
+            context = {
+                'session': aiohttp_session, 'serper_api_key': serper_api_key,
+                'openai_client': openai_client, 'sb_client': sb_client,
+                'context_text': context_text, 'user_context': context_text,
+            }
+            if isinstance(finder_instance, LLMDeepSearchFinder) and run_llm_deep_search_pipeline:
+                logger.debug(f"LLMDeepSearchFinder active for {company_name}")
+                current_llm_deep_search_config = llm_deep_search_config_override or llm_config.get('llm_deep_search_config', {})
+                context['specific_aspects'] = current_llm_deep_search_config.get('specific_aspects_for_report_guidance', [])
+            finder_result_data = await finder_instance.find(company_name, **context)
+            if isinstance(finder_result_data, dict):
+                finder_result_data['_finder_instance_type'] = finder_instance.__class__.__name__
+            else:
+                finder_result_data = {
+                    "source": finder_instance.__class__.__name__,
+                    "result": finder_result_data,
+                    "_finder_instance_type": finder_instance.__class__.__name__
+                }
+            if finder_result_data.get("error"):
+                logger.warning(f"Finder {finder_instance.__class__.__name__} for {company_name} returned error: {finder_result_data.get('error')}")
+            company_findings.append(finder_result_data)
+        except Exception as e:
+            logger.error(f"Exception in finder {finder_instance.__class__.__name__} for {company_name}: {e}", exc_info=True)
+            company_findings.append({
+                "source": finder_instance.__class__.__name__, "result": None, "error": str(e),
+                "_finder_instance_type": finder_instance.__class__.__name__
+            })
+    if broadcast_update:
+        await broadcast_update({
+            "type": "progress", "company": company_name, "current": company_index + 1,
+            "total": total_companies, "status": "generating_markdown"
+        })
+    if company_findings:
+        await _generate_and_save_raw_markdown_report_async(
+            company_name, company_findings, openai_client, llm_config, raw_markdown_output_path
+        )
+    if broadcast_update:
+         await broadcast_update({
+            "type": "progress", "company": company_name, "current": company_index + 1,
+            "total": total_companies, "status": "generating_description"
+        })
+    structured_data = None
+    description = f"Error: Could not generate description for {company_name}."
+    try:
+        generated_result = await description_generator.generate_description(company_name, company_findings)
+        if isinstance(generated_result, str) or (isinstance(generated_result, dict) and generated_result.get("error")):
+            error_message = generated_result if isinstance(generated_result, str) else generated_result.get("error")
+            description = f"Error generating data: {error_message}"
+            logger.warning(f"Could not generate structured data for {company_name}. Reason: {error_message}")
+        elif isinstance(generated_result, dict):
+            description = generated_result.get("description", f"No text description generated for {company_name}.")
+            structured_data = generated_result
+        else:
+            logger.warning(f"Unexpected result type from description_generator for {company_name}: {type(generated_result)}")
+    except Exception as e:
+        logger.error(f"Exception in description_generator for {company_name}: {e}", exc_info=True)
+        description = f"Exception during description generation: {str(e)}"
+    result = {
+        "name": company_name, "homepage": "Not found", "linkedin": "Not found",
+        "description": description, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "structured_data": structured_data
+    }
+    for finding in company_findings:
+        finder_type = finding.get("_finder_instance_type", finding.get("source"))
+        result_value = finding.get("result")
+        if not result_value or not isinstance(result_value, str): continue
+        if finder_type == "HomepageFinder" or finding.get("source") in ["wikidata", "domains", "wikipedia"]:
+            result["homepage"] = result_value
+        elif finder_type == "LinkedInFinder":
+            result["linkedin"] = result_value
+    logger.debug(f"CSV data for {company_name}: name='{result['name']}', homepage='{result['homepage']}', linkedin='{result['linkedin']}', desc_len={len(result['description']) if result['description'] else 0}")
+    if output_csv_path:
+        file_exists = os.path.exists(output_csv_path)
+        try:
+            csv_row = {key: result.get(key) for key in csv_fields}
+            save_results_csv([csv_row], output_csv_path, csv_fields, append_mode=file_exists)
+            logger.info(f"Saved CSV row for {company_name} to {output_csv_path}")
+        except Exception as e: logger.error(f"Error saving CSV for {company_name}: {e}", exc_info=True)
+    if output_json_path and structured_data and not (isinstance(structured_data, dict) and structured_data.get("error")):
+        try:
+            save_structured_data_incrementally(result, output_json_path)
+            logger.info(f"Saved structured JSON for {company_name} to {output_json_path}")
+        except Exception as e: logger.error(f"Error saving structured JSON for {company_name}: {e}", exc_info=True)
+    if broadcast_update:
+        await broadcast_update({
+            "type": "company_completed", "company": company_name, "current": company_index + 1,
+            "total": total_companies, "status": "completed",
+            "result": {key: result.get(key) for key in csv_fields} 
+        })
+    return result
 
 async def process_companies(
     company_names: List[str],
@@ -157,6 +238,7 @@ async def process_companies(
     serper_api_key: str,
     llm_config: Dict[str, Any],
     raw_markdown_output_path: Path,
+    batch_size: int, 
     context_text: Optional[str] = None,
     run_standard_pipeline: bool = True,
     run_llm_deep_search_pipeline: bool = True,
@@ -165,142 +247,47 @@ async def process_companies(
     output_json_path: Optional[str] = None,
     llm_deep_search_config_override: Optional[Dict[str, Any]] = None
 ) -> List[Dict[str, Any]]:
-    logger.info(f"Processing {len(company_names)} companies with full LLM config: {llm_config is not None}")
-    
+    logger.info(f"Processing {len(company_names)} companies in batches of {batch_size}")
     finders = []
-    if run_standard_pipeline:
-        finders.append(HomepageFinder(serper_api_key, verbose=False))
-        finders.append(LinkedInFinder(serper_api_key, verbose=False))
-    if run_llm_deep_search_pipeline:
-        finders.append(LLMDeepSearchFinder(openai_client.api_key, verbose=False))
-    
+    if run_standard_pipeline: finders.append(HomepageFinder(serper_api_key, verbose=False)); finders.append(LinkedInFinder(serper_api_key, verbose=False))
+    if run_llm_deep_search_pipeline: finders.append(LLMDeepSearchFinder(openai_client.api_key, verbose=False))
     description_generator = DescriptionGenerator(openai_client.api_key, model_config=llm_config.get('description_generator_model_config'))
-    
     all_results = []
     csv_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
-    
-    for i, company_name in enumerate(company_names):
-        logger.info(f"Processing company {i+1}/{len(company_names)}: {company_name}")
-        if broadcast_update:
-            await broadcast_update({
-                "type": "progress", "company": company_name, "current": i + 1,
-                "total": len(company_names), "status": "processing"
-            })
-        
-        company_findings = []
-        for finder_instance in finders:
-            try:
-                context = {
-                    'session': aiohttp_session, 'serper_api_key': serper_api_key,
-                    'openai_client': openai_client, 'sb_client': sb_client,
-                    'context_text': context_text, 'user_context': context_text,
-                }
-                if isinstance(finder_instance, LLMDeepSearchFinder) and run_llm_deep_search_pipeline:
-                    logger.info(f"Запуск LLMDeepSearchFinder для компании {company_name}")
-                    current_llm_deep_search_config = llm_deep_search_config_override or llm_config.get('llm_deep_search_config', {})
-                    context['specific_aspects'] = current_llm_deep_search_config.get('specific_aspects_for_report_guidance', [])
-                
-                finder_result_data = await finder_instance.find(company_name, **context)
-                
-                if isinstance(finder_result_data, dict):
-                    finder_result_data['_finder_instance_type'] = finder_instance.__class__.__name__
-                else:
-                    finder_result_data = {
-                        "source": finder_instance.__class__.__name__,
-                        "result": finder_result_data,
-                        "_finder_instance_type": finder_instance.__class__.__name__
-                    }
-
-                if finder_result_data.get("error"):
-                    logger.warning(f"Finder {finder_instance.__class__.__name__} для компании {company_name} вернул ошибку: {finder_result_data.get('error')}")
-                company_findings.append(finder_result_data)
-            except Exception as e:
-                logger.error(f"Error with finder {finder_instance.__class__.__name__} for company {company_name}: {e}", exc_info=True)
-                company_findings.append({
-                    "source": finder_instance.__class__.__name__, 
-                    "result": None, 
-                    "error": str(e),
-                    "_finder_instance_type": finder_instance.__class__.__name__
-                })
-        
-        if company_findings:
-            await _generate_and_save_raw_markdown_report_async(
-                company_name, company_findings, openai_client, llm_config, raw_markdown_output_path
+    total_companies_count = len(company_names)
+    for i in range(0, total_companies_count, batch_size):
+        batch_company_names = company_names[i:i + batch_size]
+        logger.info(f"Processing batch {i//batch_size + 1}/{(total_companies_count + batch_size - 1)//batch_size}: {batch_company_names}")
+        tasks = []
+        for j, company_name_in_batch in enumerate(batch_company_names):
+            global_company_index = i + j
+            task = asyncio.create_task(
+                _process_single_company_async(
+                    company_name=company_name_in_batch, openai_client=openai_client,
+                    aiohttp_session=aiohttp_session, sb_client=sb_client, serper_api_key=serper_api_key,
+                    finders=finders, description_generator=description_generator, llm_config=llm_config,
+                    raw_markdown_output_path=raw_markdown_output_path, output_csv_path=output_csv_path,
+                    output_json_path=output_json_path, csv_fields=csv_fields,
+                    company_index=global_company_index, total_companies=total_companies_count, # Обязательные аргументы
+                    context_text=context_text, # Аргументы по умолчанию далее
+                    run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
+                    llm_deep_search_config_override=llm_deep_search_config_override,
+                    broadcast_update=broadcast_update
+                )
             )
-
-        structured_data = None
-        description = f"No description generated for {company_name}."
-        try:
-            generated_result = await description_generator.generate_description(
-                company_name, company_findings
-            )
-            if isinstance(generated_result, str) or (isinstance(generated_result, dict) and generated_result.get("error")):
-                error_message = generated_result if isinstance(generated_result, str) else generated_result.get("error")
-                description = f"Error generating data: {error_message}"
-                logger.warning(f"Could not generate structured data for {company_name}. Reason: {error_message}")
-            elif isinstance(generated_result, dict):
-                description = generated_result.get("description", "No description generated.")
-                structured_data = generated_result
-            else:
-                logger.warning(f"Unexpected result type from description_generator for {company_name}: {type(generated_result)}")
-        except Exception as e:
-            logger.error(f"Error generating description for {company_name}: {e}", exc_info=True)
-            description = f"Error during description generation: {str(e)}"
-        
-        result = {
-            "name": company_name,
-            "homepage": "Not found",
-            "linkedin": "Not found",
-            "description": description,
-            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-            "structured_data": structured_data
-        }
-        
-        for finding in company_findings:
-            finder_type = finding.get("_finder_instance_type", finding.get("source"))
-            result_value = finding.get("result")
-
-            if not result_value or not isinstance(result_value, str): continue
-            
-            if finder_type == "HomepageFinder" or finding.get("source") in ["wikidata", "domains", "wikipedia"] :
-                result["homepage"] = result_value
-            elif finder_type == "LinkedInFinder":
-                result["linkedin"] = result_value
-                
-        logger.info(f"Data for CSV for {company_name} - Homepage: {result.get('homepage', 'N/A')}, LinkedIn: {result.get('linkedin', 'N/A')}")
-        all_results.append(result)
-        
-        if output_csv_path:
-            file_exists = os.path.exists(output_csv_path)
-            try:
-                csv_row = {key: result.get(key) for key in csv_fields}
-                save_results_csv([csv_row], output_csv_path, csv_fields, append_mode=file_exists)
-                logger.info(f"Saved result for {company_name} to {output_csv_path}")
-            except Exception as e: logger.error(f"Error saving result for {company_name} to CSV: {e}", exc_info=True)
-        
-        if output_json_path and structured_data and not (isinstance(structured_data, dict) and structured_data.get("error")):
-            try:
-                save_structured_data_incrementally(result, output_json_path) 
-                logger.info(f"Saved structured data for {company_name} to {output_json_path}")
-            except Exception as e: logger.error(f"Error saving structured data for {company_name} to JSON: {e}", exc_info=True)
-        
-        if broadcast_update:
-            await broadcast_update({
-                "type": "company_completed", "company": company_name, "current": i + 1,
-                "total": len(company_names), "status": "completed", 
-                "result": {key: result.get(key) for key in csv_fields}
-            })
-    
+            tasks.append(task)
+        batch_results_with_exceptions = await asyncio.gather(*tasks, return_exceptions=True)
+        for res_or_exc in batch_results_with_exceptions:
+            if isinstance(res_or_exc, Exception): logger.error(f"Error processing company in batch: {res_or_exc}", exc_info=res_or_exc)
+            elif isinstance(res_or_exc, dict): all_results.append(res_or_exc)
+            else: logger.warning(f"Unexpected result type from batch: {type(res_or_exc)} - {res_or_exc}")
+        logger.info(f"Finished processing batch {i//batch_size + 1}")
     if output_json_path and all_results:
-        results_with_structured_data = [r for r in all_results if r.get("structured_data") and not (isinstance(r.get("structured_data"), dict) and r.get("structured_data").get("error"))]
-        if results_with_structured_data:
-            try:
-                save_results_json(results_with_structured_data, output_json_path, append_mode=False)
-                logger.info(f"Saved all {len(results_with_structured_data)} structured data to {output_json_path}")
+        valid_results = [r for r in all_results if r.get("structured_data") and not (isinstance(r.get("structured_data"), dict) and r.get("structured_data").get("error"))]
+        if valid_results: 
+            try: save_results_json(valid_results, output_json_path, append_mode=False); logger.info(f"Saved all {len(valid_results)} structured data to {output_json_path}")
             except Exception as e: logger.error(f"Error saving all structured data to JSON: {e}", exc_info=True)
-        else:
-            logger.info(f"No valid structured data found in any results to save in final JSON for {output_json_path}")
-
+        else: logger.info(f"No valid structured data to save in final JSON for {output_json_path}")
     return all_results
 
 async def run_pipeline_for_file(
@@ -317,50 +304,33 @@ async def run_pipeline_for_file(
     serper_api_key: str,
     expected_csv_fieldnames: list[str],
     broadcast_update: callable = None,
-    main_batch_size: int = DEFAULT_BATCH_SIZE,
+    main_batch_size: int = DEFAULT_BATCH_SIZE, 
     run_standard_pipeline: bool = True,
     run_llm_deep_search_pipeline: bool = True,
 ) -> tuple[int, int, list[dict]]:
     company_names = load_and_prepare_company_names(input_file_path, company_col_index)
-    if not company_names:
-        logger.error(f"No valid company names found in {input_file_path}")
-        return 0, 0, []
+    if not company_names: logger.error(f"No valid company names in {input_file_path}"); return 0, 0, []
     logger.info(f"Loaded {len(company_names)} companies from {input_file_path}")
-    
     current_expected_csv_fieldnames = ["name", "homepage", "linkedin", "description", "timestamp"]
-    
-    structured_data_dir = session_dir_path / "structured_data"
-    structured_data_dir.mkdir(exist_ok=True)
+    structured_data_dir = session_dir_path / "structured_data"; structured_data_dir.mkdir(exist_ok=True)
     structured_data_json_path = structured_data_dir / "company_profiles.json"
-    
-    raw_markdown_output_dir = session_dir_path / "raw_markdown_reports"
-    raw_markdown_output_dir.mkdir(exist_ok=True)
-    
+    raw_markdown_output_dir = session_dir_path / "raw_markdown_reports"; raw_markdown_output_dir.mkdir(exist_ok=True)
     llm_deep_search_config_specific = llm_config.get('llm_deep_search_config')
-
     results = await process_companies(
         company_names, openai_client, aiohttp_session, sb_client, serper_api_key,
-        llm_config=llm_config,
-        raw_markdown_output_path=raw_markdown_output_dir,
-        context_text=context_text,
-        run_standard_pipeline=run_standard_pipeline,
-        run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
-        broadcast_update=broadcast_update,
-        output_csv_path=str(output_csv_path),
-        output_json_path=str(structured_data_json_path),
-        llm_deep_search_config_override=llm_deep_search_config_specific
+        llm_config=llm_config, raw_markdown_output_path=raw_markdown_output_dir,
+        batch_size=main_batch_size, context_text=context_text,
+        run_standard_pipeline=run_standard_pipeline, run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
+        broadcast_update=broadcast_update, output_csv_path=str(output_csv_path),
+        output_json_path=str(structured_data_json_path), llm_deep_search_config_override=llm_deep_search_config_specific
     )
-    
     if results:
         try:
             csv_results = []
-            for r in results:
-                csv_row = {key: r.get(key) for key in current_expected_csv_fieldnames}
-                csv_results.append(csv_row)
+            for r in results: csv_results.append({key: r.get(key) for key in current_expected_csv_fieldnames})
             save_results_csv(csv_results, output_csv_path, current_expected_csv_fieldnames)
             logger.info(f"Results saved to {output_csv_path}")
         except Exception as e: logger.error(f"Error saving results to CSV: {e}", exc_info=True)
-    
     success_count = sum(1 for r in results if r.get("description") and not r.get("description","").startswith("Error"))
     failure_count = len(results) - success_count
     return success_count, failure_count, results
