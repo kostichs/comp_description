@@ -9,7 +9,8 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.pipeline import run_pipeline_for_file, setup_session_logging # Import core function and logging setup
+# Import adapter functions instead of direct pipeline calls
+from src.pipeline_adapter import run_pipeline_for_file, setup_session_logging
 from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR # Import session helpers
 from src.config import load_env_vars, load_llm_config # Import config loaders
 from openai import AsyncOpenAI
@@ -183,7 +184,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         session_logger.info("Starting core pipeline execution...")
         try:
             async with aiohttp.ClientSession() as aio_session:
-                success_count, failure_count, _ = await run_pipeline_for_file(
+                success_count, failure_count, all_results = await run_pipeline_for_file(
                     input_file_path=input_file_path,
                     output_csv_path=output_csv_path,
                     pipeline_log_path=str(pipeline_log_path), 
@@ -201,47 +202,48 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     main_batch_size=10,
                     run_standard_pipeline=run_standard_pipeline,
                     run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
-                    llm_deep_search_config=deep_search_config_for_pipeline # This now contains the updated aspects
+                    llm_deep_search_config=deep_search_config_for_pipeline
                 )
-            session_logger.info(f"Pipeline execution finished. Success: {success_count}, Failed: {failure_count}")
-            session_data['status'] = 'completed'
-            session_data['last_processed_count'] = success_count + failure_count
-        except Exception as e_run:
-            pipeline_error = f"Pipeline run failed: {type(e_run).__name__}: {e_run}"
-            raise # Re-raise
-
-    except Exception as e_outer_pipeline:
-        # This catches errors from config loading, client init, or pipeline run
-        session_logger.critical(f"CRITICAL ERROR during pipeline setup or execution for session {session_id}: {e_outer_pipeline}")
-        session_logger.debug(traceback.format_exc())
+                
+                session_logger.info(f"Pipeline completed with {success_count} successes and {failure_count} failures.")
+                
+        except Exception as e_pipeline:
+            session_logger.error(f"Pipeline execution error: {e_pipeline}", exc_info=True)
+            pipeline_error = f"Pipeline execution failed: {e_pipeline}"
+            raise # Re-raise to be caught by outer try/except
+            
+    except Exception as e_outer:
+        session_logger.error(f"Error during processing: {e_outer}", exc_info=True)
         session_data['status'] = 'error'
-        # Use the specific error if caught, otherwise the generic outer one
-        session_data['error_message'] = pipeline_error if pipeline_error else f"{type(e_outer_pipeline).__name__}: {e_outer_pipeline}"
-        # failure_count might be inaccurate here, depends where error happened
-        session_data['last_processed_count'] = success_count # Only successful ones before error
-
+        session_data['error_message'] = pipeline_error or f"Processing error: {e_outer}"
+        failure_count = 1 # At least one failure
+        success_count = 0 # No guaranteed successes
+    else:
+        # Only update if no exception occurred
+        session_data['status'] = 'completed'
+        session_data['processed_count'] = success_count
+        session_data['error_count'] = failure_count
+        session_data['error_message'] = None if failure_count == 0 else f"Completed with {failure_count} errors"
+        
     finally:
-        # --- 7. Save Final Metadata --- 
-        try:
-            # Reload metadata *again* before saving, in case another process modified it
-            # This reduces but doesn't eliminate race conditions without proper locking
-            final_metadata = load_session_metadata()
-            final_session_data_ptr = next((s for s in final_metadata if s.get('session_id') == session_id), None)
-            if final_session_data_ptr:
-                # Update only the fields changed by this task run
-                final_session_data_ptr['status'] = session_data['status']
-                final_session_data_ptr['error_message'] = session_data.get('error_message')
-                final_session_data_ptr['last_processed_count'] = session_data.get('last_processed_count')
-                # Ensure paths are stored if not already (should be from step 2)
-                final_session_data_ptr['output_csv_path'] = session_data['output_csv_path']
-                final_session_data_ptr['pipeline_log_path'] = session_data['pipeline_log_path']
-                final_session_data_ptr['scoring_log_path'] = session_data['scoring_log_path']
-            else:
-                # This shouldn't happen if initial load worked, but handle defensively
-                 session_logger.error(f"[BG Task {session_id}] Cannot find session in final metadata load. Appending potentially duplicate/outdated info.")
-                 final_metadata.append(session_data) # Add potentially outdated info
-
-            save_session_metadata(final_metadata)
-            session_logger.info(f"Background task finished for session: {session_id}. Final status: {session_data['status']}")
-        except Exception as e_save:
-            session_logger.error(f"[BG Task {session_id}] CRITICAL: Failed to save final session metadata: {e_save}") 
+        # Update metrics in session metadata
+        session_data['processed_count'] = success_count
+        session_data['error_count'] = failure_count
+        session_data['completion_time'] = asyncio.get_running_loop().time()
+        save_session_metadata(all_metadata)
+        
+        # Final log
+        status_message = session_data.get('status', 'unknown')
+        error_message = session_data.get('error_message', '')
+        session_logger.info(f"Background task ended for session: {session_id} - Status: {status_message}{' - ' + error_message if error_message else ''}")
+        
+        # Final broadcast
+        if broadcast_update:
+            await broadcast_update({
+                "type": "session_status",
+                "session_id": session_id,
+                "status": status_message,
+                "error_message": error_message or None,
+                "success_count": success_count,
+                "failure_count": failure_count
+            }) 

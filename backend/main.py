@@ -14,31 +14,27 @@ from fastapi.staticfiles import StaticFiles
 import asyncio
 import json
 from datetime import datetime
-from src.pipeline import process_companies, run_pipeline_for_file
-from src.config import OUTPUT_DIR, load_env_vars, load_llm_config
 from typing import Dict, List, Any, Optional
 import aiohttp
 from openai import AsyncOpenAI
-from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR # Example import
 from scrapingbee import ScrapingBeeClient
 import tempfile # Added for temporary file for zip archive
-
-# Need to ensure SESSIONS_DIR and SESSIONS_METADATA_FILE are correctly handled within data_io.py
-
-# Configure basic logging if not already configured elsewhere
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 # Adjust sys.path to allow importing from src
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-# Now we can import from src
-from src.config import load_env_vars, load_llm_config # Example import
-# Need to ensure SESSIONS_DIR and SESSIONS_METADATA_FILE are correctly handled within data_io.py
+# Import from adapter instead of old pipeline
+from src.pipeline_adapter import run_pipeline_for_file, process_companies, setup_session_logging
+from src.config import OUTPUT_DIR, load_env_vars, load_llm_config
+from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR
 
 # --- Import background task runner --- 
 from .processing_runner import run_session_pipeline
+
+# Configure basic logging if not already configured elsewhere
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Company Information API",
@@ -64,9 +60,6 @@ app.add_middleware(
     allow_methods=["*"],    # Allow all methods (GET, POST, etc.)
     allow_headers=["*"],    # Allow all headers
 )
-
-# Configure basic logging if not already configured elsewhere
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Монтируем статические файлы
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
@@ -426,8 +419,14 @@ async def get_session_results(session_id: str):
              
         # Read CSV using pandas, assuming comma separator from our writer
         df = pd.read_csv(output_csv_path, sep=',', encoding='utf-8-sig')
+        
         # Convert NaN/NaT to None (which becomes null in JSON)
         df = df.where(pd.notnull(df), None)
+        
+        # Обрабатываем специальные числовые значения, которые не могут быть сериализованы в JSON
+        for col in df.select_dtypes(include=['float', 'float64']).columns:
+            df[col] = df[col].apply(lambda x: None if pd.isna(x) or pd.isinf(x) else x)
+            
         results = df.to_dict(orient='records')
         return results
     except pd.errors.EmptyDataError:

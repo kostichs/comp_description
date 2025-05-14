@@ -4,6 +4,10 @@ import csv
 import json
 import logging
 from pathlib import Path
+from typing import List, Dict, Any, Optional
+
+# Setup logging
+logger = logging.getLogger(__name__)
 
 # Determine Project Root (assuming this file is in src/)
 PROJECT_ROOT = Path(__file__).parent.parent 
@@ -109,64 +113,46 @@ def save_session_metadata(metadata: list[dict]):
         logging.error(f"Error saving session metadata: {e}")
 
 # === Results CSV Handling ===
-def save_results_csv(results: list[dict], output_file_path: str | Path, append_mode: bool = False, fieldnames: list[str] | None = None):
-    # Convert Path object to string if necessary for csv writer compatibility or os.path
-    output_file_path_str = str(output_file_path)
+def save_results_csv(results: list[dict], output_path: str, expected_fields: list[str] = None, append_mode: bool = False):
+    """
+    Save results to CSV file.
     
-    if not results and not append_mode: # Handle case where we just want to write header
-        # Ensure directory exists even if results are empty
-        output_dir = os.path.dirname(output_file_path_str)
-        if output_dir and not os.path.exists(output_dir):
-            try:
-                os.makedirs(output_dir)
-                logging.info(f"Created directory for CSV output: {output_dir}")
-            except OSError as e:
-                 logging.error(f"Could not create directory {output_dir} for CSV. Error: {e}")
-                 return # Cannot proceed if directory creation fails
-        # If results list is empty but we need header
-        if not fieldnames:
-            logging.warning(f"Cannot write header for {output_file_path_str}: fieldnames not provided and results are empty.")
-            return
-        try:
-            with open(output_file_path_str, 'w', newline='', encoding='utf-8-sig') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
-                writer.writeheader()
-            logging.info(f"Created empty CSV with header at {output_file_path_str}")
-        except IOError as e:
-             logging.error(f"Error writing header to CSV file {output_file_path_str}: {e}")
-        return # Exit after writing header
-
-    if not results:
-        # If appending and results is empty, do nothing
-        # If writing (not appending) and results is empty, handled above.
-        logging.debug(f"No results to save/append to {output_file_path_str}")
-        return
+    Args:
+        results: List of result dictionaries
+        output_path: Path to save CSV file
+        expected_fields: List of expected field names (optional)
+        append_mode: Whether to append to existing file rather than overwrite
+    """
+    import csv
+    import os
+    from pathlib import Path
+    
+    # Create directory if it doesn't exist
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
+    # Determine field names
+    if expected_fields:
+        fieldnames = expected_fields
+    elif results and len(results) > 0:
+        fieldnames = list(results[0].keys())
+    else:
+        fieldnames = ["name", "homepage", "linkedin", "description", "timestamp"]
+    
+    # Determine mode based on append_mode and file existence
+    mode = 'a' if append_mode and os.path.exists(output_path) else 'w'
+    
+    # Write to CSV
+    with open(output_path, mode, newline='', encoding='utf-8-sig') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
         
-    # Determine fieldnames if not provided
-    if not fieldnames:
-        fieldnames = list(results[0].keys()) 
-
-    file_exists = os.path.isfile(output_file_path_str)
-    write_header = not file_exists or not append_mode
-    mode = 'a' if append_mode and file_exists else 'w'
-
-    try:
-        output_dir = os.path.dirname(output_file_path_str)
-        if output_dir and not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-            logging.info(f"Created directory for CSV output: {output_dir}")
-            
-        with open(output_file_path_str, mode, newline='', encoding='utf-8-sig') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
-            if write_header:
-                writer.writeheader()
-            writer.writerows(results) # Use writerows for efficiency
+        # Write header only if writing a new file
+        if mode == 'w':
+            writer.writeheader()
         
-        action = "Appended" if mode == 'a' else "Saved"
-        logging.info(f"{action} {len(results)} result(s) to {output_file_path_str}") # Changed print to logging.info
-
-    except IOError as e:
-        logging.error(f"Error writing to CSV file {output_file_path_str}: {e}") # Changed print to logging.error
-    except Exception as e:
-        logging.error(f"An unexpected error occurred during CSV writing to {output_file_path_str}: {e}") # Changed print to logging.error
+        for result in results:
+            # Ensure all expected fields are present
+            row = {field: result.get(field, '') for field in fieldnames}
+            writer.writerow(row)
+    
+    logging.info(f"Saved {len(results)} result(s) to {output_path}")
  

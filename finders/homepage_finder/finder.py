@@ -59,13 +59,13 @@ class HomepageFinder(Finder):
         wikidata_url = get_wikidata_url(company_name)
         if wikidata_url:
             print(f"Домашняя страница для '{company_name}': {wikidata_url} (источник: Wikidata)")
-            return {"source": "wikidata", "result": wikidata_url}
+            return {"source": "wikidata", "source_class": "HomepageFinder", "result": wikidata_url}
         
         # 2. Если через Wikidata не нашли, пробуем найти через проверку доменов
         domain_url = await find_domain_by_tld(company_name, session)
         if domain_url:
             print(f"Домашняя страница для '{company_name}': {domain_url} (источник: проверка доменов)")
-            return {"source": "domains", "result": domain_url}
+            return {"source": "domains", "source_class": "HomepageFinder", "result": domain_url}
         
         # 3. Если не нашли ни через Wikidata, ни через домены, ищем через Google
         results = await search_google(company_name, session, self.serper_api_key)
@@ -89,33 +89,33 @@ class HomepageFinder(Finder):
                             wikidata_url = get_wikidata_url(wiki_company_name)
                             if wikidata_url:
                                 print(f"Домашняя страница для '{company_name}': {wikidata_url} (источник: Wikidata через Wikipedia)")
-                                return {"source": "wikidata_via_wiki", "result": wikidata_url}
+                                return {"source": "wikidata_via_wiki", "source_class": "HomepageFinder", "result": wikidata_url}
                         
                         # Если через Wikidata не нашли, пробуем парсить Wikipedia
                         website_url = await parse_wikipedia_website(selected_url, session)
                         if website_url != selected_url:  # Если нашли официальный сайт в инфобоксе
                             print(f"Домашняя страница для '{company_name}': {website_url} (источник: Wikipedia инфобокс)")
-                            return {"source": "wikipedia", "result": website_url}
+                            return {"source": "wikipedia", "source_class": "HomepageFinder", "result": website_url}
                         else:  # Если вернулась ссылка на Wikipedia
                             if self.verbose:
                                 print(f"Для '{company_name}' найдена только страница Wikipedia: {website_url}")
-                            return {"source": "wikipedia_page", "result": website_url}
+                            return {"source": "wikipedia_page", "source_class": "HomepageFinder", "result": website_url}
                 
                 # Если нет OpenAI API ключа или LLM не выбрал, берем первую ссылку
                 first_url = wiki_links[0]["link"]
                 website_url = await parse_wikipedia_website(first_url, session)
                 if website_url != first_url:
                     print(f"Домашняя страница для '{company_name}': {website_url} (источник: Wikipedia инфобокс, первая ссылка)")
-                    return {"source": "wikipedia_first", "result": website_url}
+                    return {"source": "wikipedia_first", "source_class": "HomepageFinder", "result": website_url}
                 else:
                     if self.verbose:
                         print(f"Для '{company_name}' найдена только страница Wikipedia: {first_url}")
-                    return {"source": "wikipedia_page_first", "result": first_url}
+                    return {"source": "wikipedia_page_first", "source_class": "HomepageFinder", "result": first_url}
         
         # Ничего не нашли
         if self.verbose:
             print(f"Домашняя страница для '{company_name}' не найдена")
-        return {"source": "homepage_finder", "result": None}
+        return {"source": "homepage_finder", "source_class": "HomepageFinder", "result": None}
 
 
 # Код для тестового запуска при прямом выполнении файла
