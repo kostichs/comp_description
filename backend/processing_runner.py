@@ -201,8 +201,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     broadcast_update=broadcast_update,
                     main_batch_size=10,
                     run_standard_pipeline=run_standard_pipeline,
-                    run_llm_deep_search_pipeline=run_llm_deep_search_pipeline,
-                    llm_deep_search_config=deep_search_config_for_pipeline
+                    run_llm_deep_search_pipeline=run_llm_deep_search_pipeline
                 )
                 
                 session_logger.info(f"Pipeline completed with {success_count} successes and {failure_count} failures.")

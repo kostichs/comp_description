@@ -114,14 +114,14 @@ class LLMDeepSearchFinder(Finder):
             List[str]: Список аспектов
         """
         return [
-            "precise founding year of the company (exact date if available)",
-            "detailed headquarters location including city, country, and address if available",
+            "precise founding year of the company (exact date)",
+            "detailed headquarters location including city and country",
             "full names of the founding team members and current CEO",
             "detailed ownership structure (e.g., public company with stock symbol, private company with major investors, etc.)",
             "last 2-3 years of annual revenue with exact figures and currency (specify fiscal year periods)",
             "exact employee count (current or most recently reported) with source and date",
             "all funding rounds with exact amounts, dates, and lead investors",
-            "detailed product portfolio with specific product names and core features, including year of launch if available",
+            "detailed product portfolio with specific product names and core features, including year of launch",
             "underlying technologies used by the company for their products/services",
             "primary customer types (B2B, B2C, B2G) with specific industry focus",
             "industries served or targeted by the company",
@@ -192,7 +192,7 @@ The report MUST follow this structure that corresponds to our JSON schema:
    * Ownership Background: Information about ownership structure (public/private, parent companies, etc.)
 
 2. **Products and Technology:**
-   * Core Products & Services: List each major product/service with its launch year (if available).
+   * Core Products & Services: List each major product/service with its launch year.
    * Underlying Technologies: Key technologies, frameworks, or platforms used by the company.
 
 3. **Market and Customer Information:**

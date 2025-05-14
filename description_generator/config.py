@@ -40,7 +40,7 @@ Focus on extracting:
 1. Basic company information (founding year, location, founders)
 2. Core business details (products/services, technologies used)
 3. Market information (customer types, industries served, geographic markets)
-4. Financial and operational details (if available)
+4. Financial and operational details
 5. Strategic information (major clients, partnerships, competitors)
 
 Use the data to build a detailed understanding of the company's profile.""" 

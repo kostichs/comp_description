@@ -66,7 +66,7 @@ FINANCIAL_HR_SCHEMA = {
     "properties": {
         "financial_details": {
             "type": ["object", "null"],
-            "description": "Key financial indicators. May include data for multiple recent years if available.",
+            "description": "Key financial indicators. May include data for multiple recent years.",
             "additionalProperties": False,
             "properties": {
                 "annual_revenue_history": { 
@@ -334,7 +334,7 @@ Strict formatting rules:
 - Ensure all information comes directly from the provided JSON data. Do not infer or add external knowledge.
 - Spell out acronyms on first use if their full form is available in the JSON.
 
-Paragraph Structure Guide (use the data fields mentioned if available in the JSON):
+Paragraph Structure Guide (use all data fields mentioned in the JSON):
 1.  Paragraph 1 (Foundational Details): company_name, founding_year, headquarters_city, headquarters_country, founders, ownership_background.
 2.  Paragraph 2 (Core Business): core_products_services, underlying_technologies, customer_types, industries_served, geographic_markets.
 3.  Paragraph 3 (Operational & Strategic Highlights): 

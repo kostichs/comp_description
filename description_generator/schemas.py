@@ -70,7 +70,7 @@ FINANCIAL_HR_SCHEMA = {
     "properties": {
         "financial_details": {
             "type": ["object", "null"],
-            "description": "Key financial indicators. May include data for multiple recent years if available.",
+            "description": "Key financial indicators. Include all data for multiple recent years.",
             "additionalProperties": False,
             "properties": {
                 "annual_revenue_history": { 
@@ -324,8 +324,26 @@ async def generate_text_summary_from_json_async(
     if not structured_data:
         logger.warning(f"No structured data provided for {company_name} to generate text summary.")
         return "Error: No structured data to summarize."
-    model_name = llm_config.get('model_for_summary', llm_config.get('model', "gpt-4o"))
+    model_name = llm_config.get('model_for_summary', llm_config.get('model', "gpt-4o")) # gpt-4o-mini может быть достаточно
     try:
+        # Для большей читаемости промпта, отсортируем историю доходов по убыванию года заранее
+        if isinstance(structured_data.get("financial_details"), dict) and \
+           isinstance(structured_data["financial_details"].get("annual_revenue_history"), list):
+            
+            # Фильтруем только корректные записи (словари с годом)
+            valid_revenue_history = [
+                item for item in structured_data["financial_details"]["annual_revenue_history"]
+                if isinstance(item, dict) and item.get("year_reported") is not None
+            ]
+            
+            # Сортируем
+            if valid_revenue_history:
+                structured_data["financial_details"]["annual_revenue_history"] = sorted(
+                    valid_revenue_history,
+                    key=lambda x: x["year_reported"],
+                    reverse=True
+                )
+
         json_input_for_prompt = json.dumps(structured_data, ensure_ascii=False, indent=None)
     except TypeError as e:
         logger.error(f"Failed to serialize structured_data for {company_name}: {e}")
@@ -335,10 +353,10 @@ async def generate_text_summary_from_json_async(
         "You are a skilled business writer specializing in synthesizing structured data into concise, professional company profiles. "
         "Your output must be a three-paragraph summary in English, based ONLY on the provided JSON data. "
         "Do not add external information or speculate. Adhere strictly to the three-paragraph format with formal language. "
-        "When summarizing financial history arrays (like revenue or funding), typically focus on the most recent and significant single data point unless multiple distinct years are particularly noteworthy for a narrative. Clearly state years and currencies."
+        "When summarizing financial history arrays (like revenue or funding), prioritize the most recent data available."
     )
     
-    # Updated User Prompt to guide handling of financial arrays
+    # ОБНОВЛЕННЫЙ ПРОМПТ ПОЛЬЗОВАТЕЛЯ
     user_prompt_content = f"""Company Name: {company_name}
 
 Structured Company Data (JSON):
@@ -357,11 +375,17 @@ Strict formatting rules:
 - Ensure all information comes directly from the provided JSON data. Do not infer or add external knowledge.
 - Spell out acronyms on first use if their full form is available in the JSON.
 
-Paragraph Structure Guide (use the data fields mentioned if available in the JSON):
+Paragraph Structure Guide (use all data fields in the JSON):
 1.  Paragraph 1 (Foundational Details): company_name, founding_year, headquarters_city, headquarters_country, founders, ownership_background.
 2.  Paragraph 2 (Core Business): core_products_services, underlying_technologies, customer_types, industries_served, geographic_markets.
 3.  Paragraph 3 (Operational & Strategic Highlights): 
-    - For `financial_details.annual_revenue_history`: Mention the revenue for the most recent `year_reported`. If multiple distinct years are present and significant, you can briefly note a trend or the most recent two. Always state the year and currency. Example: "The company reported an annual revenue of €X million in 2024."
+    - For `financial_details.annual_revenue_history`: 
+        - **Always prioritize and prominently feature the revenue data for the absolute MOST RECENT `year_reported` found in the `annual_revenue_history` array.** 
+        - Clearly state the year, amount, currency, and any important `note` associated with this most recent revenue figure (e.g., "(excluding pass-throughs)").
+        - If data for the year immediately preceding the most recent year is also available, mention it briefly for comparison to show a trend. 
+        - Example for most recent: "For 2024, the company reported revenue of €X.X billion (excluding pass-throughs)."
+        - Example with previous year: "For 2024, the company reported revenue of €X.X billion (excluding pass-throughs), compared to €Y.Y billion in 2023."
+        - If only one year of revenue data is available, state that clearly.
     - For `financial_details.funding_rounds`: Mention significant or recent funding. Example: "It recently secured $Y million in a Series B round in 2023 led by InvestorZ."
     - Incorporate `employee_count_details` (e.g., "with Z employees as of 2023").
     - Weave in `major_clients_or_case_studies`, `strategic_initiatives`, `key_competitors_mentioned`.
@@ -386,7 +410,8 @@ Paragraph Structure Guide (use the data fields mentioned if available in the JSO
         response = await openai_client.chat.completions.create(**api_params)
         if response.choices and response.choices[0].message and response.choices[0].message.content:
             text_summary = response.choices[0].message.content.strip()
-            paragraph_count = text_summary.count("\n\n") + 1
+            # Более простая проверка на количество параграфов, если текст не пустой
+            paragraph_count = len([p for p in text_summary.split("\n\n") if p.strip()])
             logger.info(f"Successfully generated {paragraph_count}-paragraph profile for {company_name} (Length: {len(text_summary)}).")
             return text_summary
         else:

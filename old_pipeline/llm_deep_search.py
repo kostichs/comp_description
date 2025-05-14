@@ -80,7 +80,7 @@ Report Structure:
 
 3.  **Business Units / Segments (Financials & Activities):**
     *   List main operational business units or segments.
-    *   For each: Provide reported annual revenue figures. If available, include data for fiscal years 2024 (or other recent distinct years), clearly indicating the year for each figure. List core activities/offerings.
+    *   For each: Provide reported annual revenue figures. Include all data for fiscal years 2024 (or other recent distinct years), clearly indicating the year for each figure. List core activities/offerings.
 
 4.  **Products and Indicative Prices (Latest Available):
     *   Key Products/Services: List flagship offerings (e.g., 5G mobile plans like 'myPlan Unlimited', Fios Internet tiers, 5G Home Internet, Business unlimited mobility, Private 5G solutions).
