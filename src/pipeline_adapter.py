@@ -307,7 +307,6 @@ async def run_pipeline_for_file(
     input_file_path: str | Path,
     output_csv_path: str | Path,
     pipeline_log_path: str,
-    scoring_log_path: str,
     session_dir_path: Path,
     llm_config: Dict[str, Any],
     context_text: str | None,
@@ -366,34 +365,34 @@ async def run_pipeline_for_file(
     failure_count = len(results) - success_count
     return success_count, failure_count, results
 
-def setup_session_logging(pipeline_log_path: str, scoring_log_path: str):
+def setup_session_logging(pipeline_log_path: str):
     """
     Setup logging for a session.
     
     Args:
         pipeline_log_path: Path to save pipeline logs
-        scoring_log_path: Path to save scoring logs
     """
-    # Make sure the directory exists
-    os.makedirs(os.path.dirname(pipeline_log_path), exist_ok=True)
+    detailed_formatter = logging.Formatter(
+        '%(asctime)s - %(levelname)s - [%(name)s:%(module)s:%(funcName)s:%(lineno)d] - %(message)s'
+    )
     
-    # Setup file handlers
+    root_logger = logging.getLogger() 
+    
+    for handler in list(root_logger.handlers):
+        if isinstance(handler, logging.FileHandler) and \
+           (handler.baseFilename == pipeline_log_path):
+            root_logger.removeHandler(handler)
+            handler.close()
+
     pipeline_handler = logging.FileHandler(pipeline_log_path, mode='w', encoding='utf-8')
-    pipeline_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
+    pipeline_handler.setFormatter(detailed_formatter)
+    pipeline_handler.setLevel(logging.DEBUG) 
+    root_logger.addHandler(pipeline_handler)
     
-    scoring_handler = logging.FileHandler(scoring_log_path, mode='w', encoding='utf-8')
-    scoring_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-    
-    # Add handlers to loggers
-    logger.addHandler(pipeline_handler)
-    
-    # Create a specific logger for scoring
-    scoring_logger = logging.getLogger('ScoringLogger')
-    scoring_logger.setLevel(logging.DEBUG)
-    scoring_logger.propagate = False
-    scoring_logger.addHandler(scoring_handler)
-    
-    logger.info("Session logging setup complete")
+    root_logger.setLevel(logging.DEBUG) 
+
+    logger.info("Session logging setup complete with detailed formatter and DEBUG level for file.")
+    logging.getLogger().debug("Root logger DEBUG level test message for session log.") 
 
 async def run_pipeline():
     logger.info("Starting pipeline")
@@ -433,16 +432,15 @@ async def run_pipeline():
     output_csv_path = session_dir_path / f"results_{timestamp}.csv" # Сохраняем CSV в папку сессии
     logs_dir = session_dir_path / "logs"; logs_dir.mkdir(exist_ok=True) # Логи тоже в папку сессии
     pipeline_log_path = logs_dir / f"pipeline_{timestamp}.log"
-    scoring_log_path = logs_dir / f"scoring_{timestamp}.log"
     
-    setup_session_logging(str(pipeline_log_path), str(scoring_log_path))
+    setup_session_logging(str(pipeline_log_path))
     
-    initial_expected_csv_fieldnames = ["name", "homepage", "linkedin", "description", "timestamp"]
-
     async with aiohttp.ClientSession() as session:
+        initial_expected_csv_fieldnames = ["name", "homepage", "linkedin", "description", "timestamp"]
+        
         success_count, failure_count, results = await run_pipeline_for_file(
             input_file_path=input_file_path, output_csv_path=output_csv_path,
-            pipeline_log_path=str(pipeline_log_path), scoring_log_path=str(scoring_log_path),
+            pipeline_log_path=str(pipeline_log_path),
             session_dir_path=session_dir_path,
             llm_config=llm_config,
             context_text=None, company_col_index=company_col_index,
