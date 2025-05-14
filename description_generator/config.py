@@ -5,9 +5,8 @@ Contains prompts and model settings.
 
 # Default model configuration
 DEFAULT_MODEL_CONFIG = {
-    "model": "gpt-3.5-turbo",
-    "temperature": 0.5,
-    "max_tokens": 1000
+    "model": "gpt-4o-mini",
+    "temperature": 0.3,
 }
 
 # System prompt for the description generator

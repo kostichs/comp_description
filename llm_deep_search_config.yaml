@@ -1,67 +1,65 @@
 # LLM Deep Search Configuration (English)
 
-# These aspects will be used to fill the {additional_aspects_placeholder} in the user_prompt_template.
+# These aspects will be used to guide the search for company information
 specific_aspects_for_report_guidance:
-  - "latest reported annual revenue or ARR (with year)"
-  - "approximate current number of employees"
-  - "details of the most recent funding round (amount, date, key investors), if applicable"
-  - "key products, services, or core technologies offered"
-  - "names of main competitors"
-  - "primary business segments and target customer focus (e.g., consumer, B2B, government)"
-  - "key geographical regions of operation and any stated global strategy"
-  - "overview of pricing models for 1-2 key offerings, if publicly available and recent"
-  - "specific solutions related to connectivity, security, or IoT, if a core part of their business"
-  - "any recent (last 12-18 months, focusing on {year_focus_window}) significant company news, major product launches, or M&A activities"
+  - "precise founding year of the company (exact date if available)"
+  - "detailed headquarters location including city, country, and address if available"
+  - "full names of the founding team members and current CEO"
+  - "detailed ownership structure (e.g., public company with stock symbol, private company with major investors, etc.)"
+  - "last 2-3 years of annual revenue with exact figures and currency (specify fiscal year periods)"
+  - "exact employee count (current or most recently reported) with source and date"
+  - "all funding rounds with exact amounts, dates, and lead investors"
+  - "detailed product portfolio with specific product names and core features, including year of launch if available"
+  - "underlying technologies used by the company for their products/services"
+  - "primary customer types (B2B, B2C, B2G) with specific industry focus"
+  - "industries served or targeted by the company"
+  - "geographic markets where the company operates or sells its products"
+  - "major clients or case studies with specific names"
+  - "strategic initiatives, partnerships, or mergers & acquisitions"
+  - "key competitors mentioned within the company's industry"
+  - "any pending mergers, acquisitions, or significant organizational changes"
 
 llm_api_settings:
   model_name: "gpt-4o-mini-search-preview" # Ensure this is the model you want
-  system_prompt: "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company, in English. Utilize your web search capabilities to find the most current information, focusing on {year_focus_window} data where possible. Adhere strictly to the requested report structure and level of detail. Cite all specific data points (financials, subscriber counts, pricing, etc.) with their sources, either inline or in a dedicated 'Sources' section at the end. Be concise, data-driven, and avoid conversational intros, outros, or disclaimers. Respond only in English."
-  # max_tokens: 3800
+  system_prompt: "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company. Utilize your web search capabilities to find the most current information. When financial data is requested, if multiple recent years are found, include data for each distinct year, clearly stating the period. Prioritize the most recent full fiscal year data. The report MUST follow the exact sections in the prompt, as these will be used to extract structured data into a JSON schema. Be concise and data-driven. Do not include conversational intros, outros, or disclaimers. For sections where you cannot find information, simply include a brief note like 'No specific data found on [topic]' rather than leaving the section empty."
+  # max_tokens: 4000
   # temperature: 0.0
 
-# Main user prompt template.
-# Placeholders: {company_name_placeholder}, {additional_aspects_placeholder}, {year_focus_window}, {current_year_for_pricing}
+# Main user prompt template structured to match our JSON schema
 user_prompt_template: |
   Please generate a detailed Business Analytics Report for the company: '{company_name_placeholder}'.
 
-  Your primary goal is to extract and present factual data, focusing on information from {year_focus_window} where available. The report MUST strictly follow the structure outlined below and include the requested details for each section. Use your web search capabilities to find the most current information.
+  Your primary goal is to extract and present factual data that will later be structured according to a specific JSON schema. 
+  When reporting financial figures (like revenue, ARR, funding), prioritize data for the most recent fiscal year. If multiple years of data are found, include all such figures, clearly stating the period/year each figure refers to.
 
-  Report Structure:
+  The report MUST follow this structure that corresponds to our JSON schema:
 
-  1.  **Customer Segments:**
-      *   Identify and detail main customer categories (e.g., Consumer, Business, Wholesale, Government/Public Sector).
-      *   Provide key metrics: wireless retail connections, post-paid vs. prepaid figures, total broadband subscribers (broken down by type like Fios fiber vs. fixed-wireless if applicable), and relevant market share if found (aim for {year_focus_window} data).
-      *   Note any specialized services for distinct communities (e.g., first-responder networks).
+  1. **Basic Company Information:**
+     * Company Name: Official legal name of the company.
+     * Founding Year: Exact year when the company was founded.
+     * Headquarters Location: City and country of the company's headquarters.
+     * Founders: Names of all company founders.
+     * Ownership Background: Information about ownership structure (public/private, parent companies, etc.)
 
-  2.  **Geographic Reach:**
-      *   Describe core network operational areas and retail footprint (e.g., US-centric, specific states/regions for key services like Fios).
-      *   Detail global presence for enterprise services, including owned infrastructure vs. partner Points of Presence (POPs) and countries covered.
+  2. **Products and Technology:**
+     * Core Products & Services: List each major product/service with its launch year (if available).
+     * Underlying Technologies: Key technologies, frameworks, or platforms used by the company.
 
-  3.  **Business Units / Segments (Financials & Activities):**
-      *   List main operational business units or segments.
-      *   For each: Provide latest reported annual revenue (specify year, e.g., 2024 revenue) and list core activities/offerings.
+  3. **Market and Customer Information:**
+     * Customer Types: Primary customer categories (B2B, B2C, B2G).
+     * Industries Served: Specific industries or sectors the company targets.
+     * Geographic Markets: Countries or regions where the company operates.
 
-  4.  **Products and Indicative Prices (Latest Available, e.g., data around {current_year_for_pricing}):**
-      *   Key Products/Services: List flagship offerings (e.g., 5G mobile plans like 'myPlan Unlimited', Fios Internet tiers, 5G Home Internet, Business unlimited mobility, Private 5G solutions).
-      *   Indicative Pricing: For major offerings, provide entry-level monthly pricing. Note any conditions: discounts (e.g., Mobile + Home), price lock durations, contract requirements, setup fees, included equipment. Mention any significant promotional offers (e.g., free devices/services with specific plans).
+  4. **Financial and HR Details:**
+     * Revenue History: For each reported year, provide the amount, currency, and type (total revenue, ARR, etc.).
+     * Funding Rounds: For each round, include the round name, year closed, amount, currency, and key investors.
+     * Employee Count: Current or most recent employee count with the reporting year.
 
-  5.  **Core Offers & Promotions (Strategic Summary):**
-      *   Summarize key ongoing offers defining their market strategy (e.g., device trade-in credits, bundling discounts, special programs for demographics like low-income households - e.g., Verizon Forward + Lifeline).
-
-  6.  **Customer Needs Addressed (Solution Mapping):**
-      *   For key customer needs (e.g., ubiquitous reliable mobility, high-speed home/business broadband, mission-critical communications, enterprise digital transformation, low-income connectivity), describe how the company's specific offerings (Verizon responses) meet these needs.
-
-  7.  **Solution Portfolio Snapshot (Technical Capabilities & Ecosystem):**
-      *   Network Technology: Spectrum bands utilized (e.g., 700 MHz, C-Band, mmWave), backbone type (e.g., 100% fiber), core network features (e.g., SDN-enabled).
-      *   5G Details: Specifics of 5G offerings (e.g., Ultra Wideband vs. Nationwide, C-Band coverage, mmWave for hot-zones, support for network slicing, Mobile Edge Compute - MEC).
-      *   Fixed Wireless Access (FWA): Technology (5G/LTE), CPE details, typical speeds.
-      *   Private Networks: Offerings for enterprises (e.g., Private 5G On-Site, NaaS models), target verticals (e.g., ports, factories, stadiums), integration with AI/edge compute.
-      *   IoT Platform: (e.g., ThingSpace), SIM/eSIM capabilities, device management, analytics, global IoT footprint.
-      *   Security Services: Portfolio for enterprise/business (e.g., managed firewalls, DDoS protection, SASE/SSE, zero-trust, partner ecosystem for security).
-      *   Unified Communications (UCaaS): Current strategy and offerings (e.g., if native solutions like BlueJeans are retired, what partner platforms are promoted).
-
-  8.  **Competitive Posture & Market Strategy:**
-      *   Summarize the company's competitive strategy, focusing on network strengths (reliability, coverage), customer base (post-paid focus), cross-selling (FWA, fiber), and how they counter price-led competition and retain enterprise clients (e.g., price locks, subsidies, specialization like first-responder networks, private 5G/IoT stickiness).
+  5. **Strategic Information:**
+     * Major Clients or Case Studies: Notable customers or implementation examples.
+     * Strategic Initiatives: Key partnerships, expansions, or strategic moves.
+     * Key Competitors: Main competitors in their space.
+     * Overall Summary: Brief summary of the company's position and outlook.
 
   {additional_aspects_placeholder}
 

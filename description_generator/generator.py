@@ -2,6 +2,7 @@ import json
 import logging
 from typing import List, Dict, Any, Optional, Union
 from openai import AsyncOpenAI
+import traceback
 
 from description_generator.config import (
     SYSTEM_PROMPT,
@@ -25,159 +26,102 @@ logger = logging.getLogger(__name__)
 class DescriptionGenerator:
     """
     Генератор описаний компаний, используя данные, собранные финдерами,
-    и OpenAI модель для создания структурированных, информативных текстов.
+    и OpenAI модель для создания структурированных, информативных описаний.
     """
     
     def __init__(self, api_key: str, model_config: Dict[str, Any] = None):
         """
-        Инициализирует генератор описаний с API ключом для OpenAI.
+        Инициализирует генератор описаний с API ключом и опциональной конфигурацией модели.
         
         Args:
             api_key: API ключ для OpenAI
-            model_config: Конфигурация модели (по умолчанию DEFAULT_MODEL_CONFIG)
+            model_config: Конфигурация модели (опционально)
         """
         self.api_key = api_key
         self.client = AsyncOpenAI(api_key=api_key)
         self.model_config = model_config or DEFAULT_MODEL_CONFIG
         
-    async def generate_description(self, company_name: str, findings: List[Dict[str, Any]]) -> Union[Dict[str, Any], str]:
+    async def generate_description(self, company_name: str, findings: list) -> Union[dict, str]:
         """
-        Генерирует структурированное описание компании на основе найденных данных.
+        Генерирует структурированное описание компании на основе собранных данных.
         
         Args:
             company_name: Название компании
-            findings: Список результатов от различных финдеров
+            findings: Список найденных данных о компании
             
         Returns:
-            Union[Dict[str, Any], str]: Структурированное описание компании или сообщение об ошибке
+            Union[dict, str]: Структурированное описание компании или сообщение об ошибке
         """
-        # Собираем все найденные данные в единый текст
-        text_source = self._prepare_text_source(company_name, findings)
+        # Обработка и подготовка входных данных
+        sources_text = ""
+        llm_deep_search_report = None
         
-        # Если у нас недостаточно данных, возвращаем сообщение об ошибке
-        if not text_source:
-            return f"Insufficient data to generate description for {company_name}."
+        # Проверяем, есть ли среди находок отчет от LLMDeepSearchFinder
+        for finding in findings:
+            if isinstance(finding, dict) and finding.get("source") == "llm_deep_search" and finding.get("result"):
+                llm_deep_search_report = finding.get("result")
+                logger.info(f"Найден отчет LLMDeepSearch ({len(llm_deep_search_report)} символов)")
+                break
         
-        # Генерируем структурированные данные и описание компании
+        # Собираем все результаты в один текст
+        for finding in findings:
+            if isinstance(finding, str):
+                sources_text += finding + "\n\n"
+            elif isinstance(finding, dict) and finding.get("result"):
+                sources_text += finding.get("result") + "\n\n"
+        
+        # Если есть отчет от LLMDeepSearchFinder, добавляем его в начало для приоритета
+        if llm_deep_search_report:
+            sources_text = llm_deep_search_report + "\n\n---\n\n" + sources_text
+            
+        if not sources_text:
+            error_msg = f"Недостаточно данных для генерации описания компании {company_name}"
+            logger.error(error_msg)
+            return error_msg
+        
+        # Обрезаем слишком длинный текст
+        max_text_length = 32000  # максимальная длина текста для обработки
+        if len(sources_text) > max_text_length:
+            logger.warning(f"Текст слишком длинный ({len(sources_text)} символов), обрезаем до {max_text_length}")
+            sources_text = sources_text[:max_text_length]
+        
         try:
-            # Шаг 1: Извлекаем структурированные данные по полной схеме
-            llm_config = {
-                "model": self.model_config.get("model", "gpt-3.5-turbo"),
-                "temperature": 0.1,  # Низкая температура для более точного извлечения фактов
-                "max_tokens_json_extract": 4000  # Больше токенов для сложной схемы
-            }
-            
-            # Извлекаем данные для каждой под-схемы
-            basic_info = await extract_data_with_schema(
-                company_name, 
-                text_source, 
-                BASIC_INFO_SCHEMA, 
-                "basic_info", 
-                llm_config, 
-                self.client
+            # Шаг 1: Извлекаем структурированные данные из текста по схеме
+            structured_data = await extract_data_with_schema(
+                company_name=company_name,
+                about_snippet=sources_text,
+                sub_schema=COMPANY_PROFILE_SCHEMA,
+                schema_name="COMPANY_PROFILE_SCHEMA",
+                llm_config=self.model_config,
+                openai_client=self.client
             )
             
-            product_tech = await extract_data_with_schema(
-                company_name, 
-                text_source, 
-                PRODUCT_TECH_SCHEMA, 
-                "product_tech", 
-                llm_config, 
-                self.client
-            )
+            if not structured_data or isinstance(structured_data, str) or structured_data.get("error"):
+                error_msg = f"Не удалось извлечь структурированные данные для компании {company_name}. Результат: {structured_data}"
+                logger.error(error_msg)
+                return structured_data if isinstance(structured_data, dict) and structured_data.get("error") else error_msg
             
-            market_customer = await extract_data_with_schema(
-                company_name, 
-                text_source, 
-                MARKET_CUSTOMER_SCHEMA, 
-                "market_customer", 
-                llm_config, 
-                self.client
-            )
-            
-            financial_hr = await extract_data_with_schema(
-                company_name, 
-                text_source, 
-                FINANCIAL_HR_SCHEMA, 
-                "financial_hr", 
-                llm_config, 
-                self.client
-            )
-            
-            strategic = await extract_data_with_schema(
-                company_name, 
-                text_source, 
-                STRATEGIC_SCHEMA, 
-                "strategic", 
-                llm_config, 
-                self.client
-            )
-            
-            # Объединяем все данные в единую структуру
-            structured_data = {
-                # Basic Info
-                "company_name": basic_info.get("company_name", company_name),
-                "founding_year": basic_info.get("founding_year"),
-                "headquarters_city": basic_info.get("headquarters_city"),
-                "headquarters_country": basic_info.get("headquarters_country"),
-                "founders": basic_info.get("founders", []),
-                "ownership_background": basic_info.get("ownership_background"),
-                
-                # Product Tech
-                "core_products_services": product_tech.get("core_products_services", []),
-                "underlying_technologies": product_tech.get("underlying_technologies", []),
-                
-                # Market Customer
-                "customer_types": market_customer.get("customer_types", []),
-                "industries_served": market_customer.get("industries_served", []),
-                "geographic_markets": market_customer.get("geographic_markets", []),
-                
-                # Financial HR
-                "financial_details": financial_hr.get("financial_details"),
-                "employee_count_details": financial_hr.get("employee_count_details"),
-                
-                # Strategic
-                "major_clients_or_case_studies": strategic.get("major_clients_or_case_studies", []),
-                "strategic_initiatives": strategic.get("strategic_initiatives", []),
-                "key_competitors_mentioned": strategic.get("key_competitors_mentioned", []),
-                "overall_summary": strategic.get("overall_summary")
-            }
-            
-            # Шаг 2: Генерируем текстовое описание из структурированных данных
-            summary_llm_config = {
-                "model": self.model_config.get("model", "gpt-3.5-turbo"),
-                "temperature": self.model_config.get("temperature", 0.5),
-                "max_tokens_for_summary": self.model_config.get("max_tokens", 1000)
-            }
-            
+            # Шаг 2: Генерируем текстовое описание на основе структурированных данных
             description = await generate_text_summary_from_json_async(
-                company_name,
-                structured_data,
-                self.client,
-                summary_llm_config
+                structured_data=structured_data,
+                company_name=company_name,
+                openai_client=self.client,
+                llm_config=self.model_config
             )
             
-            # Создаем упрощенную версию для совместимости с frontend
-            simplified_result = {
-                "company_name": structured_data.get("company_name", company_name),
-                "founding_year": str(structured_data.get("founding_year")) if structured_data.get("founding_year") else None,
-                "headquarters_location": self._format_headquarters(
-                    structured_data.get("headquarters_city"), 
-                    structured_data.get("headquarters_country")
-                ),
-                "industry": self._get_main_industry(structured_data.get("industries_served", [])),
-                "main_products_services": self._format_products_services(structured_data.get("core_products_services", [])),
-                "employees_count": self._format_employees(structured_data.get("employee_count_details")),
-                "description": description
+            # Возвращаем результат в виде словаря с описанием и структурированными данными
+            result = {
+                "description": description,
+                **structured_data  # Добавляем все поля структурированных данных в корень объекта
             }
             
-            # Сохраняем полные данные для доступа
-            simplified_result["full_structured_data"] = structured_data
+            return result
             
-            return simplified_result
         except Exception as e:
-            logger.error(f"Error generating structured description for {company_name}: {e}")
-            return f"Failed to generate description for {company_name}: {str(e)}"
+            error_msg = f"Ошибка при генерации описания для компании {company_name}: {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            return error_msg
     
     async def generate_batch_descriptions(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """

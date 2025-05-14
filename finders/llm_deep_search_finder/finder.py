@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 import json
+import traceback
 from typing import Dict, List, Any, Optional
 
 # Добавляем корневую директорию проекта в путь Python
@@ -11,15 +12,18 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from finders.base import Finder
-from openai import AsyncOpenAI, APIError, Timeout
+from openai import AsyncOpenAI, APIError, APITimeoutError, RateLimitError
+
+logger = logging.getLogger(__name__)
 
 class LLMDeepSearchFinder(Finder):
     """
     Финдер, использующий LLM с возможностью поиска в интернете для получения 
     подробной информации о компании.
     
-    Использует модель GPT-4o-mini-search-preview или аналогичную, которая может
-    искать актуальную информацию в интернете и составлять структурированный отчет.
+    Использует модель GPT-4o-mini-search-preview, которая может
+    искать актуальную информацию в интернете и составлять структурированный отчет,
+    соответствующий JSON-схеме для последующей обработки.
     """
     
     def __init__(self, openai_api_key: str, verbose: bool = False):
@@ -56,43 +60,55 @@ class LLMDeepSearchFinder(Finder):
         user_context = context.get('user_context', None)
         
         if self.verbose:
-            print(f"\n--- LLM Deep Search для компании '{company_name}' ---")
-            print(f"Модель: {self.model}")
-            print(f"Исследуемые аспекты: {len(specific_aspects)} пунктов")
+            logger.info(f"\n--- LLM Deep Search для компании '{company_name}' ---")
+            logger.info(f"Модель: {self.model}")
+            logger.info(f"Исследуемые аспекты: {len(specific_aspects)} пунктов")
         
-        report_dict = await self._query_llm_for_deep_info(
-            company_name=company_name,
-            specific_aspects_to_cover=specific_aspects,
-            user_context_text=user_context
-        )
-        
-        if "error" in report_dict:
+        try:
+            report_dict = await self._query_llm_for_deep_info(
+                company_name=company_name,
+                specific_aspects_to_cover=specific_aspects,
+                user_context_text=user_context
+            )
+            
+            if "error" in report_dict:
+                if self.verbose:
+                    logger.error(f"Ошибка при поиске: {report_dict['error']}")
+                return {
+                    "source": "llm_deep_search", 
+                    "result": None, 
+                    "error": report_dict["error"],
+                    "sources": []
+                }
+            
+            report_text = report_dict.get("report_text", "")
+            sources = report_dict.get("sources", [])
+            
             if self.verbose:
-                print(f"Ошибка при поиске: {report_dict['error']}")
+                logger.info(f"Получен отчет ({len(report_text)} символов) с {len(sources)} источниками")
+            else:
+                logger.info(f"LLM Deep Search для '{company_name}': получен отчет с {len(sources)} источниками")
+                
             return {
                 "source": "llm_deep_search", 
-                "result": None, 
-                "error": report_dict["error"],
+                "result": report_text, 
+                "sources": sources
+            }
+        except Exception as e:
+            error_msg = f"Непредвиденная ошибка при поиске для '{company_name}': {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            return {
+                "source": "llm_deep_search",
+                "result": None,
+                "error": error_msg,
                 "sources": []
             }
-        
-        report_text = report_dict.get("report_text", "")
-        sources = report_dict.get("sources", [])
-        
-        if self.verbose:
-            print(f"Получен отчет ({len(report_text)} символов) с {len(sources)} источниками")
-        else:
-            print(f"LLM Deep Search для '{company_name}': получен отчет с {len(sources)} источниками")
-            
-        return {
-            "source": "llm_deep_search", 
-            "result": report_text, 
-            "sources": sources
-        }
     
     def _get_default_aspects(self) -> List[str]:
         """
         Возвращает список аспектов для исследования по умолчанию.
+        Аспекты выбраны таким образом, чтобы соответствовать полям JSON-схемы.
         
         Returns:
             List[str]: Список аспектов
@@ -105,14 +121,14 @@ class LLMDeepSearchFinder(Finder):
             "last 2-3 years of annual revenue with exact figures and currency (specify fiscal year periods)",
             "exact employee count (current or most recently reported) with source and date",
             "all funding rounds with exact amounts, dates, and lead investors",
-            "detailed product portfolio with specific product names and core features",
-            "technical infrastructure and technologies used (programming languages, cloud providers, etc.)",
-            "specific pricing models with actual price points for main products",
-            "major enterprise/notable clients with specific use cases or case studies",
-            "precise market share figures and growth rates if available",
-            "named competitors with brief comparison of strengths/weaknesses",
-            "detailed international presence with specific countries and regional headquarters",
-            "recent major announcements, partnerships, or product launches (last 6-12 months)",
+            "detailed product portfolio with specific product names and core features, including year of launch if available",
+            "underlying technologies used by the company for their products/services",
+            "primary customer types (B2B, B2C, B2G) with specific industry focus",
+            "industries served or targeted by the company",
+            "geographic markets where the company operates or sells its products",
+            "major clients or case studies with specific names",
+            "strategic initiatives, partnerships, or mergers & acquisitions",
+            "key competitors mentioned within the company's industry",
             "any pending mergers, acquisitions, or significant organizational changes"
         ]
     
@@ -136,6 +152,7 @@ class LLMDeepSearchFinder(Finder):
     ) -> Dict[str, Any]:
         """
         Запрашивает у LLM с поиском подробную информацию о компании.
+        Промпт структурирован в соответствии с JSON-схемой для лучшей обработки.
         
         Args:
             company_name: Название компании
@@ -159,67 +176,44 @@ class LLMDeepSearchFinder(Finder):
             safe_user_context = self._escape_string_for_prompt(user_context_text)
             context_injection_str = f"\n\nUser-provided context to guide your research: '{safe_user_context}'"
         
-        # Основной шаблон промпта (универсальный для всех типов компаний)
+        # Основной шаблон промпта (структурированный под JSON-схему)
         prompt_template = """Please generate a detailed Business Analytics Report for the company: '{company_name_placeholder}'.
 
-Your primary goal is to extract and present factual data. Research thoroughly to find SPECIFIC, CONCRETE information.
+Your primary goal is to extract and present factual data that will later be structured according to a specific JSON schema. 
 When reporting financial figures (like revenue, ARR, funding), prioritize data for the most recent fiscal year. If multiple years of data are found, include all such figures, clearly stating the period/year each figure refers to.
 
-EXTREMELY IMPORTANT: NEVER mention lack of information or use phrases like "not available", "not disclosed", etc. ONLY include information you ACTUALLY find.
+The report MUST follow this structure that corresponds to our JSON schema:
 
-The report MUST follow this structure:
+1. **Basic Company Information:**
+   * Company Name: Official legal name of the company.
+   * Founding Year: Exact year when the company was founded.
+   * Headquarters Location: City and country of the company's headquarters.
+   * Founders: Names of all company founders.
+   * Ownership Background: Information about ownership structure (public/private, parent companies, etc.)
 
-1. **Company Overview:**
-   * Founding year (actual year, be very specific)
-   * Founders (actual names)
-   * Headquarters location (specific city and country)
-   * Company size (specific number of employees, not ranges)
-   * Current CEO/leadership team
-   * Ownership structure (public with ticker symbol or private with investors)
+2. **Products and Technology:**
+   * Core Products & Services: List each major product/service with its launch year (if available).
+   * Underlying Technologies: Key technologies, frameworks, or platforms used by the company.
 
-2. **Financial Information:**
-   * Annual revenue (exact figures with currency and fiscal year)
-   * Profitability metrics (net income, profit margins)
-   * For startups: funding rounds (amounts, dates, investors)
-   * For public companies: market cap, P/E ratio, stock performance
-   * Recent financial news (acquisitions, major investments)
+3. **Market and Customer Information:**
+   * Customer Types: Primary customer categories (B2B, B2C, B2G).
+   * Industries Served: Specific industries or sectors the company targets.
+   * Geographic Markets: Countries or regions where the company operates.
 
-3. **Products & Services:**
-   * Core product/service portfolio (specific product names)
-   * Key technologies and proprietary systems
-   * Pricing models (with actual price points if available)
-   * Recent product launches or updates
-   * Product market share (specific percentages if available)
+4. **Financial and HR Details:**
+   * Revenue History: For each reported year, provide the amount, currency, and type (total revenue, ARR, etc.).
+   * Funding Rounds: For each round, include the round name, year closed, amount, currency, and key investors.
+   * Employee Count: Current or most recent employee count with the reporting year.
 
-4. **Market Position:**
-   * Primary industries served (be specific)
-   * Target customer segments (B2B, B2C, specific demographics)
-   * Named competitors with comparative strengths
-   * Competitive advantages
-   * Market share data (specific percentages)
-
-5. **Geographic Footprint:**
-   * Countries/regions of operation (list specific countries)
-   * International expansion strategy
-   * Regional headquarters locations
-   * Key markets by revenue contribution
-
-6. **Strategy & Growth:**
-   * Recent partnerships and alliances
-   * Innovation initiatives
-   * Expansion plans
-   * Recent mergers and acquisitions
-   * Strategic vision (as stated by company leadership)
-
-7. **Key Customers & Case Studies:**
-   * Major client relationships (name specific clients)
-   * Notable case studies or success stories
-   * Customer retention metrics
-   * Key contracts or deals
+5. **Strategic Information:**
+   * Major Clients or Case Studies: Notable customers or implementation examples.
+   * Strategic Initiatives: Key partnerships, expansions, or strategic moves.
+   * Key Competitors: Main competitors in their space.
+   * Overall Summary: Brief summary of the company's position and outlook.
 
 {additional_aspects_placeholder}{user_context_placeholder}
 
-Provide a data-rich, fact-heavy report. All data MUST be cited with sources. If you don't find specific information for a category, DO NOT mention that it's unavailable - simply omit that specific detail and focus on what you DO find."""
+Provide a concise, data-driven report. Avoid conversational filler, disclaimers, or speculative statements. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list."""
 
         # Формируем полный пользовательский промпт
         user_content = prompt_template.format(
@@ -230,28 +224,25 @@ Provide a data-rich, fact-heavy report. All data MUST be cited with sources. If 
         
         # Системный промпт для модели
         system_prompt = (
-            "You are an AI Business Analyst with excellent web research skills. Your task is to generate a detailed, "
-            "factual business report on a given company. CRITICAL INSTRUCTIONS: (1) NEVER mention missing information - "
-            "simply omit those details entirely; (2) Include ONLY specific, factual data you can verify; (3) Be "
-            "PRECISE with numbers, dates, names; (4) Cite all specific data points with sources; (5) Focus on "
-            "finding DETAILED information rather than general information. Respond in factual, direct language. "
-            "Avoid qualifiers like 'founded around' or 'approximately' - be precise whenever possible."
+            "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company. "
+            "Utilize your web search capabilities to find the most current information. When financial data is requested, if multiple recent years are found, "
+            "include data for each distinct year, clearly stating the period. Prioritize the most recent full fiscal year data. "
+            "The report MUST follow the exact sections in the prompt, as these will be used to extract structured data into a JSON schema. "
+            "Be concise and data-driven. Do not include conversational intros, outros, or disclaimers. "
+            "For sections where you cannot find information, simply include a brief note like 'No specific data found on [topic]' rather than leaving the section empty."
         )
         
         if self.verbose:
-            print(f"Отправка запроса к {self.model} для компании '{company_name}'")
+            logger.info(f"Отправка запроса к {self.model} для компании '{company_name}'")
         
         try:
-            # Делаем запрос к модели
+            # Делаем запрос к модели с правильными параметрами
             completion = await self.client.chat.completions.create(
                 model=self.model,
                 messages=[
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": f"Please generate a detailed Business Analytics Report for the company: '{safe_company_name}'."
-                     f"{user_context_text if user_context_text else ''}"},
                     {"role": "user", "content": user_content}
-                ],
-                web_search_options={"search_context_size": "high"}
+                ]
             )
             
             answer_content = "LLM did not provide a comprehensive answer."
@@ -263,29 +254,34 @@ Provide a data-rich, fact-heavy report. All data MUST be cited with sources. If 
                     answer_content = message.content.strip()
                 
                 # Извлекаем источники из аннотаций, если они есть
-                if message.annotations:
+                if hasattr(message, 'annotations') and message.annotations:
                     for ann in message.annotations:
-                        if ann.type == "url_citation" and ann.url_citation:
-                            cited_title = ann.url_citation.title or "N/A"
-                            cited_url = ann.url_citation.url or "N/A"
-                            extracted_sources.append({"title": cited_title, "url": cited_url})
+                        if ann.type == "url_citation" and hasattr(ann, 'url_citation'):
+                            try:
+                                cited_title = getattr(ann.url_citation, 'title', "N/A") or "N/A"
+                                cited_url = getattr(ann.url_citation, 'url', "N/A") or "N/A"
+                                extracted_sources.append({"title": cited_title, "url": cited_url})
+                            except Exception as e:
+                                logger.warning(f"Ошибка при извлечении URL-цитаты: {e}")
             
             return {"report_text": answer_content, "sources": extracted_sources}
             
-        except APIError as e:
-            error_msg = f"OpenAI API error: {str(e)}"
-            if self.verbose:
-                print(error_msg)
+        except APITimeoutError as e:
+            error_msg = f"OpenAI Timeout error для '{company_name}': {str(e)}"
+            logger.error(error_msg)
             return {"error": error_msg}
-        except Timeout as e:
-            error_msg = f"Timeout error: {str(e)}"
-            if self.verbose:
-                print(error_msg)
+        except RateLimitError as e:
+            error_msg = f"OpenAI Rate Limit error для '{company_name}': {str(e)}"
+            logger.error(error_msg)
+            return {"error": error_msg}  
+        except APIError as e:
+            error_msg = f"OpenAI API error для '{company_name}': {str(e)}"
+            logger.error(error_msg)
             return {"error": error_msg}
         except Exception as e:
-            error_msg = f"Unexpected error: {str(e)}"
-            if self.verbose:
-                print(error_msg)
+            error_msg = f"Unexpected error для '{company_name}': {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
             return {"error": error_msg}
 
 

@@ -15,6 +15,7 @@ from openai import AsyncOpenAI
 from scrapingbee import ScrapingBeeClient
 import time  # Добавляем для timestamp
 import yaml
+import traceback
 
 # Import new components
 from description_generator import DescriptionGenerator
@@ -41,7 +42,8 @@ async def process_companies(
     run_llm_deep_search_pipeline: bool = True,
     broadcast_update: Optional[Callable] = None,
     output_csv_path: Optional[str] = None,  # Путь к CSV для сохранения
-    output_json_path: Optional[str] = None  # Путь к JSON для сохранения
+    output_json_path: Optional[str] = None,  # Путь к JSON для сохранения
+    llm_deep_search_config: Optional[Dict[str, Any]] = None
 ) -> List[Dict[str, Any]]:
     """
     Process a list of companies using the new pipeline components.
@@ -58,6 +60,7 @@ async def process_companies(
         broadcast_update: Optional callback to broadcast updates
         output_csv_path: Path to save results CSV incrementally
         output_json_path: Path to save structured JSON data incrementally
+        llm_deep_search_config: LLM deep search configuration
         
     Returns:
         List of company processing results
@@ -112,13 +115,27 @@ async def process_companies(
                     'user_context': context_text,
                 }
                 
+                # Добавляем дополнительные параметры для LLMDeepSearchFinder
+                if finder.__class__.__name__ == 'LLMDeepSearchFinder' and run_llm_deep_search_pipeline:
+                    logger.info(f"Запуск LLMDeepSearchFinder для компании {company_name}")
+                    # Возможность использовать config если передан
+                    if context.get('llm_deep_search_config'):
+                        logger.info(f"Используем переданный конфиг для LLMDeepSearchFinder")
+                
                 finder_result = await finder.find(
                     company_name,
                     **context
                 )
+                
+                # Если результат содержит информацию об ошибке, но не сломал выполнение, логируем ее
+                if finder_result.get("error"):
+                    logger.warning(f"Finder {finder.__class__.__name__} для компании {company_name} вернул ошибку: {finder_result.get('error')}")
+                
                 company_findings.append(finder_result)
             except Exception as e:
-                logger.error(f"Error with finder {finder.__class__.__name__} for company {company_name}: {e}")
+                error_message = f"Error with finder {finder.__class__.__name__} for company {company_name}: {e}"
+                logger.error(error_message)
+                logger.error(traceback.format_exc())
                 company_findings.append({
                     "source": finder.__class__.__name__,
                     "result": None,
@@ -137,7 +154,9 @@ async def process_companies(
                 description = generated_result
                 structured_data = None
             else:
+                # Извлекаем описание и структурированные данные непосредственно из полученного результата
                 description = generated_result.get("description", "No description generated.")
+                # Теперь generated_result уже содержит полные структурированные данные
                 structured_data = generated_result
         except Exception as e:
             logger.error(f"Error generating description for {company_name}: {e}")
@@ -155,14 +174,27 @@ async def process_companies(
         
         # Добавляем структурированные данные, если они есть
         if structured_data:
-            # Добавляем основные поля из структурированных данных
+            # Добавляем поля из структурированных данных используя полную схему
             result["founding_year"] = structured_data.get("founding_year", "Unknown")
-            result["headquarters_location"] = structured_data.get("headquarters_location", "Unknown")
+            
+            # Данные о местоположении теперь извлекаются из полных данных
+            headquarters_location = structured_data.get("headquarters_location")
+            if not headquarters_location and (structured_data.get("headquarters_city") or structured_data.get("headquarters_country")):
+                city = structured_data.get("headquarters_city", "")
+                country = structured_data.get("headquarters_country", "")
+                if city and country:
+                    headquarters_location = f"{city}, {country}"
+                elif city:
+                    headquarters_location = city
+                elif country:
+                    headquarters_location = country
+            
+            result["headquarters_location"] = headquarters_location or "Unknown"
             result["industry"] = structured_data.get("industry", "Unknown")
             result["main_products_services"] = structured_data.get("main_products_services", "Unknown")
             result["employees_count"] = structured_data.get("employees_count", "Unknown")
             
-            # Сохраняем полные структурированные данные отдельно
+            # Сохраняем полные структурированные данные
             result["structured_data"] = structured_data
         else:
             # Если структурированных данных нет, заполняем поля значениями по умолчанию
@@ -315,7 +347,8 @@ async def run_pipeline_for_file(
         run_llm_deep_search_pipeline,
         broadcast_update,
         str(output_csv_path),  # Передаем путь к CSV для инкрементального сохранения
-        str(structured_data_json_path)  # Передаем путь к JSON для сохранения структурированных данных
+        str(structured_data_json_path),  # Передаем путь к JSON для сохранения структурированных данных
+        llm_deep_search_config
     )
     
     # Save results to CSV

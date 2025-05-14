@@ -215,7 +215,7 @@ async def is_url_company_page_llm(company_name: str, page_snippet: str, openai_c
             model=model_for_check, # Allow using a specific (possibly cheaper/faster) model for this check
             messages=prompt_messages,
             max_tokens=10, # Expecting a very short answer
-            temperature=0.0 # We want a deterministic answer
+            web_search_options={"search_context_size": "high"} 
         )
         answer = response.choices[0].message.content.strip().lower()
         # print(f"  LLM Page Check for '{company_name}': Snippet '{snippet_for_llm[:50]}...', Answer: '{answer}'")
@@ -332,16 +332,13 @@ async def generate_text_summary_from_json_async(
         return f"Error: Could not serialize structured data for {company_name}."
 
     system_prompt_content = (
-        "You are a skilled business writer specializing in creating professional company profiles for marketing purposes. "
-        "Your task is to synthesize structured data into a concise, compelling three-paragraph profile. "
-        "Use ONLY information that is explicitly present in the provided JSON data - do not invent facts or details. "
-        "CRITICAL: Do NOT mention missing information or use phrases like 'not available', 'not provided', etc. "
-        "If any key fields are missing, simply compose the narrative around the data that IS available. "
-        "Create a polished, professional description that presents the company in a positive light while "
-        "remaining factual. If too little data is available, produce fewer paragraphs rather than "
-        "mentioning the absence of information."
+        "You are a skilled business writer specializing in synthesizing structured data into concise, professional company profiles. "
+        "Your output must be a three-paragraph summary in English, based ONLY on the provided JSON data. "
+        "Do not add external information or speculate. Adhere strictly to the three-paragraph format with formal language. "
+        "When summarizing financial history arrays (like revenue or funding), typically focus on the most recent and significant single data point unless multiple distinct years are particularly noteworthy for a narrative. Clearly state years and currencies."
     )
     
+    # Updated User Prompt to guide handling of financial arrays
     user_prompt_content = f"""Company Name: {company_name}
 
 Structured Company Data (JSON):
@@ -349,21 +346,27 @@ Structured Company Data (JSON):
 {json_input_for_prompt}
 ```
 
-Task: Create a professional three-paragraph company profile based solely on the available data.
+Task: Based SOLELY on the structured JSON data provided above, generate a concise three-paragraph company profile in English.
 
-Guidelines:
-- Focus EXCLUSIVELY on information that IS present in the JSON data
-- NEVER mention missing data or include phrases like "not available" or "information not provided"
-- If certain section data is completely absent, adjust your paragraph structure accordingly
-- Write in a formal, third-person perspective with professional business language
-- Separate paragraphs with a single blank line
-- Where financial data exists, mention specific figures with their years and currencies
-- Structure your profile approximately as follows (but ONLY if data exists):
-  - Paragraph 1: Company foundation, location, history and leadership
-  - Paragraph 2: Core business, products/services, technologies, markets served
-  - Paragraph 3: Performance highlights, clients, strategic initiatives, and outlook
+Strict formatting rules:
+- The output must be exactly three paragraphs.
+- Each paragraph should be a dense, well-written block of text.
+- Separate paragraphs with a single blank line.
+- Do not use markdown formatting (like bolding or bullet points) or section headers in your output text.
+- Write in a formal, third-person perspective.
+- Ensure all information comes directly from the provided JSON data. Do not infer or add external knowledge.
+- Spell out acronyms on first use if their full form is available in the JSON.
 
-Remember: A shorter, high-quality profile with only confirmed facts is better than one that draws attention to missing information."""
+Paragraph Structure Guide (use the data fields mentioned if available in the JSON):
+1.  Paragraph 1 (Foundational Details): company_name, founding_year, headquarters_city, headquarters_country, founders, ownership_background.
+2.  Paragraph 2 (Core Business): core_products_services, underlying_technologies, customer_types, industries_served, geographic_markets.
+3.  Paragraph 3 (Operational & Strategic Highlights): 
+    - For `financial_details.annual_revenue_history`: Mention the revenue for the most recent `year_reported`. If multiple distinct years are present and significant, you can briefly note a trend or the most recent two. Always state the year and currency. Example: "The company reported an annual revenue of €X million in 2024."
+    - For `financial_details.funding_rounds`: Mention significant or recent funding. Example: "It recently secured $Y million in a Series B round in 2023 led by InvestorZ."
+    - Incorporate `employee_count_details` (e.g., "with Z employees as of 2023").
+    - Weave in `major_clients_or_case_studies`, `strategic_initiatives`, `key_competitors_mentioned`.
+    - Conclude with a sentence based on `overall_summary`.
+"""
 
     messages = [
         {"role": "system", "content": system_prompt_content},
@@ -378,7 +381,7 @@ Remember: A shorter, high-quality profile with only confirmed facts is better th
         "max_tokens": llm_config.get("max_tokens_for_summary", 1500) 
     }
 
-    logger.info(f"Attempting to generate professional company profile for {company_name} using model {model_name}.")
+    logger.info(f"Attempting to generate three-paragraph summary for {company_name} using model {model_name}.")
     try:
         response = await openai_client.chat.completions.create(**api_params)
         if response.choices and response.choices[0].message and response.choices[0].message.content:
