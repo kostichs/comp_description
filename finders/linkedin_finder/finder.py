@@ -11,8 +11,8 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from finders.base import Finder
-from finders.linkedin_finder.utils import normalize_name_for_domain_comparison, normalize_linkedin_url
-from finders.linkedin_finder.google_search import search_google, score_linkedin_url
+from finders.linkedin_finder.utils import normalize_linkedin_url as normalize_linkedin_url_util
+from finders.linkedin_finder.google_search import search_google
 from finders.linkedin_finder.llm import choose_best_linkedin_url
 
 # Настройка логгера
@@ -27,7 +27,7 @@ class LinkedInFinder(Finder):
     2. Фильтрует результаты, оставляя только ссылки на LinkedIn
     3. Если есть API ключ OpenAI, использует LLM для выбора лучшей ссылки
     4. Если нет API ключа OpenAI или LLM не смог выбрать, берет первую подходящую ссылку
-    5. Нормализует URL LinkedIn для единообразия
+    5. Нормализует URL LinkedIn для единообразия с помощью функции из utils.
     """
     
     def __init__(self, serper_api_key: str, openai_api_key: str = None, verbose: bool = False):
@@ -42,31 +42,6 @@ class LinkedInFinder(Finder):
         self.serper_api_key = serper_api_key
         self.openai_api_key = openai_api_key
         self.verbose = verbose
-    
-    def normalize_linkedin_url(self, url: str) -> str:
-        """
-        Нормализует URL LinkedIn, добавляя /about/ в конце, если его нет.
-        Также убирает дублирование /about/.
-        
-        Args:
-            url: LinkedIn URL
-            
-        Returns:
-            str: Нормализованный URL
-        """
-        # Убираем дублирование about
-        url = re.sub(r'/about/about(/|$)', r'/about/\1', url)
-        
-        # Проверяем есть ли /about/ уже в URL
-        if '/about/' in url:
-            return url
-            
-        # Добавляем /about/ если URL заканчивается на /
-        if url.endswith('/'):
-            return url + 'about/'
-            
-        # Иначе добавляем /about/
-        return url.rstrip('/') + '/about/'
     
     async def find(self, company_name: str, **context) -> dict:
         """
@@ -93,11 +68,11 @@ class LinkedInFinder(Finder):
         openai_api_key = context.get('openai_api_key', self.openai_api_key)
         # Получаем OpenAI клиент из контекста, если есть
         openai_client = context.get('openai_client')
-        if openai_client:
+        if openai_client and not openai_api_key: # Если передан клиент, но не ключ, берем ключ из клиента
             openai_api_key = openai_client.api_key
             
         if self.verbose:
-            print(f"\n--- Поиск LinkedIn профиля для компании '{company_name}' ---")
+            logger.info(f"\n--- Поиск LinkedIn профиля для компании '{company_name}' ---")
             
         # Выполняем поиск через Serper API
         search_results = await search_google(company_name, session, serper_api_key)
@@ -109,16 +84,16 @@ class LinkedInFinder(Finder):
         
         if search_results and "organic" in search_results:
             if self.verbose:
-                print(f"Найдено {len(search_results['organic'])} результатов поиска")
+                logger.info(f"Найдено {len(search_results['organic'])} результатов поиска Google для LinkedIn")
                 
             # Фильтрация результатов - оставляем только LinkedIn ссылки на компании
             linkedin_candidates = []
             for result in search_results["organic"]:
                 url = result.get("link", "")
+                # Более строгая проверка на /company/ для отсеивания /in/, /pub/ и т.д. на раннем этапе
                 if "linkedin.com/company/" in url:
                     if self.verbose:
-                        print(f"Найден LinkedIn URL кандидат: {url}")
-                        print(f"Заголовок: {result.get('title', '')}")
+                        logger.debug(f"LinkedIn URL кандидат: {url} (Title: {result.get('title', '')})")
                     
                     linkedin_candidates.append(result)
             
@@ -126,56 +101,63 @@ class LinkedInFinder(Finder):
                 # Если у нас есть API ключ OpenAI, используем LLM для выбора лучшей ссылки
                 if openai_api_key and len(linkedin_candidates) > 1:
                     if self.verbose:
-                        print(f"Используем LLM для выбора лучшего LinkedIn URL из {len(linkedin_candidates)} кандидатов")
+                        logger.info(f"Используем LLM для выбора лучшего LinkedIn URL из {len(linkedin_candidates)} кандидатов")
                     
-                    selected_url = await choose_best_linkedin_url(
+                    # Передаем API ключ в LLM функцию
+                    selected_url_from_llm = await choose_best_linkedin_url(
                         company_name, 
                         linkedin_candidates, 
                         openai_api_key
                     )
                     
-                    if selected_url:
+                    if selected_url_from_llm:
                         if self.verbose:
-                            print(f"LLM выбрал URL: {selected_url}")
+                            logger.info(f"LLM выбрал URL: {selected_url_from_llm}")
                         
-                        # Ищем соответствующий сниппет среди кандидатов
+                        # Проверяем, есть ли выбранный LLM URL среди наших кандидатов (для получения snippet)
                         for candidate in linkedin_candidates:
-                            if candidate.get("link") in selected_url:
+                            if selected_url_from_llm in candidate.get("link", "") or candidate.get("link", "") in selected_url_from_llm:
                                 selected_candidate = candidate
-                                linkedin_url = selected_url
+                                linkedin_url = selected_url_from_llm # Используем URL от LLM
                                 linkedin_snippet = candidate.get("snippet", "")
                                 break
                 
                 # Если LLM не выбрал URL или нет API ключа, берем первый LinkedIn URL
-                if not linkedin_url:
+                if not linkedin_url and linkedin_candidates: # Если LLM не использовался, не выбрал, или нет ключа
                     first_candidate = linkedin_candidates[0]
                     linkedin_url = first_candidate.get("link", "")
                     linkedin_snippet = first_candidate.get("snippet", "")
                     selected_candidate = first_candidate
                     
                     if self.verbose:
-                        print(f"Берем первый LinkedIn URL: {linkedin_url}")
+                        logger.info(f"Берем первый LinkedIn URL из Google: {linkedin_url}")
         
+        final_linkedin_url = None
         if linkedin_url:
-            # Форматируем URL для добавления "/about/"
-            linkedin_url = self.normalize_linkedin_url(linkedin_url)
+            # Используем импортированную функцию для нормализации
+            final_linkedin_url = normalize_linkedin_url_util(linkedin_url)
+            if final_linkedin_url:
+                if self.verbose:
+                    logger.info(f"Нормализованный LinkedIn URL для '{company_name}': {final_linkedin_url}")
+            else:
+                logger.warning(f"Нормализация не удалась для URL: {linkedin_url}. Используем исходный.")
+                final_linkedin_url = linkedin_url # Используем исходный, если нормализация вернула None
                 
-            print(f"LinkedIn URL для '{company_name}': {linkedin_url}")
             return {
                 "source": "linkedin_finder", 
-                "source_class": "LinkedInFinder",
-                "result": linkedin_url, 
+                "source_class": self.__class__.__name__,
+                "result": final_linkedin_url, 
                 "snippet": linkedin_snippet,
-                "candidate": selected_candidate
             }
         
         # Если не нашли
         if self.verbose:
-            print(f"LinkedIn профиль для '{company_name}' не найден")
+            logger.info(f"LinkedIn профиль для '{company_name}' не найден")
         return {
             "source": "linkedin_finder", 
-            "source_class": "LinkedInFinder",
-            "result": None
+            "source_class": self.__class__.__name__,
+            "result": None,
+            "error": f"LinkedIn profile for '{company_name}' not found after search and selection."
         }
 
 

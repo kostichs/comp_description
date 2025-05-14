@@ -28,8 +28,10 @@ def normalize_name_for_domain_comparison(name: str) -> str:
 
 def normalize_linkedin_url(url: str) -> str | None:
     """
-    Нормализует LinkedIn URL к стандартному формату: https://www.linkedin.com/company/company-slug/about/
-    Обрабатывает /company/, /school/, /showcase/ если они содержат явный slug.
+    Нормализует LinkedIn URL к стандартному формату: 
+    https://www.linkedin.com/company/company-slug/
+    Удаляет подпути типа /about/ и параметры запроса.
+    Обрабатывает /company/, /school/, /showcase/, если они содержат явный slug.
     Декодирует URL-кодированные символы в слаге.
     
     Args:
@@ -41,43 +43,37 @@ def normalize_linkedin_url(url: str) -> str | None:
     if not url or not isinstance(url, str):
         return None
 
-    url_lower = url.lower()
-    
-    # Пытаемся найти /company/, /school/, /showcase/
-    # Пример: linkedin.com/company/example-inc%C3%A9
-    # Пример: linkedin.com/school/university-of-example/
-    # Пример: linkedin.com/showcase/example-product-line/
-    match = re.search(r"linkedin\.com/(company|school|showcase)/([^/?#]+)", url_lower)
-    
-    if not match:
-        # Резервный вариант для менее распространенных, но допустимых URL-адресов профилей
-        # например linkedin.com/in/profile-name (маловероятно для поиска компании, но в качестве защиты)
-        # или прямые ссылки, такие как linkedin.com/company/example/ (без косой черты или /about)
-        # Это регулярное выражение шире, но нас в основном интересует структура /company/
-        if "linkedin.com/" in url_lower:  # Базовая проверка
-            # Пытаемся найти часть, похожую на slug, даже без префикса /company/,
-            # если она выглядит как профиль
-            # Это менее надежно и в идеале должно быть поймано хорошим совпадением /company/ сначала
-            pass  # Пока, если нет четкой структуры company/school/showcase, не нормализуем
-        return None  # Если нет четкой структуры company/school/showcase, не можем надежно нормализовать
-
-    profile_type = match.group(1)  # company, school или showcase
-    slug = match.group(2)
-
-    # Декодируем URL-кодированные символы в слаге (например, %20 для пробела, %C3%A9 для é)
+    # Пытаемся обработать URL с использованием urllib.parse для корректного разделения компонентов
     try:
-        decoded_slug = unquote(slug)
-    except Exception:
-        decoded_slug = slug  # Используем оригинальный slug если декодирование не удалось
+        parsed_url = urlparse(url.lower()) # Приводим к нижнему регистру для единообразия
+        
+        # Ищем /company/, /school/, /showcase/ в пути
+        # и извлекаем только идентификатор (слаг)
+        match = re.search(r"/(company|school|showcase)/([^/?#]+)", parsed_url.path)
+        
+        if not match:
+            return None # Если не найдена ожидаемая структура, не можем надежно нормализовать
 
-    # Дополнительно очищаем slug: удаляем лишние слэши или параметры запроса, если они случайно включены
-    # Регулярное выражение уже обрабатывает ? и #, но слэши в конце могут быть частью slug
-    cleaned_slug = decoded_slug.strip('/')
+        profile_type = match.group(1)  # company, school или showcase
+        slug = match.group(2)
 
-    if not cleaned_slug:  # Пустой slug после очистки
-        return None
+        # Декодируем URL-кодированные символы в слаге
+        try:
+            decoded_slug = unquote(slug)
+        except Exception:
+            decoded_slug = slug 
 
-    # Для 'showcase' и 'school' мы все равно нормализуем до /about/ для согласованности,
-    # хотя их фактический раздел "about" может отличаться или не существовать таким же образом.
-    # Основная цель - иметь согласованную структуру URL для попыток скрейпинга.
-    return f"https://www.linkedin.com/{profile_type}/{cleaned_slug}/about/" 
+        # Очищаем slug от возможных внутренних слешей, если они не часть имени
+        # (хотя обычно слаги их не содержат, но на всякий случай)
+        cleaned_slug = decoded_slug.strip('/')
+
+        if not cleaned_slug:
+            return None
+
+        # Собираем чистый URL, без подпутей после слага и без параметров
+        # Всегда добавляем слеш в конце базового URL компании/школы/витрины
+        return f"https://www.linkedin.com/{profile_type}/{cleaned_slug}/"
+    except Exception as e:
+        # Можно добавить логирование ошибки, если есть логгер
+        # logger.error(f"Error normalizing LinkedIn URL '{url}': {e}")
+        return None # В случае любой ошибки при парсинге возвращаем None 

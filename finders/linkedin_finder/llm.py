@@ -1,5 +1,9 @@
 import aiohttp
 from openai import AsyncOpenAI
+import logging
+
+# Получаем экземпляр логгера
+logger = logging.getLogger(__name__)
 
 async def choose_best_linkedin_url(company_name: str, candidates: list, openai_api_key: str) -> str | None:
     """
@@ -66,14 +70,10 @@ Answer:"""
         
         # Проверка, что это действительно LinkedIn URL
         if "linkedin.com/company/" in selected_url:
-            # Стандартизируем URL, добавляя /about/ в конце, если его нет
+            # Простая очистка от конечного слеша для единообразия перед возвратом
             if selected_url.endswith('/'):
-                selected_url += 'about/'
-            elif not selected_url.endswith('/about/'):
-                if '/about/' not in selected_url:
-                    parts = selected_url.rstrip('/').split('/')
-                    selected_url = '/'.join(parts) + '/about/'
-            
+                selected_url = selected_url.rstrip('/')
+            # Можно добавить более сложную нормализацию здесь или в основном файле LinkedInFinder
             return selected_url
         else:
             # Если модель вернула что-то другое, попробуем интерпретировать как номер кандидата
@@ -81,19 +81,15 @@ Answer:"""
                 if selected_url.isdigit() and 1 <= int(selected_url) <= len(candidates):
                     url = candidates[int(selected_url)-1].get('link', '')
                     
-                    # Стандартизируем URL, добавляя /about/ в конце, если его нет
+                    # Простая очистка от конечного слеша
                     if url.endswith('/'):
-                        url += 'about/'
-                    elif not url.endswith('/about/'):
-                        if '/about/' not in url:
-                            parts = url.rstrip('/').split('/')
-                            url = '/'.join(parts) + '/about/'
-                    
+                        url = url.rstrip('/')
                     return url
             except:
-                pass
+                pass # Ошибка приведения к числу или индекс вне диапазона
             
-            # Если не смогли получить валидный URL, возвращаем None
+            # Если не смогли получить валидный URL или LLM вернула нерелевантный текст
+            logger.warning(f"LLM_LinkedIn_URL_Selector: LLM returned non-company URL or unparseable selection: {selected_url}")
             return None
 
     except Exception as e:
