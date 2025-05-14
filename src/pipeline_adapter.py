@@ -43,42 +43,67 @@ async def _generate_and_save_raw_markdown_report_async(
     Форматирует сырые найденные данные в Markdown с помощью LLM и сохраняет в файл.
     """
     try:
-        # Подготовка сырых данных для LLM
-        raw_data_text = f"Raw data collected for company: {company_name}\\n\\n"
+        raw_data_parts = [f"# Raw Data Report for {company_name}\n"]
+
         for i, finding in enumerate(company_findings):
-            source = finding.get("source", f"Unknown_Source_{i+1}")
-            result_data = finding.get("result", "No data")
-            error = finding.get("error")
+            source_name = finding.get("source", f"Unknown_Source_{i+1}")
+            # Используем _finder_instance_type если есть, иначе source
+            finder_type = finding.get("_finder_instance_type", source_name) 
 
-            raw_data_text += f"--- Source: {source} ---\\n"
-            if error:
-                raw_data_text += f"Error: {error}\\n"
-            elif isinstance(result_data, dict):
-                raw_data_text += json.dumps(result_data, indent=2, ensure_ascii=False) + "\\n"
-            else:
-                raw_data_text += str(result_data) + "\\n"
-            raw_data_text += "\\n"
+            report_text_data = finding.get("result")
+            error_data = finding.get("error")
+            # Отдельно извлекаем источники, если они есть (особенно для LLMDeepSearchFinder)
+            sources_list = finding.get("sources") 
 
-        if not raw_data_text.strip():
-            logger.warning(f"No raw data to format into Markdown for {company_name}")
+            raw_data_parts.append(f"\n## Source: {source_name} (Type: {finder_type})\n")
+
+            if error_data:
+                raw_data_parts.append(f"**Error:**\n```\n{error_data}\n```\n")
+            
+            if report_text_data:
+                raw_data_parts.append(f"**Report/Result Data:**\n")
+                if isinstance(report_text_data, dict):
+                    raw_data_parts.append(f"```json\n{json.dumps(report_text_data, indent=2, ensure_ascii=False)}\n```\n")
+                else:
+                    raw_data_parts.append(f"```text\n{str(report_text_data)}\n```\n")
+            
+            if sources_list and isinstance(sources_list, list):
+                raw_data_parts.append(f"**Extracted Sources from this source:**\n")
+                for src_item in sources_list:
+                    title = src_item.get('title', 'N/A')
+                    url = src_item.get('url', 'N/A')
+                    raw_data_parts.append(f"- [{title}]({url})\n")
+            
+            if not error_data and not report_text_data and not (sources_list and isinstance(sources_list, list)):
+                 raw_data_parts.append("_No specific data, error, or sources reported by this finder._\n")
+
+        raw_data_for_llm_prompt = "".join(raw_data_parts)
+
+        if not raw_data_for_llm_prompt.strip() or len(raw_data_for_llm_prompt) < 50: # Проверка на осмысленность данных
+            logger.warning(f"No substantial raw data to format into Markdown for {company_name}. Saving raw dump.")
+            # Просто сохраняем собранный текст без дополнительного форматирования LLM, если данных мало
+            markdown_file_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_dump.md"
+            markdown_output_path.mkdir(parents=True, exist_ok=True)
+            with open(markdown_file_path, "w", encoding="utf-8") as f:
+                f.write(raw_data_for_llm_prompt)
+            logger.info(f"Saved raw data dump (due to insufficient content for LLM formatting) for {company_name} to {markdown_file_path}")
             return
 
-        # Настройки для LLM (можно вынести в llm_config.yaml при необходимости)
         model_for_markdown = llm_config.get("model_for_raw_markdown", "gpt-4o-mini")
         temperature_for_markdown = llm_config.get("temperature_for_raw_markdown", 0.1)
-        max_tokens_for_markdown = llm_config.get("max_tokens_for_raw_markdown", 4000)
+        max_tokens_for_markdown = llm_config.get("max_tokens_for_raw_markdown", 4000) # Увеличено, если нужно
 
         system_prompt = (
-            "You are an AI assistant tasked with organizing and formatting raw company data into a structured Markdown report. "
-            "The goal is to make the raw data easily readable and understandable, preserving all information. "
-            "Use Markdown features like headers, sub-headers, bullet points, and code blocks where appropriate. "
-            "Clearly indicate the source of each piece of information. Do not summarize or omit any data. "
-            "If there are errors reported from a source, include them under that source's section."
+            "You are an AI assistant. Your task is to take a collection of raw data entries for a company, each from a different named source, "
+            "and format this information into a single, coherent, well-structured Markdown report. "
+            "Preserve all information, including report texts, lists of URLs/sources, and any reported errors. "
+            "Use Markdown headings for each original source. If a source provided a list of URLs (sources), list them clearly under that source's section. "
+            "Do not summarize, omit, or interpret the data, simply reformat it for readability."
         )
         user_prompt = (
-            f"Please format the following raw data for the company '{company_name}' into a structured Markdown report. "
-            "Preserve all details and indicate data sources clearly.\\n\\n"
-            f"Raw Data:\\n```text\\n{raw_data_text}\\n```"
+            f"Please format the following raw data collection for the company '{company_name}' into a single, structured Markdown report. "
+            "Make sure all details, including any explicitly listed URLs/sources from each original data block, are preserved and clearly presented under their respective original source headings.\n\n"
+            f"Raw Data Collection:\n```markdown\n{raw_data_for_llm_prompt}\n```"
         )
 
         messages = [
@@ -86,29 +111,42 @@ async def _generate_and_save_raw_markdown_report_async(
             {"role": "user", "content": user_prompt}
         ]
 
-        logger.info(f"Generating raw Markdown report for {company_name} using model {model_for_markdown}")
+        logger.info(f"Generating formatted raw Markdown report for {company_name} using model {model_for_markdown}. Input text length: {len(raw_data_for_llm_prompt)}")
         
-        response = await openai_client.chat.completions.create(
-            model=model_for_markdown,
-            messages=messages,
-            temperature=temperature_for_markdown,
-            max_tokens=max_tokens_for_markdown
-        )
+        try:
+            response = await openai_client.chat.completions.create(
+                model=model_for_markdown,
+                messages=messages,
+                temperature=temperature_for_markdown,
+                max_tokens=max_tokens_for_markdown
+            )
 
-        if response.choices and response.choices[0].message and response.choices[0].message.content:
-            markdown_content = response.choices[0].message.content.strip()
-            
-            # Сохранение Markdown файла
-            markdown_file_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data.md"
-            markdown_output_path.mkdir(parents=True, exist_ok=True) # Убедимся, что директория существует
-            with open(markdown_file_path, "w", encoding="utf-8") as f:
-                f.write(markdown_content)
-            logger.info(f"Saved raw Markdown report for {company_name} to {markdown_file_path}")
-        else:
-            logger.warning(f"LLM did not generate content for raw Markdown report for {company_name}")
+            if response.choices and response.choices[0].message and response.choices[0].message.content:
+                markdown_content = response.choices[0].message.content.strip()
+                
+                markdown_file_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_formatted.md"
+                markdown_output_path.mkdir(parents=True, exist_ok=True)
+                with open(markdown_file_path, "w", encoding="utf-8") as f:
+                    f.write(markdown_content)
+                logger.info(f"Saved formatted raw Markdown report for {company_name} to {markdown_file_path}")
+            else:
+                logger.warning(f"LLM did not generate content for formatted Markdown report for {company_name}. Saving unformatted dump.")
+                # Сохраняем исходный дамп, если LLM не вернула контент
+                markdown_file_path_dump = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_unformatted_llm_empty.md"
+                with open(markdown_file_path_dump, "w", encoding="utf-8") as f:
+                    f.write(raw_data_for_llm_prompt) # Сохраняем то, что готовили для LLM
+                logger.info(f"Saved unformatted raw data dump to {markdown_file_path_dump}")
+        except Exception as e_llm:
+            logger.error(f"Error during LLM formatting of raw Markdown for {company_name}: {e_llm}. Saving unformatted dump.")
+            logger.error(traceback.format_exc())
+            # Сохраняем исходный дамп при ошибке LLM
+            markdown_file_path_error_dump = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_unformatted_llm_error.md"
+            with open(markdown_file_path_error_dump, "w", encoding="utf-8") as f:
+                f.write(raw_data_for_llm_prompt)
+            logger.info(f"Saved unformatted raw data dump due to LLM error to {markdown_file_path_error_dump}")
 
     except Exception as e:
-        logger.error(f"Error generating or saving raw Markdown report for {company_name}: {e}")
+        logger.error(f"General error in _generate_and_save_raw_markdown_report_async for {company_name}: {e}")
         logger.error(traceback.format_exc())
 
 async def process_companies(
