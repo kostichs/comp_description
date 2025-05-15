@@ -20,7 +20,10 @@ RUN pip install --upgrade pip && \
 COPY ./backend /app/backend
 COPY ./frontend /app/frontend
 COPY ./src /app/src
+COPY ./description_generator /app/description_generator
+COPY ./finders /app/finders
 COPY llm_config.yaml /app/llm_config.yaml
+COPY utils.py /app/utils.py
 # Если есть другие директории или файлы в корне, которые нужны, их тоже нужно скопировать
 # Например, если `main.py` или другие важные скрипты находятся в корне, а не в ./backend
 # COPY main.py . 

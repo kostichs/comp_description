@@ -222,20 +222,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchAndDisplayResults(sessionId) {
+        console.log(`fetchAndDisplayResults вызвана для сессии: ${sessionId}`); // Новый лог
         showLoading();
         try {
             const response = await fetch(`/api/sessions/${sessionId}/results`);
-            if (!response.ok) return; // Не показываем ошибку, если результатов ещё нет
-            const results = await response.json();
+            console.log(`Статус ответа для /results: ${response.status}, Content-Type: ${response.headers.get('Content-Type')}`); // Новый лог
+
+            if (!response.ok) {
+                console.error(`Ответ не OK: статус ${response.status}`); // Новый лог
+                try {
+                    const errorText = await response.text();
+                    console.error(`Тело ошибки: ${errorText}`);
+                } catch (e) {
+                    console.error('Не удалось прочитать тело ошибки:', e);
+                }
+                return;
+            }
+            
+            const responseText = await response.text();
+            console.log('Ответ сервера (текст):', responseText);
+
+            const results = JSON.parse(responseText);
+            console.log('Fetched results (распарсенные):', results);
+
             displayResultsInTable(results);
-            // Обновляем прогресс
             const total = window.expectedTotalCompanies || results.length;
             updateProgressBar(results.length, total, false);
             resultsSection.style.display = 'block';
             if (progressStatus) progressStatus.style.display = 'block';
             if (newSessionBtn) newSessionBtn.style.display = 'inline-block';
         } catch (error) {
-            // Не показываем тревожных сообщений, если результатов ещё нет
+            console.error('Ошибка в fetchAndDisplayResults:', error);
+            if (error instanceof SyntaxError) {
+                console.error('Ошибка парсинга JSON. Ответ сервера не является валидным JSON. Текст ответа выше.');
+            }
         } finally {
             hideLoading();
         }
@@ -253,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
             // Company Name
             const name = escapeHtml(row.Company_Name || '');
+            console.log('Adding to table:', name); // <--- ДОБАВЛЕН ЭТОТ ЛОГ
         
             // Description (с переводом переносов строк в <br>)
             let descriptionHtml = escapeHtml(row.Description || '');
