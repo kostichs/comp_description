@@ -136,7 +136,7 @@ def save_results_csv(results: list[dict], output_path: str, expected_fields: lis
     elif results and len(results) > 0:
         fieldnames = list(results[0].keys())
     else:
-        fieldnames = ["name", "homepage", "linkedin", "description", "timestamp"]
+        fieldnames = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
     
     # Determine mode based on append_mode and file existence
     mode = 'a' if append_mode and os.path.exists(output_path) else 'w'

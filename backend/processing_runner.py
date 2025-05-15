@@ -124,7 +124,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             pipeline_error = f"API Client initialization failed: {e_client}"
             raise 
         
-        base_ordered_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
+        base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
         # additional_llm_fields больше не актуальны в таком виде, если CSV стандартизирован
         expected_cols = list(base_ordered_fields) 
         session_logger.info(f"[BG Task {session_id}] Determined expected_csv_fieldnames: {expected_cols}")

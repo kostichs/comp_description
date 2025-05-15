@@ -250,24 +250,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         results.forEach(row => {
             const tr = document.createElement('tr');
-
-            let descriptionHtml = escapeHtml(row.description || '');
+        
+            // Company Name
+            const name = escapeHtml(row.Company_Name || '');
+        
+            // Description (с переводом переносов строк в <br>)
+            let descriptionHtml = escapeHtml(row.Description || '');
             descriptionHtml = descriptionHtml.replace(/\n/g, '<br>');
-
-            // Add Homepage link to description
-            if (row.homepage && row.homepage !== 'Not found' && !row.homepage.startsWith("Standard pipeline")) {
-                const homepageLink = `<a href="${escapeHtml(row.homepage)}" target="_blank">${escapeHtml(row.homepage)}</a>`;
-                descriptionHtml += `<br><br>Homepage: ${homepageLink}`;
+        
+            // Добавляем ссылку на официальный сайт
+            if (row.Official_Website && row.Official_Website !== 'Not found') {
+                const link = escapeHtml(row.Official_Website);
+                descriptionHtml += `<br><br>Homepage: <a href="${link}" target="_blank">${link}</a>`;
             }
-
-            // Add LinkedIn link to description
-            if (row.linkedin && row.linkedin !== 'Not found' && !row.linkedin.startsWith("Standard pipeline")) {
-                const linkedinLink = `<a href="${escapeHtml(row.linkedin)}" target="_blank">${escapeHtml(row.linkedin)}</a>`;
-                descriptionHtml += `<br>LinkedIn: ${linkedinLink}`;
+        
+            // Добавляем ссылку на LinkedIn
+            if (row.LinkedIn_URL && row.LinkedIn_URL !== 'Not found') {
+                const link = escapeHtml(row.LinkedIn_URL);
+                descriptionHtml += `<br>LinkedIn: <a href="${link}" target="_blank">${link}</a>`;
             }
-
+        
             tr.innerHTML = `
-                <td>${escapeHtml(row.name || '')}</td>
+                <td>${name}</td>
                 <td>${descriptionHtml}</td>
             `;
             resultsTableBody.appendChild(tr);

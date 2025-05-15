@@ -285,15 +285,22 @@ async def _process_single_company_async(
         description = f"Exception during final description generation: {str(e)}"
 
     result = {
-        "name": company_name,
-        "homepage": final_homepage_url or "Not found", 
-        "linkedin": linkedin_url_result or "Not found",
-        "description": description,
-        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "structured_data": structured_data
+    "Company_Name": company_name,
+    "Official_Website": final_homepage_url or "Not found",
+    "LinkedIn_URL": linkedin_url_result or "Not found",
+    "Description": description,
+    "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+    "structured_data": structured_data
     }
+
     
-    logger.debug(f"Final CSV data for {company_name}: name='{result['name']}', homepage='{result['homepage']}', linkedin='{result['linkedin']}', desc_len={len(result['description']) if result['description'] else 0}")
+    logger.debug(
+        f"Final CSV data for {company_name}: "
+        f"Company_Name='{result['Company_Name']}', "
+        f"Official_Website='{result['Official_Website']}', "
+        f"LinkedIn_URL='{result['LinkedIn_URL']}', "
+        f"desc_len={len(result['Description']) if result['Description'] else 0}"
+    )
     if output_csv_path:
         file_exists = os.path.exists(output_csv_path)
         try:
@@ -348,7 +355,7 @@ async def process_companies(
     description_generator = DescriptionGenerator(openai_client.api_key, model_config=llm_config.get('description_generator_model_config'))
     
     all_results = []
-    csv_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
+    csv_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
     total_companies_count = len(company_names)
 
     for i in range(0, total_companies_count, batch_size):
@@ -417,7 +424,7 @@ async def run_pipeline_for_file(
     company_names = load_and_prepare_company_names(input_file_path, company_col_index)
     if not company_names: logger.error(f"No valid company names in {input_file_path}"); return 0, 0, []
     logger.info(f"Loaded {len(company_names)} companies from {input_file_path}")
-    current_expected_csv_fieldnames = ["name", "homepage", "linkedin", "description", "timestamp"]
+    current_expected_csv_fieldnames = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
     structured_data_dir = session_dir_path / "structured_data"; structured_data_dir.mkdir(exist_ok=True)
     structured_data_json_path = structured_data_dir / "company_profiles.json"
     raw_markdown_output_dir = session_dir_path / "raw_markdown_reports"; raw_markdown_output_dir.mkdir(exist_ok=True)
@@ -527,7 +534,7 @@ async def run_pipeline():
     connector = aiohttp.TCPConnector(ssl=ssl_context)
     
     async with aiohttp.ClientSession(connector=connector) as session: # <--- Используем коннектор
-        initial_expected_csv_fieldnames = ["name", "homepage", "linkedin", "description", "timestamp"]
+        initial_expected_csv_fieldnames = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
         
         success_count, failure_count, results = await run_pipeline_for_file(
             input_file_path=input_file_path, output_csv_path=output_csv_path,

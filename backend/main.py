@@ -103,7 +103,7 @@ async def execute_pipeline_for_session_async(
         return
 
     # --- Определение полей CSV --- 
-    base_ordered_fields = ["name", "homepage", "linkedin", "description", "timestamp"]
+    base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
     # logger.info(f"[EXECUTE_PIPELINE] Defined base_ordered_fields: {base_ordered_fields}") # Можно оставить для отладки
     
     additional_llm_fields = []
