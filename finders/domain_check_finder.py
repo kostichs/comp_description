@@ -6,6 +6,7 @@ import sys
 import os
 import asyncio
 from urllib.parse import urlparse
+import time
 
 # Добавляем корневую директорию проекта в путь Python
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -43,58 +44,146 @@ async def check_url_liveness(url: str, session: aiohttp.ClientSession, timeout: 
     Сначала пытается разрешить DNS для хоста, затем делает HEAD-запрос.
     Возвращает True, если URL считается рабочим, False в противном случае.
     """
-    if not url or not url.startswith(("http://", "https://")):
-        logger.debug(f"Invalid URL format for liveness check: {url}")
+    if not url:
+        logger.warning(f"[URL_CHECK] Empty URL provided for liveness check")
         return False
+        
+    original_url = url
+    # Если URL не начинается с протокола, добавляем его
+    if not url.startswith(("http://", "https://")):
+        logger.info(f"[URL_CHECK] URL без протокола: {url}. Автоматически добавляем https://")
+        url = f"https://{url}"
+        logger.info(f"[URL_CHECK] Преобразованный URL: {url}")
     
     try:
         parsed_url = urlparse(url)
         hostname = parsed_url.hostname
 
         if not hostname:
-            logger.debug(f"Could not parse hostname from URL: {url}")
+            logger.warning(f"[URL_CHECK] Could not parse hostname from URL: {url}")
+            # Попробуем альтернативную версию протокола, если исходный URL был модифицирован
+            if original_url != url and url.startswith("https://"):
+                logger.info(f"[URL_CHECK] Пробуем альтернативный протокол http:// для {original_url}")
+                http_url = f"http://{original_url}"
+                return await check_url_liveness(http_url, session, timeout)
             return False
 
-        logger.debug(f"Checking DNS for host: {hostname} (from URL: {url})")
+        logger.debug(f"[URL_CHECK] Checking DNS for host: {hostname} (from URL: {url})")
         try:
-            await asyncio.get_event_loop().getaddrinfo(hostname, None)
-            logger.debug(f"DNS resolved for {hostname}")
-        except socket.gaierror:
-            logger.warning(f"DNS resolution failed for {hostname} (from URL: {url}). Marking URL as not live.")
+            dns_result = await asyncio.get_event_loop().getaddrinfo(hostname, None)
+            logger.debug(f"[URL_CHECK] DNS resolved for {hostname}. Addresses: {[r[4][0] for r in dns_result[:2]]}")
+        except socket.gaierror as e_dns:
+            logger.warning(f"[URL_CHECK] DNS resolution FAILED for {hostname} (from URL: {url}). Error: {type(e_dns).__name__} - {e_dns}")
+            # Если не удалось разрешить DNS и мы использовали https://, попробуем http://
+            if original_url != url and url.startswith("https://"):
+                logger.info(f"[URL_CHECK] DNS resolution failed with https://, trying with http:// for {original_url}")
+                http_url = f"http://{original_url}"
+                return await check_url_liveness(http_url, session, timeout)
             return False 
         except Exception as e_dns:
-            logger.warning(f"Unexpected DNS error for {hostname} (from URL: {url}): {type(e_dns).__name__} - {e_dns}. Marking URL as not live.")
+            logger.warning(f"[URL_CHECK] Unexpected DNS error for {hostname} (from URL: {url}): {type(e_dns).__name__} - {e_dns}")
             return False
 
         try:
-            logger.debug(f"Attempting HEAD request to {url}")
+            logger.info(f"[URL_CHECK] Attempting HEAD request to {url} (timeout={timeout}s)")
+            start_time = time.time()
             client_timeout = aiohttp.ClientTimeout(total=timeout)
-            async with session.head(url, timeout=client_timeout, allow_redirects=True) as response:
-                logger.debug(f"HEAD request to {url} status: {response.status}")
-                if 200 <= response.status < 400:
-                    return True
-                elif response.status == 404 or response.status >= 500:
-                    logger.warning(f"URL {url} returned status {response.status}. Marking as not live.")
+            
+            try:
+                async with session.head(url, timeout=client_timeout, allow_redirects=True) as response:
+                    elapsed = time.time() - start_time
+                    logger.info(f"[URL_CHECK] HEAD request to {url} completed in {elapsed:.2f}s. Status: {response.status}, Final URL: {response.url}")
+                    
+                    # Запишем заголовки ответа для дополнительной диагностики
+                    headers_str = "\n".join([f"    {k}: {v}" for k, v in response.headers.items()])
+                    logger.debug(f"[URL_CHECK] Response headers for {url}:\n{headers_str}")
+                    
+                    if 200 <= response.status < 400:
+                        logger.info(f"[URL_CHECK] URL {url} is LIVE (status: {response.status})")
+                        return True
+                    elif response.status == 403:
+                        # Считаем 403 (Forbidden) как "живой" URL, так как сервер ответил и домен существует
+                        logger.info(f"[URL_CHECK] URL {url} returned 403 Forbidden, но будет считаться LIVE, так как домен существует.")
+                        return True
+                    elif response.status == 404:
+                        logger.warning(f"[URL_CHECK] URL {url} returned 404 Not Found. Marking as not live.")
+                        # Если получаем 404 и мы использовали https://, попробуем http://
+                        if original_url != url and url.startswith("https://"):
+                            logger.info(f"[URL_CHECK] Got 404 with https://, trying with http:// for {original_url}")
+                            http_url = f"http://{original_url}"
+                            return await check_url_liveness(http_url, session, timeout)
+                        return False
+                    elif response.status >= 500:
+                        logger.warning(f"[URL_CHECK] URL {url} returned server error {response.status}. Marking as not live.")
+                        return False
+                    
+                    # Для других статусов делаем более подробное логирование
+                    logger.warning(f"[URL_CHECK] URL {url} returned non-success status {response.status}. Marking as not live for safety.")
+                    # Если статус не успешен и мы использовали https://, попробуем http://
+                    if original_url != url and url.startswith("https://"):
+                        logger.info(f"[URL_CHECK] Got non-success status with https://, trying with http:// for {original_url}")
+                        http_url = f"http://{original_url}"
+                        return await check_url_liveness(http_url, session, timeout)
                     return False
-                # Для других клиентских или серверных ошибок (кроме 404 и 5xx) 
-                # ранее мы считали их True, но с глобальным отключением SSL это может быть не нужно.
-                # Безопаснее считать их False, если это не явный успех (2xx, 3xx).
-                logger.warning(f"URL {url} returned non-success/non-fatal status {response.status}. Marking as not live for safety.")
-                return False # <--- Изменено на False для большей строгости
-        except asyncio.TimeoutError:
-            logger.warning(f"HEAD request to {url} timed out after {timeout}s. Marking as not live.")
-            return False
-        except aiohttp.ClientError as e_client: 
-            # Поскольку SSL ошибки теперь должны игнорироваться на уровне сессии, 
-            # эта ошибка будет поймана только если SSL отключение не сработало или это другая ClientError.
-            logger.warning(f"Aiohttp client error during HEAD request to {url}: {type(e_client).__name__} - {e_client}. Marking as not live.")
-            return False
+            except asyncio.TimeoutError:
+                elapsed = time.time() - start_time
+                logger.warning(f"[URL_CHECK] HEAD request to {url} TIMED OUT after {elapsed:.2f}s (limit: {timeout}s)")
+                
+                # Попробуем еще раз с GET запросом с большим таймаутом как запасной вариант
+                logger.info(f"[URL_CHECK] Trying backup GET request to {url} with extended timeout")
+                try:
+                    backup_timeout = aiohttp.ClientTimeout(total=timeout * 1.5)
+                    async with session.get(url, timeout=backup_timeout, allow_redirects=True) as get_response:
+                        logger.info(f"[URL_CHECK] Backup GET to {url} status: {get_response.status}")
+                        if 200 <= get_response.status < 400:
+                            logger.info(f"[URL_CHECK] URL {url} is LIVE via backup GET (status: {get_response.status})")
+                            return True
+                        # Если GET не помог и мы использовали https://, попробуем http://
+                        if original_url != url and url.startswith("https://"):
+                            logger.info(f"[URL_CHECK] Backup GET failed with https://, trying with http:// for {original_url}")
+                            http_url = f"http://{original_url}"
+                            return await check_url_liveness(http_url, session, timeout)
+                        return False
+                except Exception as e_backup:
+                    logger.warning(f"[URL_CHECK] Backup GET request to {url} also failed: {type(e_backup).__name__} - {e_backup}")
+                    # Если GET запрос не удался и мы использовали https://, попробуем http://
+                    if original_url != url and url.startswith("https://"):
+                        logger.info(f"[URL_CHECK] Backup GET failed with https://, trying with http:// for {original_url}")
+                        http_url = f"http://{original_url}"
+                        return await check_url_liveness(http_url, session, timeout)
+                    return False
+                
+            except aiohttp.ClientConnectorError as e_connect:
+                logger.warning(f"[URL_CHECK] Connection error for {url}: {type(e_connect).__name__} - {e_connect}")
+                # Если соединение не удалось и мы использовали https://, попробуем http://
+                if original_url != url and url.startswith("https://"):
+                    logger.info(f"[URL_CHECK] Connection error with https://, trying with http:// for {original_url}")
+                    http_url = f"http://{original_url}"
+                    return await check_url_liveness(http_url, session, timeout)
+                return False
+            except aiohttp.ClientSSLError as e_ssl:
+                # SSL ошибки - сайт может существовать, но с проблемным сертификатом
+                logger.warning(f"[URL_CHECK] SSL error for {url}: {type(e_ssl).__name__} - {e_ssl}")
+                # Попробуем с http:// вместо https://
+                if original_url != url and url.startswith("https://"):
+                    logger.info(f"[URL_CHECK] SSL error with https://, trying with http:// for {original_url}")
+                    http_url = f"http://{original_url}"
+                    return await check_url_liveness(http_url, session, timeout)
+                return False
+            except aiohttp.ClientError as e_client: 
+                logger.warning(f"[URL_CHECK] Aiohttp client error for {url}: {type(e_client).__name__} - {e_client}")
+                # Если произошла ошибка клиента и мы использовали https://, попробуем http://
+                if original_url != url and url.startswith("https://"):
+                    logger.info(f"[URL_CHECK] Client error with https://, trying with http:// for {original_url}")
+                    http_url = f"http://{original_url}"
+                    return await check_url_liveness(http_url, session, timeout)
+                return False
         except Exception as e_head: 
-            logger.warning(f"Unexpected error during HEAD request to {url}: {type(e_head).__name__} - {e_head}. Marking as potentially not live.")
+            logger.warning(f"[URL_CHECK] Unexpected error during request to {url}: {type(e_head).__name__} - {e_head}", exc_info=True)
             return False
 
     except Exception as e_main:
-        logger.error(f"Error in check_url_liveness for {url}: {e_main}", exc_info=True)
+        logger.error(f"[URL_CHECK] General error in check_url_liveness for {url}: {e_main}", exc_info=True)
         return False
 
 async def check_domain_availability(domain: str, session: aiohttp.ClientSession, timeout: float = 2.0) -> bool:

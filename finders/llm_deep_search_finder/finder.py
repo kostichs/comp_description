@@ -29,7 +29,71 @@ async def _extract_homepage_from_report_text_async(
     и затем очищает его от Markdown или лишнего текста.
     """
     if not report_text or not report_text.strip():
+        logger.warning(f"Empty report text for {company_name}. Cannot extract homepage URL.")
         return None
+    
+    # Логирование отрывка текста отчета для отладки
+    logger.debug(f"Extracting homepage URL for '{company_name}' from report text. First 500 chars: {report_text[:500]}...")
+    
+    # Поиск очевидных URL напрямую в тексте до запроса LLM
+    url_pattern = r'https?://[\w\.-/]+\.[a-zA-Z]{2,}(?:/[\w\康熙字典统一码擴充區乙\.\-\%_]*)?'
+    
+    # Обновленный паттерн, который учитывает форматирование Markdown в виде [URL](URL) или [текст](URL)
+    # Ищем URL после упоминания "Official Homepage URL" или подобных фраз, поддерживая различные форматы
+    homepage_section_pattern = r'(?i)official\s+(?:homepage|website|site)\s*(?:url)?[:\s]*(?:\[([^\]]+)\])?\s*(?:\(https?://[^\)]+\))?\s*(https?://[^\s\)\]]+)?'
+    
+    # Проверка прямых упоминаний в секции про официальный сайт
+    direct_homepage_match = re.search(homepage_section_pattern, report_text)
+    if direct_homepage_match:
+        # Проверяем, какая группа содержит URL
+        direct_url = None
+        if direct_homepage_match.group(2):  # Простой URL формат
+            direct_url = direct_homepage_match.group(2)
+            logger.info(f"DIRECT MATCH (plain URL): Found homepage URL in report text for '{company_name}': {direct_url}")
+        elif direct_homepage_match.group(1) and "http" in direct_homepage_match.group(1):  # URL внутри квадратных скобок
+            direct_url = direct_homepage_match.group(1)
+            logger.info(f"DIRECT MATCH (markdown text): Found homepage URL in report text for '{company_name}': {direct_url}")
+        
+        if direct_url:
+            return direct_url
+    
+    # Поиск Markdown-ссылок в секциях о сайте компании, например [текст](URL)
+    markdown_link_pattern = r'(?i)official\s+(?:homepage|website|site)(?:url)?[:\s]*\[([^\]]+)\]\(([^\)]+)\)'
+    markdown_match = re.search(markdown_link_pattern, report_text)
+    if markdown_match:
+        url_from_markdown = markdown_match.group(2)  # URL в скобках
+        logger.info(f"MARKDOWN MATCH: Found homepage URL in markdown format for '{company_name}': {url_from_markdown}")
+        return url_from_markdown
+    
+    # Поиск в структурированных секциях
+    homepage_sections = [
+        r'(?i)## *Basic Company Information[\s\S]*?(?:Official|Main)[\s\S]*?(?:Homepage|Website|URL)[^\n]*?\n*([^\n]*)',
+        r'(?i)Official\s+(?:Website|Homepage|URL)[^\n]*?\n*([^\n]*)',
+        r'(?i)Website[^\n]*?\n*([^\n]*)'
+    ]
+    
+    for pattern in homepage_sections:
+        section_match = re.search(pattern, report_text)
+        if section_match:
+            section_text = section_match.group(1)
+            logger.debug(f"Found potential homepage section for '{company_name}': '{section_text}'")
+            
+            # Проверяем наличие Markdown-ссылки в этой секции
+            markdown_in_section = re.search(r'\[([^\]]+)\]\(([^\)]+)\)', section_text)
+            if markdown_in_section:
+                extracted_url = markdown_in_section.group(2)  # URL в скобках
+                logger.info(f"SECTION MATCH (markdown): Found homepage URL in structured section for '{company_name}': {extracted_url}")
+                return extracted_url
+            
+            # Если нет Markdown-ссылки, ищем обычный URL
+            url_in_section = re.search(url_pattern, section_text)
+            if url_in_section:
+                extracted_url = url_in_section.group(0)
+                logger.info(f"SECTION MATCH (plain): Found homepage URL in structured section for '{company_name}': {extracted_url}")
+                return extracted_url
+    
+    # Если не удалось найти URL прямым анализом, используем LLM
+    logger.info(f"No direct URL matches found in report for '{company_name}'. Querying LLM...")
     
     prompt_messages = [
         {
@@ -50,7 +114,7 @@ async def _extract_homepage_from_report_text_async(
     ]
     
     try:
-        logger.debug(f"Attempting to extract homepage for '{company_name}' from report text using {model}.")
+        logger.info(f"Querying LLM to extract homepage for '{company_name}' using {model}.")
         completion = await openai_client.chat.completions.create(
             model=model,
             messages=prompt_messages,
@@ -59,6 +123,7 @@ async def _extract_homepage_from_report_text_async(
             stop=["\n"]
         )
         llm_response_text = completion.choices[0].message.content.strip()
+        logger.info(f"LLM response for '{company_name}' homepage extraction: '{llm_response_text}'")
 
         if llm_response_text and llm_response_text.lower() != 'none':
             # Ищем URL с помощью регулярного выражения
@@ -70,20 +135,34 @@ async def _extract_homepage_from_report_text_async(
             markdown_match = re.search(markdown_url_pattern, llm_response_text)
             if markdown_match:
                 extracted_url = markdown_match.group(1)
-                logger.info(f"Extracted homepage for '{company_name}' from report (Markdown): {extracted_url}")
+                logger.info(f"Extracted homepage for '{company_name}' from LLM response (Markdown): {extracted_url}")
                 return extracted_url
             
             # Если Markdown URL не найден, ищем обычный URL
             plain_url_match = re.search(url_pattern, llm_response_text)
             if plain_url_match:
                 extracted_url = plain_url_match.group(0)
-                logger.info(f"Extracted homepage for '{company_name}' from report (Plain URL): {extracted_url}")
+                logger.info(f"Extracted homepage for '{company_name}' from LLM response (Plain URL): {extracted_url}")
                 return extracted_url
             
-            logger.debug(f"LLM response for '{company_name}' was '{llm_response_text}', but no clean URL could be extracted.")
+            # Если регулярное выражение не нашло URL, но ответ не "None", пробуем найти что-то похожее на URL
+            if "." in llm_response_text and ("http" in llm_response_text.lower() or "www" in llm_response_text.lower()):
+                logger.warning(f"LLM response for '{company_name}' looks like URL but regex didn't match: '{llm_response_text}'")
+                # Попытка с более слабым регулярным выражением
+                weak_url_pattern = r'(https?://)?[\w\.-]+\.[a-zA-Z]{2,}(?:/[\w\康熙字典统一码擴充區乙\.\-\%_]*)?'
+                weak_match = re.search(weak_url_pattern, llm_response_text)
+                if weak_match:
+                    weak_url = weak_match.group(0)
+                    # Если URL не начинается с http, добавляем https://
+                    if not weak_url.startswith(('http://', 'https://')):
+                        weak_url = 'https://' + weak_url
+                    logger.info(f"Using weak regex match for '{company_name}': {weak_url}")
+                    return weak_url
+            
+            logger.warning(f"LLM response for '{company_name}' was '{llm_response_text}', but no clean URL could be extracted.")
             return None
         else:
-            logger.debug(f"LLM did not find a clear homepage URL for '{company_name}' in the report (returned: {llm_response_text}).")
+            logger.info(f"LLM did not find a clear homepage URL for '{company_name}' in the report (returned: {llm_response_text}).")
             return None
     except Exception as e:
         logger.error(f"Error extracting homepage for '{company_name}' from report text: {e}", exc_info=True)

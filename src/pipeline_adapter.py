@@ -18,6 +18,8 @@ import yaml
 import traceback
 import json
 import ssl # <--- НОВЫЙ ИМПОРТ
+import urllib.parse
+import re
 
 # Import new components
 from description_generator import DescriptionGenerator
@@ -160,17 +162,35 @@ async def _process_single_company_async(
             finding = await llm_deep_search_finder.find(company_name, **context)
             company_findings.append(finding)
             
+            # Детальное логирование всего содержимого finding
+            logger.info(f"LLMDeepSearchFinder result keys: {list(finding.keys())}")
+            for key, value in finding.items():
+                if key == "result" and value:
+                    logger.info(f"LLMDeepSearch result text length: {len(value)} chars")
+                    logger.debug(f"LLMDeepSearch result text preview: {value[:300]}...")
+                elif key == "sources" and value:
+                    logger.info(f"LLMDeepSearch sources: {len(value)} sources found")
+                    for i, source in enumerate(value[:5]):  # Логируем первые 5 источников
+                        logger.info(f"  Source {i+1}: {source.get('title', 'No Title')} - {source.get('url', 'No URL')}")
+                    if len(value) > 5:
+                        logger.info(f"  ... and {len(value)-5} more sources")
+                elif key == "extracted_homepage_url":
+                    logger.info(f"LLMDeepSearch extracted_homepage_url: '{value}'")
+                elif key not in ["result", "sources"] or not value:
+                    logger.info(f"LLMDeepSearch {key}: {value}")
+            
             if not finding.get("error") and finding.get("extracted_homepage_url"):
                 candidate_url = finding["extracted_homepage_url"]
+                # Нормализация URL - удаление завершающего слеша
+                if candidate_url.endswith('/'):
+                    candidate_url = candidate_url.rstrip('/')
+                    logger.info(f"Normalized URL by removing trailing slash: {candidate_url}")
+                
                 logger.info(f"LLMDeepSearchFinder found homepage candidate for {company_name}: {candidate_url}")
-                is_live = await check_url_liveness(candidate_url, aiohttp_session)
-                logger.info(f"Liveness check for LLMDeepSearch URL '{candidate_url}': {is_live}")
-                if is_live:
-                    final_homepage_url = candidate_url
-                    final_homepage_source = "llm_deep_search_extracted_live"
-                    logger.info(f"Homepage from LLMDeepSearch for {company_name} ({final_homepage_url}) is LIVE and accepted.")
-                else:
-                    logger.warning(f"Homepage from LLMDeepSearch for {company_name} ({candidate_url}) is NOT LIVE. Discarding.")
+                # Принимаем URL без проверки живости
+                final_homepage_url = candidate_url
+                final_homepage_source = "llm_deep_search_extracted"
+                logger.info(f"Homepage from LLMDeepSearch for {company_name} ({final_homepage_url}) принят без проверки живости.")
             elif finding.get("error"):
                  logger.warning(f"LLMDeepSearchFinder for {company_name} returned error: {finding.get('error')}")
             else:
@@ -192,6 +212,12 @@ async def _process_single_company_async(
             company_findings.append(finding)
             if not finding.get("error") and finding.get("result"):
                 candidate_hp_url = finding["result"]
+                
+                # Нормализация URL - удаление завершающего слеша
+                if candidate_hp_url.endswith('/'):
+                    candidate_hp_url = candidate_hp_url.rstrip('/')
+                    logger.info(f"Normalized URL by removing trailing slash: {candidate_hp_url}")
+                
                 logger.info(f"HomepageFinder found candidate for {company_name}: {candidate_hp_url} (source: {finding.get('source')})")
                 is_live = await check_url_liveness(candidate_hp_url, aiohttp_session)
                 logger.info(f"Liveness check for HomepageFinder URL '{candidate_hp_url}': {is_live}")
@@ -225,6 +251,12 @@ async def _process_single_company_async(
             company_findings.append(finding)
             if not finding.get("error") and finding.get("result"):
                 linkedin_url_result = finding["result"]
+                
+                # Нормализация LinkedIn URL - удаление завершающего слеша
+                if linkedin_url_result and linkedin_url_result.endswith('/'):
+                    linkedin_url_result = linkedin_url_result.rstrip('/')
+                    logger.info(f"Normalized LinkedIn URL by removing trailing slash: {linkedin_url_result}")
+                
                 logger.info(f"LinkedInFinder found URL for {company_name}: {linkedin_url_result}")
             elif finding.get("error"):
                  logger.warning(f"LinkedInFinder for {company_name} returned error: {finding.get('error')}")
@@ -244,6 +276,12 @@ async def _process_single_company_async(
             company_findings.append(finding)
             if not finding.get("error") and finding.get("result"):
                 candidate_dc_url = finding["result"]
+                
+                # Нормализация URL - удаление завершающего слеша
+                if candidate_dc_url.endswith('/'):
+                    candidate_dc_url = candidate_dc_url.rstrip('/')
+                    logger.info(f"Normalized URL by removing trailing slash: {candidate_dc_url}")
+                
                 logger.info(f"DomainCheckFinder found candidate for {company_name}: {candidate_dc_url}")
                 is_live = await check_url_liveness(candidate_dc_url, aiohttp_session)
                 logger.info(f"Liveness check for DomainCheckFinder URL '{candidate_dc_url}': {is_live}")
@@ -283,6 +321,11 @@ async def _process_single_company_async(
     except Exception as e:
         logger.error(f"Exception in description_generator for {company_name}: {e}", exc_info=True)
         description = f"Exception during final description generation: {str(e)}"
+
+    # Финальная нормализация homepage_url, удаление слеша в конце если есть
+    if final_homepage_url and final_homepage_url.endswith('/'):
+        final_homepage_url = final_homepage_url.rstrip('/')
+        logger.info(f"Final normalization: removed trailing slash from homepage URL: {final_homepage_url}")
 
     result = {
     "Company_Name": company_name,
