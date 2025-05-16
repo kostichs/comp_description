@@ -167,13 +167,12 @@ async def _process_single_company_async(
             for key, value in finding.items():
                 if key == "result" and value:
                     logger.info(f"LLMDeepSearch result text length: {len(value)} chars")
-                    logger.debug(f"LLMDeepSearch result text preview: {value[:300]}...")
                 elif key == "sources" and value:
                     logger.info(f"LLMDeepSearch sources: {len(value)} sources found")
-                    for i, source in enumerate(value[:5]):  # Логируем первые 5 источников
+                    for i, source in enumerate(value[:2]):
                         logger.info(f"  Source {i+1}: {source.get('title', 'No Title')} - {source.get('url', 'No URL')}")
-                    if len(value) > 5:
-                        logger.info(f"  ... and {len(value)-5} more sources")
+                    if len(value) > 2:
+                        logger.info(f"  ... and {len(value)-2} more sources")
                 elif key == "extracted_homepage_url":
                     logger.info(f"LLMDeepSearch extracted_homepage_url: '{value}'")
                 elif key not in ["result", "sources"] or not value:
@@ -308,7 +307,12 @@ async def _process_single_company_async(
     structured_data = None
     description = f"Error: Could not generate final description for {company_name}."
     try:
+        logger.info(f"Calling description_generator.generate_description for {company_name}")
         generated_result = await description_generator.generate_description(company_name, company_findings)
+        logger.info(f"Received result from description_generator for {company_name}, type: {type(generated_result).__name__}")
+        if isinstance(generated_result, dict):
+            logger.info(f"Result keys: {list(generated_result.keys())}")
+        
         if isinstance(generated_result, str) or (isinstance(generated_result, dict) and generated_result.get("error")):
             error_message = generated_result if isinstance(generated_result, str) else generated_result.get("error")
             description = f"Error generating structured data: {error_message}"
@@ -316,6 +320,7 @@ async def _process_single_company_async(
         elif isinstance(generated_result, dict):
             description = generated_result.get("description", f"No text description generated for {company_name}.")
             structured_data = generated_result
+            logger.info(f"Set structured_data for {company_name}, has keys: {list(structured_data.keys() if structured_data else [])}")
         else:
             logger.warning(f"Unexpected result type from description_generator for {company_name}: {type(generated_result)}")
     except Exception as e:
@@ -494,7 +499,32 @@ async def run_pipeline_for_file(
             save_results_csv(csv_results, output_csv_path, current_expected_csv_fieldnames)
             logger.info(f"Results saved to {output_csv_path}")
         except Exception as e: logger.error(f"Error saving results to CSV: {e}", exc_info=True)
-    success_count = sum(1 for r in results if r.get("description") and not r.get("description","").startswith("Error"))
+    # Улучшенный алгоритм подсчета успешных обработок
+    # Считаем успешными обработки, где есть structured_data
+    logger.info(f"Checking results for validation with {len(results)} entries")
+    for r in results:
+        company_name = r.get('Company_Name', 'Unknown')
+        # Проверяем описание в результате
+        has_description = r.get("Description") is not None and len(r.get("Description", "")) > 0
+        # Проверяем, начинается ли description с "Error"
+        starts_with_error = r.get("Description", "").startswith("Error") if has_description else True
+        # Проверяем наличие structured_data
+        has_structured_data = r.get("structured_data") is not None
+        
+        logger.info(f"Validation for {company_name}: has_desc={has_description}, starts_with_error={starts_with_error}, has_structured_data={has_structured_data}")
+        
+        if has_structured_data:
+            struct_keys = list(r.get("structured_data").keys())
+            logger.info(f"  Structured data keys: {struct_keys}")
+            # Проверяем, есть ли в structured_data свое description
+            has_desc_in_struct = 'description' in struct_keys
+            struct_desc_len = len(r.get("structured_data", {}).get("description", "")) if has_desc_in_struct else 0
+            logger.info(f"  Has description in structured data: {has_desc_in_struct}, length: {struct_desc_len}")
+
+    # Условие для успешной обработки: либо есть Description не начинающийся с Error, либо есть structured_data
+    success_count = sum(1 for r in results if 
+                       (r.get("Description") and not r.get("Description", "").startswith("Error")) or
+                       (r.get("structured_data") and isinstance(r.get("structured_data"), dict) and not r.get("structured_data").get("error")))
     failure_count = len(results) - success_count
     return success_count, failure_count, results
 
@@ -519,13 +549,20 @@ def setup_session_logging(pipeline_log_path: str):
 
     pipeline_handler = logging.FileHandler(pipeline_log_path, mode='w', encoding='utf-8')
     pipeline_handler.setFormatter(detailed_formatter)
-    pipeline_handler.setLevel(logging.DEBUG) 
+    pipeline_handler.setLevel(logging.INFO) 
     root_logger.addHandler(pipeline_handler)
     
-    root_logger.setLevel(logging.DEBUG) 
+    root_logger.setLevel(logging.INFO) 
 
-    logger.info("Session logging setup complete with detailed formatter and DEBUG level for file.")
-    logging.getLogger().debug("Root logger DEBUG level test message for session log.") 
+    logger.info("Session logging setup complete with detailed formatter and INFO level for file.")
+    # Удаляем отладочное логирование
+    # logging.getLogger().debug("Root logger DEBUG level test message for session log.")
+    
+    # Отключаем подробное логирование для библиотек HTTP-клиентов
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+    logging.getLogger("aiohttp").setLevel(logging.WARNING)
 
 async def run_pipeline():
     logger.info("Starting pipeline")
