@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CompanyCanvas</title>
+    <title>Company Parser</title>
     <script>
         console.log('HTML head loaded');
         window.onerror = function(msg, url, lineNo, columnNo, error) {
@@ -189,7 +189,7 @@
     </script>
     <div class="container">
         <div class="header">
-            <h1>CompanyCanvas</h1>
+            <h1>Company Insights</h1>
             <button id="newSessionBtn" style="display:none; margin-left:auto;">Start new session</button>
         </div>
 
@@ -198,9 +198,15 @@
                  ondragover="this.classList.add('dragover'); event.preventDefault();" 
                  ondragleave="this.classList.remove('dragover');"
                  ondrop="this.classList.remove('dragover'); event.preventDefault();">
-                <label class="dropZone-label">Drag & Drop Your File Here or Use the Button</label>
-                <p class="dropZone-instructions">Supported formats: CSV, XLSX.<br>Company names should be in the first column. The first row (header) will be ignored.</p>
-                
+                 <label class="dropZone-label">Drag & Drop Your File Here or Use the Button</label>
+                 <p class="dropZone-instructions">
+                     Supported formats: <b>CSV</b>, <b>XLSX</b>.<br><br>
+                 
+                     1. <b>One column:</b> Company names only.<br>
+                     2. <b>Two columns:</b> Company names and website URLs.<br><br>
+                 
+                     <b>Note:</b> The first row (header) will be ignored. The system will automatically detect the format.
+                 </p>
                 <button type="button" id="customChooseFileButton">Choose File</button>
                 <p id="fileNameDisplay"></p>
                 

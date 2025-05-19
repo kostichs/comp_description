@@ -4,7 +4,7 @@ import csv
 import json
 import logging
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union, Tuple
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -12,27 +12,98 @@ logger = logging.getLogger(__name__)
 # Determine Project Root (assuming this file is in src/)
 PROJECT_ROOT = Path(__file__).parent.parent 
 
-def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) -> list[str] | None:
-    """Loads the first column from Excel/CSV, handles headers, returns list of names."""
+def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) -> Union[List[str], List[Tuple[str, str]]] | None:
+    """
+    Loads company data from Excel/CSV.
+    
+    Args:
+        file_path: Path to the input file
+        col_index: Index of the first column to load (default 0)
+    
+    Returns:
+        If file has only one column: List of company names
+        If file has two columns: List of tuples (company_name, second_column_value)
+        None if file could not be loaded
+    """
     file_path_str = str(file_path)
     df_loaded = None
-    read_params = {"usecols": [col_index], "header": 0}
+    
     try:
+        # Определяем формат файла и загружаем его
         reader = pd.read_excel if file_path_str.lower().endswith(('.xlsx', '.xls')) else pd.read_csv
-        df_loaded = reader(file_path_str, **read_params)
+        
+        # Сначала попробуем загрузить весь файл, чтобы определить количество столбцов
+        df_loaded = reader(file_path_str)
+        
+        # Проверяем, есть ли два столбца
+        has_two_columns = df_loaded.shape[1] >= 2
+        
+        # Если есть два столбца, загружаем оба
+        if has_two_columns:
+            logging.info(f"Detected two or more columns in {file_path_str}, using first two columns")
+            # Используем первые два столбца
+            df_loaded = reader(file_path_str, usecols=[0, 1], header=0)
+        else:
+            # Если только один столбец, используем только первый
+            logging.info(f"Detected only one column in {file_path_str}")
+            df_loaded = reader(file_path_str, usecols=[col_index], header=0)
+            
     except (ValueError, ImportError, FileNotFoundError) as ve:
-        logging.warning(f" Initial read failed for {file_path_str}, trying header=None: {ve}")
-        read_params["header"] = None
-        try: df_loaded = reader(file_path_str, **read_params)
-        except Exception as read_err_no_header: logging.error(f" Error reading {file_path_str} even with header=None: {read_err_no_header}"); return None
-    except Exception as read_err: logging.error(f" Error reading file {file_path_str}: {read_err}"); return None
+        logging.warning(f"Initial read failed for {file_path_str}, trying header=None: {ve}")
+        try:
+            # Пробуем без заголовка
+            df_loaded = reader(file_path_str, header=None)
+            
+            # Проверяем, есть ли два столбца
+            has_two_columns = df_loaded.shape[1] >= 2
+            
+            # Если есть два столбца, загружаем оба
+            if has_two_columns:
+                logging.info(f"Detected two or more columns in {file_path_str} (without header), using first two columns")
+                df_loaded = reader(file_path_str, usecols=[0, 1], header=None)
+            else:
+                logging.info(f"Detected only one column in {file_path_str} (without header)")
+                df_loaded = reader(file_path_str, usecols=[col_index], header=None)
+                
+        except Exception as read_err_no_header:
+            logging.error(f"Error reading {file_path_str} even with header=None: {read_err_no_header}")
+            return None
+    except Exception as read_err:
+        logging.error(f"Error reading file {file_path_str}: {read_err}")
+        return None
 
     if df_loaded is not None and not df_loaded.empty:
-        company_names = df_loaded.iloc[:, 0].astype(str).str.strip().tolist()
-        valid_names = [name for name in company_names if name and name.lower() not in ['nan', '']]
-        if valid_names: return valid_names
-        else: logging.warning(f" No valid names in first column of {file_path_str}."); return None
-    else: logging.warning(f" Could not load data from first column of {file_path_str}."); return None
+        # Проверяем, сколько столбцов в датафрейме
+        if df_loaded.shape[1] >= 2:
+            # Если есть два или больше столбцов, возвращаем кортежи (company_name, second_column_value)
+            company_names = df_loaded.iloc[:, 0].astype(str).str.strip()
+            second_column = df_loaded.iloc[:, 1].astype(str).str.strip()
+            
+            # Создаем список кортежей, исключая строки с пустыми значениями в первом столбце
+            result = []
+            for name, second_value in zip(company_names, second_column):
+                if name and name.lower() not in ['nan', '']:
+                    result.append((name, second_value))
+            
+            if result:
+                logging.info(f"Loaded {len(result)} companies with second column data from {file_path_str}")
+                return result
+            else:
+                logging.warning(f"No valid names in first column of {file_path_str}.")
+                return None
+        else:
+            # Если только один столбец, возвращаем список строк
+            company_names = df_loaded.iloc[:, 0].astype(str).str.strip().tolist()
+            valid_names = [name for name in company_names if name and name.lower() not in ['nan', '']]
+            if valid_names:
+                logging.info(f"Loaded {len(valid_names)} companies from {file_path_str}")
+                return valid_names
+            else:
+                logging.warning(f"No valid names in first column of {file_path_str}.")
+                return None
+    else:
+        logging.warning(f"Could not load data from {file_path_str}.")
+        return None
 
 def load_context_file(context_file_path: str) -> str | None:
     """Loads the content of a context text file."""
