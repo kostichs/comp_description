@@ -136,6 +136,25 @@ STRATEGIC_SCHEMA = {
     "required": ["major_clients_or_case_studies", "strategic_initiatives", "key_competitors_mentioned", "overall_summary"]
 }
 
+# Новая подсхема для дополнительной информации
+ADDITIONAL_INFO_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "professional_open_positions": {
+            "type": "array", 
+            "description": "Technical and professional job openings that might indicate company's technical focus areas.",
+            "items": {"type": "string"}
+        },
+        "working_languages": {
+            "type": "array", 
+            "description": "Languages used by the company for business communications.",
+            "items": {"type": "string"}
+        }
+    },
+    "required": ["professional_open_positions", "working_languages"]
+}
+
 # COMPANY_PROFILE_SCHEMA now correctly references the above sub-schemas
 COMPANY_PROFILE_SCHEMA = {
     "type": "object",
@@ -157,14 +176,16 @@ COMPANY_PROFILE_SCHEMA = {
         "major_clients_or_case_studies": STRATEGIC_SCHEMA["properties"]["major_clients_or_case_studies"],
         "strategic_initiatives": STRATEGIC_SCHEMA["properties"]["strategic_initiatives"],
         "key_competitors_mentioned": STRATEGIC_SCHEMA["properties"]["key_competitors_mentioned"],
-        "overall_summary": STRATEGIC_SCHEMA["properties"]["overall_summary"]
+        "overall_summary": STRATEGIC_SCHEMA["properties"]["overall_summary"],
+        "professional_open_positions": ADDITIONAL_INFO_SCHEMA["properties"]["professional_open_positions"],
+        "working_languages": ADDITIONAL_INFO_SCHEMA["properties"]["working_languages"]
     },
     "required": [
         "company_name", "founding_year", "headquarters_city", "headquarters_country",
         "founders", "ownership_background", "core_products_services", "underlying_technologies",
         "customer_types", "industries_served", "geographic_markets", "financial_details",
         "employee_count_details", "major_clients_or_case_studies", "strategic_initiatives",
-        "key_competitors_mentioned", "overall_summary"
+        "key_competitors_mentioned", "overall_summary", "professional_open_positions", "working_languages"
     ]
 }
 
@@ -389,6 +410,8 @@ Paragraph Structure Guide (use all data fields in the JSON):
     - For `financial_details.funding_rounds`: Mention significant or recent funding. Example: "It recently secured $Y million in a Series B round in 2023 led by InvestorZ."
     - Incorporate `employee_count_details` (e.g., "with Z employees as of 2023").
     - Weave in `major_clients_or_case_studies`, `strategic_initiatives`, `key_competitors_mentioned`.
+    - Include information on `professional_open_positions` to highlight the company's technical/professional hiring focus (e.g., "The company is currently hiring for key roles in machine learning engineering and cloud infrastructure").
+    - Include `working_languages` if available (e.g., "The company operates in multiple languages including English, German, and Spanish").
     - Conclude with a sentence based on `overall_summary`.
 """
 

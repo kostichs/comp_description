@@ -288,7 +288,9 @@ class LLMDeepSearchFinder(Finder):
             "major clients or case studies with specific names",
             "strategic initiatives, partnerships, or mergers & acquisitions",
             "key competitors mentioned within the company's industry",
-            "any pending mergers, acquisitions, or significant organizational changes"
+            "any pending mergers, acquisitions, or significant organizational changes",
+            "open job positions of professional level (engineering, development, industry specialists, etc. - no administrative/support roles) that might indicate company's technical focus areas",
+            "languages used by the company for business communications and documentation (working languages, official languages)"
         ]
     
     def _escape_string_for_prompt(self, text: str) -> str:
@@ -372,6 +374,10 @@ The report MUST follow this structure that corresponds to our JSON schema:
    * Strategic Initiatives: Key partnerships, expansions, or strategic moves.
    * Key Competitors: Main competitors in their space.
    * Overall Summary: Brief summary of the company's position and outlook.
+
+6. **Additional Business Information:**
+   * Professional Open Positions: List technical/professional job openings (engineering, development, industry specialists) that indicate company's focus areas. Exclude administrative/support roles.
+   * Working Languages: Languages used by the company for business communications and documentation.
 
 {additional_aspects_placeholder}{user_context_placeholder}
 

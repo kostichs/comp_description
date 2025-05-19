@@ -18,12 +18,14 @@ specific_aspects_for_report_guidance:
   - "strategic initiatives, partnerships, or mergers & acquisitions"
   - "key competitors mentioned within the company's industry"
   - "any pending mergers, acquisitions, or significant organizational changes"
+  - "open job positions of professional level (engineering, development, industry specialists, etc. - no administrative/support roles) that might indicate company's technical focus areas"
+  - "languages used by the company for business communications and documentation (working languages, official languages)"
 
 llm_api_settings:
   model_name: "gpt-4o-mini-search-preview" # Ensure this is the model you want
   system_prompt: "You are an AI Business Analyst. Your task is to generate a detailed, structured, and factual business report on a given company. Utilize your web search capabilities to find the most current information. When financial data is requested, if multiple recent years are found, include data for each distinct year, clearly stating the period. Prioritize the most recent full fiscal year data. The report MUST follow the exact sections in the prompt, as these will be used to extract structured data into a JSON schema. Be concise and data-driven. Do not include conversational intros, outros, or disclaimers. For sections where you cannot find information, simply include a brief note like 'No specific data found on [topic]' rather than leaving the section empty."
   # max_tokens: 4000
-  # temperature: 0.0
+  # temperature: 0.0 No temperature is used with the search preview model
 
 # Main user prompt template structured to match our JSON schema
 user_prompt_template: |
@@ -60,6 +62,10 @@ user_prompt_template: |
      * Strategic Initiatives: Key partnerships, expansions, or strategic moves.
      * Key Competitors: Main competitors in their space.
      * Overall Summary: Brief summary of the company's position and outlook.
+     
+  6. **Additional Business Information:**
+     * Professional Open Positions: List technical/professional job openings (engineering, development, industry specialists) that indicate company's focus areas. Exclude administrative/support roles.
+     * Working Languages: Languages used by the company for business communications and documentation.
 
   {additional_aspects_placeholder}
 
