@@ -68,7 +68,16 @@ class DescriptionGenerator:
             if isinstance(finding, str):
                 sources_text += finding + "\n\n"
             elif isinstance(finding, dict) and finding.get("result"):
-                sources_text += finding.get("result") + "\n\n"
+                result = finding.get("result")
+                # Проверяем тип result
+                if isinstance(result, str):
+                    sources_text += result + "\n\n"
+                elif isinstance(result, dict):
+                    # Если словарь, то конвертируем в строку JSON
+                    sources_text += json.dumps(result, ensure_ascii=False) + "\n\n"
+                else:
+                    # Для других типов преобразуем в строку
+                    sources_text += str(result) + "\n\n"
         
         # Если есть отчет от LLMDeepSearchFinder, добавляем его в начало для приоритета
         if llm_deep_search_report:
@@ -178,6 +187,7 @@ class DescriptionGenerator:
         linkedin_url = None
         linkedin_snippet = None
         llm_deep_search_report = None
+        login_detection_result = None
         
         # Проходим по всем результатам и извлекаем нужные данные
         for finding in findings:
@@ -192,6 +202,8 @@ class DescriptionGenerator:
             elif source == "linkedin_finder":
                 linkedin_url = result
                 linkedin_snippet = finding.get("snippet")
+            elif source == "login_detection_finder":
+                login_detection_result = result
             elif "homepage_finder" not in source and not homepage_url:
                 homepage_url = result
         
@@ -209,6 +221,23 @@ class DescriptionGenerator:
             
         if linkedin_snippet:
             text_parts.append(f"LinkedIn Description: {linkedin_snippet}")
+        
+        # Добавляем информацию о логин-системе, если она есть
+        if login_detection_result:
+            text_parts.append("--- Login System Information ---")
+            if isinstance(login_detection_result, dict):
+                has_user_portal = login_detection_result.get("has_user_portal", False)
+                has_transaction_interface = login_detection_result.get("has_transaction_interface", False)
+                has_dashboard = login_detection_result.get("has_dashboard", False)
+                description = login_detection_result.get("description", "")
+                
+                text_parts.append(f"User Portal Available: {'Yes' if has_user_portal else 'No'}")
+                text_parts.append(f"Transaction Interface Available: {'Yes' if has_transaction_interface else 'No'}")
+                text_parts.append(f"Dashboard Available: {'Yes' if has_dashboard else 'No'}")
+                if description:
+                    text_parts.append(f"Description: {description}")
+            else:
+                text_parts.append(str(login_detection_result))
         
         # Если есть отчет от LLM Deep Search, добавляем его как основной источник данных
         if llm_deep_search_report:

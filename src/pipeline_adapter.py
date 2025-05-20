@@ -28,6 +28,7 @@ from finders.llm_deep_search_finder.finder import LLMDeepSearchFinder
 from finders.linkedin_finder import LinkedInFinder
 from finders.homepage_finder.finder import HomepageFinder
 from finders.domain_check_finder import DomainCheckFinder, check_url_liveness
+from finders.login_detection_finder import LoginDetectionFinder
 from src.data_io import load_and_prepare_company_names, save_results_csv, save_results_json, load_session_metadata, save_session_metadata, save_structured_data_incrementally
 
 # Setup logging
@@ -134,7 +135,8 @@ async def _process_single_company_async(
     run_standard_homepage_finders: bool = True,
     run_domain_check_finder: bool = True,
     llm_deep_search_config_override: Optional[Dict[str, Any]] = None,
-    broadcast_update: Optional[Callable] = None
+    broadcast_update: Optional[Callable] = None,
+    second_column_data: Optional[Dict[str, str]] = None
 ) -> Dict[str, Any]:
     
     logger.info(f"Starting processing for company {company_index + 1}/{total_companies}: {company_name}")
@@ -144,6 +146,21 @@ async def _process_single_company_async(
     final_homepage_url: Optional[str] = None
     final_homepage_source: Optional[str] = None
     linkedin_url_result: Optional[str] = None # Для LinkedIn URL
+
+    # Если у нас есть данные во второй колонке (URL сайта), используем их напрямую
+    # как final_homepage_url для дальнейшего использования в финдерах
+    if second_column_data and company_name in second_column_data:
+        url_from_second_column = second_column_data[company_name]
+        if url_from_second_column and url_from_second_column.strip():  # Проверяем, не пустой ли URL
+            final_homepage_url = url_from_second_column.strip()
+            # Нормализуем URL, удаляем конечный слеш
+            if final_homepage_url.endswith('/'):
+                final_homepage_url = final_homepage_url.rstrip('/')
+                logger.info(f"Normalized URL from second column (removed trailing slash): {final_homepage_url}")
+            final_homepage_source = "input_file_second_column"
+            logger.info(f"Using URL from second column for {company_name}: {final_homepage_url}")
+        else:
+            logger.warning(f"Empty or invalid URL in second column for {company_name}. Will proceed with normal URL finding.")
 
     # --- Этап 1: LLM Deep Search (только для получения данных) ---
     if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_llm_deep_search"})
@@ -314,6 +331,46 @@ async def _process_single_company_async(
     else:
         logger.info(f"DomainCheckFinder отключен для {company_name}. URL будет взят из второго столбца.")
 
+    # --- Этап 5: LoginDetectionFinder (всегда запускается, если есть URL сайта) ---
+    if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "processing_login_detection"})
+    login_detection_finder = finder_instances.get('LoginDetectionFinder')
+    if login_detection_finder and final_homepage_url:
+        try:
+            # Если URL из второй колонки заменяет найденный, используем его
+            homepage_url_for_login = final_homepage_url
+            # Нормализуем URL, если он не начинается с http/https
+            if homepage_url_for_login and not homepage_url_for_login.startswith(('http://', 'https://')):
+                homepage_url_for_login = 'https://' + homepage_url_for_login
+                logger.info(f"Normalized URL for LoginDetectionFinder: {homepage_url_for_login}")
+                
+            # Передаем URL в контекст
+            context = {'homepage_url': homepage_url_for_login, 'finder_results': company_findings}
+            logger.info(f"Calling LoginDetectionFinder for {company_name} with URL {homepage_url_for_login}")
+            finding = await login_detection_finder.find(company_name, **context)
+            company_findings.append(finding)
+            
+            if finding.get("error"):
+                logger.warning(f"LoginDetectionFinder for {company_name} returned error: {finding.get('error')}")
+            elif finding.get("result"):
+                login_details = finding["result"]
+                logger.info(f"LoginDetectionFinder results for {company_name}: has_user_portal={login_details.get('has_user_portal')}, has_transaction_interface={login_details.get('has_transaction_interface')}, has_dashboard={login_details.get('has_dashboard')}")
+                logger.info(f"LoginDetectionFinder description: {login_details.get('description')}")
+        except Exception as e:
+            logger.error(f"Exception in LoginDetectionFinder for {company_name}: {e}", exc_info=True)
+            company_findings.append({"source": "login_detection_finder", "result": None, "error": str(e), "_finder_instance_type": "LoginDetectionFinder"})
+    elif not final_homepage_url:
+        logger.warning(f"Cannot run LoginDetectionFinder for {company_name} because no homepage URL was found.")
+        company_findings.append({
+            "source": "login_detection_finder", 
+            "result": {
+                "has_user_portal": False,
+                "has_transaction_interface": False,
+                "has_dashboard": False,
+                "description": "Не удалось проверить наличие логина (URL сайта не найден)"
+            },
+            "_finder_instance_type": "LoginDetectionFinder"
+        })
+
     if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "generating_markdown"})
     if company_findings:
         await _generate_and_save_raw_markdown_report_async(company_name, company_findings, openai_client, llm_config, raw_markdown_output_path)
@@ -321,6 +378,23 @@ async def _process_single_company_async(
     if broadcast_update: await broadcast_update({"type": "progress", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "generating_description"})
     structured_data = None
     description = f"Error: Could not generate final description for {company_name}."
+    
+    # Найдем сырые данные из LLMDeepSearchFinder
+    llm_deep_search_result = None
+    for finding in company_findings:
+        if finding.get("source") == "llm_deep_search" and finding.get("result"):
+            llm_deep_search_result = finding.get("result")
+            break
+    
+    # Если нашли результат LLMDeepSearch, используем его напрямую
+    if llm_deep_search_result:
+        description = llm_deep_search_result
+        logger.info(f"Используем сырые данные LLMDeepSearch для {company_name} (длина: {len(description)} символов)")
+    else:
+        logger.warning(f"Не найдены сырые данные LLMDeepSearch для {company_name}, будет использовано сообщение об ошибке")
+    
+    # Закомментированный вызов генератора описаний через LLM
+    """
     try:
         logger.info(f"Calling description_generator.generate_description for {company_name}")
         generated_result = await description_generator.generate_description(company_name, company_findings)
@@ -341,6 +415,7 @@ async def _process_single_company_async(
     except Exception as e:
         logger.error(f"Exception in description_generator for {company_name}: {e}", exc_info=True)
         description = f"Exception during final description generation: {str(e)}"
+    """
 
     # Финальная нормализация homepage_url, удаление слеша в конце если есть
     if final_homepage_url and final_homepage_url.endswith('/'):
@@ -354,7 +429,8 @@ async def _process_single_company_async(
     "LinkedIn_URL": linkedin_url_result or "Not found",
     "Description": description,
     "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-    "structured_data": structured_data
+    # Не используем structured_data, так как мы теперь используем сырые данные
+    "structured_data": None
     }
 
     
@@ -373,11 +449,15 @@ async def _process_single_company_async(
             logger.info(f"Saved CSV row for {company_name} to {output_csv_path}")
         except Exception as e: logger.error(f"Error saving CSV for {company_name}: {e}", exc_info=True)
     
+    # Отключаем сохранение structured_data, так как мы теперь используем сырые данные
+    """
     if output_json_path and structured_data and not (isinstance(structured_data, dict) and structured_data.get("error")):
         try:
             save_structured_data_incrementally(result, output_json_path) 
             logger.info(f"Saved structured JSON for {company_name} to {output_json_path}")
         except Exception as e: logger.error(f"Error saving structured JSON for {company_name}: {e}", exc_info=True)
+    """
+    logger.info(f"Сохранение структурированных данных отключено, используются сырые данные из LLMDeepSearch")
     
     if broadcast_update: await broadcast_update({"type": "company_completed", "company": company_name, "current": company_index + 1, "total": total_companies, "status": "completed", "result": {key: result.get(key) for key in csv_fields}})
     return result
@@ -398,7 +478,8 @@ async def process_companies(
     broadcast_update: Optional[Callable] = None,
     output_csv_path: Optional[str] = None,
     output_json_path: Optional[str] = None,
-    llm_deep_search_config_override: Optional[Dict[str, Any]] = None
+    llm_deep_search_config_override: Optional[Dict[str, Any]] = None,
+    second_column_data: Optional[Dict[str, str]] = None
 ) -> List[Dict[str, Any]]:
     logger.info(f"Processing {len(company_names)} companies in batches of {batch_size}")
     
@@ -420,6 +501,9 @@ async def process_companies(
     # DomainCheckFinder создаем только если он включен
     if run_domain_check_finder_cfg:
         finder_instances['DomainCheckFinder'] = DomainCheckFinder(custom_tlds=llm_config.get("domain_check_tlds"), verbose=llm_config.get("verbose_finders", False))
+        
+    # Всегда создаем LoginDetectionFinder для обнаружения систем логина
+    finder_instances['LoginDetectionFinder'] = LoginDetectionFinder(timeout=30, verbose=llm_config.get("verbose_finders", False))
 
     description_generator = DescriptionGenerator(openai_client.api_key, model_config=llm_config.get('description_generator_model_config'))
     
@@ -452,7 +536,8 @@ async def process_companies(
                     run_standard_homepage_finders=run_standard_pipeline_cfg,
                     run_domain_check_finder=run_domain_check_finder_cfg,
                     llm_deep_search_config_override=llm_deep_search_config_override,
-                    broadcast_update=broadcast_update
+                    broadcast_update=broadcast_update,
+                    second_column_data=second_column_data
                 )
             )
             tasks.append(task)
@@ -540,7 +625,8 @@ async def run_pipeline_for_file(
         run_standard_pipeline_cfg=run_standard_cfg,
         run_domain_check_finder_cfg=run_domain_check_cfg,
         broadcast_update=broadcast_update, output_csv_path=str(output_csv_path),
-        output_json_path=str(structured_data_json_path), llm_deep_search_config_override=llm_deep_search_config_specific
+        output_json_path=str(structured_data_json_path), llm_deep_search_config_override=llm_deep_search_config_specific,
+        second_column_data=second_column_data
     )
     
     # Если есть второй столбец, заменяем Official_Website данными из второго столбца

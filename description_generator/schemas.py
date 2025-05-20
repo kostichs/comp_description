@@ -155,6 +155,49 @@ ADDITIONAL_INFO_SCHEMA = {
     "required": ["professional_open_positions", "working_languages"]
 }
 
+# Новая подсхема для технических аспектов и соответствия стандартам
+TECHNICAL_COMPLIANCE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "user_portal_details": {
+            "type": ["object", "null"],
+            "description": "Details about user-facing portal, login system, or transactional interface.",
+            "additionalProperties": False,
+            "properties": {
+                "has_user_portal": {"type": ["boolean", "null"], "description": "Whether the company's website has a user portal or login system."},
+                "has_transaction_interface": {"type": ["boolean", "null"], "description": "Whether users can perform transactions through the interface."},
+                "has_dashboard": {"type": ["boolean", "null"], "description": "Whether users can interact with a dashboard or control panel."},
+                "has_streaming_service": {"type": ["boolean", "null"], "description": "Whether the company offers streaming services to users."},
+                "has_personalization": {"type": ["boolean", "null"], "description": "Whether the interface offers personalized content or services."},
+                "description": {"type": ["string", "null"], "description": "Description of the user portal/login system functionality."}
+            },
+            "required": ["has_user_portal", "has_transaction_interface", "has_dashboard", "has_streaming_service", "has_personalization", "description"]
+        },
+        "security_compliance_details": {
+            "type": "object",
+            "description": "Details about security standards and compliance frameworks.",
+            "additionalProperties": False,
+            "properties": {
+                "has_secure_transactions": {"type": ["boolean", "null"], "description": "Whether the company mentions secure transactions."},
+                "compliance_standards": {
+                    "type": "array",
+                    "description": "Compliance standards mentioned (GDPR, ISO27001, KYC, PCI DSS, SOC 2, etc.)",
+                    "items": {"type": "string"}
+                },
+                "security_certifications": {
+                    "type": "array",
+                    "description": "Security certifications or attestations mentioned.",
+                    "items": {"type": "string"}
+                },
+                "additional_security_mentions": {"type": ["string", "null"], "description": "Additional mentions of security practices or compliance."}
+            },
+            "required": ["has_secure_transactions", "compliance_standards", "security_certifications", "additional_security_mentions"]
+        }
+    },
+    "required": ["user_portal_details", "security_compliance_details"]
+}
+
 # COMPANY_PROFILE_SCHEMA now correctly references the above sub-schemas
 COMPANY_PROFILE_SCHEMA = {
     "type": "object",
@@ -178,14 +221,17 @@ COMPANY_PROFILE_SCHEMA = {
         "key_competitors_mentioned": STRATEGIC_SCHEMA["properties"]["key_competitors_mentioned"],
         "overall_summary": STRATEGIC_SCHEMA["properties"]["overall_summary"],
         "professional_open_positions": ADDITIONAL_INFO_SCHEMA["properties"]["professional_open_positions"],
-        "working_languages": ADDITIONAL_INFO_SCHEMA["properties"]["working_languages"]
+        "working_languages": ADDITIONAL_INFO_SCHEMA["properties"]["working_languages"],
+        "user_portal_details": TECHNICAL_COMPLIANCE_SCHEMA["properties"]["user_portal_details"],
+        "security_compliance_details": TECHNICAL_COMPLIANCE_SCHEMA["properties"]["security_compliance_details"]
     },
     "required": [
         "company_name", "founding_year", "headquarters_city", "headquarters_country",
         "founders", "ownership_background", "core_products_services", "underlying_technologies",
         "customer_types", "industries_served", "geographic_markets", "financial_details",
         "employee_count_details", "major_clients_or_case_studies", "strategic_initiatives",
-        "key_competitors_mentioned", "overall_summary", "professional_open_positions", "working_languages"
+        "key_competitors_mentioned", "overall_summary", "professional_open_positions", "working_languages",
+        "user_portal_details", "security_compliance_details"
     ]
 }
 
@@ -412,6 +458,8 @@ Paragraph Structure Guide (use all data fields in the JSON):
     - Weave in `major_clients_or_case_studies`, `strategic_initiatives`, `key_competitors_mentioned`.
     - Include information on `professional_open_positions` to highlight the company's technical/professional hiring focus (e.g., "The company is currently hiring for key roles in machine learning engineering and cloud infrastructure").
     - Include `working_languages` if available (e.g., "The company operates in multiple languages including English, German, and Spanish").
+    - If `security_compliance_details` are available, include them (e.g., "The company complies with GDPR and ISO27001 standards").
+    - Mention important technical aspects if available, such as `user_portal_details`.
     - Conclude with a sentence based on `overall_summary`.
 """
 

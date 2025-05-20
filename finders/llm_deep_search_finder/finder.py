@@ -189,7 +189,7 @@ class LLMDeepSearchFinder(Finder):
         self.openai_api_key = openai_api_key
         self.client = AsyncOpenAI(api_key=openai_api_key)
         self.verbose = verbose
-        self.model = "gpt-4o-mini-search-preview"  # Модель с поддержкой поиска
+        self.model = "gpt-4o-search-preview"  # Модель с поддержкой поиска
         
     async def find(self, company_name: str, **context) -> dict:
         """
@@ -290,7 +290,9 @@ class LLMDeepSearchFinder(Finder):
             "key competitors mentioned within the company's industry",
             "any pending mergers, acquisitions, or significant organizational changes",
             "open job positions of professional level (engineering, development, industry specialists, etc. - no administrative/support roles) that might indicate company's technical focus areas",
-            "languages used by the company for business communications and documentation (working languages, official languages)"
+            "languages used by the company for business communications and documentation (working languages, official languages)",
+            "presence of a user-facing portal, app login, or transactional interface on the company's website/products (specify if users can log in, make transactions, or interact with a dashboard)",
+            "evidence of secure transactions or compliance with regulatory standards (e.g. PCI DSS, ISO 27001, GDPR, KYC, SOC 2) - search thoroughly for ANY security or compliance mentions"
         ]
     
     def _escape_string_for_prompt(self, text: str) -> str:
@@ -379,9 +381,13 @@ The report MUST follow this structure that corresponds to our JSON schema:
    * Professional Open Positions: List technical/professional job openings (engineering, development, industry specialists) that indicate company's focus areas. Exclude administrative/support roles.
    * Working Languages: Languages used by the company for business communications and documentation.
 
+7. **Technical and Compliance Information:**
+   * User Portal/Login System: Describe ANY user-facing platform, portal, profile, dashboard, or interactive interface found on the company's website or products. Look beyond explicit login buttons - check for streaming apps, dashboards, client portals, membership areas, e-commerce features, subscription services, or any interactive platform that implies user access control or personalization. If no explicit login system is found, report on any features that would logically require users to have accounts (like personalized content, saved preferences, or multi-step transactions).
+   * Compliance Standards: Thoroughly investigate and report on ANY evidence of secure transactions or compliance with regulatory standards (PCI DSS, ISO 27001, GDPR, KYC, SOC 2, etc.). Check footer links, terms of service, privacy policy pages, and about/security sections. Include even minor mentions of security certifications, encryption, data protection practices, SSL certificates, or compliance statements. If no explicit standards are found, look for security-related statements like "secure environment", "encrypted connections", or "data protection measures".
+
 {additional_aspects_placeholder}{user_context_placeholder}
 
-Provide a concise, data-driven report. Avoid conversational filler, disclaimers, or speculative statements. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list. Ensure the official homepage URL is explicitly mentioned if found."""
+Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or summarize the data. Include as much detail as you can find. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list. Ensure the official homepage URL is explicitly mentioned if found."""
 
         # Формируем полный пользовательский промпт
         user_content = prompt_template.format(
@@ -396,7 +402,8 @@ Provide a concise, data-driven report. Avoid conversational filler, disclaimers,
             "Utilize your web search capabilities to find the most current information. **A key part of your task is to identify and report the company's official homepage URL.** "
             "When financial data is requested, if multiple recent years are found, include data for each distinct year, clearly stating the period. Prioritize the most recent full fiscal year data. "
             "The report MUST follow the exact sections in the prompt, as these will be used to extract structured data into a JSON schema. "
-            "Be concise and data-driven. Do not include conversational intros, outros, or disclaimers. "
+            "Provide FULL and DETAILED information in each section - do not abbreviate or summarize the data. Include as much detail as you can find. "
+            "Do not include conversational intros, outros, or disclaimers. "
             "For sections where you cannot find information, simply include a brief note like 'No specific data found on [topic]' rather than leaving the section empty."
         )
         
