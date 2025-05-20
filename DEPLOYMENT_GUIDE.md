@@ -273,3 +273,59 @@ docker run -d --restart unless-stopped -p 80:8000 \
 **Для более простого управления обновлениями рассмотрите использование Docker Compose.**
 
 Это руководство должно помочь вам в будущем самостоятельно развертывать проект! 
+
+# Краткая инструкция по развертыванию (версия 5)
+
+Это краткое пошаговое руководство для быстрого развертывания приложения без лишних деталей.
+
+## 1. Локальная сборка и публикация образа
+
+```bash
+# Залогиньтесь в Docker Hub
+docker login
+
+# Соберите локальный образ
+docker build -t company-description-app .
+
+# Тегируйте образ с правильным именем репозитория и версией
+docker tag company-description-app sergeykostichev/company-canvas-app:v05
+
+# Отправьте образ в Docker Hub
+docker push sergeykostichev/company-canvas-app:v05
+```
+
+## 2. Развертывание на виртуальной машине
+
+```bash
+# Удалите предыдущий контейнер (если есть)
+docker rm -f company-canvas-prod
+
+# Скачайте новый образ
+docker pull sergeykostichev/company-canvas-app:v05
+
+# Запустите новый контейнер
+docker run -d -p 80:8000 --restart unless-stopped --name company-canvas-prod \
+  -e OPENAI_API_KEY=ваш_ключ \
+  -e SCRAPINGBEE_API_KEY=ваш_ключ \
+  -e SERPER_API_KEY=ваш_ключ \
+  -v /srv/company-canvas/output:/app/output \
+  sergeykostichev/company-canvas-app:v05
+```
+
+## 3. Проверка работы
+
+```bash
+# Проверьте работающие контейнеры
+docker ps
+
+# Проверьте логи контейнера
+docker logs company-canvas-prod
+```
+
+Теперь приложение должно быть доступно по IP-адресу виртуальной машины на порту 80.
+
+## 4. Информация о веб-интерфейсе
+
+- Веб-интерфейс автоматически обновляет таблицу результатов каждые 2 секунды
+- Параметр обновления находится в файле `frontend/app.js` (строка 326, значение 2000 ms)
+- При успешной обработке таблица автоматически отобразит результаты 
