@@ -5,6 +5,8 @@ import json
 import traceback
 import re
 from typing import Dict, List, Any, Optional
+import aiohttp
+from openai import AsyncOpenAI, APIError, APITimeoutError, RateLimitError
 
 # Добавляем корневую директорию проекта в путь Python
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,9 +15,42 @@ if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from finders.base import Finder
-from openai import AsyncOpenAI, APIError, APITimeoutError, RateLimitError
 
 logger = logging.getLogger(__name__)
+
+async def translate_to_english(text: str, openai_client: AsyncOpenAI) -> str:
+    """
+    Принудительно переводит весь текст на английский язык.
+    
+    Args:
+        text: Исходный текст
+        openai_client: Клиент OpenAI
+        
+    Returns:
+        str: Переведенный текст
+    """
+    if not text:
+        return text
+        
+    try:
+        logger.info(f"Translating text to English (length: {len(text)})")
+        
+        response = await openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a professional translator. Your task is to translate ALL content to English including ALL Arabic, Chinese, Russian or any other non-English text. Preserve exact line breaks, formatting, and structure. For company names, add English translations in parentheses where needed."},
+                {"role": "user", "content": f"Translate the following text to English, ensuring that ALL non-English content is fully translated. Pay special attention to any Arabic, Chinese, or other non-Latin script content:\n\n{text}"}
+            ],
+            temperature=0.1,
+            max_tokens=10000
+        )
+        
+        translated_text = response.choices[0].message.content
+        logger.info(f"Translation completed (new length: {len(translated_text)})")
+        return translated_text
+    except Exception as e:
+        logger.error(f"Error during translation: {e}")
+        return text  # Return original text if translation fails
 
 async def _extract_homepage_from_report_text_async(
     company_name: str, 
@@ -200,6 +235,7 @@ class LLMDeepSearchFinder(Finder):
             context: Словарь с контекстом, может содержать:
                      - 'specific_aspects': список аспектов, которые нужно исследовать
                      - 'user_context': дополнительный контекст от пользователя
+                     - 'company_homepage_url': URL домашней страницы компании (если уже известен)
                      
         Returns:
             dict: Результат поиска {
@@ -216,12 +252,15 @@ class LLMDeepSearchFinder(Finder):
             logger.info(f"\n--- LLM Deep Search для компании '{company_name}' ---")
             logger.info(f"Модель: {self.model}")
             logger.info(f"Исследуемые аспекты: {len(specific_aspects)} пунктов")
+            if context.get('company_homepage_url'):
+                logger.info(f"Предоставленный URL компании: {context.get('company_homepage_url')}")
         
         try:
             report_dict = await self._query_llm_for_deep_info(
                 company_name=company_name,
                 specific_aspects_to_cover=specific_aspects,
-                user_context_text=user_context
+                user_context_text=user_context,
+                context=context  # Передаем весь контекст в метод _query_llm_for_deep_info
             )
             
             if "error" in report_dict:
@@ -241,15 +280,21 @@ class LLMDeepSearchFinder(Finder):
             sources = report_dict.get("sources", [])
             extracted_homepage_url = report_dict.get("extracted_homepage_url")
             
+            # ПРИНУДИТЕЛЬНЫЙ ПЕРЕВОД ОТЧЕТА НА АНГЛИЙСКИЙ ЯЗЫК
+            logger.info(f"Translating report for company '{company_name}'")
+            translated_report = await translate_to_english(report_text, self.client)
+            
             if self.verbose:
                 logger.info(f"Получен отчет ({len(report_text)} символов) с {len(sources)} источниками. Извлеченный homepage: {extracted_homepage_url}")
+                logger.info(f"Report translated to English ({len(translated_report)} symbols)")
             else:
                 logger.info(f"LLM Deep Search для '{company_name}': получен отчет с {len(sources)} источниками, homepage: {extracted_homepage_url}")
+                logger.info(f"Report translated to English ({len(translated_report)} symbols)")
                 
             return {
                 "source": "llm_deep_search", 
-                "result": report_text, 
-                "raw_result": report_text,
+                "result": translated_report, 
+                "raw_result": translated_report,
                 "sources": sources,
                 "extracted_homepage_url": extracted_homepage_url,
                 "_finder_instance_type": self.__class__.__name__
@@ -315,7 +360,8 @@ class LLMDeepSearchFinder(Finder):
         self,
         company_name: str,
         specific_aspects_to_cover: List[str],
-        user_context_text: Optional[str] = None
+        user_context_text: Optional[str] = None,
+        context: Dict[str, Any] = {}
     ) -> Dict[str, Any]:
         """
         Запрашивает у LLM с поиском подробную информацию о компании.
@@ -325,6 +371,7 @@ class LLMDeepSearchFinder(Finder):
             company_name: Название компании
             specific_aspects_to_cover: Список аспектов, которые нужно исследовать
             user_context_text: Дополнительный контекст от пользователя
+            context: Словарь с контекстом
             
         Returns:
             Dict[str, Any]: Словарь с отчетом и источниками или с ошибкой
@@ -432,10 +479,17 @@ Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or 
                 message = completion.choices[0].message
                 if message.content:
                     answer_content = message.content.strip()
-                    # После получения отчета, пытаемся извлечь из него homepage
-                    extracted_homepage_url_from_report = await _extract_homepage_from_report_text_async(
-                        company_name, answer_content, self.client
-                    )
+                    
+                    # Проверяем, был ли URL уже предоставлен во входных данных
+                    if context and 'company_homepage_url' in context and context.get('company_homepage_url'):
+                        # Используем уже предоставленный URL без вызова модели
+                        extracted_homepage_url_from_report = context.get('company_homepage_url')
+                        logger.info(f"Using provided URL from input data for '{company_name}': {extracted_homepage_url_from_report}")
+                    else:
+                        # Если URL не был предоставлен, пытаемся извлечь его из отчета
+                        extracted_homepage_url_from_report = await _extract_homepage_from_report_text_async(
+                            company_name, answer_content, self.client
+                        )
                 
                 # Извлекаем источники из аннотаций, если они есть
                 if hasattr(message, 'annotations') and message.annotations:

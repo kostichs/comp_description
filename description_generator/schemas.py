@@ -345,7 +345,7 @@ async def extract_data_with_schema(
         "messages": messages,
         "temperature": llm_config.get("temperature_json_extract", llm_config.get("temperature", 0.05)), 
         "top_p": llm_config.get("top_p_json_extract", llm_config.get("top_p", 0.5)),
-        "max_tokens": llm_config.get("max_tokens_json_extract", 4500), # Max tokens for sub-schema extraction
+        "max_tokens": llm_config.get("max_tokens_json_extract", 6500), # Max tokens for sub-schema extraction
         "response_format": {
             "type": "json_schema",
             "json_schema": {
@@ -473,7 +473,7 @@ Paragraph Structure Guide (use all data fields in the JSON):
         "messages": messages,
         "temperature": llm_config.get("temperature_for_summary", llm_config.get("temperature", 0.7)), 
         "top_p": llm_config.get("top_p_for_summary", llm_config.get("top_p", 0.9)),
-        "max_tokens": llm_config.get("max_tokens_for_summary", 3500) 
+        "max_tokens": llm_config.get("max_tokens_for_summary", 5500) 
     }
 
     logger.info(f"Attempting to generate three-paragraph summary for {company_name} using model {model_name}.")
