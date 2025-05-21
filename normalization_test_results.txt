@@ -1,0 +1,109 @@
+
+
+==================================================
+TEST CASE: case1_tight
+==================================================
+
+--- ORIGINAL TEXT ---
+1. **Basic Company Information:**
+* **Company Name:** Your Job is Our Responsibility (Wdeftk Alina)
+* **Founding Year:** 2012
+* **Headquarters Location:** Al Jubail, Saudi Arabia
+* **Official Homepage URL:** https://www.wdeftksa.com
+
+2. **Products and Technology:**
+* **Core Products & Services:**
+- **App:** Job search app
+* **Underlying Technologies:** No data
+
+--- NORMALIZED TEXT ---
+1. **Basic Company Information:**
+* **Company Name:** Your Job is Our Responsibility (Wdeftk Alina)
+* **Founding Year:** 2012
+* **Headquarters Location:** Al Jubail, Saudi Arabia
+* **Official Homepage URL:** https://www.wdeftksa.com
+
+2. **Products and Technology:**
+* **Core Products & Services:**
+- **App:** Job search app
+* **Underlying Technologies:** No data
+
+
+
+==================================================
+TEST CASE: case2_too_spaced
+==================================================
+
+--- ORIGINAL TEXT ---
+**1. Basic Company Information:**
+
+
+- **Company Name:** Docker, Inc.
+
+
+- **Founding Year:** 2008
+
+
+- **Official Homepage URL:** https://www.docker.com/
+
+**2. Products and Technology:**
+
+
+- **Core Products & Services:**
+
+- **Docker Desktop:** A GUI application
+
+--- NORMALIZED TEXT ---
+**1. Basic Company Information:**
+
+- **Company Name:** Docker, Inc.
+- **Founding Year:** 2008
+
+- **Official Homepage URL:** https://www.docker.com/
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+- **Docker Desktop:** A GUI application
+
+
+
+==================================================
+TEST CASE: case3_normal
+==================================================
+
+--- ORIGINAL TEXT ---
+1. **Basic Company Information:**
+
+- **Company Name:** LinkedIn China (领英中国)
+
+- **Founding Year:** 2014
+
+- **Headquarters Location:** Beijing, China
+
+- **Official Homepage URL:** https://www.linkedin.cn/
+
+2. **Products and Technology:**
+
+- **Core Products & Services:**
+
+- **InCareer:** A job platform
+
+- **Talent Solutions:** HR services
+
+--- NORMALIZED TEXT ---
+1. **Basic Company Information:**
+
+- **Company Name:** LinkedIn China (领英中国)
+- **Founding Year:** 2014
+
+- **Headquarters Location:** Beijing, China
+- **Official Homepage URL:** https://www.linkedin.cn/
+
+2. **Products and Technology:**
+
+- **Core Products & Services:**
+- **InCareer:** A job platform
+
+- **Talent Solutions:** HR services
+

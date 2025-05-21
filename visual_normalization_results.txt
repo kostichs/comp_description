@@ -1,0 +1,38 @@
+=== ОРИГИНАЛЬНЫЙ ТЕКСТ (с видимыми переводами строк) ===
+
+**1. Basic Company Information:**[↵]
+[↵]
+[↵]
+[↵]
+- **Company Name:** Docker, Inc.[↵]
+[↵]
+[↵]
+[↵]
+- **Founding Year:** 2008[↵]
+[↵]
+[↵]
+[↵]
+- **Official Homepage URL:** https://www.docker.com/[↵]
+[↵]
+[↵]
+**2. Products and Technology:**[↵]
+[↵]
+[↵]
+- **Core Products & Services:**[↵]
+[↵]
+[↵]
+- **Docker Desktop:** A GUI application
+
+=== НОРМАЛИЗОВАННЫЙ ТЕКСТ (с видимыми переводами строк) ===
+
+**1. Basic Company Information:**[↵]
+[↵]
+- **Company Name:** Docker, Inc.[↵]
+- **Founding Year:** 2008[↵]
+[↵]
+- **Official Homepage URL:** https://www.docker.com/[↵]
+[↵]
+**2. Products and Technology:**[↵]
+[↵]
+- **Core Products & Services:**[↵]
+- **Docker Desktop:** A GUI application

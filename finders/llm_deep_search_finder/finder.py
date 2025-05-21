@@ -18,6 +18,38 @@ from finders.base import Finder
 
 logger = logging.getLogger(__name__)
 
+def normalize_markdown_format(markdown_text: str) -> str:
+    """
+    Нормализует форматирование markdown-текста, удаляя лишние пустые строки.
+    Функция применяет минимальные необходимые изменения, чтобы сделать форматирование
+    более согласованным, не добавляя при этом лишних пустых строк.
+    
+    Args:
+        markdown_text: Исходный markdown-текст
+        
+    Returns:
+        str: Нормализованный markdown-текст
+    """
+    if not markdown_text:
+        return markdown_text
+    
+    logger.info("Normalizing markdown format...")
+    
+    # Обязательно заменяем слишком большое количество пустых строк (более двух подряд)
+    normalized = re.sub(r'\n{3,}', r'\n\n', markdown_text)
+    
+    # Удаляем пустые строки между последовательными элементами списка с тем же маркером,
+    # но только если их больше одной
+    normalized = re.sub(r'(\n- [^\n]+)\n\n+(?=- )', r'\1\n', normalized)
+    normalized = re.sub(r'(\n\* [^\n]+)\n\n+(?=\* )', r'\1\n', normalized)
+    
+    # Заменяем все оставшиеся последовательности из трех и более пустых строк 
+    # на максимум одну пустую строку
+    normalized = re.sub(r'\n{3,}', r'\n\n', normalized)
+    
+    logger.info("Markdown format normalization complete")
+    return normalized
+
 async def translate_to_english(text: str, openai_client: AsyncOpenAI) -> str:
     """
     Принудительно переводит весь текст на английский язык.
@@ -284,17 +316,20 @@ class LLMDeepSearchFinder(Finder):
             logger.info(f"Translating report for company '{company_name}'")
             translated_report = await translate_to_english(report_text, self.client)
             
+            # НОРМАЛИЗАЦИЯ ФОРМАТИРОВАНИЯ MARKDOWN
+            normalized_report = normalize_markdown_format(translated_report)
+            
             if self.verbose:
                 logger.info(f"Получен отчет ({len(report_text)} символов) с {len(sources)} источниками. Извлеченный homepage: {extracted_homepage_url}")
-                logger.info(f"Report translated to English ({len(translated_report)} symbols)")
+                logger.info(f"Report translated to English ({len(translated_report)} symbols) and format normalized")
             else:
                 logger.info(f"LLM Deep Search для '{company_name}': получен отчет с {len(sources)} источниками, homepage: {extracted_homepage_url}")
-                logger.info(f"Report translated to English ({len(translated_report)} symbols)")
+                logger.info(f"Report translated to English and format normalized")
                 
             return {
                 "source": "llm_deep_search", 
-                "result": translated_report, 
-                "raw_result": translated_report,
+                "result": normalized_report, 
+                "raw_result": normalized_report,
                 "sources": sources,
                 "extracted_homepage_url": extracted_homepage_url,
                 "_finder_instance_type": self.__class__.__name__
