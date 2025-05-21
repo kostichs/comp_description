@@ -333,6 +333,80 @@ async def _process_single_company_async(
         result_data["Description"] = description_text or f"Error generating description for {company_name}"
         result_data["structured_data"] = structured_data
         
+        # Если задан output_csv_path, сохраняем результат текущей компании в CSV
+        if output_csv_path:
+            try:
+                # Создаем список с одним результатом для текущей компании
+                current_result = {key: result_data.get(key, "") for key in csv_fields}
+                
+                # Используем portalocker для блокировки файла на Windows
+                import csv
+                from contextlib import contextmanager
+                
+                @contextmanager
+                def locked_file(filename, mode):
+                    """Контекстный менеджер для безопасной работы с файлами."""
+                    try:
+                        # Открываем файл эксклюзивно
+                        import os
+                        import time  # Добавляем импорт модуля time
+                        # Использование опции 'b' для бинарного режима, чтобы избежать проблем с переводами строк
+                        file_handle = open(filename, mode + 'b', buffering=0)
+                        try:
+                            # Пытаемся получить эксклюзивную блокировку
+                            if os.name == 'nt':  # Windows
+                                import msvcrt
+                                msvcrt.locking(file_handle.fileno(), msvcrt.LK_NBLCK, 1)
+                            else:  # Unix/Linux
+                                import fcntl
+                                fcntl.flock(file_handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                        except (IOError, OSError):
+                            # Не можем получить блокировку, закрываем файл и пробуем снова
+                            file_handle.close()
+                            time.sleep(0.1)
+                            file_handle = open(filename, mode + 'b', buffering=0)
+                            if os.name == 'nt':
+                                msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
+                            else:
+                                fcntl.flock(file_handle, fcntl.LOCK_EX)
+                        
+                        # Создаем текстовый wrapper для бинарного файла
+                        import io
+                        text_file = io.TextIOWrapper(file_handle, encoding='utf-8')
+                        yield text_file
+                    finally:
+                        try:
+                            # Снимаем блокировку и закрываем файл
+                            text_file.detach()  # Отсоединяем TextIOWrapper, чтобы не закрыть основной файл дважды
+                            if os.name == 'nt':
+                                file_handle.seek(0)
+                                try:
+                                    msvcrt.locking(file_handle.fileno(), msvcrt.LK_UNLCK, 1)
+                                except:
+                                    pass  # Игнорируем ошибки при разблокировке
+                            file_handle.close()
+                        except:
+                            pass  # Игнорируем ошибки при закрытии
+                
+                # Добавляем запись в CSV файл, используя нашу функцию блокировки
+                try:
+                    with locked_file(output_csv_path, 'a') as f:
+                        writer = csv.DictWriter(f, fieldnames=csv_fields)
+                        writer.writerow(current_result)
+                    logger.info(f"{run_stage_log} - Result saved to {output_csv_path}")
+                except Exception as e:
+                    # Запасной план: просто добавляем строку в файл без блокировки
+                    try:
+                        with open(output_csv_path, 'a', encoding='utf-8', newline='') as f:
+                            writer = csv.DictWriter(f, fieldnames=csv_fields)
+                            writer.writerow(current_result)
+                        logger.info(f"{run_stage_log} - Result saved to {output_csv_path} (without locking)")
+                    except Exception as inner_e:
+                        logger.error(f"{run_stage_log} - Error saving result to CSV (fallback): {inner_e}", exc_info=True)
+                        raise inner_e
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error saving result to CSV: {e}", exc_info=True)
+        
         # Если задан output_json_path, сохраняем structured_data в JSON инкрементально
         if output_json_path and structured_data:
             try:
@@ -516,6 +590,18 @@ async def process_companies(
         csv_fields = expected_csv_fieldnames
         logger.info(f"Using provided CSV fields: {csv_fields}")
     
+    # Создаем CSV файл с заголовками заранее, если его еще нет
+    if output_csv_path:
+        try:
+            if not os.path.exists(output_csv_path):
+                # Создаем директорию, если она не существует
+                os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
+                # Создаем пустой CSV с заголовками
+                save_results_csv([], output_csv_path, csv_fields)
+                logger.info(f"Created empty CSV file with headers at {output_csv_path}")
+        except Exception as e:
+            logger.error(f"Error creating initial CSV file: {e}", exc_info=True)
+    
     # Обработка компаний по батчам для ограничения параллельных запросов
     all_results = []
     
@@ -573,20 +659,6 @@ async def process_companies(
             else:
                 # Иначе добавляем результат обработки
                 all_results.append(result)
-        
-        # Если задан output_csv_path, сохраняем промежуточные результаты в CSV
-        if output_csv_path:
-            try:
-                # Извлекаем только нужные поля для CSV
-                csv_results = []
-                for r in all_results:
-                    csv_result = {key: r.get(key, "") for key in csv_fields}
-                    csv_results.append(csv_result)
-                
-                save_results_csv(csv_results, output_csv_path, csv_fields)
-                logger.info(f"Intermediate results saved to {output_csv_path}")
-            except Exception as e:
-                logger.error(f"Error saving intermediate results to CSV: {e}", exc_info=True)
         
         # Обновляем прогресс, если задан broadcast_update
         if broadcast_update:
