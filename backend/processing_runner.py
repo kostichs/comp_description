@@ -11,8 +11,9 @@ import aiohttp
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-# Import adapter functions instead of direct pipeline calls
-from src.pipeline_adapter import run_pipeline_for_file, setup_session_logging
+# Обновленные импорты для новой структуры
+from src.pipeline.adapter import PipelineAdapter
+from src.pipeline.utils.logging import setup_session_logging
 from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR # Import session helpers
 from src.config import load_env_vars, load_llm_config # Import config loaders
 from openai import AsyncOpenAI
@@ -104,7 +105,8 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
     try:
         session_logger.info("Loading API keys and LLM config...")
         try:
-            scrapingbee_api_key, openai_api_key, serper_api_key = load_env_vars()
+            # Исправленная распаковка - теперь получаем 4 значения, включая hubspot_api_key
+            scrapingbee_api_key, openai_api_key, serper_api_key, hubspot_api_key = load_env_vars()
             llm_config = load_llm_config("llm_config.yaml") 
             
             # llm_deep_search_specific_aspects больше не используется здесь напрямую
@@ -140,26 +142,33 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             connector = aiohttp.TCPConnector(ssl=ssl_context_no_verify)
             
             async with aiohttp.ClientSession(connector=connector) as aio_session:
-                success_count, failure_count, all_results = await run_pipeline_for_file(
-                    input_file_path=input_file_path,
-                    output_csv_path=output_csv_path,
-                    pipeline_log_path=str(pipeline_log_path), 
-                    # scoring_log_path=str(scoring_log_path), # Удален
-                    session_dir_path=session_dir,
-                    context_text=context_text,
-                    company_col_index=0,
-                    aiohttp_session=aio_session,
-                    sb_client=sb_client,
-                    llm_config=llm_config, # Передаем полный llm_config
-                    openai_client=openai_client,
-                    serper_api_key=serper_api_key,
-                    expected_csv_fieldnames=expected_cols, 
-                    broadcast_update=broadcast_update,
-                    main_batch_size=10,
-                    run_standard_pipeline=run_standard_pipeline,
-                    run_llm_deep_search_pipeline=run_llm_deep_search_pipeline
-                    # llm_deep_search_config=None # Удален, т.к. не принимается функцией
+                # Используем новый PipelineAdapter вместо прямого вызова функции
+                pipeline_adapter = PipelineAdapter(
+                    config_path="llm_config.yaml", 
+                    input_file=input_file_path,
+                    session_id=session_id,  # Передаем session_id в адаптер
+                    use_raw_llm_data_as_description=True  # Используем сырые данные LLM как описание
                 )
+                
+                # Настраиваем адаптер
+                pipeline_adapter.company_col_index = 0
+                pipeline_adapter.output_csv_path = output_csv_path
+                pipeline_adapter.pipeline_log_path = Path(str(pipeline_log_path))
+                
+                # Инициализируем клиентов напрямую
+                pipeline_adapter.openai_client = openai_client
+                pipeline_adapter.sb_client = sb_client
+                pipeline_adapter.aiohttp_session = aio_session
+                pipeline_adapter.llm_config = llm_config
+                pipeline_adapter.api_keys = {
+                    "openai": openai_api_key,
+                    "serper": serper_api_key,
+                    "scrapingbee": scrapingbee_api_key,
+                    "hubspot": hubspot_api_key
+                }
+                
+                # Запускаем пайплайн
+                success_count, failure_count, all_results = await pipeline_adapter.run()
                 
                 session_logger.info(f"Pipeline completed with {success_count} successes and {failure_count} failures.")
                 

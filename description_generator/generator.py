@@ -1,8 +1,14 @@
 import json
 import logging
+import traceback
+import time
+import httpx
+import re
+import yaml
+import os
 from typing import List, Dict, Any, Optional, Union
 from openai import AsyncOpenAI
-import traceback
+from dotenv import load_dotenv
 
 from description_generator.config import (
     SYSTEM_PROMPT,
@@ -22,6 +28,12 @@ from description_generator.schemas import (
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
+
+# Загружаем API-ключи из .env
+load_dotenv()
+
+# Используем API-ключ напрямую из переменных окружения, если он не передан в конструкторе
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 class DescriptionGenerator:
     """

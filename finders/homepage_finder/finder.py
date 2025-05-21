@@ -44,15 +44,24 @@ class HomepageFinder(Finder):
         
         Args:
             company_name: Название компании
-            context: Словарь с контекстом, должен содержать 'session' с aiohttp.ClientSession
+            context: Словарь с контекстом, может содержать:
+                - session: aiohttp.ClientSession
+                - serper_api_key: API ключ для Google Serper (альтернатива self.serper_api_key)
             
         Returns:
             dict: Результат поиска {"source": "название_источника", "result": url или None}
         """
+        # Получаем session из параметров или контекста
         session = context.get('session')
         if not session:
             logger.error("HomepageFinder: aiohttp.ClientSession not found in context['session']")
             raise ValueError("HomepageFinder требует aiohttp.ClientSession в context['session']")
+        
+        # Получаем serper_api_key из параметров или используем инициализированный
+        serper_api_key = context.get('serper_api_key', self.serper_api_key)
+        if not serper_api_key:
+            logger.error("HomepageFinder: serper_api_key not found")
+            raise ValueError("HomepageFinder требует serper_api_key")
         
         logger.info(f"--- Поиск домашней страницы для компании '{company_name}' (HomepageFinder) ---")
         
@@ -67,7 +76,7 @@ class HomepageFinder(Finder):
         selected_wiki_url = None # Инициализируем здесь, чтобы было доступно в конце
 
         # 2. Google Search -> Wikipedia pipeline
-        google_results = await search_google(company_name, session, self.serper_api_key)
+        google_results = await search_google(company_name, session, serper_api_key)
         if google_results and "organic" in google_results:
             wiki_links = filter_wikipedia_links(google_results["organic"], company_name)
             if wiki_links:

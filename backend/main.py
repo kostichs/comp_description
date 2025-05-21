@@ -24,8 +24,11 @@ import tempfile # Added for temporary file for zip archive
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-# Import from adapter instead of old pipeline
-from src.pipeline_adapter import run_pipeline_for_file, process_companies, setup_session_logging
+# Обновленные импорты для использования новой структуры
+from src.pipeline import run_pipeline  # Новая публичная функция запуска пайплайна
+from src.pipeline.adapter import PipelineAdapter  # Класс с методом run_pipeline_for_file
+from src.pipeline.core import process_companies  # Перенесенная функция
+from src.pipeline.utils.logging import setup_session_logging  # Перенесенная функция
 from src.config import OUTPUT_DIR, load_env_vars, load_llm_config
 from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR
 
@@ -134,29 +137,43 @@ async def execute_pipeline_for_session_async(
         logger.info("[EXECUTE_PIPELINE] AsyncOpenAI client created.")
         
         try:
-            logger.info(f"[EXECUTE_PIPELINE] Calling run_pipeline_for_file for session {session_id}...")
-            await run_pipeline_for_file( 
-                input_file_path=input_file,
-                output_csv_path=output_csv_file,
-                pipeline_log_path=str(pipeline_log_path), 
-                scoring_log_path=str(scoring_log_path),
-                context_text=context_text,
-                company_col_index=0, 
-                aiohttp_session=aiohttp_session, 
-                sb_client=sb_client, 
-                llm_config=llm_config,
-                openai_client=openai_async_client, 
-                serper_api_key=serper_api_key,
-                expected_csv_fieldnames=expected_csv_fieldnames, 
-                broadcast_update=None, # Ваша функция broadcast_update
-                main_batch_size=10 
+            logger.info(f"[EXECUTE_PIPELINE] Using PipelineAdapter for session {session_id}...")
+            
+            # Используем PipelineAdapter вместо прямого вызова функции
+            pipeline_adapter = PipelineAdapter(
+                config_path="llm_config.yaml", 
+                input_file=input_file,
+                session_id=session_id,  # Передаем session_id в адаптер
+                use_raw_llm_data_as_description=True  # Используем сырые данные LLM как описание
             )
+            
+            # Настраиваем адаптер
+            pipeline_adapter.company_col_index = 0
+            pipeline_adapter.output_csv_path = output_csv_file
+            pipeline_adapter.pipeline_log_path = Path(str(pipeline_log_path))
+            if hasattr(pipeline_adapter, "scoring_log_path"):
+                pipeline_adapter.scoring_log_path = Path(str(scoring_log_path))
+            
+            # Инициализируем клиентов напрямую
+            pipeline_adapter.openai_client = openai_async_client
+            pipeline_adapter.sb_client = sb_client
+            pipeline_adapter.aiohttp_session = aiohttp_session
+            pipeline_adapter.llm_config = llm_config
+            pipeline_adapter.api_keys = {
+                "openai": openai_api_key,
+                "serper": serper_api_key,
+                "scrapingbee": scrapingbee_api_key
+            }
+            
+            # Запускаем пайплайн
+            await pipeline_adapter.run()
+            
             logger.info(f"[EXECUTE_PIPELINE] Pipeline execution for session_id: {session_id} completed.")
         except asyncio.CancelledError:
             logger.info(f"[EXECUTE_PIPELINE] Pipeline execution for session_id: {session_id} was cancelled.")
             raise 
         except Exception as e:
-            logger.error(f"[EXECUTE_PIPELINE] Error during run_pipeline_for_file for session_id {session_id}: {e}", exc_info=True)
+            logger.error(f"[EXECUTE_PIPELINE] Error during pipeline execution for session_id {session_id}: {e}", exc_info=True)
     logger.info(f"[EXECUTE_PIPELINE] Finished for session_id: {session_id}")
 
 # Callback-функция для задач

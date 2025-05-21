@@ -205,6 +205,7 @@ class LLMDeepSearchFinder(Finder):
             dict: Результат поиска {
                 "source": "llm_deep_search", 
                 "result": str или None,  # текст отчета
+                "raw_result": str или None,  # Добавляем дублирование в raw_result для совместимости
                 "sources": list  # список источников в формате [{"title": str, "url": str}, ...]
             }
         """
@@ -229,6 +230,7 @@ class LLMDeepSearchFinder(Finder):
                 return {
                     "source": "llm_deep_search", 
                     "result": None, 
+                    "raw_result": None,
                     "error": report_dict["error"],
                     "sources": [],
                     "extracted_homepage_url": None,
@@ -247,6 +249,7 @@ class LLMDeepSearchFinder(Finder):
             return {
                 "source": "llm_deep_search", 
                 "result": report_text, 
+                "raw_result": report_text,
                 "sources": sources,
                 "extracted_homepage_url": extracted_homepage_url,
                 "_finder_instance_type": self.__class__.__name__
@@ -258,6 +261,7 @@ class LLMDeepSearchFinder(Finder):
             return {
                 "source": "llm_deep_search",
                 "result": None,
+                "raw_result": None,
                 "error": error_msg,
                 "sources": [],
                 "extracted_homepage_url": None,

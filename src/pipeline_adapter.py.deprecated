@@ -1,0 +1,12 @@
+"""
+УСТАРЕВШИЙ ФАЙЛ - НЕ ИСПОЛЬЗУЕТСЯ
+
+Этот файл был заменен новой модульной структурой в:
+- src/pipeline/adapter.py - основной класс PipelineAdapter
+- src/pipeline/core.py - основные функции обработки
+- src/pipeline/utils/ - вспомогательные функции
+- src/integrations/ - интеграции с внешними сервисами
+
+Пожалуйста, используйте новую структуру через:
+from src.pipeline import run_pipeline
+""" 
