@@ -6,18 +6,221 @@ Extends the base PipelineAdapter to include HubSpot integration
 
 import logging
 import os
-from typing import Dict, List, Any, Optional, Tuple, Callable
+import datetime # Добавлено для HubSpotAdapter
+from typing import Dict, List, Any, Optional, Tuple, Callable, Union
 from pathlib import Path
 import aiohttp
 from openai import AsyncOpenAI
 from scrapingbee import ScrapingBeeClient
+from dotenv import load_dotenv
+from urllib.parse import urlparse # Добавлено для HubSpotAdapter
+import asyncio # Добавляем импорт asyncio
 
 from src.pipeline.adapter import PipelineAdapter
 from src.pipeline.core import process_companies
-from src.integrations.hubspot.service import HubSpotIntegrationService
 from src.data_io import load_and_prepare_company_names, save_results_csv
+from .client import HubSpotClient
 
 logger = logging.getLogger(__name__)
+
+class HubSpotAdapter:
+    """
+    Адаптер для интеграции HubSpot с основным пайплайном обработки компаний.
+    
+    Обеспечивает:
+    - Проверку существования компании в HubSpot по домену
+    - Извлечение существующего описания, если оно актуально
+    - Сохранение новых описаний в HubSpot
+    """
+    
+    def __init__(self, api_key: Optional[str] = None, max_age_months: int = 6):
+        """
+        Инициализация адаптера.
+        
+        Args:
+            api_key (str, optional): API ключ для HubSpot. Если не указан, 
+                                     будет взят из переменной окружения HUBSPOT_API_KEY.
+            max_age_months (int): Максимальный возраст описания в месяцах.
+                                  Описания старше этого возраста будут считаться устаревшими.
+        """
+        # Загружаем переменные окружения, если api_key не передан явно и нет в .env
+        if api_key is None:
+            load_dotenv() # Убедимся, что .env загружен
+            api_key = os.getenv("HUBSPOT_API_KEY")
+
+        self.client = HubSpotClient(api_key=api_key) # Передаем api_key клиенту
+        self.max_age_months = max_age_months
+        logger.info(f"HubSpot Adapter initialized with max age: {max_age_months} months. API key {'present' if api_key else 'MISSING'}.")
+    
+    async def check_company_description(self, company_name: str, url: str) -> Tuple[bool, Optional[Dict[str, Any]]]:
+        """
+        Проверка наличия актуального описания компании в HubSpot.
+        
+        Args:
+            company_name (str): Название компании
+            url (str): URL компании
+            
+        Returns:
+            Tuple[bool, Optional[Dict[str, Any]]]: 
+                - Первый элемент (description_is_fresh): True если найдено актуальное описание (пропускаем обработку), иначе False.
+                - Второй элемент: Словарь с данными о компании, если найдена, иначе None.
+        """
+        if not self.client.api_key:
+            logger.warning("HubSpot API key not available in HubSpotAdapter. Skipping check.")
+            return False, None # Не пропускаем, нет ключа
+
+        if not url:
+            logger.info(f"No URL provided for company '{company_name}', skipping HubSpot check")
+            return False, None # Не пропускаем, нет URL
+        
+        try:
+            domain = self._extract_domain_from_url(url)
+            if not domain:
+                logger.warning(f"Could not extract domain from URL '{url}' for company '{company_name}'")
+                return False, None # Не пропускаем, нет домена
+            
+            logger.info(f"Checking HubSpot for company '{company_name}' with domain '{domain}'")
+            company = await self.client.search_company_by_domain(domain)
+            
+            if not company:
+                logger.info(f"Company '{company_name}' with domain '{domain}' not found in HubSpot")
+                return False, None # Не пропускаем, компания не найдена
+            
+            properties = company.get("properties", {})
+            description = properties.get("ai_description") 
+            updated_timestamp = properties.get("ai_description_updated")
+            
+            logger.info(
+                f"Found company in HubSpot: {properties.get('name')}, "
+                f"description length: {len(description) if description else 0}, "
+                f"updated: {updated_timestamp}"
+            )
+            
+            if description and updated_timestamp:
+                is_fresh = self.client.is_description_fresh(updated_timestamp, self.max_age_months)
+                if is_fresh:
+                    logger.info(
+                        f"Using existing description for '{company_name}' from HubSpot. "
+                        f"Last updated: {updated_timestamp}"
+                    )
+                    # Найдено свежее описание, поэтому возвращаем True (пропускаем обработку)
+                    return True, company 
+                else:
+                    logger.info(
+                        f"Description for '{company_name}' in HubSpot is outdated. "
+                        f"Last updated: {updated_timestamp}"
+                    )
+                    # Описание устарело, не пропускаем обработку
+                    return False, company 
+            else:
+                logger.info(f"No AI description or timestamp found for '{company_name}' in HubSpot")
+                # Нет описания/даты, не пропускаем обработку
+                return False, company
+        
+        except Exception as e:
+            logger.error(f"Error checking company '{company_name}' in HubSpot: {e}", exc_info=True)
+            return False, None # Ошибка, не пропускаем обработку
+    
+    async def create_company(self, company_name: str, url: str, description: str) -> Optional[Dict[str, Any]]:
+        """
+        Создание новой компании в HubSpot.
+        """
+        if not self.client.api_key:
+            logger.warning("HubSpot API key not available in HubSpotAdapter. Skipping creation.")
+            return None
+
+        if not url:
+            logger.info(f"No URL provided for company '{company_name}', cannot create in HubSpot")
+            return None
+        
+        try:
+            domain = self._extract_domain_from_url(url)
+            if not domain:
+                logger.warning(f"Could not extract domain from URL '{url}' for company '{company_name}'")
+                return None
+            
+            now = datetime.datetime.now().strftime("%Y-%m-%d")
+            
+            properties = {
+                "name": company_name,
+                "domain": domain,
+                "ai_description": description, # Используем кастомное поле HubSpot
+                "ai_description_updated": now # Используем кастомное поле HubSpot
+            }
+            
+            logger.info(f"Creating new company '{company_name}' with domain '{domain}' in HubSpot")
+            company = await self.client.create_company(domain, properties)
+            
+            if company:
+                logger.info(f"Successfully created company '{company_name}' in HubSpot")
+                return company
+            else:
+                logger.error(f"Failed to create company '{company_name}' in HubSpot")
+                return None
+        
+        except Exception as e:
+            logger.error(f"Error creating company '{company_name}' in HubSpot: {e}", exc_info=True)
+            return None
+    
+    async def save_company_description(
+        self, 
+        company_data: Optional[Dict[str, Any]], 
+        company_name: str,
+        url: str,
+        description: str
+    ) -> bool:
+        """
+        Сохранение описания компании в HubSpot.
+        """
+        if not self.client.api_key:
+            logger.warning("HubSpot API key not available in HubSpotAdapter. Skipping save.")
+            return False
+        try:
+            if not company_data and url: # Если компания не найдена ранее, ищем снова
+                domain = self._extract_domain_from_url(url)
+                if domain:
+                    company_data = await self.client.search_company_by_domain(domain)
+            
+            if company_data:
+                company_id = company_data.get("id")
+                now = datetime.datetime.now().strftime("%Y-%m-%d")
+                properties_to_update = {
+                    "ai_description": description, # Используем кастомное поле HubSpot
+                    "ai_description_updated": now # Используем кастомное поле HubSpot
+                }
+                
+                logger.info(f"Updating description for company '{company_name}' (ID: {company_id}) in HubSpot")
+                result = await self.client.update_company_properties(company_id, properties_to_update)
+                
+                if result:
+                    logger.info(f"Successfully updated description for '{company_name}' in HubSpot")
+                    return True
+                else:
+                    logger.error(f"Failed to update description for '{company_name}' in HubSpot")
+                    return False
+            else: # Компания не найдена, создаем новую
+                logger.info(f"Company '{company_name}' not found in HubSpot, creating new entry.")
+                new_company = await self.create_company(company_name, url, description)
+                return new_company is not None
+        
+        except Exception as e:
+            logger.error(f"Error saving description for '{company_name}' in HubSpot: {e}", exc_info=True)
+            return False
+    
+    def _extract_domain_from_url(self, url: str) -> str:
+        """
+        Извлечение домена из URL.
+        """
+        return self.client._normalize_domain(url) # Используем метод из HubSpotClient
+    
+    def get_description_from_company(self, company_data: Dict[str, Any]) -> Tuple[str, str]:
+        """
+        Извлечение описания и временной метки из данных о компании.
+        """
+        properties = company_data.get("properties", {})
+        description = properties.get("ai_description", "") # Используем кастомное поле HubSpot
+        timestamp = properties.get("ai_description_updated", "") # Используем кастомное поле HubSpot
+        return description, timestamp
 
 class HubSpotPipelineAdapter(PipelineAdapter):
     """
@@ -27,169 +230,266 @@ class HubSpotPipelineAdapter(PipelineAdapter):
     functionality for checking and updating data in HubSpot.
     """
     
-    def __init__(self, config_path: str = "llm_config.yaml", input_file: Optional[str] = None):
-        """
-        Initialize the HubSpot pipeline adapter
-        
-        Args:
-            config_path: Path to the LLM configuration file
-            input_file: Path to the input file with company names
-        """
-        super().__init__(config_path, input_file)
-        self.hubspot_service = None
-        self.use_hubspot_integration = True
+    def __init__(self, config_path: str = "llm_config.yaml", input_file: Optional[str] = None, session_id: Optional[str] = None):
+        super().__init__(config_path, input_file, session_id) # Передаем session_id
+        self.hubspot_adapter: Optional[HubSpotAdapter] = None
+        # use_hubspot и max_age_months будут инициализированы в self.setup() из llm_config
+        # self.use_hubspot = True # Будет определено в setup
+        # self.max_age_months = 6 # Будет определено в setup
     
     async def setup(self) -> bool:
         """
-        Set up the pipeline configuration and dependencies
-        
-        Returns:
-            bool: True if setup was successful
+        Set up the pipeline configuration and dependencies, including HubSpot.
         """
-        # Set up base pipeline
-        result = await super().setup()
+        # Сначала выполняем базовую настройку из PipelineAdapter
+        setup_successful = await super().setup()
+        if not setup_successful:
+            return False
+
+        # Затем настраиваем HubSpot интеграцию
+        # API ключ должен быть в self.api_keys['hubspot'], загруженный в processing_runner.py
+        hubspot_api_key = self.api_keys.get("hubspot")
         
-        # Set up HubSpot integration
-        hubspot_api_key = self.llm_config.get("hubspot_api_key") or os.getenv("HUBSPOT_API_KEY")
-        self.use_hubspot_integration = self.llm_config.get("use_hubspot_integration", True)
-        max_age_months = self.llm_config.get("hubspot_description_max_age_months", 6)
+        # use_hubspot_integration берется из llm_config.yaml
+        self.use_hubspot = self.llm_config.get("use_hubspot_integration", False) # По умолчанию False, если не указано
+        self.max_age_months = self.llm_config.get("hubspot_description_max_age_months", 6)
         
-        if hubspot_api_key and self.use_hubspot_integration:
-            self.hubspot_service = HubSpotIntegrationService(
-                api_key=hubspot_api_key,
-                max_age_months=max_age_months
-            )
-            logger.info(f"HubSpot integration enabled with max age {max_age_months} months")
+        if self.use_hubspot:
+            if hubspot_api_key:
+                self.hubspot_adapter = HubSpotAdapter(api_key=hubspot_api_key, max_age_months=self.max_age_months)
+                logger.info(f"HubSpot integration enabled via config. Max description age: {self.max_age_months} months.")
+            else:
+                logger.warning("HubSpot integration is enabled in config, but HUBSPOT_API_KEY is missing. HubSpot will not be used.")
+                self.use_hubspot = False # Отключаем, если нет ключа
         else:
-            logger.warning("HubSpot integration disabled or API key not provided")
-            self.use_hubspot_integration = False
-        
-        return result
-    
+            logger.info("HubSpot integration is disabled via config or HUBSPOT_API_KEY.")
+            
+        return True # Возвращаем True, если базовая настройка прошла успешно
+
     async def run_pipeline_for_file(self, input_file_path: str | Path, output_csv_path: str | Path, 
-                                   pipeline_log_path: str, session_dir_path: Path, llm_config: Dict[str, Any],
-                                   context_text: str | None, company_col_index: int, aiohttp_session: aiohttp.ClientSession,
-                                   sb_client: ScrapingBeeClient, openai_client: AsyncOpenAI, serper_api_key: str,
-                                   expected_csv_fieldnames: list[str], broadcast_update: callable = None,
+                                   pipeline_log_path: Path, # Изменен тип на Path
+                                   session_dir_path: Path, llm_config: Dict[str, Any],
+                                   context_text: str | None, company_col_index: int, 
+                                   aiohttp_session: aiohttp.ClientSession,
+                                   sb_client: ScrapingBeeClient, openai_client: AsyncOpenAI, 
+                                   serper_api_key: str, # Оставляем, т.к. используется в process_companies
+                                   expected_csv_fieldnames: list[str], broadcast_update: Optional[Callable] = None,
                                    main_batch_size: int = 5, run_standard_pipeline: bool = True,
                                    run_llm_deep_search_pipeline: bool = True) -> tuple[int, int, list[dict]]:
         """
-        Run the pipeline with HubSpot integration
-        
-        Args:
-            Same as in PipelineAdapter.run_pipeline_for_file
-            
-        Returns:
-            Tuple with success count, failure count, and results
+        Run the pipeline with HubSpot integration.
+        This method overrides the base PipelineAdapter's method to add HubSpot checks.
         """
-        company_data = load_and_prepare_company_names(input_file_path, company_col_index)
-        if not company_data: 
+        # Загрузка данных о компаниях остается прежней
+        company_data_list = load_and_prepare_company_names(input_file_path, company_col_index)
+        if not company_data_list:
             logger.error(f"No valid company names in {input_file_path}")
             return 0, 0, []
+
+        # Создаем или очищаем CSV файл перед началом обработки
+        save_results_csv([], output_csv_path, expected_csv_fieldnames, append_mode=False)
+        logger.info(f"Created empty CSV file with headers at {output_csv_path}")
+
+        all_results: List[Dict[str, Any]] = []
+        success_count = 0
+        failure_count = 0
         
-        # Проверяем, был ли загружен второй столбец (данные в виде списка кортежей)
-        has_second_column = False
-        if company_data and isinstance(company_data[0], tuple) and len(company_data[0]) >= 2:
-            has_second_column = True
-            logger.info(f"Loaded {len(company_data)} companies with second column data from {input_file_path}")
-            # Извлекаем только названия компаний для обработки
-            company_names = [item[0] for item in company_data]
-            # Сохраняем данные второго столбца для дальнейшего использования
-            second_column_data = {item[0]: item[1] for item in company_data}
-            
-            # Проверка компаний в HubSpot
-            if self.hubspot_service and has_second_column:
-                logger.info("Checking companies in HubSpot before processing")
-                all_results = []
-                
-                for company_name, website in second_column_data.items():
-                    # Проверяем компанию в HubSpot
-                    if website and self.use_hubspot_integration:
-                        hubspot_data = await self.hubspot_service.get_company_data(website)
-                        
-                        if hubspot_data and hubspot_data.get("description"):
-                            # Проверяем свежесть описания
-                            is_fresh = await self.hubspot_service.should_process_company(website) == False
-                            
-                            if is_fresh:
-                                # Используем данные из HubSpot и пропускаем обработку
-                                logger.info(f"Using existing HubSpot data for {company_name}")
-                                
-                                result = {
-                                    "Company_Name": company_name,
-                                    "Official_Website": website,
-                                    "LinkedIn_URL": hubspot_data.get("linkedin_url") or "Not found",
-                                    "Description": hubspot_data.get("description"),
-                                    "Timestamp": hubspot_data.get("timestamp"),
-                                    "Data_Source": "HubSpot"
-                                }
-                                
-                                # Сохраняем результат в CSV
-                                if output_csv_path:
-                                    # Проверяем существование файла
-                                    import os
-                                    file_exists = os.path.exists(output_csv_path)
-                                    
-                                    # Дополняем csv_fields полем Data_Source, если его там еще нет
-                                    extended_csv_fields = list(expected_csv_fieldnames)
-                                    if "Data_Source" not in extended_csv_fields:
-                                        extended_csv_fields.append("Data_Source")
-                                        
-                                    # Сохраняем в CSV
-                                    csv_row = {key: result.get(key) for key in extended_csv_fields if key in result}
-                                    save_results_csv([csv_row], output_csv_path, extended_csv_fields, append_mode=file_exists)
-                                    logger.info(f"Saved HubSpot data for {company_name} to {output_csv_path}")
-                                
-                                # Добавляем в результаты
-                                all_results.append(result)
-                                
-                                # Отправляем обновление, если есть callback
-                                if broadcast_update:
-                                    await broadcast_update({
-                                        "type": "company_completed", 
-                                        "company": company_name,
-                                        "status": "completed_from_hubspot",
-                                        "result": result
-                                    })
-                                
-                                # Удаляем компанию из списка для обработки
-                                company_names.remove(company_name)
-                                
-                if not company_names:
-                    # Все компании были найдены в HubSpot с актуальными данными
-                    logger.info("All companies found in HubSpot with fresh data, no processing needed")
-                    return len(all_results), 0, all_results
-                
-                logger.info(f"{len(all_results)} companies found in HubSpot with fresh data, {len(company_names)} need processing")
-            
-            if not run_standard_pipeline:
-                logger.info("Standard homepage pipeline disabled because second column contains URLs")
-        else:
-            logger.info(f"Loaded {len(company_data)} companies from {input_file_path}")
-            company_names = company_data
-            second_column_data = {}
+        companies_to_process_standard: List[Dict[str, Any]] = []
         
-        # Если у нас остались компании для обработки, вызываем базовый метод
-        if company_names:
-            # Вызов базовой реализации
-            return await super().run_pipeline_for_file(
-                input_file_path=input_file_path,
-                output_csv_path=output_csv_path,
-                pipeline_log_path=pipeline_log_path,
-                session_dir_path=session_dir_path,
-                llm_config=llm_config,
-                context_text=context_text,
-                company_col_index=company_col_index,
+        # Предварительная проверка компаний в HubSpot
+        if self.use_hubspot and self.hubspot_adapter:
+            logger.info("HubSpot integration is active. Checking companies before processing...")
+            for i, company_info_dict in enumerate(company_data_list):
+                company_name = company_info_dict["name"]
+                company_url = company_info_dict.get("url")
+
+                # description_is_fresh будет True, если найдено свежее описание и обработку можно пропустить
+                description_is_fresh, hubspot_company_data = await self.hubspot_adapter.check_company_description(company_name, company_url)
+                
+                # ИСПРАВЛЕНО: если description_is_fresh == True, значит, описание свежее и компания есть в HubSpot
+                if description_is_fresh and hubspot_company_data: 
+                    logger.info(f"Company '{company_name}' has a fresh description in HubSpot. Skipping processing.")
+                    description, timestamp = self.hubspot_adapter.get_description_from_company(hubspot_company_data)
+                    result_from_hubspot = {
+                        "Company_Name": company_name,
+                        "Official_Website": company_url or hubspot_company_data.get("properties",{}).get("domain",""), 
+                        "LinkedIn_URL": "", 
+                        "Description": description,
+                        "Timestamp": timestamp,
+                        "Data_Source": "HubSpot" 
+                    }
+                    
+                    for field in expected_csv_fieldnames:
+                        if field not in result_from_hubspot:
+                            result_from_hubspot[field] = ""
+
+                    all_results.append(result_from_hubspot)
+                    save_results_csv([result_from_hubspot], output_csv_path, expected_csv_fieldnames, append_mode=True)
+                    success_count +=1
+                    if broadcast_update:
+                        # Учитываем уже обработанные компании для корректного прогресс-бара
+                        total_companies_count = len(company_data_list)
+                        processed_count = len(all_results) # Используем длину all_results как количество обработанных
+                        await broadcast_update(self.session_id, {"status": "processing", "progress": (processed_count / total_companies_count) * 100, "message": f"Processed {company_name} (from HubSpot)"})
+                else: 
+                    # Лог из check_company_description уже сказал, почему не пропускаем (не найдено, устарело, ошибка)
+                    # logger.info(f"Company '{company_name}' needs processing or is not fresh in HubSpot.") # Этот лог дублируется или неточен теперь
+                    company_info_dict["hubspot_data"] = hubspot_company_data # Сохраняем данные HubSpot для обновления, даже если описание устарело
+                    companies_to_process_standard.append(company_info_dict)
+            logger.info(f"{len(companies_to_process_standard)} companies require standard processing after HubSpot check.")
+        else: # HubSpot не используется, все компании идут на стандартную обработку
+            logger.info("HubSpot integration is not active. All companies will be processed by the standard pipeline.")
+            companies_to_process_standard = list(company_data_list)
+
+        # Если остались компании для стандартной обработки
+        if companies_to_process_standard:
+            # Преобразуем companies_to_process_standard в формат, ожидаемый process_companies
+            # List[Union[str, Tuple[str, str]]]
+            company_names_for_core_processing = []
+            for company_dict in companies_to_process_standard:
+                name = company_dict['name']
+                url = company_dict.get('url')
+                if url:
+                    company_names_for_core_processing.append((name, url))
+                else:
+                    company_names_for_core_processing.append(name)
+
+            # Пути для raw markdown и JSON output в process_companies
+            # (они могут быть перезаписаны или не использоваться в зависимости от конфигурации process_companies)
+            raw_markdown_reports_path = session_dir_path / "raw_markdown_reports"
+            raw_markdown_reports_path.mkdir(exist_ok=True) # Убедимся, что директория существует
+            
+            # Имя JSON файла можно сделать аналогичным CSV
+            output_json_filename = output_csv_path.stem.replace("_results", "") + "_structured_results.json"
+            output_json_path_for_core = session_dir_path / output_json_filename
+
+            # Вызываем process_companies из src.pipeline.core
+            # Убедимся, что передаем все необходимые и корректные аргументы
+            std_results = await process_companies( # process_companies возвращает только список результатов
+                company_names=company_names_for_core_processing,
+                openai_client=openai_client,
                 aiohttp_session=aiohttp_session,
                 sb_client=sb_client,
-                openai_client=openai_client,
-                serper_api_key=serper_api_key,
-                expected_csv_fieldnames=expected_csv_fieldnames,
+                serper_api_key=self.api_keys.get("serper"), # Берем из self.api_keys
+                llm_config=llm_config,
+                raw_markdown_output_path=raw_markdown_reports_path,
+                batch_size=main_batch_size, # Используем main_batch_size
+                context_text=context_text,
+                run_llm_deep_search_pipeline_cfg=run_llm_deep_search_pipeline, # Передаем флаг
+                run_standard_pipeline_cfg=run_standard_pipeline, # Передаем флаг
+                # run_domain_check_finder_cfg остается по умолчанию True в process_companies, если нужен другой контроль - добавить
                 broadcast_update=broadcast_update,
-                main_batch_size=main_batch_size,
-                run_standard_pipeline=run_standard_pipeline,
-                run_llm_deep_search_pipeline=run_llm_deep_search_pipeline
+                output_csv_path=str(output_csv_path), # Передаем путь к CSV для инкрементальной записи
+                output_json_path=str(output_json_path_for_core), # Передаем путь к JSON
+                expected_csv_fieldnames=expected_csv_fieldnames,
+                # llm_deep_search_config_override - можно добавить, если есть в self
+                # second_column_data - не передаем, т.к. URL уже в company_names_for_core_processing
+                # hubspot_client - не передаем
+                use_raw_llm_data_as_description=self.llm_config.get('use_raw_llm_data_as_description', True) # Берем из llm_config
             )
-        
-        # Если все компании были обработаны из HubSpot
-        return len(all_results), 0, all_results 
+            
+            # process_companies возвращает только список результатов.
+            # success_count и failure_count нужно будет определить на основе std_results,
+            # или модифицировать process_companies, чтобы она их возвращала.
+            # Пока что, для простоты, будем считать все вернувшиеся результаты успешными, если они есть.
+            # В идеале, каждый элемент в std_results должен иметь поле типа "status" или "error".
+            
+            std_success = len([res for res in std_results if res.get("Description")]) # Примерный подсчет успешных
+            std_failure = len(std_results) - std_success # Примерный подсчет неуспешных
+
+            success_count += std_success
+            failure_count += std_failure
+            
+            # После обработки, если HubSpot включен, сохраняем результаты в HubSpot
+            if self.use_hubspot and self.hubspot_adapter:
+                logger.info("Saving/updating processed companies in HubSpot...")
+                for result_item in std_results:
+                    company_name = result_item.get("Company_Name")
+                    company_url = result_item.get("Official_Website")
+                    description = result_item.get("Description")
+                    
+                    # Ищем исходные данные HubSpot для этой компании
+                    original_company_info = next((c for c in companies_to_process_standard if c["name"] == company_name), None)
+                    hubspot_company_data_for_save = original_company_info.get("hubspot_data") if original_company_info else None
+
+                    if company_name and company_url and description:
+                        await self.hubspot_adapter.save_company_description(
+                            hubspot_company_data_for_save, # Данные из HubSpot, если были
+                            company_name,
+                            company_url,
+                            description
+                        )
+                    else:
+                        logger.warning(f"Skipping HubSpot save for '{company_name}' due to missing data (URL or Description).")
+            
+            all_results.extend(std_results)
+            # Результаты уже сохранены в CSV внутри process_companies_batch
+
+        logger.info(f"HubSpotPipelineAdapter finished. Total successes: {success_count}, Total failures: {failure_count}")
+        return success_count, failure_count, all_results
+
+async def test_hubspot_pipeline_adapter():
+    # Пример простой тестовой функции (потребует настройки окружения и файлов)
+    logging.basicConfig(level=logging.INFO)
+    load_dotenv()
+
+    # Создаем временный input_file.xlsx
+    import pandas as pd
+    temp_input_data = {'Company Name': ['Test Company 1', 'HubSpot'], 'Website': ['www.testcompany1.com', 'hubspot.com']}
+    temp_input_df = pd.DataFrame(temp_input_data)
+    temp_input_path = Path("temp_input_test.xlsx")
+    temp_input_df.to_excel(temp_input_path, index=False)
+    
+    # Создаем временный llm_config.yaml
+    temp_llm_config_data = {
+        "model": "gpt-3.5-turbo", # или другая модель
+        "temperature": 0.1,
+        "use_hubspot_integration": True, # Включаем HubSpot
+        "hubspot_description_max_age_months": 1, # Ставим маленький срок для теста
+        "messages": [ # Минимально необходимые сообщения
+            {"role": "system", "content": "You are an assistant."},
+            {"role": "user", "content": "Provide info about {company}."}
+        ]
+    }
+    temp_llm_config_path = Path("temp_llm_config_test.yaml")
+    import yaml
+    with open(temp_llm_config_path, 'w') as f:
+        yaml.dump(temp_llm_config_data, f)
+
+    adapter = HubSpotPipelineAdapter(config_path=str(temp_llm_config_path), input_file=str(temp_input_path), session_id="test_session_hubspot")
+    
+    # Для setup нужны api_keys
+    adapter.api_keys = {
+        "openai": os.getenv("OPENAI_API_KEY"),
+        "serper": os.getenv("SERPER_API_KEY"),
+        "scrapingbee": os.getenv("SCRAPINGBEE_API_KEY"),
+        "hubspot": os.getenv("HUBSPOT_API_KEY") # Убедитесь, что ключ есть
+    }
+    adapter.llm_config = temp_llm_config_data # Передаем конфиг напрямую для теста setup
+
+    if not adapter.api_keys["hubspot"]:
+        logger.error("HUBSPOT_API_KEY not found in environment variables. Test cannot run.")
+        if temp_input_path.exists(): os.remove(temp_input_path)
+        if temp_llm_config_path.exists(): os.remove(temp_llm_config_path)
+        return
+
+    await adapter.setup() # Вызываем setup для инициализации hubspot_adapter
+
+    if adapter.use_hubspot and adapter.hubspot_adapter:
+        logger.info("HubSpot adapter initialized in PipelineAdapter.")
+        # Можно добавить вызов run, но он требует много зависимостей
+        # success, failure, results = await adapter.run()
+        # logger.info(f"Test run completed. Success: {success}, Failure: {failure}")
+        # logger.info(f"Results: {results}")
+    else:
+        logger.warning("HubSpot adapter was NOT initialized in PipelineAdapter. Check config and API key.")
+
+    # Очистка временных файлов
+    if temp_input_path.exists():
+        os.remove(temp_input_path)
+    if temp_llm_config_path.exists():
+        os.remove(temp_llm_config_path)
+
+if __name__ == "__main__":
+    # asyncio.run(test_hubspot_adapter()) # Для базовой проверки HubSpotAdapter
+    asyncio.run(test_hubspot_pipeline_adapter()) # Для проверки HubSpotPipelineAdapter 

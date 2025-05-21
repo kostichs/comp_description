@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # Determine Project Root (assuming this file is in src/)
 PROJECT_ROOT = Path(__file__).parent.parent 
 
-def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) -> Union[List[str], List[Tuple[str, str]]] | None:
+def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) -> Optional[List[Dict[str, Optional[str]]]]:
     """
     Loads company data from Excel/CSV.
     
@@ -21,9 +21,9 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
         col_index: Index of the first column to load (default 0)
     
     Returns:
-        If file has only one column: List of company names
-        If file has two columns: List of tuples (company_name, second_column_value)
-        None if file could not be loaded
+        List of dictionaries, where each dictionary has 'name' and 'url' keys.
+        'url' can be None if not present in the input file.
+        Returns None if file could not be loaded or is empty.
     """
     file_path_str = str(file_path)
     df_loaded = None
@@ -75,34 +75,39 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
     if df_loaded is not None and not df_loaded.empty:
         # Проверяем, сколько столбцов в датафрейме
         if df_loaded.shape[1] >= 2:
-            # Если есть два или больше столбцов, возвращаем кортежи (company_name, second_column_value)
-            company_names = df_loaded.iloc[:, 0].astype(str).str.strip()
-            second_column = df_loaded.iloc[:, 1].astype(str).str.strip()
+            # Если есть два или больше столбцов
+            company_names_series = df_loaded.iloc[:, 0].astype(str).str.strip()
+            second_column_series = df_loaded.iloc[:, 1].astype(str).str.strip()
             
-            # Создаем список кортежей, исключая строки с пустыми значениями в первом столбце
-            result = []
-            for name, second_value in zip(company_names, second_column):
+            result_list_of_dicts = []
+            for name, second_value in zip(company_names_series, second_column_series):
                 if name and name.lower() not in ['nan', '']:
-                    result.append((name, second_value))
+                    # Второй столбец используется как URL
+                    result_list_of_dicts.append({'name': name, 'url': second_value if second_value and second_value.lower() not in ['nan', ''] else None})
             
-            if result:
-                logging.info(f"Loaded {len(result)} companies with second column data from {file_path_str}")
-                return result
+            if result_list_of_dicts:
+                logging.info(f"Loaded {len(result_list_of_dicts)} companies with name and URL from {file_path_str}")
+                return result_list_of_dicts
             else:
-                logging.warning(f"No valid names in first column of {file_path_str}.")
+                logging.warning(f"No valid company names in the first column of {file_path_str} (when checking two columns).")
                 return None
         else:
-            # Если только один столбец, возвращаем список строк
-            company_names = df_loaded.iloc[:, 0].astype(str).str.strip().tolist()
-            valid_names = [name for name in company_names if name and name.lower() not in ['nan', '']]
-            if valid_names:
-                logging.info(f"Loaded {len(valid_names)} companies from {file_path_str}")
-                return valid_names
+            # Если только один столбец
+            company_names_series = df_loaded.iloc[:, 0].astype(str).str.strip()
+            result_list_of_dicts = []
+            for name in company_names_series:
+                if name and name.lower() not in ['nan', '']:
+                    # URL отсутствует
+                    result_list_of_dicts.append({'name': name, 'url': None})
+
+            if result_list_of_dicts:
+                logging.info(f"Loaded {len(result_list_of_dicts)} companies (name only) from {file_path_str}")
+                return result_list_of_dicts
             else:
-                logging.warning(f"No valid names in first column of {file_path_str}.")
+                logging.warning(f"No valid company names in the first column of {file_path_str} (when checking one column).")
                 return None
     else:
-        logging.warning(f"Could not load data from {file_path_str}.")
+        logging.warning(f"Could not load data from {file_path_str} or the file is empty.")
         return None
 
 def load_context_file(context_file_path: str) -> str | None:

@@ -12,7 +12,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 # Обновленные импорты для новой структуры
-from src.pipeline.adapter import PipelineAdapter
+from src.pipeline import get_pipeline_adapter # Импортируем get_pipeline_adapter
 from src.pipeline.utils.logging import setup_session_logging
 from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR # Import session helpers
 from src.config import load_env_vars, load_llm_config # Import config loaders
@@ -142,33 +142,72 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             connector = aiohttp.TCPConnector(ssl=ssl_context_no_verify)
             
             async with aiohttp.ClientSession(connector=connector) as aio_session:
-                # Используем новый PipelineAdapter вместо прямого вызова функции
-                pipeline_adapter = PipelineAdapter(
+                # Используем get_pipeline_adapter для получения нужного адаптера
+                pipeline_adapter = get_pipeline_adapter(
                     config_path="llm_config.yaml", 
                     input_file=input_file_path,
-                    session_id=session_id,  # Передаем session_id в адаптер
-                    use_raw_llm_data_as_description=True  # Используем сырые данные LLM как описание
+                    session_id=session_id, # session_id уже передается
+                    # use_hubspot будет определен внутри get_pipeline_adapter на основе llm_config.yaml
                 )
                 
-                # Настраиваем адаптер
-                pipeline_adapter.company_col_index = 0
-                pipeline_adapter.output_csv_path = output_csv_path
-                pipeline_adapter.pipeline_log_path = Path(str(pipeline_log_path))
+                # Настраиваем адаптер (большинство настроек должно происходить в setup() адаптера)
+                # pipeline_adapter.company_col_index = 0 # Это может быть установлено в PipelineAdapter.setup()
+                # pipeline_adapter.output_csv_path = output_csv_path # Это может быть установлено в PipelineAdapter.setup()
+                # pipeline_adapter.pipeline_log_path = Path(str(pipeline_log_path)) # Это может быть установлено в PipelineAdapter.setup()
                 
-                # Инициализируем клиентов напрямую
+                # Инициализируем клиентов и передаем api_keys. Это должно быть частью setup() адаптера.
+                # Если PipelineAdapter.setup() или HubSpotPipelineAdapter.setup() этого не делают, нужно будет доработать там.
+                # Пока оставляем здесь, чтобы не сломать существующую логику, но это кандидаты на перенос в setup() соответствующего адаптера.
                 pipeline_adapter.openai_client = openai_client
                 pipeline_adapter.sb_client = sb_client
                 pipeline_adapter.aiohttp_session = aio_session
-                pipeline_adapter.llm_config = llm_config
+                pipeline_adapter.llm_config = llm_config # llm_config уже загружается в setup адаптера из config_path
                 pipeline_adapter.api_keys = {
                     "openai": openai_api_key,
                     "serper": serper_api_key,
                     "scrapingbee": scrapingbee_api_key,
                     "hubspot": hubspot_api_key
                 }
+                # use_raw_llm_data_as_description также должен быть параметром llm_config или конструктора адаптера
+                # Пока что, если этот флаг важен, его нужно будет установить после получения pipeline_adapter
+                # Например: pipeline_adapter.use_raw_llm_data_as_description = True (если это свойство адаптера)
+                # В HubSpotPipelineAdapter это есть, в базовом PipelineAdapter нужно проверить.
+                # Если PipelineAdapter его не имеет, то нужно будет выставлять только для HubSpotPipelineAdapter, например:
+                if hasattr(pipeline_adapter, 'use_raw_llm_data_as_description'):
+                    pipeline_adapter.use_raw_llm_data_as_description = True 
+
+                # Перед вызовом run(), вызываем setup() для инициализации всего, включая HubSpotAdapter, если он используется.
+                await pipeline_adapter.setup() 
                 
+                # Передаем output_csv_path, pipeline_log_path и company_col_index в метод run
+                # или убеждаемся, что они устанавливаются в setup() из session_data или других источников.
+                # Для run() из HubSpotPipelineAdapter эти параметры не принимаются напрямую.
+                # Он ожидает, что они будут установлены как атрибуты экземпляра в setup().
+
+                # Передаем необходимые параметры в run(), если они не являются частью setup
+                # Это потребует ревизии метода run() в PipelineAdapter и HubSpotPipelineAdapter
+                # Пока что, если эти параметры нужны в run, они должны быть частью его сигнатуры.
+
+                # output_csv_path, pipeline_log_path, и company_col_index уже должны быть доступны 
+                # адаптеру через его атрибуты, установленные в setup() или при инициализации,
+                # если они берутся из session_data (например, input_file_path -> output_csv_path).
+
+                pipeline_adapter.output_csv_path = output_csv_path
+                pipeline_adapter.pipeline_log_path = pipeline_log_path
+                pipeline_adapter.company_col_index = 0 # Предполагаем, что это всегда 0 по умолчанию
+
                 # Запускаем пайплайн
-                success_count, failure_count, all_results = await pipeline_adapter.run()
+                success_count, failure_count, all_results = await pipeline_adapter.run(
+                    # Параметры, которые run может все еще ожидать:
+                    # run_standard_pipeline=run_standard_pipeline, # Эти флаги из session_data
+                    # run_llm_deep_search_pipeline=run_llm_deep_search_pipeline
+                    # broadcast_update=broadcast_update # callback
+                    # main_batch_size # из параметров функции run_session_pipeline
+                    # context_text # из session_data
+                    # expected_csv_fieldnames # из session_data или генерируется
+                    # aiohttp_session, sb_client, openai_client - уже установлены как атрибуты
+                    # llm_config, api_keys - уже установлены как атрибуты
+                )
                 
                 session_logger.info(f"Pipeline completed with {success_count} successes and {failure_count} failures.")
                 

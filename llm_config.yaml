@@ -3,6 +3,7 @@
 model: "gpt-4o-mini"
 temperature: 0.1
 # top_p: 0.9
+use_hubspot_integration: true
 
 messages:
   - role: system

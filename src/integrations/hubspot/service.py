@@ -4,116 +4,242 @@ HubSpot Integration Service
 Provides business logic for working with HubSpot data
 """
 
+import os
 import logging
-from typing import Optional, Dict, Any
-from src.integrations.hubspot.client import HubSpotClient
+import asyncio
+from typing import Optional, Dict, Any, List, Tuple
+from datetime import datetime
 
+# Убираем импорт HubSpotAdapter отсюда для избавления от циклической зависимости
+# from src.integrations.hubspot.adapter import HubSpotAdapter
+
+# Настройка логирования
 logger = logging.getLogger(__name__)
 
 class HubSpotIntegrationService:
     """
-    Service for HubSpot integration business logic
+    Модуль интеграции для связи между основным пайплайном и HubSpot.
     
-    Encapsulates the business rules for working with HubSpot data,
-    such as when to retrieve data, when to update it, etc.
+    Этот класс предоставляет методы для:
+    - Проверки описаний компаний в HubSpot
+    - Принятия решения о необходимости генерации новых описаний
+    - Сохранения сгенерированных описаний обратно в HubSpot
     """
     
-    def __init__(self, api_key: str, max_age_months: int = 6, base_url: str = "https://api.hubapi.com"):
+    def __init__(self, 
+                 api_key: Optional[str] = None, 
+                 use_integration: bool = True,
+                 max_age_months: int = 6):
         """
-        Initialize the HubSpot integration service
+        Инициализация модуля интеграции.
         
         Args:
-            api_key: HubSpot API key
-            max_age_months: Maximum age of description in months
-            base_url: HubSpot API base URL
+            api_key (str, optional): API ключ для HubSpot. Если не указан, 
+                                     будет взят из переменной окружения HUBSPOT_API_KEY.
+            use_integration (bool): Флаг для включения/отключения интеграции.
+            max_age_months (int): Максимальный возраст описания в месяцах.
         """
-        self.client = HubSpotClient(api_key, base_url)
-        self.max_age_months = max_age_months
-    
-    async def should_process_company(self, domain: str) -> bool:
-        """
-        Check if a company should be processed
+        self.use_integration = use_integration
+        self.adapter = None
         
-        This method determines if we should run the full pipeline for a company
-        or use the existing data from HubSpot.
-        
-        Args:
-            domain: Company domain/website
-            
-        Returns:
-            bool: True if the company should be processed, False if HubSpot data is fresh
-        """
-        if not domain:
-            logger.info("No domain provided, company should be processed")
-            return True
-        
-        company_data = await self.client.search_company_by_website(domain)
-        if not company_data:
-            logger.info(f"Company with domain {domain} not found in HubSpot, should be processed")
-            return True
-        
-        # Проверяем наличие и свежесть описания
-        properties = company_data.get("properties", {})
-        description = properties.get("description")
-        timestamp = properties.get("description_timestamp")
-        
-        if not description or not timestamp:
-            logger.info(f"Company {domain} found in HubSpot but missing description or timestamp, should be processed")
-            return True
-        
-        # Проверяем свежесть описания
-        is_fresh = self.client.is_description_fresh(timestamp, self.max_age_months)
-        logger.info(f"Company {domain} description in HubSpot is {'fresh' if is_fresh else 'outdated'}")
-        
-        # Если описание свежее, не нужно обрабатывать компанию
-        return not is_fresh
+        if use_integration:
+            # Используем динамический импорт для избежания циклической зависимости
+            from src.integrations.hubspot.adapter import HubSpotAdapter
+            self.adapter = HubSpotAdapter(api_key=api_key, max_age_months=max_age_months)
+            logger.info(f"HubSpot integration initialized with max age: {max_age_months} months")
+        else:
+            logger.info("HubSpot integration disabled")
     
     async def get_company_data(self, domain: str) -> Optional[Dict[str, Any]]:
         """
-        Get company data from HubSpot
+        Получение данных о компании из HubSpot.
         
         Args:
-            domain: Company domain/website
+            domain (str): Домен компании
             
         Returns:
-            Dict or None: Company data if found, with proper formatting
+            Optional[Dict[str, Any]]: Данные о компании или None, если не найдена
         """
-        company_data = await self.client.search_company_by_website(domain)
+        if not self.use_integration or self.adapter is None:
+            return None
+            
+        has_description, company_data = await self.adapter.check_company_description("Unknown", domain)
+        
         if not company_data:
             return None
-        
+            
+        # Форматируем данные для использования в пайплайне
+        description, timestamp = self.adapter.get_description_from_company(company_data)
         properties = company_data.get("properties", {})
         
-        # Форматируем данные для использования в пайплайне
         return {
-            "description": properties.get("description"),
-            "timestamp": properties.get("description_timestamp"),
-            "linkedin_url": properties.get("linkedin_url"),
+            "description": description,
+            "timestamp": timestamp,
             "name": properties.get("name"),
             "hubspot_id": company_data.get("id")
         }
     
-    async def save_company_description(self, domain: str, company_name: str, description: str) -> bool:
+    async def should_process_company(self, domain: str) -> bool:
         """
-        Save company description to HubSpot
+        Проверка необходимости обработки компании.
         
         Args:
-            domain: Company domain/website
-            company_name: Company name
-            description: Company description
+            domain (str): Домен компании
             
         Returns:
-            bool: True if saved successfully
+            bool: True если компания должна быть обработана, иначе False
         """
-        # Проверяем существование компании
-        company_data = await self.client.search_company_by_website(domain)
+        # Если интеграция отключена, всегда обрабатываем компанию
+        if not self.use_integration or self.adapter is None:
+            return True
         
-        if company_data and company_data.get("id"):
-            # Компания существует, обновляем описание
-            company_id = company_data.get("id")
-            logger.info(f"Updating existing company {company_name} ({domain}) in HubSpot")
-            return await self.client.update_company_description(company_id, description)
+        # Проверяем наличие URL
+        if not domain:
+            logger.info(f"No domain provided, company should be processed")
+            return True
+        
+        # Проверяем наличие актуального описания в HubSpot
+        has_description, _ = await self.adapter.check_company_description("Unknown", domain)
+        
+        # Если описание не найдено или устарело, обрабатываем компанию
+        return not has_description
+    
+    async def save_company_description(self, company_name: str, domain: str, description: str) -> bool:
+        """
+        Сохранение описания компании в HubSpot.
+        
+        Args:
+            company_name (str): Название компании
+            domain (str): Домен компании
+            description (str): Описание компании для сохранения
             
-        # В будущем можно добавить создание новой компании, если она не существует
-        logger.warning(f"Company {company_name} ({domain}) not found in HubSpot, cannot update description")
-        return False 
+        Returns:
+            bool: True в случае успешного сохранения, иначе False
+        """
+        if not self.use_integration or self.adapter is None:
+            logger.info(f"HubSpot integration disabled, not saving description for '{company_name}'")
+            return False
+        
+        # Проверяем существование компании
+        has_description, company_data = await self.adapter.check_company_description(company_name, domain)
+        
+        return await self.adapter.save_company_description(company_data, company_name, domain, description)
+
+
+async def process_companies_with_hubspot(
+    companies: List[Dict[str, str]],
+    process_function,
+    use_hubspot: bool = True,
+    max_age_months: int = 6,
+    api_key: Optional[str] = None
+):
+    """
+    Обработка списка компаний с интеграцией HubSpot.
+    
+    Args:
+        companies (List[Dict[str, str]]): Список компаний для обработки
+        process_function: Функция для обработки компании
+        use_hubspot (bool): Флаг для включения/отключения интеграции HubSpot
+        max_age_months (int): Максимальный возраст описания в месяцах
+        api_key (Optional[str]): API ключ для HubSpot
+        
+    Returns:
+        List[Dict[str, Any]]: Результаты обработки компаний
+    """
+    # Инициализация интеграции HubSpot
+    hubspot = HubSpotIntegrationService(
+        api_key=api_key,
+        use_integration=use_hubspot,
+        max_age_months=max_age_months
+    )
+    
+    results = []
+    
+    for company in companies:
+        company_name = company.get("name", "")
+        url = company.get("url", "")
+        
+        logger.info(f"Processing company: {company_name}")
+        
+        # Проверяем необходимость обработки
+        should_process = await hubspot.should_process_company(url)
+        
+        if not should_process:
+            # Используем существующее описание из HubSpot
+            company_data = await hubspot.get_company_data(url)
+            
+            result = {
+                "Company_Name": company_name,
+                "Official_Website": url,
+                "Description": company_data.get("description", ""),
+                "Timestamp": company_data.get("timestamp", ""),
+                "Data_Source": "HubSpot"
+            }
+            
+            logger.info(f"Using existing description for '{company_name}' from HubSpot")
+            results.append(result)
+        else:
+            # Обрабатываем компанию стандартным способом
+            logger.info(f"Processing '{company_name}' using standard pipeline")
+            
+            try:
+                # Вызываем функцию обработки
+                process_result = await process_function(company_name, url)
+                
+                # Сохраняем результат в HubSpot
+                if process_result and "Description" in process_result:
+                    await hubspot.save_company_description(
+                        company_name, 
+                        url, 
+                        process_result["Description"]
+                    )
+                    process_result["Data_Source"] = "Generated + HubSpot"
+                
+                results.append(process_result)
+            except Exception as e:
+                logger.error(f"Error processing company '{company_name}': {e}", exc_info=True)
+                results.append({
+                    "Company_Name": company_name,
+                    "Official_Website": url,
+                    "Error": str(e),
+                    "Status": "Failed"
+                })
+    
+    return results
+
+
+async def test_integration():
+    """
+    Тестирование интеграции с HubSpot.
+    """
+    companies = [
+        {"name": "Example Company", "url": "example.com"},
+        {"name": "Test Company", "url": "test-company.com"}
+    ]
+    
+    async def mock_process(company_name, url):
+        """
+        Мок-функция для обработки компании.
+        """
+        print(f"Processing {company_name} ({url})...")
+        return {
+            "Company_Name": company_name,
+            "Official_Website": url,
+            "Description": f"This is a test description for {company_name}.",
+            "Timestamp": datetime.now().isoformat()
+        }
+    
+    results = await process_companies_with_hubspot(
+        companies=companies,
+        process_function=mock_process,
+        use_hubspot=True
+    )
+    
+    for result in results:
+        print(f"Result for {result['Company_Name']}:")
+        for key, value in result.items():
+            print(f"  {key}: {value}")
+
+
+if __name__ == "__main__":
+    asyncio.run(test_integration()) 

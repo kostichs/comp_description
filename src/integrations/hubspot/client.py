@@ -5,151 +5,464 @@ Provides a client for interacting with the HubSpot API, focusing on
 companies and their properties.
 """
 
-import requests
-import datetime
+import os
+import re
+import json
 import logging
-from typing import Dict, Optional, List, Tuple, Any
+import datetime
+from typing import Optional, Dict, Any, List
+from urllib.parse import urlparse
+import aiohttp
+import asyncio
+from dotenv import load_dotenv
 
+# Настройка логирования
 logger = logging.getLogger(__name__)
 
 class HubSpotClient:
     """
-    Client for interacting with the HubSpot API
+    Клиент для работы с HubSpot API.
     
-    Provides methods for searching, retrieving, and updating company data in HubSpot.
-    Uses caching to optimize API usage.
+    Обеспечивает функциональность:
+    - Поиск компаний по домену
+    - Получение свойств компании
+    - Обновление свойств компании
     """
     
-    def __init__(self, api_key: str, base_url: str = "https://api.hubapi.com"):
+    def __init__(self, api_key: Optional[str] = None, base_url: str = "https://api.hubapi.com"):
         """
-        Initialize the HubSpot client
+        Инициализация клиента HubSpot API.
         
         Args:
-            api_key: HubSpot API key
-            base_url: HubSpot API base URL
+            api_key (str, optional): API ключ для доступа к HubSpot. 
+                                     Если не указан, будет взят из переменной окружения HUBSPOT_API_KEY.
+            base_url (str): Базовый URL для API HubSpot.
         """
+        # Загружаем переменные окружения, если api_key не передан
+        if api_key is None:
+            load_dotenv()
+            api_key = os.getenv("HUBSPOT_API_KEY")
+        
+        if not api_key:
+            logger.warning("HubSpot API key not provided. HubSpot integration will not work.")
+        
         self.api_key = api_key
         self.base_url = base_url
         self.headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
-        self._cache = {}  # Кэш для избежания повторных запросов
+        
+        # Кэш для избежания повторных запросов
+        self._cache = {}
     
-    async def search_company_by_website(self, website: str) -> Optional[Dict]:
+    async def search_company_by_domain(self, domain: str) -> Optional[Dict[str, Any]]:
         """
-        Поиск компании по веб-сайту
+        Поиск компании в HubSpot по домену.
         
         Args:
-            website: URL веб-сайта компании
+            domain (str): Домен компании (например, "example.com")
             
         Returns:
-            Dict или None: данные компании или None, если не найдена
+            Optional[Dict[str, Any]]: Данные о компании, если найдена, иначе None
         """
-        # Нормализация URL (удаление http://, https://, www., конечных слешей)
-        normalized_website = self._normalize_website(website)
+        if not self.api_key:
+            logger.warning("HubSpot API key not set. Search operation aborted.")
+            return None
         
-        # Проверяем кэш
-        if normalized_website in self._cache:
-            logger.info(f"Using cached result for website: {normalized_website}")
-            return self._cache[normalized_website]
-        
-        endpoint = f"{self.base_url}/crm/v3/objects/companies/search"
-        payload = {
-            "filterGroups": [{
-                "filters": [{
-                    "propertyName": "website",
-                    "operator": "CONTAINS_TOKEN",
-                    "value": normalized_website
-                }]
-            }],
-            "properties": ["name", "website", "description", "description_timestamp", "linkedin_url"],
-            "limit": 1
-        }
-        
-        logger.info(f"Searching HubSpot for company with website: {normalized_website}")
-        response = requests.post(endpoint, headers=self.headers, json=payload)
-        if response.status_code == 200:
-            results = response.json().get("results", [])
-            if results:
-                logger.info(f"Found company with website {normalized_website} in HubSpot")
-                self._cache[normalized_website] = results[0]  # Сохраняем в кэш
-                return results[0]
-            logger.info(f"No company found with website {normalized_website} in HubSpot")
-        else:
-            logger.warning(f"HubSpot API error: {response.status_code} - {response.text}")
-        
-        self._cache[normalized_website] = None  # Кэшируем отрицательный результат
-        return None
-    
-    def _normalize_website(self, website: str) -> str:
-        """
-        Нормализация веб-сайта для сравнения
-        
-        Args:
-            website: URL веб-сайта
-            
-        Returns:
-            str: нормализованный URL
-        """
-        if not website:
-            return ""
-            
-        website = website.lower()
-        for prefix in ["https://", "http://", "www."]:
-            if website.startswith(prefix):
-                website = website[len(prefix):]
-        if website.endswith("/"):
-            website = website[:-1]
-        return website
-    
-    def is_description_fresh(self, timestamp_str: str, max_age_months: int = 6) -> bool:
-        """
-        Проверка свежести описания (меньше max_age_months)
-        
-        Args:
-            timestamp_str: Строка с временной меткой в формате ISO
-            max_age_months: Максимальный возраст в месяцах
-            
-        Returns:
-            bool: True, если описание свежее
-        """
         try:
-            timestamp = datetime.datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
-            now = datetime.datetime.now(datetime.timezone.utc)
-            age = now - timestamp
-            return age.days < max_age_months * 30  # примерно 30 дней в месяце
+            # Нормализация домена
+            normalized_domain = self._normalize_domain(domain)
+            if not normalized_domain:
+                logger.warning(f"Invalid domain: {domain}")
+                return None
+            
+            # Проверяем кэш
+            cache_key = f"domain:{normalized_domain}"
+            if cache_key in self._cache:
+                logger.info(f"Using cached result for domain: {normalized_domain}")
+                return self._cache[cache_key]
+            
+            # Формируем запрос к API
+            endpoint = f"{self.base_url}/crm/v3/objects/companies/search"
+            
+            async with aiohttp.ClientSession() as session:
+                payload = {
+                    "filterGroups": [{
+                        "filters": [{
+                            "propertyName": "domain",
+                            "operator": "EQ",
+                            "value": normalized_domain
+                        }]
+                    }],
+                    "properties": ["name", "domain", "ai_description", "ai_description_updated"],
+                    "limit": 1
+                }
+                
+                async with session.post(endpoint, headers=self.headers, json=payload) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        results = data.get("results", [])
+                        
+                        if results:
+                            company = results[0]
+                            # Кэшируем результат
+                            self._cache[cache_key] = company
+                            logger.info(f"Found company in HubSpot: {company.get('properties', {}).get('name')}")
+                            return company
+                        else:
+                            logger.info(f"No company found for domain: {normalized_domain}")
+                            # Кэшируем отрицательный результат
+                            self._cache[cache_key] = None
+                            return None
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"HubSpot API error ({response.status}): {error_text}")
+                        return None
+        
         except Exception as e:
-            logger.error(f"Error parsing timestamp {timestamp_str}: {e}")
-            return False  # При ошибке считаем описание устаревшим
+            logger.error(f"Error searching company by domain: {e}", exc_info=True)
+            return None
     
-    async def update_company_description(self, company_id: str, description: str) -> bool:
+    async def create_company(self, domain: str, properties: Dict[str, str]) -> Optional[Dict[str, Any]]:
         """
-        Обновление описания компании в HubSpot
+        Создание новой компании в HubSpot.
         
         Args:
-            company_id: ID компании в HubSpot
-            description: Новое описание
+            domain (str): Домен компании (например, "example.com")
+            properties (Dict[str, str]): Словарь свойств компании
             
         Returns:
-            bool: True в случае успеха
+            Optional[Dict[str, Any]]: Данные о созданной компании в случае успеха, иначе None
         """
-        endpoint = f"{self.base_url}/crm/v3/objects/companies/{company_id}"
-        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        if not self.api_key:
+            logger.warning("HubSpot API key not set. Create operation aborted.")
+            return None
         
-        payload = {
-            "properties": {
-                "description": description,
-                "description_timestamp": now
-            }
-        }
+        try:
+            # Нормализация домена
+            normalized_domain = self._normalize_domain(domain)
+            if not normalized_domain:
+                logger.warning(f"Invalid domain: {domain}")
+                return None
+            
+            # Добавляем домен в свойства
+            properties["domain"] = normalized_domain
+            
+            # Устанавливаем текущую дату в формате YYYY-MM-DD
+            if "ai_description_updated" in properties:
+                # Всегда используем только формат YYYY-MM-DD без времени
+                properties["ai_description_updated"] = datetime.datetime.now().strftime("%Y-%m-%d")
+            
+            endpoint = f"{self.base_url}/crm/v3/objects/companies"
+            
+            async with aiohttp.ClientSession() as session:
+                payload = {
+                    "properties": properties
+                }
+                
+                async with session.post(endpoint, headers=self.headers, json=payload) as response:
+                    if response.status == 201:
+                        data = await response.json()
+                        logger.info(f"Successfully created company with domain: {normalized_domain}")
+                        
+                        # Добавляем свойства в ответ для соответствия формату ответа search_company_by_domain
+                        if "properties" not in data:
+                            data["properties"] = properties
+                        
+                        # Сбрасываем кэш для этого домена
+                        cache_key = f"domain:{normalized_domain}"
+                        if cache_key in self._cache:
+                            del self._cache[cache_key]
+                        
+                        return data
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"Failed to create company. Status: {response.status}, Error: {error_text}")
+                        return None
         
-        logger.info(f"Updating company {company_id} description in HubSpot")
-        response = requests.patch(endpoint, headers=self.headers, json=payload)
+        except Exception as e:
+            logger.error(f"Error creating company: {e}", exc_info=True)
+            return None
+    
+    async def update_company_properties(self, company_id: str, properties: Dict[str, str]) -> bool:
+        """
+        Обновление свойств компании в HubSpot.
         
-        if response.status_code == 200:
-            logger.info(f"Successfully updated description for company {company_id}")
-            return True
-        else:
-            logger.error(f"Failed to update company {company_id}: {response.status_code} - {response.text}")
-            return False 
+        Args:
+            company_id (str): ID компании в HubSpot
+            properties (Dict[str, str]): Словарь свойств для обновления
+            
+        Returns:
+            bool: True в случае успеха, False в случае ошибки
+        """
+        if not self.api_key:
+            logger.warning("HubSpot API key not set. Update operation aborted.")
+            return False
+        
+        try:
+            # Устанавливаем текущую дату в формате YYYY-MM-DD
+            if "ai_description_updated" in properties:
+                # Всегда используем только формат YYYY-MM-DD без времени
+                properties["ai_description_updated"] = datetime.datetime.now().strftime("%Y-%m-%d")
+            
+            endpoint = f"{self.base_url}/crm/v3/objects/companies/{company_id}"
+            
+            async with aiohttp.ClientSession() as session:
+                payload = {
+                    "properties": properties
+                }
+                
+                async with session.patch(endpoint, headers=self.headers, json=payload) as response:
+                    if response.status == 200:
+                        logger.info(f"Successfully updated properties for company ID: {company_id}")
+                        # Сбрасываем кэш для этой компании
+                        self._invalidate_cache_for_company(company_id)
+                        return True
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"Failed to update company properties. Status: {response.status}, Error: {error_text}")
+                        return False
+        
+        except Exception as e:
+            logger.error(f"Error updating company properties: {e}", exc_info=True)
+            return False
+    
+    def is_description_fresh(self, timestamp_str: Optional[str], max_age_months: int = 6) -> bool:
+        """
+        Проверка свежести описания по временной метке.
+        
+        Args:
+            timestamp_str (Optional[str]): Временная метка в ISO формате или YYYY-MM-DD
+            max_age_months (int): Максимальный возраст описания в месяцах
+            
+        Returns:
+            bool: True если описание свежее (не старше max_age_months), иначе False
+        """
+        if not timestamp_str:
+            return False
+        
+        try:
+            # Если формат даты YYYY-MM-DD, просто используем разницу между датами
+            if len(timestamp_str) == 10 and timestamp_str[4] == '-' and timestamp_str[7] == '-':
+                try:
+                    # Парсим дату в формате YYYY-MM-DD
+                    date_parts = timestamp_str.split('-')
+                    year = int(date_parts[0])
+                    month = int(date_parts[1])
+                    day = int(date_parts[2])
+                    
+                    # Получаем текущую дату без времени
+                    today = datetime.datetime.now().date()
+                    timestamp_date = datetime.date(year, month, day)
+                    
+                    # Рассчитываем разницу в месяцах
+                    # Приблизительный расчет: (разница в днях) / 30.44
+                    # Более точный вариант:
+                    months_difference = (today.year - timestamp_date.year) * 12 + (today.month - timestamp_date.month)
+                    
+                    # Если сегодня тот же день или раньше (например, дата из будущего), считаем свежим
+                    if today <= timestamp_date:
+                        return True
+                        
+                    # Если разница в месяцах меньше или равна max_age_months, считаем свежим
+                    if months_difference <= max_age_months:
+                        # Дополнительная проверка на случай, если день в текущем месяце меньше дня в timestamp
+                        if months_difference == max_age_months and today.day < timestamp_date.day:
+                            return False # Уже прошел полный месяц
+                        return True
+                    
+                    return False
+                    
+                except ValueError:
+                    logger.warning(f"Invalid date format in YYYY-MM-DD: {timestamp_str}")
+                    return False
+
+            # Если формат ISO (стандарт HubSpot), парсим с учетом часового пояса
+            timestamp = datetime.datetime.fromisoformat(timestamp_str.replace("Z", "+00:00"))
+            
+            # Получаем текущее время с учетом часового пояса
+            now = datetime.datetime.now(datetime.timezone.utc)
+            
+            # Рассчитываем разницу во времени
+            age = now - timestamp
+            
+            # Рассчитываем максимальный возраст в днях (приблизительно)
+            max_age_days = max_age_months * 30.44  # Среднее количество дней в месяце
+            
+            # Сравниваем возраст с максимальным
+            return age.days <= max_age_days
+            
+        except Exception as e:
+            logger.error(f"Error parsing timestamp '{timestamp_str}': {e}")
+            return False # В случае ошибки парсинга считаем описание не свежим
+            
+    def _normalize_domain(self, url: str) -> str:
+        """
+        Нормализация URL для получения чистого домена.
+        
+        Args:
+            url (str): URL или домен компании
+            
+        Returns:
+            str: Нормализованный домен (например, "example.com")
+        """
+        if not url:
+            return ""
+        
+        # Если URL не начинается с http, добавляем http:// для корректного парсинга
+        if not url.startswith(('http://', 'https://')):
+            url = 'http://' + url
+            
+        try:
+            parsed_url = urlparse(url)
+            domain = parsed_url.netloc
+            
+            # Удаляем 'www.' если есть
+            if domain.startswith('www.'):
+                domain = domain[4:]
+            
+            return domain.lower() # Приводим к нижнему регистру
+        except Exception as e:
+            logger.warning(f"Could not parse domain from URL '{url}': {e}")
+            # В случае ошибки, пытаемся извлечь домен регулярным выражением
+            # Это может помочь для невалидных URL, которые не парсятся urlparse
+            match = re.search(r'(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}', url)
+            if match:
+                domain = match.group(0)
+                if domain.startswith('www.'):
+                    domain = domain[4:]
+                return domain.lower()
+            return "" # Возвращаем пустую строку, если не удалось извлечь домен
+
+    def _invalidate_cache_for_company(self, company_id: str) -> None:
+        """
+        Инвалидация кэша для конкретной компании.
+        
+        Это необходимо, если данные компании были обновлены, и кэш для её домена 
+        (если он был основан на поиске по домену) должен быть сброшен.
+        
+        Args:
+            company_id (str): ID компании в HubSpot.
+        """
+        # Ищем ключ в кэше, который соответствует company_id
+        # Это упрощенная инвалидация, так как мы кэшируем по домену.
+        # Если есть более сложная логика кэширования, её нужно будет учесть.
+        
+        # Собираем ключи, которые нужно удалить
+        keys_to_delete = []
+        for key, cached_item in self._cache.items():
+            if isinstance(cached_item, dict) and cached_item.get("id") == company_id:
+                keys_to_delete.append(key)
+        
+        # Удаляем найденные ключи
+        for key in keys_to_delete:
+            del self._cache[key]
+            logger.info(f"Cache invalidated for company ID {company_id} (key: {key})")
+
+
+# Пример использования и тестирования
+async def test_hubspot_client():
+    """Тестовая функция для демонстрации работы клиента."""
+    logging.basicConfig(level=logging.INFO, 
+                       format='%(asctime)s - %(levelname)s - %(message)s')
+    
+    # Загрузка API ключа из .env файла (убедитесь, что файл .env существует и содержит HUBSPOT_API_KEY)
+    load_dotenv()
+    api_key = os.getenv("HUBSPOT_API_KEY")
+    
+    if not api_key:
+        logger.error("HUBSPOT_API_KEY not found in .env file. Please set it to run the test.")
+        return
+
+    client = HubSpotClient(api_key=api_key)
+
+    # Тест поиска компании
+    # Используйте домен, который существует или не существует в вашем HubSpot для теста
+    test_domain = "hubspot.com" # Существующий домен
+    # test_domain = "nonexistentdomain12345.com" # Несуществующий домен
+    
+    logger.info(f"--- Testing search_company_by_domain for '{test_domain}' ---")
+    company = await client.search_company_by_domain(test_domain)
+    if company:
+        logger.info(f"Found company: {company.get('properties', {}).get('name')}")
+        logger.info(f"Company ID: {company.get('id')}")
+        logger.info(f"Company properties: {company.get('properties')}")
+    else:
+        logger.info(f"Company with domain '{test_domain}' not found.")
+    
+    # Тест создания компании (Будьте осторожны, это создаст реальную компанию в HubSpot)
+    # logger.info("--- Testing create_company ---")
+    # new_company_domain = "test-new-company-domain-python.com" 
+    # new_company_props = {
+    #     "name": "Test New Company (Python)",
+    #     "ai_description": "This is a test company created via Python script.",
+    #     "ai_description_updated": "current_date" 
+    # }
+    # created_company = await client.create_company(new_company_domain, new_company_props)
+    # if created_company:
+    #     logger.info(f"Successfully created company: {created_company.get('properties', {}).get('name')}")
+    #     created_company_id = created_company.get("id")
+    #     logger.info(f"New company ID: {created_company_id}")
+        
+    #     # Тест обновления свойств компании (используем ID созданной компании)
+    #     if created_company_id:
+    #         logger.info(f"--- Testing update_company_properties for ID '{created_company_id}' ---")
+    #         updated_props = {
+    #             "ai_description": "Updated description for the test company (Python).",
+    #             "ai_description_updated": "current_date"
+    #         }
+    #         success = await client.update_company_properties(created_company_id, updated_props)
+    #         if success:
+    #             logger.info("Successfully updated company properties.")
+    #             # Проверим, что описание обновилось, сделав повторный поиск
+    #             updated_company_check = await client.search_company_by_domain(new_company_domain)
+    #             if updated_company_check:
+    #                 logger.info(f"Updated description: {updated_company_check.get('properties', {}).get('ai_description')}")
+    #         else:
+    #             logger.error("Failed to update company properties.")
+    # else:
+    #     logger.error(f"Failed to create company with domain '{new_company_domain}'.")
+
+    # Тест проверки свежести описания
+    logger.info("--- Testing is_description_fresh ---")
+    
+    # Пример 1: Свежая дата (сегодня)
+    today_str = datetime.datetime.now().strftime("%Y-%m-%d")
+    is_fresh_today = client.is_description_fresh(today_str, 6)
+    logger.info(f"Timestamp '{today_str}' (YYYY-MM-DD), fresh (6 months): {is_fresh_today}") # Ожидаем True
+
+    # Пример 2: Дата месяц назад (свежая)
+    one_month_ago = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%Y-%m-%d")
+    is_fresh_one_month = client.is_description_fresh(one_month_ago, 6)
+    logger.info(f"Timestamp '{one_month_ago}' (YYYY-MM-DD), fresh (6 months): {is_fresh_one_month}") # Ожидаем True
+
+    # Пример 3: Дата 7 месяцев назад (устаревшая)
+    seven_months_ago = (datetime.datetime.now() - datetime.timedelta(days=7*30)).strftime("%Y-%m-%d")
+    is_fresh_seven_months = client.is_description_fresh(seven_months_ago, 6)
+    logger.info(f"Timestamp '{seven_months_ago}' (YYYY-MM-DD), fresh (6 months): {is_fresh_seven_months}") # Ожидаем False
+
+    # Пример 4: ISO формат, свежая дата (UTC)
+    now_utc_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    is_fresh_iso_now = client.is_description_fresh(now_utc_iso, 6)
+    logger.info(f"Timestamp '{now_utc_iso}' (ISO), fresh (6 months): {is_fresh_iso_now}") # Ожидаем True
+
+    # Пример 5: ISO формат, устаревшая дата
+    seven_months_ago_iso = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=7*30)).isoformat()
+    is_fresh_iso_old = client.is_description_fresh(seven_months_ago_iso, 6)
+    logger.info(f"Timestamp '{seven_months_ago_iso}' (ISO), fresh (6 months): {is_fresh_iso_old}") # Ожидаем False
+    
+    # Пример 6: Невалидный timestamp
+    invalid_ts = "не дата"
+    is_fresh_invalid = client.is_description_fresh(invalid_ts, 6)
+    logger.info(f"Timestamp '{invalid_ts}', fresh (6 months): {is_fresh_invalid}") # Ожидаем False
+    
+    # Пример 7: Пустой timestamp
+    empty_ts = None
+    is_fresh_empty = client.is_description_fresh(empty_ts, 6)
+    logger.info(f"Timestamp '{empty_ts}', fresh (6 months): {is_fresh_empty}") # Ожидаем False
+
+if __name__ == "__main__":
+    # Для запуска теста раскомментируйте следующую строку:
+    asyncio.run(test_hubspot_client())
+    pass 
