@@ -126,7 +126,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             pipeline_error = f"API Client initialization failed: {e_client}"
             raise 
         
-        base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
+        base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID"]
         # additional_llm_fields больше не актуальны в таком виде, если CSV стандартизирован
         expected_cols = list(base_ordered_fields) 
         session_logger.info(f"[BG Task {session_id}] Determined expected_csv_fieldnames: {expected_cols}")
@@ -204,7 +204,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     # broadcast_update=broadcast_update # callback
                     # main_batch_size # из параметров функции run_session_pipeline
                     # context_text # из session_data
-                    # expected_csv_fieldnames # из session_data или генерируется
+                    expected_csv_fieldnames = expected_cols # <--- Передаем наш список полей
                     # aiohttp_session, sb_client, openai_client - уже установлены как атрибуты
                     # llm_config, api_keys - уже установлены как атрибуты
                 )

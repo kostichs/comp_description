@@ -104,10 +104,14 @@ class PipelineAdapter:
         
         return True
         
-    async def run(self) -> Tuple[int, int, List[Dict[str, Any]]]:
+    async def run(self, expected_csv_fieldnames: Optional[List[str]] = None) -> Tuple[int, int, List[Dict[str, Any]]]:
         """
         Run the pipeline with current configuration
         
+        Args:
+            expected_csv_fieldnames (Optional[List[str]]): List of expected field names for the output CSV.
+                                                           Defaults to a standard list if None.
+
         Returns:
             Tuple with success count, failure count, and results
         """
@@ -125,7 +129,10 @@ class PipelineAdapter:
             self.aiohttp_session = session
             
             # Expected CSV field names
-            initial_expected_csv_fieldnames = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
+            # Используем переданный список или значение по умолчанию
+            final_expected_csv_fieldnames = expected_csv_fieldnames or [
+                "Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"
+            ]
             
             # Run pipeline for input file
             success_count, failure_count, results = await self.run_pipeline_for_file(
@@ -134,14 +141,16 @@ class PipelineAdapter:
                 pipeline_log_path=str(self.pipeline_log_path),
                 session_dir_path=self.session_dir_path,
                 llm_config=self.llm_config,
-                context_text=None,
+                context_text=None, # В базовом адаптере контекст не передается так
                 company_col_index=self.company_col_index,
-                aiohttp_session=session,
-                sb_client=self.sb_client,
-                openai_client=self.openai_client,
-                serper_api_key=self.api_keys["serper"],
-                expected_csv_fieldnames=initial_expected_csv_fieldnames,
-                broadcast_update=None
+                aiohttp_session=session, # Используем созданную сессию
+                sb_client=self.sb_client, # Должен быть инициализирован в setup
+                openai_client=self.openai_client, # Должен быть инициализирован в setup
+                serper_api_key=self.api_keys.get("serper"), # Берем из self.api_keys
+                expected_csv_fieldnames=final_expected_csv_fieldnames, # <--- Передаем актуальный список
+                broadcast_update=None, # В базовом адаптере broadcast_update не используется напрямую
+                # main_batch_size, run_standard_pipeline, run_llm_deep_search_pipeline - специфичны для HubSpotPipelineAdapter.run_pipeline_for_file
+                # или должны быть частью конфигурации, если применимо к базовому адаптеру.
             )
         
         # Save session metadata

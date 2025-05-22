@@ -179,13 +179,16 @@ class HubSpotAdapter:
         url: str,
         description: str,
         linkedin_url: Optional[str] = None # Добавляем LinkedIn URL
-    ) -> bool:
+    ) -> Tuple[bool, Optional[str]]:
         """
         Сохранение описания компании в HubSpot.
+        Возвращает кортеж (успех, ID компании в HubSpot или None).
         """
         if not self.client.api_key:
             logger.warning("HubSpot API key not available in HubSpotAdapter. Skipping save.")
-            return False
+            return False, None # Возвращаем ID как None
+
+        company_id_to_return: Optional[str] = None
         try:
             if not company_data and url: # Если компания не найдена ранее, ищем снова
                 domain = self._extract_domain_from_url(url)
@@ -194,6 +197,7 @@ class HubSpotAdapter:
             
             if company_data:
                 company_id = company_data.get("id")
+                company_id_to_return = company_id # Сохраняем ID для возврата
                 now = datetime.datetime.now().strftime("%Y-%m-%d")
                 properties_to_update = {
                     "ai_description": description, # Используем кастомное поле HubSpot
@@ -207,19 +211,21 @@ class HubSpotAdapter:
                 
                 if result:
                     logger.info(f"Successfully updated description for '{company_name}' in HubSpot")
-                    return True
+                    return True, company_id_to_return # Возвращаем ID
                 else:
                     logger.error(f"Failed to update description for '{company_name}' in HubSpot")
-                    return False
+                    return False, None # Возвращаем ID как None
             else: # Компания не найдена, создаем новую
                 logger.info(f"Company '{company_name}' not found in HubSpot, creating new entry.")
-                # Передаем linkedin_url при создании новой компании
                 new_company = await self.create_company(company_name, url, description, linkedin_url)
-                return new_company is not None
+                if new_company:
+                    company_id_to_return = new_company.get("id")
+                    return True, company_id_to_return # Возвращаем ID новой компании
+                return False, None # Возвращаем ID как None
         
         except Exception as e:
             logger.error(f"Error saving description for '{company_name}' in HubSpot: {e}", exc_info=True)
-            return False
+            return False, None # Возвращаем ID как None
     
     def _extract_domain_from_url(self, url: str) -> str:
         """
@@ -381,13 +387,15 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 if description_is_fresh and hubspot_company_data: 
                     logger.info(f"Company '{company_name}' has a fresh description in HubSpot. Skipping processing.")
                     description, timestamp, linkedin_url = self.hubspot_adapter.get_company_details_from_hubspot_data(hubspot_company_data)
+                    hubspot_id = hubspot_company_data.get("id") # <--- Получаем ID
                     result_from_hubspot = {
                         "Company_Name": company_name,
                         "Official_Website": company_url or hubspot_company_data.get("properties",{}).get("domain",""), 
                         "LinkedIn_URL": linkedin_url or "", 
                         "Description": description,
                         "Timestamp": timestamp,
-                        "Data_Source": "HubSpot" 
+                        "Data_Source": "HubSpot",
+                        "HubSpot_Company_ID": hubspot_id or "" # <--- Добавляем ID в результат
                     }
                     
                     for field in expected_csv_fieldnames:
@@ -492,15 +500,21 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                     hubspot_company_data_for_save = original_company_info.get("hubspot_data") if original_company_info else None
 
                     if company_name and company_url and description: # Условие остается прежним, но LinkedIn URL передается всегда, если есть
-                        await self.hubspot_adapter.save_company_description(
+                        # save_company_description теперь возвращает (success, hub_id)
+                        success, hub_id = await self.hubspot_adapter.save_company_description(
                             hubspot_company_data_for_save, # Данные из HubSpot, если были
                             company_name,
                             company_url,
                             description,
                             linkedin_url_from_pipeline # Передаем LinkedIn URL из пайплайна
                         )
+                        if success and hub_id:
+                            result_item["HubSpot_Company_ID"] = hub_id # <--- Сохраняем ID в result_item
+                        else:
+                            result_item["HubSpot_Company_ID"] = "" # или оставляем пустым, если не удалось сохранить/получить ID
                     else:
                         logger.warning(f"Skipping HubSpot save for '{company_name}' due to missing data (URL or Description).")
+                        result_item["HubSpot_Company_ID"] = "" # Также добавляем пустое поле ID
             
             all_results.extend(std_results)
             # Результаты уже сохранены в CSV внутри process_companies_batch
