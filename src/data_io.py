@@ -6,6 +6,9 @@ import logging
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Union, Tuple
 
+# Импортируем функцию нормализации URL
+from src.input_validators import normalize_domain
+
 # Setup logging
 logger = logging.getLogger(__name__)
 
@@ -82,8 +85,19 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
             result_list_of_dicts = []
             for name, second_value in zip(company_names_series, second_column_series):
                 if name and name.lower() not in ['nan', '']:
-                    # Второй столбец используется как URL
-                    result_list_of_dicts.append({'name': name, 'url': second_value if second_value and second_value.lower() not in ['nan', ''] else None})
+                    # Если URL во втором столбце есть, нормализуем его
+                    url_value = None
+                    if second_value and second_value.lower() not in ['nan', '']:
+                        # Нормализуем URL, извлекая только домен
+                        normalized_url = normalize_domain(second_value)
+                        if normalized_url:
+                            url_value = normalized_url
+                            # Логируем изменение, если URL был нормализован
+                            if normalized_url != second_value:
+                                logging.info(f"Normalized URL for '{name}': '{second_value}' -> '{normalized_url}'")
+                    
+                    # Добавляем в результат
+                    result_list_of_dicts.append({'name': name, 'url': url_value})
             
             if result_list_of_dicts:
                 logging.info(f"Loaded {len(result_list_of_dicts)} companies with name and URL from {file_path_str}")

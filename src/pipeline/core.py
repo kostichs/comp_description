@@ -29,6 +29,9 @@ from description_generator import DescriptionGenerator
 from src.data_io import save_results_csv, save_results_json, save_structured_data_incrementally
 from src.pipeline.utils import generate_and_save_raw_markdown_report_async
 
+# Импортируем функции валидации
+from src.input_validators import normalize_domain
+
 logger = logging.getLogger(__name__)
 
 # Constants
@@ -563,7 +566,7 @@ async def process_companies(
     use_raw_llm_data_as_description: bool = False
 ) -> List[Dict[str, Any]]:
     """
-    Process multiple companies in batches
+    Process multiple companies in parallel batches
     
     Args:
         company_names: List of company names
@@ -573,127 +576,107 @@ async def process_companies(
         serper_api_key: Serper API key
         llm_config: LLM configuration
         raw_markdown_output_path: Path to save raw markdown reports
-        batch_size: Size of batches for processing
+        batch_size: Number of companies to process in parallel
         context_text: Optional context text
         run_llm_deep_search_pipeline_cfg: Whether to run LLM deep search
-        run_standard_pipeline_cfg: Whether to run standard pipeline
+        run_standard_pipeline_cfg: Whether to run standard homepage finders
         run_domain_check_finder_cfg: Whether to run domain check finder
         broadcast_update: Callback for broadcasting updates
         output_csv_path: Path to save CSV output
         output_json_path: Path to save JSON output
-        expected_csv_fieldnames: Expected field names for CSV output
+        expected_csv_fieldnames: Expected CSV field names
         llm_deep_search_config_override: Override for LLM deep search config
-        second_column_data: Data from the second column
-        hubspot_client: HubSpot client
+        second_column_data: Data from the second column (company_name -> url mapping)
+        hubspot_client: HubSpot client (optional)
         use_raw_llm_data_as_description: Whether to use raw LLM data as description
         
     Returns:
-        List of results from processing companies
+        List[Dict[str, Any]]: List of results
     """
-    if not company_names:
-        logger.warning("No company names provided for processing")
-        return []
+    # Убедимся, что директория для markdown отчетов существует
+    if raw_markdown_output_path:
+        os.makedirs(raw_markdown_output_path, exist_ok=True)
     
-    total_companies = len(company_names)
-    logger.info(f"Starting processing for {total_companies} companies with batch size {batch_size}")
+    # Если есть данные из второй колонки, нормализуем их URLs
+    if second_column_data:
+        normalized_second_column_data = {}
+        for company_name, url in second_column_data.items():
+            if url and url.lower() not in ['nan', '']:
+                normalized_url = normalize_domain(url)
+                normalized_second_column_data[company_name] = normalized_url
+                if normalized_url != url:
+                    logger.info(f"Normalized URL for '{company_name}': '{url}' -> '{normalized_url}'")
+        second_column_data = normalized_second_column_data
     
-    # Создание экземпляров finder-ов
+    # Создаем экземпляры finder'ов для поиска информации
     finder_instances = {}
     
-    # Настройка HomepageFinder для поиска официального сайта
+    # Стандартные finders
     if run_standard_pipeline_cfg:
-        try:
-            homepage_finder = HomepageFinder(serper_api_key)
-            finder_instances["homepage_finder"] = homepage_finder
-            logger.info("Initialized HomepageFinder")
-        except Exception as e:
-            logger.error(f"Error initializing HomepageFinder: {e}", exc_info=True)
-    
-    # Настройка DomainCheckFinder для проверки доступности URL
-    if run_domain_check_finder_cfg:
-        try:
-            domain_check_finder = DomainCheckFinder(sb_client, aiohttp_session)
-            finder_instances["domain_check_finder"] = domain_check_finder
-            logger.info("Initialized DomainCheckFinder")
-        except Exception as e:
-            logger.error(f"Error initializing DomainCheckFinder: {e}", exc_info=True)
-    
-    # Настройка LinkedInFinder для поиска LinkedIn URL
-    try:
-        linkedin_finder = LinkedInFinder(serper_api_key)
-        finder_instances["linkedin_finder"] = linkedin_finder
-        logger.info("Initialized LinkedInFinder")
-    except Exception as e:
-        logger.error(f"Error initializing LinkedInFinder: {e}", exc_info=True)
-    
-    # Настройка LLMDeepSearchFinder для глубокого поиска информации
-    if run_llm_deep_search_pipeline_cfg:
-        try:
-            # Получаем API ключ OpenAI от клиента OpenAI
-            openai_api_key = openai_client.api_key
-            
-            if not openai_api_key:
-                logger.error("OpenAI API key not found in openai_client")
-                raise ValueError("OpenAI API key is required for LLMDeepSearchFinder")
-                
-            llm_deep_search_finder = LLMDeepSearchFinder(
-                openai_api_key=openai_api_key,
-                verbose=True
-            )
-            finder_instances["llm_deep_search_finder"] = llm_deep_search_finder
-            logger.info("Initialized LLMDeepSearchFinder")
-        except Exception as e:
-            logger.error(f"Error initializing LLMDeepSearchFinder: {e}", exc_info=True)
-    
-    # Создание DescriptionGenerator
-    try:
-        # Получаем API ключ OpenAI
-        openai_api_key = openai_client.api_key
-        if not openai_api_key:
-            logger.error("OpenAI API key not found in openai_client")
-            raise ValueError("OpenAI API key is required for DescriptionGenerator")
-            
-        description_generator = DescriptionGenerator(
-            api_key=openai_api_key,
-            model_config=llm_config
-        )
-        logger.info("Initialized DescriptionGenerator")
-    except Exception as e:
-        logger.error(f"Error initializing DescriptionGenerator: {e}", exc_info=True)
-        description_generator = None
-    
-    # Подготовка ожидаемых полей CSV, если не переданы извне
-    if expected_csv_fieldnames is None:
-        csv_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
-    else:
-        csv_fields = expected_csv_fieldnames
-        logger.info(f"Using provided CSV fields: {csv_fields}")
-    
-    # Создаем CSV файл с заголовками заранее, если его еще нет
-    if output_csv_path:
-        try:
-            if not os.path.exists(output_csv_path):
-                # Создаем директорию, если она не существует
-                os.makedirs(os.path.dirname(output_csv_path), exist_ok=True)
-                # Создаем пустой CSV с заголовками
-                save_results_csv([], output_csv_path, csv_fields)
-                logger.info(f"Created empty CSV file with headers at {output_csv_path}")
-        except Exception as e:
-            logger.error(f"Error creating initial CSV file: {e}", exc_info=True)
-    
-    # Обработка компаний по батчам для ограничения параллельных запросов
-    all_results = []
-    
-    for batch_start in range(0, total_companies, batch_size):
-        batch_end = min(batch_start + batch_size, total_companies)
-        batch = company_names[batch_start:batch_end]
-        logger.info(f"Processing batch {batch_start//batch_size + 1}/{(total_companies+batch_size-1)//batch_size}: {len(batch)} companies")
+        # HomepageFinder для поиска официального сайта
+        finder_instances["homepage_finder"] = HomepageFinder()
         
-        # Параллельная обработка компаний в батче
+        # LinkedInFinder для поиска LinkedIn URL
+        finder_instances["linkedin_finder"] = LinkedInFinder()
+    
+    # DomainCheckFinder для проверки URL
+    if run_domain_check_finder_cfg:
+        finder_instances["domain_check_finder"] = DomainCheckFinder()
+        
+    # LoginDetectionFinder для определения наличия форм логина
+    finder_instances["login_detection_finder"] = LoginDetectionFinder(sb_client)
+    
+    # LLMDeepSearchFinder для глубокого поиска информации
+    if run_llm_deep_search_pipeline_cfg:
+        # Инициализация LLMDeepSearchFinder
+        config_override = llm_deep_search_config_override or {}
+        llm_deep_search_finder = LLMDeepSearchFinder(
+            openai_client=openai_client,
+            scrapingbee_client=sb_client,
+            serper_api_key=serper_api_key,
+            **config_override
+        )
+        finder_instances["llm_deep_search_finder"] = llm_deep_search_finder
+    
+    # Создаем экземпляр DescriptionGenerator для генерации описаний
+    description_generator = DescriptionGenerator(openai_client)
+    
+    # Процессинг компаний батчами
+    results = []
+    total_companies = len(company_names)
+    
+    # Обрабатываем все компании батчами
+    for i in range(0, total_companies, batch_size):
+        # Создаем батч компаний
+        batch = company_names[i:i + batch_size]
         tasks = []
-        for i, company in enumerate(batch):
+        
+        # Запускаем обработку для каждой компании в батче
+        for j, company_item in enumerate(batch):
+            # Получаем имя компании и второй столбец, если они предоставлены как кортеж или словарь
+            if isinstance(company_item, dict):
+                company_name = company_item.get('name')
+                company_url = company_item.get('url')
+                
+                # Если URL есть, нормализуем его и добавляем во второй столбец данных
+                if company_url:
+                    if not second_column_data:
+                        second_column_data = {}
+                    second_column_data[company_name] = company_url
+            elif isinstance(company_item, tuple):
+                company_name = company_item[0]
+                if len(company_item) > 1:
+                    company_url = company_item[1]
+                    if company_url:
+                        if not second_column_data:
+                            second_column_data = {}
+                        second_column_data[company_name] = company_url
+            else:
+                company_name = company_item
+            
+            # Создаем задачу для обработки компании
             task = _process_single_company_async(
-                company_name=company,
+                company_name=company_name,
                 openai_client=openai_client,
                 aiohttp_session=aiohttp_session,
                 sb_client=sb_client,
@@ -704,8 +687,8 @@ async def process_companies(
                 raw_markdown_output_path=raw_markdown_output_path,
                 output_csv_path=output_csv_path,
                 output_json_path=output_json_path,
-                csv_fields=csv_fields,
-                company_index=batch_start + i,
+                csv_fields=expected_csv_fieldnames or [],
+                company_index=i + j,
                 total_companies=total_companies,
                 context_text=context_text,
                 run_llm_deep_search_pipeline=run_llm_deep_search_pipeline_cfg,
@@ -719,141 +702,119 @@ async def process_companies(
             )
             tasks.append(task)
         
+        # Ждем завершения всех задач в батче
         batch_results = await asyncio.gather(*tasks, return_exceptions=True)
         
-        # Обработка результатов батча
-        for i, result in enumerate(batch_results):
-            company_name = batch[i]
+        # Обрабатываем результаты
+        for j, result in enumerate(batch_results):
+            # Если возникло исключение, логируем его и добавляем ошибку в результаты
             if isinstance(result, Exception):
-                # Если произошло исключение во время обработки, создаем запись об ошибке
+                company_name = batch[j]
                 logger.error(f"Error processing company {company_name}: {result}", exc_info=True)
-                error_result = {
+                results.append({
                     "Company_Name": company_name,
-                    "Official_Website": "",
-                    "LinkedIn_URL": "",
-                    "Description": f"Error processing {company_name}: {str(result)}",
-                    "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-                }
-                all_results.append(error_result)
+                    "Official_Website": None,
+                    "LinkedIn_URL": None,
+                    "Description": None,
+                    "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                    "error": str(result),
+                    "structured_data": {}
+                })
             else:
-                # Иначе добавляем результат обработки
-                all_results.append(result)
+                # Проверяем, что URL официального сайта нормализован
+                if result.get("Official_Website"):
+                    normalized_url = normalize_domain(result["Official_Website"])
+                    if normalized_url != result["Official_Website"]:
+                        logger.info(f"Normalized URL in result: '{result['Official_Website']}' -> '{normalized_url}'")
+                        result["Official_Website"] = normalized_url
+                
+                results.append(result)
+                
+        # Сохраняем промежуточные результаты в CSV и JSON
+        if output_csv_path:
+            await save_results_csv(
+                results=results, 
+                output_path=output_csv_path, 
+                fieldnames=expected_csv_fieldnames
+            )
         
-        # Обновляем прогресс, если задан broadcast_update
-        if broadcast_update:
-            try:
-                update_data = {
-                    "type": "progress_update",
-                    "processed": len(all_results),
-                    "total": total_companies,
-                    "last_processed": batch[-1] if batch else None
-                }
-                await broadcast_update(update_data)
-                logger.debug(f"Progress update broadcasted: {len(all_results)}/{total_companies}")
-            except Exception as e:
-                logger.error(f"Error broadcasting progress update: {e}")
+        if output_json_path:
+            await save_results_json(results=results, output_path=output_json_path)
     
-    logger.info(f"Finished processing {len(all_results)} companies")
-    return all_results 
+    return results
 
 async def _guaranteed_url_finder(company_name: str, openai_client: AsyncOpenAI, structured_data: Dict[str, Any] = {}) -> Optional[str]:
     """
-    Гарантированный метод поиска URL компании с максимальным приоритетом точности.
-    Используется как последний шанс, когда все другие методы не смогли найти URL.
+    Гарантированный поиск URL компании.
+    
+    Эта функция обеспечивает почти 100% вероятность получения URL для компании.
+    Она использует следующие методы в порядке приоритета:
+    1. Извлечение URL из структурированных данных, если они уже есть
+    2. Генерация URL на основе названия компании
     
     Args:
         company_name: Название компании
-        openai_client: Клиент OpenAI для запросов
-        structured_data: Имеющиеся структурированные данные о компании
+        openai_client: Клиент OpenAI для запросов к LLM
+        structured_data: Уже собранные структурированные данные
         
     Returns:
-        Optional[str]: URL компании или None, если не найден
+        str: URL компании (всегда возвращает какой-то URL)
     """
-    logger.info(f"Running guaranteed URL finder for '{company_name}'")
+    # Импортируем функцию нормализации URL
+    from src.input_validators import normalize_domain
     
-    # Собираем всю доступную информацию о компании для контекста
-    context_info = []
-    if structured_data:
-        # Добавляем важные факты о компании, если они есть
-        for key in ["founding_year", "headquarters", "industry", "description", "products"]:
-            if key in structured_data and structured_data[key]:
-                context_info.append(f"{key}: {structured_data[key]}")
+    # 1. Попытка извлечь URL из структурированных данных
+    url_keys = ['website', 'official_website', 'homepage', 'url', 'official_site']
+    for key in url_keys:
+        if key in structured_data and structured_data[key]:
+            url = structured_data[key]
+            # Нормализуем URL
+            normalized_url = normalize_domain(url)
+            if normalized_url:
+                # Добавляем протокол, если его нет
+                if not normalized_url.startswith(('http://', 'https://')):
+                    normalized_url = 'https://' + normalized_url
+                logger.info(f"Found URL in structured data for '{company_name}': {normalized_url}")
+                return normalized_url
     
-    context_str = "\n".join(context_info)
-    context_prompt = f"Additional information about the company:\n{context_str}" if context_str else ""
-    
-    # Максимально точный промпт для поиска только URL
-    system_prompt = """You are an advanced URL discovery system specialized in finding company websites.
-Your ONLY goal is to find the OFFICIAL WEBSITE URL of the company specified.
-Follow these strict guidelines:
-1. Focus ONLY on finding the primary, official domain of the company.
-2. Do NOT return social media profiles, marketplace listings, or third-party sites.
-3. Return ONLY a complete URL (with https://) - no explanations or comments.
-4. If you're not 100% certain, make your best determination based on available evidence.
-5. NEVER respond with "I don't know" or "I can't find it" - always provide your best URL guess.
-6. Format the URL correctly: prefer https://, include www. if appropriate.
-7. Make sure the returned URL is clean, without tracking parameters.
-8. Do not use markdown formatting or any additional characters."""
-
-    user_prompt = f"""Find the official website URL for this company: {company_name}
-
-{context_prompt}
-
-Instructions:
-- Return ONLY the complete URL with no additional text.
-- The URL should include https:// prefix.
-- Do not explain your reasoning, just provide the URL.
-- This is a critical operation where having ANY URL is better than no URL."""
-
-    try:
-        # Пробуем сначала с GPT-4 для максимальной точности
-        model = "gpt-4-turbo"
-        completion = await openai_client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.2,  # Небольшая температура для баланса креативности и точности
-            max_tokens=100    # Ограничиваем размер ответа
-        )
-        
-        if completion.choices and completion.choices[0].message:
-            url_response = completion.choices[0].message.content.strip()
+    # 2. Попытка спросить LLM о домене компании
+    if openai_client:
+        try:
+            logger.info(f"Asking LLM about domain for '{company_name}'")
+            response = await openai_client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant that provides domain names for companies. Respond with ONLY the most likely domain name, without http:// or https:// prefixes. If you're unsure, make an educated guess based on the company name."},
+                    {"role": "user", "content": f"What is the most likely domain name for the company '{company_name}'? Respond with ONLY the domain name (e.g., 'example.com'), without any explanation or other text."}
+                ],
+                temperature=0.1,
+                max_tokens=30
+            )
             
-            # Проверяем, что ответ похож на URL
-            if _validate_url_format(url_response):
-                logger.info(f"Guaranteed URL finder found URL for '{company_name}': {url_response}")
-                return url_response
-            else:
-                logger.warning(f"Guaranteed URL finder response doesn't look like URL: '{url_response}'")
-        
-        # Если GPT-4 не дал валидный URL, пробуем с gpt-3.5-turbo как запасной вариант
-        model = "gpt-3.5-turbo"
-        completion = await openai_client.chat.completions.create(
-            model=model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.2,
-            max_tokens=100
-        )
-        
-        if completion.choices and completion.choices[0].message:
-            url_response = completion.choices[0].message.content.strip()
+            domain = response.choices[0].message.content.strip()
             
-            # Проверяем, что ответ похож на URL
-            if _validate_url_format(url_response):
-                logger.info(f"Guaranteed URL finder (fallback model) found URL for '{company_name}': {url_response}")
-                return url_response
-            else:
-                logger.warning(f"Guaranteed URL finder (fallback model) response doesn't look like URL: '{url_response}'")
-            
-    except Exception as e:
-        logger.error(f"Error in guaranteed URL finder for '{company_name}': {e}", exc_info=True)
+            # Проверяем, что домен содержит точку и не содержит пробелов
+            if '.' in domain and ' ' not in domain:
+                # Нормализуем домен
+                normalized_domain = normalize_domain(domain)
+                if normalized_domain:
+                    # Добавляем протокол, если его нет
+                    if not normalized_domain.startswith(('http://', 'https://')):
+                        normalized_domain = 'https://' + normalized_domain
+                    logger.info(f"LLM suggested domain for '{company_name}': {normalized_domain}")
+                    return normalized_domain
+        except Exception as e:
+            logger.error(f"Error asking LLM about domain for '{company_name}': {e}")
     
-    return None
+    # 3. Если все методы не сработали, создаем синтетический URL
+    synthetic_url = _create_synthetic_url(company_name)
+    # Нормализуем синтетический URL
+    normalized_synthetic = normalize_domain(synthetic_url)
+    if normalized_synthetic:
+        if not normalized_synthetic.startswith(('http://', 'https://')):
+            normalized_synthetic = 'https://' + normalized_synthetic
+        return normalized_synthetic
+    return synthetic_url
 
 def _validate_url_format(url: str) -> bool:
     """
@@ -904,4 +865,99 @@ def _create_synthetic_url(company_name: str) -> str:
     synthetic_url = f"https://www.{domain_name}.com"
     
     logger.warning(f"Created synthetic URL for '{company_name}': {synthetic_url}")
-    return synthetic_url 
+    return synthetic_url
+
+async def _extract_homepage_from_report_text_async(report_text: str, company_name: str, url_only_mode: bool = False) -> Optional[str]:
+    """
+    Извлекает URL официального сайта компании из текста отчета LLM.
+    
+    Args:
+        report_text: Текст отчета от LLM
+        company_name: Название компании
+        url_only_mode: Режим только для извлечения URL (пропускает парсинг JSON)
+        
+    Returns:
+        str: URL официального сайта или None, если не найден
+    """
+    if not report_text:
+        return None
+    
+    # Импортируем функцию нормализации URL
+    from src.input_validators import normalize_domain
+    
+    # Первый подход: поиск ключевых паттернов в тексте
+    logger.info(f"Extracting homepage URL for {company_name} from report text (mode: {'url_only' if url_only_mode else 'standard'})")
+    
+    # Начинаем с более агрессивных методов поиска URL в тексте
+    # Приоритетные паттерны URL
+    url_patterns = [
+        r"(?:Official Website|Company Website|Website|Site|Homepage|Home page|Official Site|Corporate Website|URL|Web address|Web site|Official URL):\s*(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+(?:\/[-a-zA-Z0-9%_.~#?&=]*)?)",
+        r"(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+(?:\/[-a-zA-Z0-9%_.~#?&=]*)?)",
+        r"\[([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+)\]",
+        r"domain(?:\s+name)?:\s*([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+)"
+    ]
+    
+    # Если включен режим только URL, используем только базовые паттерны
+    if url_only_mode:
+        url_patterns = [
+            r"(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+(?:\/[-a-zA-Z0-9%_.~#?&=]*)?)",
+            r"\[([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+)\]",
+            r"([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+)"
+        ]
+    
+    for pattern in url_patterns:
+        matches = re.findall(pattern, report_text, re.IGNORECASE)
+        if matches:
+            # Используем первый найденный URL
+            url = matches[0]
+            if isinstance(url, tuple):
+                url = url[0]  # Извлекаем домен из группы
+                
+            # Нормализуем URL, извлекая только домен
+            normalized_url = normalize_domain(url)
+            
+            if normalized_url:
+                logger.info(f"Found URL via pattern matching: {url} -> normalized to {normalized_url}")
+                # Если URL не содержит протокол, добавляем https://
+                if not normalized_url.startswith(('http://', 'https://')):
+                    normalized_url = 'https://' + normalized_url
+                return normalized_url
+    
+    # Если в режиме URL-only и ничего не нашли через паттерны, возвращаем None
+    if url_only_mode:
+        return None
+    
+    # Если не удалось найти URL по паттернам, ищем в структурированных данных JSON
+    # Предполагаем, что в отчете может быть JSON-структура с ключами для сайта
+    json_start = report_text.find('{')
+    json_end = report_text.rfind('}')
+    
+    if json_start != -1 and json_end != -1 and json_start < json_end:
+        try:
+            json_str = report_text[json_start:json_end+1]
+            data = json.loads(json_str)
+            
+            # Проверяем разные ключи, которые могут содержать URL
+            possible_keys = [
+                'website', 'official_website', 'homepage', 'company_website', 
+                'official_site', 'site', 'url', 'web_address', 'web_site'
+            ]
+            
+            for key in possible_keys:
+                if key in data and data[key]:
+                    url = data[key]
+                    
+                    # Нормализуем URL, извлекая только домен
+                    normalized_url = normalize_domain(url)
+                    
+                    if normalized_url:
+                        logger.info(f"Found URL in JSON data: {url} -> normalized to {normalized_url}")
+                        # Если URL не содержит протокол, добавляем https://
+                        if not normalized_url.startswith(('http://', 'https://')):
+                            normalized_url = 'https://' + normalized_url
+                        return normalized_url
+        except json.JSONDecodeError:
+            logger.warning(f"Failed to parse JSON from report text for {company_name}")
+    
+    logger.warning(f"No homepage URL found for {company_name} in report text")
+    return None 

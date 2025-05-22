@@ -27,6 +27,9 @@ from finders.domain_check_finder import DomainCheckFinder
 from finders.login_detection_finder import LoginDetectionFinder
 from src.data_io import load_and_prepare_company_names, save_results_csv, save_results_json, load_session_metadata, save_session_metadata
 
+# Импортируем функцию нормализации URL в файле
+from normalize_urls import normalize_urls_in_file, remove_duplicates_by_domain, normalize_and_remove_duplicates
+
 # Utils
 from src.pipeline.utils.logging import setup_session_logging
 
@@ -220,13 +223,21 @@ class PipelineAdapter:
             logger.info(f"Using provided session_id: {self.session_id}")
             # Используем переданный session_id в качестве имени директории
             self.session_dir_path = self.sessions_dir / self.session_id
-            self.session_dir_path.mkdir(exist_ok=True)
+            self.session_dir_path.mkdir(exist_ok=True, parents=True)
             
             # Устанавливаем пути к результатам, соответствующие ожиданиям бэкенда
             self.output_csv_path = self.session_dir_path / f"{self.session_id}_results.csv"
             
+            # Создаем родительские директории, если они не существуют
+            if not self.output_csv_path.parent.exists():
+                self.output_csv_path.parent.mkdir(exist_ok=True, parents=True)
+            
             # Устанавливаем путь к логам
             self.pipeline_log_path = self.session_dir_path / "pipeline.log"
+            
+            # Создаем родительские директории для логов, если они не существуют
+            if not self.pipeline_log_path.parent.exists():
+                self.pipeline_log_path.parent.mkdir(exist_ok=True, parents=True)
         else:
             # Генерируем новый timestamp, если session_id не был передан
             timestamp = time.strftime("%Y%m%d_%H%M%S")
@@ -235,14 +246,18 @@ class PipelineAdapter:
             
             # Создаем директорию для сессии
             self.session_dir_path = self.sessions_dir / f"session_{timestamp}"
-            self.session_dir_path.mkdir(exist_ok=True)
+            self.session_dir_path.mkdir(exist_ok=True, parents=True)
             
             # Устанавливаем пути к результатам
             self.output_csv_path = self.session_dir_path / f"results_{timestamp}.csv"
             
+            # Создаем родительские директории, если они не существуют
+            if not self.output_csv_path.parent.exists():
+                self.output_csv_path.parent.mkdir(exist_ok=True, parents=True)
+            
             # Устанавливаем путь к логам
             logs_dir = self.session_dir_path / "logs"
-            logs_dir.mkdir(exist_ok=True)
+            logs_dir.mkdir(exist_ok=True, parents=True)
             self.pipeline_log_path = logs_dir / f"pipeline_{timestamp}.log"
     
     async def run_pipeline_for_file(self, input_file_path: str | Path, output_csv_path: str | Path, 
@@ -292,11 +307,60 @@ class PipelineAdapter:
         raw_markdown_output_dir = session_dir_path / "markdown"
         raw_markdown_output_dir.mkdir(exist_ok=True)
         
+        # 1.5. Нормализация URL и удаление дубликатов во входном файле
+        # ВАЖНО: Эта логика теперь перенесена в HubSpotPipelineAdapter
+        # Отключаем здесь, чтобы избежать дублирования
+        # logger.info(f"Normalizing URLs and removing duplicates in input file: {input_file_path}")
+        # try:
+        #     # Создаем временный файл для обработанных данных
+        #     processed_file_path = session_dir_path / f"processed_{input_file_path.name}"
+        #     
+        #     # Нормализуем URL и удаляем дубликаты в одной операции
+        #     processed_file = normalize_and_remove_duplicates(str(input_file_path), str(processed_file_path))
+        #     
+        #     if processed_file:
+        #         logger.info(f"Successfully processed {input_file_path}, saved to {processed_file}")
+        #         # Используем обработанный файл вместо исходного
+        #         input_file_path = Path(processed_file)
+        #     else:
+        #         logger.warning(f"Failed to process {input_file_path}, using original file")
+        # except Exception as e:
+        #     logger.error(f"Error processing {input_file_path}: {e}")
+        #     logger.warning("Using original file without normalization and deduplication")
+        
         # 2. Загрузка списка компаний
         company_names = load_and_prepare_company_names(input_file_path, company_col_index)
         if not company_names:
             logger.error(f"No company names found in {input_file_path}")
             return 0, 0, []
+            
+        # Удаляем дубликаты компаний в памяти (по имени и по домену)
+        seen_companies = set()
+        seen_domains = set()
+        unique_companies = []
+        
+        for company in company_names:
+            company_name = company['name'] if isinstance(company, dict) else company
+            company_url = company.get('url') if isinstance(company, dict) else None
+            
+            # Проверяем дубликаты по имени компании
+            if company_name in seen_companies:
+                logger.info(f"Skipping duplicate company by name: {company_name}")
+                continue
+                
+            # Проверяем дубликаты по домену (если есть URL)
+            if company_url and company_url in seen_domains:
+                logger.info(f"Skipping duplicate company by domain: {company_name} ({company_url})")
+                continue
+                
+            # Добавляем уникальную компанию в новый список
+            unique_companies.append(company)
+            seen_companies.add(company_name)
+            if company_url:
+                seen_domains.add(company_url)
+        
+        # Заменяем список компаний на список без дубликатов
+        company_names = unique_companies
             
         logger.info(f"Loaded {len(company_names)} company names from {input_file_path}")
         

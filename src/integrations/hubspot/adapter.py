@@ -277,9 +277,42 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                                    main_batch_size: int = 5, run_standard_pipeline: bool = True,
                                    run_llm_deep_search_pipeline: bool = True) -> tuple[int, int, list[dict]]:
         """
-        Run the pipeline with HubSpot integration.
-        This method overrides the base PipelineAdapter's method to add HubSpot checks.
+        Run the pipeline for a specific input file with HubSpot integration
         """
+        # Запускаем стандартную обработку файла с нормализацией URL и удалением дубликатов
+        logger.info(f"Normalizing URLs and removing duplicates in input file: {input_file_path}")
+        
+        try:
+            # Создаем временный файл для обработанных данных
+            processed_file_path = session_dir_path / f"processed_{Path(input_file_path).name}"
+            
+            # Импортируем функцию нормализации и удаления дубликатов
+            from normalize_urls import normalize_and_remove_duplicates
+            
+            # Применяем нормализацию и удаление дубликатов
+            processed_file = normalize_and_remove_duplicates(str(input_file_path), str(processed_file_path))
+            
+            if processed_file:
+                logger.info(f"Successfully processed {input_file_path}, saved to {processed_file}")
+                # Используем обработанный файл вместо исходного
+                input_file_path = processed_file
+            else:
+                logger.warning(f"Failed to process {input_file_path}, using original file")
+        except Exception as e:
+            logger.error(f"Error processing {input_file_path}: {e}")
+            logger.warning("Using original file without normalization and deduplication")
+            
+        # Создаем необходимые директории
+        input_file_path = Path(input_file_path)
+        output_csv_path = Path(output_csv_path)
+        structured_data_dir = session_dir_path / "json"
+        structured_data_dir.mkdir(exist_ok=True)
+        structured_data_json_path = structured_data_dir / f"{self.session_id or 'results'}.json"
+        
+        # Создаем директорию для результатов Markdown
+        raw_markdown_output_dir = session_dir_path / "markdown"
+        raw_markdown_output_dir.mkdir(exist_ok=True)
+
         # Загрузка данных о компаниях остается прежней
         company_data_list = load_and_prepare_company_names(input_file_path, company_col_index)
         if not company_data_list:

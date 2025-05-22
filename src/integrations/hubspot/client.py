@@ -299,41 +299,48 @@ class HubSpotClient:
             
     def _normalize_domain(self, url: str) -> str:
         """
-        Нормализация URL для получения чистого домена.
+        Нормализация URL или домена.
         
         Args:
-            url (str): URL или домен компании
+            url (str): URL или домен для нормализации
             
         Returns:
-            str: Нормализованный домен (например, "example.com")
+            str: Нормализованный домен
         """
-        if not url:
-            return ""
-        
-        # Если URL не начинается с http, добавляем http:// для корректного парсинга
-        if not url.startswith(('http://', 'https://')):
-            url = 'http://' + url
-            
         try:
-            parsed_url = urlparse(url)
-            domain = parsed_url.netloc
+            # Импортируем функцию normalize_domain из input_validators
+            from src.input_validators import normalize_domain
             
-            # Удаляем 'www.' если есть
-            if domain.startswith('www.'):
-                domain = domain[4:]
-            
-            return domain.lower() # Приводим к нижнему регистру
+            # Используем общую функцию normalize_domain
+            normalized_domain = normalize_domain(url)
+            return normalized_domain
         except Exception as e:
-            logger.warning(f"Could not parse domain from URL '{url}': {e}")
-            # В случае ошибки, пытаемся извлечь домен регулярным выражением
-            # Это может помочь для невалидных URL, которые не парсятся urlparse
-            match = re.search(r'(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}', url)
-            if match:
-                domain = match.group(0)
+            logger.error(f"Error normalizing domain: {e}")
+            
+            # Резервный вариант, если импорт функции не удался
+            try:
+                # Очищаем URL от пробелов
+                url = url.strip().lower()
+                
+                # Если URL не содержит протокол, добавляем https://
+                if not url.startswith(('http://', 'https://')):
+                    url = 'https://' + url
+                
+                # Используем urlparse для извлечения домена
+                parsed_url = urlparse(url)
+                domain = parsed_url.netloc
+                
+                # Удаляем www. из начала домена, если присутствует
                 if domain.startswith('www.'):
                     domain = domain[4:]
+                
+                # Удаляем порт, если он есть
+                domain = domain.split(':')[0]
+                
                 return domain.lower()
-            return "" # Возвращаем пустую строку, если не удалось извлечь домен
+            except Exception as inner_e:
+                logger.error(f"Error in fallback domain normalization: {inner_e}")
+                return ""
 
     def _invalidate_cache_for_company(self, company_id: str) -> None:
         """
