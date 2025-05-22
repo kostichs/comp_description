@@ -176,31 +176,66 @@ def load_session_metadata() -> list[dict]:
     """Loads session metadata from the JSON file."""
     ensure_sessions_dir_exists()
     if not SESSIONS_METADATA_FILE.exists(): # Use Path.exists()
-        logging.warning(f"'{SESSIONS_METADATA_FILE}' not found. Initializing with empty list.")
+        logging.warning(f"\'{SESSIONS_METADATA_FILE}\' not found. Initializing with empty list.")
         return []
     try:
+        # Log file modification time before reading
+        try:
+            mod_time = os.path.getmtime(SESSIONS_METADATA_FILE)
+            logging.info(f"Attempting to load session metadata. File '{SESSIONS_METADATA_FILE}' last modified at: {mod_time}")
+        except OSError:
+            logging.warning(f"Could not get modification time for '{SESSIONS_METADATA_FILE}'.")
+
         with open(SESSIONS_METADATA_FILE, 'r', encoding='utf-8') as f:
-            metadata = json.load(f)
+            content_before_load = f.read() # Read content first for logging
+            f.seek(0) # Reset file pointer to the beginning before json.load
+            metadata = json.loads(content_before_load) # Use json.loads with string content
+            
+            # Log the actual content being loaded for the specific session if possible
+            # This requires knowing the session_id, which this generic function doesn't.
+            # So, we log a snippet or hash if it's too large.
+            content_snippet = content_before_load[:500] + "..." if len(content_before_load) > 500 else content_before_load
+            logging.info(f"Successfully loaded session metadata from '{SESSIONS_METADATA_FILE}'. Content snippet: {content_snippet}")
+            
             if not isinstance(metadata, list):
-                 logging.error(f"Invalid format in '{SESSIONS_METADATA_FILE}'. Expected a list. Returning empty list.")
+                 logging.error(f"Invalid format in \'{SESSIONS_METADATA_FILE}\'. Expected a list. Returning empty list.")
                  return []
             return metadata
     except json.JSONDecodeError:
-        logging.error(f"Error decoding JSON from '{SESSIONS_METADATA_FILE}'. Returning empty list.")
+        logging.error(f"Error decoding JSON from \'{SESSIONS_METADATA_FILE}\'. Returning empty list.")
         return []
     except Exception as e:
-        logging.error(f"Error loading session metadata: {e}")
+        logging.error(f"Error loading session metadata: {e}", exc_info=True)
         return []
 
 def save_session_metadata(metadata: list[dict]):
     """Saves session metadata list to the JSON file."""
     ensure_sessions_dir_exists()
+    
+    # Log the metadata that is about to be saved, especially for the relevant session
+    # This requires knowing session_id, so we might log a relevant part or full if small
+    try:
+        metadata_str_for_log = json.dumps(metadata, indent=2, ensure_ascii=False)
+        snippet_to_log = metadata_str_for_log[:500] + "..." if len(metadata_str_for_log) > 500 else metadata_str_for_log
+        logging.info(f"Attempting to save session metadata. Data snippet: {snippet_to_log}")
+    except Exception as log_e:
+        logging.warning(f"Could not serialize metadata for logging before save: {log_e}")
+
     try:
         with open(SESSIONS_METADATA_FILE, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2, ensure_ascii=False)
-        logging.debug(f"Saved session metadata to {SESSIONS_METADATA_FILE}")
+            f.flush()  # Ensure all internal buffers are written to the OS
+            os.fsync(f.fileno())  # Ensure OS writes to disk
+        logging.info(f"Successfully saved session metadata to {SESSIONS_METADATA_FILE} with fsync.")
+        # Log file modification time after writing
+        try:
+            mod_time = os.path.getmtime(SESSIONS_METADATA_FILE)
+            logging.info(f"File '{SESSIONS_METADATA_FILE}' last modified at: {mod_time} (after save)")
+        except OSError:
+            logging.warning(f"Could not get modification time for '{SESSIONS_METADATA_FILE}' after save.")
+            
     except Exception as e:
-        logging.error(f"Error saving session metadata: {e}")
+        logging.error(f"Error saving session metadata: {e}", exc_info=True)
 
 # === Results CSV Handling ===
 def save_results_csv(results: list[dict], output_path: str, expected_fields: list[str] = None, append_mode: bool = False):

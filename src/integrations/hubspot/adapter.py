@@ -18,7 +18,7 @@ import asyncio # Добавляем импорт asyncio
 
 from src.pipeline.adapter import PipelineAdapter
 from src.pipeline.core import process_companies
-from src.data_io import load_and_prepare_company_names, save_results_csv
+from src.data_io import load_and_prepare_company_names, save_results_csv, load_session_metadata, save_session_metadata
 from .client import HubSpotClient
 
 logger = logging.getLogger(__name__)
@@ -236,6 +236,9 @@ class HubSpotPipelineAdapter(PipelineAdapter):
         # use_hubspot и max_age_months будут инициализированы в self.setup() из llm_config
         # self.use_hubspot = True # Будет определено в setup
         # self.max_age_months = 6 # Будет определено в setup
+        
+        # Атрибут для хранения информации о дедупликации
+        self.deduplication_info = None
     
     async def setup(self) -> bool:
         """
@@ -290,12 +293,16 @@ class HubSpotPipelineAdapter(PipelineAdapter):
             from normalize_urls import normalize_and_remove_duplicates
             
             # Применяем нормализацию и удаление дубликатов
-            processed_file = normalize_and_remove_duplicates(str(input_file_path), str(processed_file_path))
+            processed_file, deduplication_info = normalize_and_remove_duplicates(str(input_file_path), str(processed_file_path))
             
             if processed_file:
                 logger.info(f"Successfully processed {input_file_path}, saved to {processed_file}")
                 # Используем обработанный файл вместо исходного
                 input_file_path = processed_file
+                
+                # Сохраняем информацию о дедупликации для последующего использования
+                self.deduplication_info = deduplication_info
+                logger.info(f"Deduplication info: {deduplication_info}")
             else:
                 logger.warning(f"Failed to process {input_file_path}, using original file")
         except Exception as e:
@@ -318,7 +325,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
         if not company_data_list:
             logger.error(f"No valid company names in {input_file_path}")
             return 0, 0, []
-
+            
         # Создаем или очищаем CSV файл перед началом обработки
         save_results_csv([], output_csv_path, expected_csv_fieldnames, append_mode=False)
         logger.info(f"Created empty CSV file with headers at {output_csv_path}")
@@ -418,7 +425,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 # llm_deep_search_config_override - можно добавить, если есть в self
                 # second_column_data - не передаем, т.к. URL уже в company_names_for_core_processing
                 # hubspot_client - не передаем
-                use_raw_llm_data_as_description=self.llm_config.get('use_raw_llm_data_as_description', True) # Берем из llm_config
+                use_raw_llm_data_as_description=self.llm_config.get('use_raw_llm_data_as_description', True), # Берем из llm_config
             )
             
             # process_companies возвращает только список результатов.

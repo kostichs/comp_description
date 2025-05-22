@@ -274,7 +274,7 @@ async def _extract_homepage_from_report_text_async(
                 extracted_url = plain_url_match.group(0)
                 logger.info(f"Extracted homepage for '{company_name}' from LLM response (Plain URL): {extracted_url}")
                 return extracted_url
-                
+            
             # Если URL не найден, но ответ не 'None', пробуем обработать как обычный домен
             if llm_response_text.lower() != 'none':
                 potential_domain = llm_response_text.strip()
@@ -289,7 +289,7 @@ async def _extract_homepage_from_report_text_async(
         logger.error(f"Error querying LLM for homepage extraction for '{company_name}': {e}")
     
     # Если все методы не сработали, возвращаем None
-    return None
+        return None
 
 class LLMDeepSearchFinder(Finder):
     """
@@ -713,8 +713,8 @@ Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or 
                     else:
                         # Если URL не был предоставлен, пытаемся извлечь его из отчета
                         extracted_homepage_url_from_report = await _extract_homepage_from_report_text_async(
-                            company_name, answer_content, self.client
-                        )
+                        company_name, answer_content, self.client
+                    )
                 
                 # Извлекаем источники из аннотаций, если они есть
                 if hasattr(message, 'annotations') and message.annotations:

@@ -201,16 +201,51 @@ document.addEventListener('DOMContentLoaded', () => {
             const sessionData = await response.json();
             showCurrentSessionUI(sessionId); // Это скроет sessionControls
             updateStatus(`Status: ${sessionData.status}`);
-            window.expectedTotalCompanies = sessionData.total_companies || sessionData.last_processed_count || 0;
+            
+            // Сохраняем информацию о дедупликации, если она есть
+            if (sessionData.deduplication_info) {
+                window.deduplicationInfo = sessionData.deduplication_info;
+                console.log('Deduplication info in fetchSessionData:', sessionData.deduplication_info);
+            }
+            
+            // Добавляем вывод сообщения о дедупликации, если оно есть
+            if (sessionData.processing_messages) {
+                const dedupMessages = sessionData.processing_messages.filter(msg => msg.type === 'deduplication');
+                if (dedupMessages.length > 0) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'system-message';
+                    messageDiv.textContent = dedupMessages[0].message;
+                    // Вставляем сообщение перед progressStatus
+                    const progressStatusEl = document.getElementById('progressStatus');
+                    if (progressStatusEl && progressStatusEl.parentNode) {
+                        // Удаляем старое сообщение о дедупликации, если оно есть
+                        const existingDedupMessage = progressStatusEl.parentNode.querySelector('.system-message');
+                        if (existingDedupMessage) {
+                            existingDedupMessage.remove();
+                        }
+                        progressStatusEl.parentNode.insertBefore(messageDiv, progressStatusEl);
+                    }
+                }
+            }
             
             if (sessionData.status === 'completed' || sessionData.status === 'error') {
-                await fetchAndDisplayResults(sessionId);
+                // Показываем секцию результатов, как только узнаем, что процесс завершен или есть ошибка.
+                // Таблица либо заполнится, либо покажет сообщение "нет результатов" / "ошибка загрузки".
+                if (resultsSection) resultsSection.style.display = 'block';
+
+                await fetchAndDisplayResults(sessionId, sessionData);
                 if (sessionData.status === 'completed') {
-                    updateProgressBar(window.expectedTotalCompanies, window.expectedTotalCompanies, true);
+                    // Передаем sessionData для корректного определения total и processed
+                    // processed будет равен total, так как completed = true
+                    let finalCount = (sessionData.deduplication_info && sessionData.deduplication_info.final_count)
+                                     ? sessionData.deduplication_info.final_count
+                                     : sessionData.total_companies;
+                    updateProgressBar(finalCount, finalCount, true, sessionData);
                 }
                 ensureResultsControlsAvailable(); // Создаем кнопки, если их нет
                 makeResultsControlsVisible(true); // Делаем их видимыми
             } else {
+                await fetchAndDisplayResults(sessionId, sessionData);
                 makeResultsControlsVisible(false); // Скрываем для других статусов
             }
         } catch (error) {
@@ -221,50 +256,77 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function fetchAndDisplayResults(sessionId) {
-        console.log(`fetchAndDisplayResults вызвана для сессии: ${sessionId}`); // Новый лог
+    async function fetchAndDisplayResults(sessionId, sessionData) {
+        console.log(`fetchAndDisplayResults вызвана для сессии: ${sessionId}`);
         showLoading();
         try {
             const response = await fetch(`/api/sessions/${sessionId}/results`);
-            console.log(`Статус ответа для /results: ${response.status}, Content-Type: ${response.headers.get('Content-Type')}`); // Новый лог
+            console.log(`Статус ответа для /results: ${response.status}, Content-Type: ${response.headers.get('Content-Type')}`);
 
             if (!response.ok) {
-                console.error(`Ответ не OK: статус ${response.status}`); // Новый лог
+                console.error(`Ответ не OK: статус ${response.status}`);
+                let errorMsg = `Failed to load results. Status: ${response.status}`;
                 try {
-                    const errorText = await response.text();
-                    console.error(`Тело ошибки: ${errorText}`);
+                    const errorData = await response.json(); // Попытка прочитать JSON для деталей
+                    errorMsg = errorData.detail || errorMsg; 
                 } catch (e) {
-                    console.error('Не удалось прочитать тело ошибки:', e);
+                    // Если тело не JSON или пустое, используем стандартное сообщение
+                    console.warn('Could not parse error response as JSON or response was empty.');
                 }
+                displayResultsInTable(null, errorMsg); // Отображаем ошибку в таблице
+                // resultsSection уже должен быть видим, если статус completed
+                hideLoading();
                 return;
             }
             
             const responseText = await response.text();
-            console.log('Ответ сервера (текст):', responseText);
+            // console.log('Ответ сервера (текст) в fetchAndDisplayResults:', responseText); // Можно раскомментировать для отладки
 
             const results = JSON.parse(responseText);
-            console.log('Fetched results (распарсенные):', results);
+            console.log('Fetched results (распарсенные) в fetchAndDisplayResults:', results);
 
-            displayResultsInTable(results);
-            const total = window.expectedTotalCompanies || results.length;
-            updateProgressBar(results.length, total, false);
+            displayResultsInTable(results); // Отображаем результаты
+            
+            const processed = results.length; // Количество фактически полученных строк результатов
+            let totalForProgress = sessionData.total_companies; // По умолчанию из sessionData
+
+            if (sessionData.deduplication_info && sessionData.deduplication_info.final_count) {
+                totalForProgress = sessionData.deduplication_info.final_count;
+            }
+            
+            console.log(`fetchAndDisplayResults: Progress: ${processed} of ${totalForProgress} (original total: ${sessionData.total_companies})`);
+            console.log(`fetchAndDisplayResults: Deduplication info: ${JSON.stringify(sessionData.deduplication_info)}`);
+            
+            // Обновляем прогресс-бар, передавая sessionData. completed = false, т.к. это обновление по ходу
+            // Если статус сессии 'completed', то completed=true будет установлено выше, в fetchSessionData
+            const isCompleted = sessionData.status === 'completed';
+            updateProgressBar(processed, totalForProgress, isCompleted, sessionData);
+            
             resultsSection.style.display = 'block';
-            if (progressStatus) progressStatus.style.display = 'block';
+            if (document.getElementById('progressStatus')) document.getElementById('progressStatus').style.display = 'block'; // Используем getElementById для progressStatus
             if (newSessionBtn) newSessionBtn.style.display = 'inline-block';
         } catch (error) {
             console.error('Ошибка в fetchAndDisplayResults:', error);
+            let detailedErrorMsg = 'Error fetching or processing results.';
             if (error instanceof SyntaxError) {
+                detailedErrorMsg = 'Error parsing results data (invalid JSON).';
                 console.error('Ошибка парсинга JSON. Ответ сервера не является валидным JSON. Текст ответа выше.');
             }
+            displayResultsInTable(null, detailedErrorMsg); // Отображаем ошибку в таблице
+            // resultsSection уже должен быть видим, если статус completed или error
         } finally {
             hideLoading();
         }
     }
 
-    function displayResultsInTable(results) {
+    function displayResultsInTable(results, errorMessage) {
         clearResultsTable();
+        if (errorMessage) {
+            resultsTableBody.innerHTML = `<tr><td colspan="2" style="text-align:center; color:red;">${escapeHtml(errorMessage)}</td></tr>`;
+            return;
+        }
         if (!results || results.length === 0) {
-            resultsTableBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">Still in progress... No results found.</td></tr>';
+            resultsTableBody.innerHTML = '<tr><td colspan="2" style="text-align:center;">No results found or processing is still in progress.</td></tr>';
             return;
         }
 
@@ -317,22 +379,47 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const response = await fetch(`/api/sessions/${sessionId}`);
                 if (!response.ok) return;
-                const sessionData = await response.json();
+                const sessionData = await response.json(); // Получаем свежие данные о сессии
                 updateStatus(`Status: ${sessionData.status}`);
-                // Сохраняем ожидаемое количество компаний для прогресс-бара
-                window.expectedTotalCompanies = sessionData.total_companies || sessionData.last_processed_count || window.expectedTotalCompanies || 0;
-                await fetchAndDisplayResults(sessionId);
+                
+                // Обработка сообщений о дедупликации (остается, так как это UI элемент)
+                if (sessionData.processing_messages) {
+                    const dedupMessages = sessionData.processing_messages.filter(msg => msg.type === 'deduplication');
+                    if (dedupMessages.length > 0) {
+                        const existingMessage = document.querySelector('.system-message');
+                        if (!existingMessage) {
+                            const messageDiv = document.createElement('div');
+                            messageDiv.className = 'system-message';
+                            messageDiv.textContent = dedupMessages[0].message;
+                            const progressStatusEl = document.getElementById('progressStatus'); // Переименовано
+                            if (progressStatusEl && progressStatusEl.parentNode) {
+                                progressStatusEl.parentNode.insertBefore(messageDiv, progressStatusEl);
+                            }
+                        }
+                    }
+                }
+                
+                // Передаем sessionData в fetchAndDisplayResults
+                await fetchAndDisplayResults(sessionId, sessionData); 
+                
                 if (sessionData.status === 'completed' || sessionData.status === 'error') {
                     stopPollingStatus();
-                    await fetchAndDisplayResults(sessionId);
+                    // fetchAndDisplayResults уже был вызван выше, нет нужды вызывать снова
+                    // await fetchAndDisplayResults(sessionId, sessionData); 
                     if (sessionData.status === 'completed'){
-                        updateProgressBar(window.expectedTotalCompanies, window.expectedTotalCompanies, true);
+                        // Передаем sessionData для корректного определения total и processed
+                        let finalCount = (sessionData.deduplication_info && sessionData.deduplication_info.final_count) 
+                                         ? sessionData.deduplication_info.final_count 
+                                         : sessionData.total_companies;
+                        updateProgressBar(finalCount, finalCount, true, sessionData);
                     }
                     ensureResultsControlsAvailable();
                     makeResultsControlsVisible(true);
                 }
             } catch (error) {
                 // Не показываем тревожных сообщений, если результатов ещё нет
+                // Можно добавить console.error для отладки, если необходимо
+                // console.error('Error in polling interval:', error);
             }
         }, 2000);
     }
@@ -509,17 +596,91 @@ document.addEventListener('DOMContentLoaded', () => {
         return header + '\n' + rows.join('\n');
     }
 
-    function updateProgressBar(processed, total, completed) {
-        let progressStatus = document.getElementById('progressStatus');
-        if (!progressStatus) return;
-        if (!completed) {
-            progressStatus.style.display = 'block';
-            progressStatus.style.color = '#007bff';
-            progressStatus.textContent = `Processing... ${processed} of ${total} processed`;
+    function updateProgressBar(processedCount, totalCountArg, completed, sessionData) {
+        const progressStatus = document.getElementById('progressStatus');
+        if (!progressStatus) {
+            console.error("updateProgressBar: progressStatus element not found!");
+            return;
+        }
+
+        console.log('[NEW] updateProgressBar ARGS:', { processedCount, totalCountArg, completed, sessionDataStatus: sessionData ? sessionData.status : 'N/A' });
+        if (sessionData) {
+            console.log('[NEW] updateProgressBar sessionData details:', {
+                total_companies: sessionData.total_companies,
+                companies_count: sessionData.companies_count, // Может быть полезно для отладки
+                initial_upload_count: sessionData.initial_upload_count,
+                dedup_info: sessionData.deduplication_info ? JSON.stringify(sessionData.deduplication_info) : 'N/A'
+            });
+        }
+
+        let effectiveTotal = 0;
+        let effectiveProcessed = processedCount; // По умолчанию
+        let deduplicationText = '';
+
+        if (sessionData) {
+            // 1. Приоритет: sessionData.total_companies (обновляется после дедупликации)
+            if (typeof sessionData.total_companies === 'number' && sessionData.total_companies > 0) {
+                effectiveTotal = sessionData.total_companies;
+                console.log(`[NEW] updateProgressBar: Case 1 - Using sessionData.total_companies = ${effectiveTotal}`);
+            }
+            // 2. Запасной: sessionData.deduplication_info.final_count
+            else if (sessionData.deduplication_info && typeof sessionData.deduplication_info.final_count === 'number' && sessionData.deduplication_info.final_count > 0) {
+                effectiveTotal = sessionData.deduplication_info.final_count;
+                console.log(`[NEW] updateProgressBar: Case 2 - Using sessionData.deduplication_info.final_count = ${effectiveTotal}`);
+            }
+            // 3. Если процесс еще не завершен, и totalCountArg (обычно длина results) больше 0
+            else if (!completed && typeof totalCountArg === 'number' && totalCountArg > 0) {
+                effectiveTotal = totalCountArg;
+                console.log(`[NEW] updateProgressBar: Case 3 - Using totalCountArg (argument) = ${effectiveTotal} (intermediate)`);
+            }
+            // 4. Крайний случай: sessionData.initial_upload_count (чтобы избежать 0 из 0)
+            else if (typeof sessionData.initial_upload_count === 'number' && sessionData.initial_upload_count > 0) {
+                effectiveTotal = sessionData.initial_upload_count;
+                console.log(`[NEW] updateProgressBar: Case 4 - Using sessionData.initial_upload_count = ${effectiveTotal} (fallback)`);
+            }
+             // 5. Если все еще 0, но totalCountArg (аргумент) не 0, используем его, чтобы не было 0 из 0.
+            else if (typeof totalCountArg === 'number' && totalCountArg > 0) {
+                effectiveTotal = totalCountArg;
+                console.log(`[NEW] updateProgressBar: Case 5 - Using totalCountArg = ${effectiveTotal} (last resort for non-zero display)`);
+            }
+
+
+            // Формирование текста о дедупликации
+            if (sessionData.deduplication_info) {
+                const dedupInfo = sessionData.deduplication_info;
+                if (typeof dedupInfo.duplicates_removed === 'number' && dedupInfo.duplicates_removed > 0 &&
+                    typeof dedupInfo.final_count === 'number' && typeof dedupInfo.original_count === 'number') {
+                    deduplicationText = `<div class="deduplication-info">Обнаружено и удалено ${dedupInfo.duplicates_removed} дубликатов. Обрабатывается ${dedupInfo.final_count} уникальных компаний вместо ${dedupInfo.original_count}.</div>`;
+                }
+            }
         } else {
-            progressStatus.style.display = 'block';
+            // Если нет sessionData, используем totalCountArg, если он есть
+            effectiveTotal = (typeof totalCountArg === 'number' && totalCountArg > 0) ? totalCountArg : 0;
+            console.log(`[NEW] updateProgressBar: No sessionData. Using totalCountArg = ${effectiveTotal}`);
+        }
+
+        // Коррекция processedCount
+        if (completed) {
+            effectiveProcessed = effectiveTotal; // Если завершено, обработано = всего
+        } else {
+            if (effectiveProcessed > effectiveTotal) {
+                effectiveProcessed = effectiveTotal; // Обработано не может быть больше общего
+            }
+        }
+
+        // Гарантируем, что значения числовые и не отрицательные
+        effectiveProcessed = Number.isFinite(effectiveProcessed) && effectiveProcessed >= 0 ? effectiveProcessed : 0;
+        effectiveTotal = Number.isFinite(effectiveTotal) && effectiveTotal >= 0 ? effectiveTotal : 0;
+
+        console.log('[NEW] updateProgressBar FINAL values:', { effectiveProcessed, effectiveTotal, completed });
+
+        progressStatus.style.display = 'block';
+        if (!completed) {
+            progressStatus.style.color = '#007bff';
+            progressStatus.innerHTML = `Processing... ${effectiveProcessed} of ${effectiveTotal} processed ${deduplicationText}`;
+        } else {
             progressStatus.style.color = 'green';
-            progressStatus.textContent = `Completed: ${processed} of ${total} processed`;
+            progressStatus.innerHTML = `Completed: ${effectiveProcessed} of ${effectiveTotal} processed ${deduplicationText}`;
         }
     }
 

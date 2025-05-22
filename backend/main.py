@@ -35,6 +35,9 @@ from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_D
 # --- Import background task runner --- 
 from .processing_runner import run_session_pipeline
 
+# --- Import routers ---
+from .routers import sessions  # Импортируем роутер сессий
+
 # Configure basic logging if not already configured elsewhere
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -63,6 +66,9 @@ app.add_middleware(
     allow_methods=["*"],    # Allow all methods (GET, POST, etc.)
     allow_headers=["*"],    # Allow all headers
 )
+
+# --- Регистрируем роутеры ---
+app.include_router(sessions.router, prefix="/api")
 
 # Монтируем статические файлы
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
@@ -233,15 +239,6 @@ async def get_sessions():
     # metadata.sort(key=lambda s: s.get('timestamp_created', ''), reverse=True)
     return metadata
 
-@app.get("/api/sessions/{session_id}", tags=["Sessions"], summary="Get specific session details")
-async def get_session_details(session_id: str):
-    """Retrieves metadata for a specific session by its ID."""
-    metadata = load_session_metadata()
-    session_data = next((s for s in metadata if s.get('session_id') == session_id), None)
-    if not session_data:
-        raise HTTPException(status_code=404, detail=f"Session with ID '{session_id}' not found.")
-    return session_data
-
 @app.post("/api/sessions", tags=["Sessions"], summary="Create a new processing session")
 async def create_new_session(
     file: UploadFile = File(...), 
@@ -313,9 +310,9 @@ async def create_new_session(
                 df = pd.read_csv(input_file_path)
             else:
                 df = pd.read_excel(input_file_path)
-            total_companies = len(df)
+            initial_upload_count = len(df)
         except Exception:
-            total_companies = None
+            initial_upload_count = 0 # Или None, если предпочитаете, но 0 безопаснее для UI
         
         new_session_data = {
             "session_id": session_id,
@@ -329,7 +326,11 @@ async def create_new_session(
             "pipeline_log_path": None,
             "scoring_log_path": None,
             "last_processed_count": 0,
-            "total_companies": total_companies,
+            "initial_upload_count": initial_upload_count, # Новое поле
+            "total_companies": 0, # Инициализируем нулем
+            "companies_count": 0, # Инициализируем нулем
+            "deduplication_info": None, # Явно инициализируем
+            "processing_messages": [],   # Явно инициализируем
             "error_message": None if context_saved_successfully else "Failed to save context file",
             "run_standard_pipeline": run_standard_pipeline,
             "run_llm_deep_search_pipeline": run_llm_deep_search_pipeline
@@ -579,97 +580,16 @@ async def upload_file(file: UploadFile = File(...)):
 
 @app.get("/download/{session_dir}/{filename}")
 async def download_file(session_dir: str, filename: str):
-    file_path = os.path.join(OUTPUT_DIR, session_dir, filename)
-    return FileResponse(file_path, filename=filename)
-
-@app.get("/app.js")
-async def read_js():
-    return FileResponse("frontend/app.js")
+    file_path = OUTPUT_DIR / "sessions" / session_dir / filename
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+    return FileResponse(path=file_path, filename=filename)
 
 @app.get("/style.css")
 async def read_css():
     return FileResponse("frontend/style.css")
 
 # Пример существующего эндпоинта для запуска сессии (адаптируйте под ваш)
-@app.post("/api/sessions/{session_id}/start", tags=["Sessions"], summary="Start processing for a session")
-async def start_processing_session(session_id: str): # Убрал BackgroundTasks, так как управляем явно
-    # 1. Проверка существования сессии и ее статуса (не "processing" или "completed")
-    #    Это важно, чтобы не запускать обработку для уже обработанной или обрабатываемой сессии.
-    #    (Логика получения метаданных сессии, например, из JSON файла)
-    #    sessions_metadata = load_session_metadata()
-    #    session_meta = next((s for s in sessions_metadata if s["id"] == session_id), None)
-    #    if not session_meta:
-    #        raise HTTPException(status_code=404, detail="Session not found")
-    #    if session_meta.get("status") == "processing":
-    #        raise HTTPException(status_code=400, detail="Session is already processing")
-    #    if session_meta.get("status") == "completed":
-    #        logger.info(f"Session {session_id} is already completed. No action taken.")
-    #        return {"status": "already_completed", "session_id": session_id}
-
-    logger.info(f"Request to start processing for session_id: {session_id}")
-
-    # 2. Отмена предыдущей задачи, если она существует и активна для этой сессии
-    if session_id in active_processing_tasks and not active_processing_tasks[session_id].done():
-        logger.warning(f"Session {session_id} has an active processing task. Cancelling it before starting a new one.")
-        active_processing_tasks[session_id].cancel()
-        try:
-            await asyncio.wait_for(active_processing_tasks[session_id], timeout=10.0) # Даем время на отмену
-        except asyncio.CancelledError:
-            logger.info(f"Previous task for session {session_id} was successfully cancelled.")
-        except asyncio.TimeoutError:
-            logger.error(f"Timeout waiting for previous task for session {session_id} to cancel. It might still be running.")
-        except Exception as e:
-            logger.error(f"Error awaiting previous cancelled task for session {session_id}: {e}")
-        # Удаление из словаря произойдет в колбэке отмененной задачи
-    
-    # 3. Подготовка путей и параметров для пайплайна
-    #    Эти пути должны быть уникальными для сессии!
-    #    Пример:
-    base_session_dir = Path("sessions_data") / session_id
-    base_session_dir.mkdir(parents=True, exist_ok=True) # Создаем директорию сессии
-
-    input_file_name = "uploaded_file.csv" # Имя файла должно браться из метаданных сессии
-    input_file = base_session_dir / input_file_name # Путь к загруженному файлу для этой сессии
-    
-    # Убедитесь, что input_file существует (был загружен ранее)
-    if not input_file.exists():
-        logger.error(f"Input file {input_file} not found for session {session_id}.")
-        raise HTTPException(status_code=404, detail=f"Input file for session {session_id} not found.")
-
-    output_csv_file = base_session_dir / "results.csv"
-    
-    # Уникальные логи для сессии
-    logs_dir = Path("output") / "logs" / session_id
-    logs_dir.mkdir(parents=True, exist_ok=True)
-    pipeline_log_path = logs_dir / f"pipeline_{session_id}.log"
-    scoring_log_path = logs_dir / f"scoring_{session_id}.log"
-
-    # Получение контекста (если есть)
-    # context_text = session_meta.get("context_text") 
-    context_text: Optional[str] = None # Заглушка
-
-    # Обновление статуса сессии на "processing"
-    # update_session_status(session_id, "processing") # Пример
-
-    # 4. Создание и запуск новой задачи
-    logger.info(f"Creating processing task for session: {session_id}")
-    task = asyncio.create_task(
-        execute_pipeline_for_session_async(
-            session_id, 
-            input_file, 
-            output_csv_file,
-            pipeline_log_path,
-            scoring_log_path,
-            context_text,
-            llm_config={} # Заглушка, так как llm_config не передается в этом вызове
-        )
-    )
-    active_processing_tasks[session_id] = task
-    task.add_done_callback(lambda t: _processing_task_done_callback(t, session_id))
-
-    logger.info(f"Processing task for session {session_id} created and started.")
-    return {"status": "processing_started", "session_id": session_id}
-
 @app.post("/api/sessions/{session_id}/cancel", tags=["Sessions"], summary="Cancel processing for a session")
 async def cancel_processing_session(session_id: str):
     logger.info(f"Request to cancel processing for session_id: {session_id}")

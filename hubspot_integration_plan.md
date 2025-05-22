@@ -77,7 +77,7 @@
 
 - [ ] Оптимизировать поисковые запросы для быстрого нахождения URL:
   - [ ] Создать специальные шаблоны запросов для поиска URL:
-    ```python
+  ```python
     def _generate_url_search_query(self, company_name):
         """Генерирует оптимизированный запрос для поиска URL."""
         templates = [
@@ -89,7 +89,7 @@
     ```
   
   - [ ] Добавить фильтрацию результатов для приоритизации URL:
-    ```python
+  ```python
     def _filter_for_url_search(self, search_results):
         """Фильтрует результаты поиска для режима URL."""
         filtered = []
@@ -241,7 +241,7 @@
 
 ### Модификация LLMDeepSearchFinder
 
-```python
+  ```python
 class LLMDeepSearchFinder:
     async def find(self, company_name, **context):
         url_only_mode = context.get('url_only_mode', False)
@@ -255,8 +255,8 @@ class LLMDeepSearchFinder:
             return {"source": "llm_deep_search", "result": {"website_url": found_url}}
         else:
             # Стандартная полная обработка
-            # ...
-```
+      # ...
+  ```
 
 ### Модификация HubSpotPipelineAdapter
 

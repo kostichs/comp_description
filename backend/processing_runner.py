@@ -229,21 +229,48 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         session_data['error_message'] = None if failure_count == 0 else f"Completed with {failure_count} errors"
 
     finally:
-        session_data['processed_count'] = success_count
-        session_data['error_count'] = failure_count
-        session_data['completion_time'] = asyncio.get_running_loop().time()
-        if all_metadata: save_session_metadata(all_metadata)
+        # Перезагружаем метаданные ПЕРЕД финальным сохранением,
+        # чтобы учесть изменения от других модулей (например, normalize_urls)
+        current_all_metadata = load_session_metadata()
+        final_session_data_idx = -1
+        # Используем локальный session_data для получения статуса, который был определен в try/except/else выше
+        determined_status = session_data.get('status', 'unknown') 
+        determined_error_message = session_data.get('error_message')
+
+        for idx, meta_item in enumerate(current_all_metadata):
+            if meta_item.get("session_id") == session_id:
+                final_session_data_idx = idx
+                break
         
-        status_message = session_data.get('status', 'unknown')
-        error_message = session_data.get('error_message', '')
-        session_logger.info(f"Background task ended for session: {session_id} - Status: {status_message}{' - ' + error_message if error_message else ''}")
+        status_to_log = 'unknown' # Для лога в конце
+        error_msg_to_log = ''    # Для лога в конце
+
+        if final_session_data_idx != -1:
+            # Обновляем только те поля, за которые отвечает этот runner
+            current_all_metadata[final_session_data_idx]['status'] = determined_status
+            current_all_metadata[final_session_data_idx]['processed_count'] = success_count
+            current_all_metadata[final_session_data_idx]['error_count'] = failure_count
+            current_all_metadata[final_session_data_idx]['error_message'] = determined_error_message
+            current_all_metadata[final_session_data_idx]['completion_time'] = asyncio.get_running_loop().time()
+            
+            save_session_metadata(current_all_metadata)
+            
+            status_to_log = current_all_metadata[final_session_data_idx].get('status', 'unknown')
+            error_msg_to_log = current_all_metadata[final_session_data_idx].get('error_message', '')
+        else:
+            session_logger.error(f"[BG Task {session_id}] Session metadata not found in list during final save. This is unexpected.")
+            # Если сессии нет в списке, то и сохранять нечего, но нужно залогировать и для broadcast_update
+            status_to_log = 'error' 
+            error_msg_to_log = 'Session data not found in metadata list for final update'
+
+        session_logger.info(f"Background task ended for session: {session_id} - Status: {status_to_log}{' - ' + error_msg_to_log if error_msg_to_log else ''}")
         
         if broadcast_update:
             await broadcast_update({
                 "type": "session_status",
                 "session_id": session_id,
-                "status": status_message,
-                "error_message": error_message or None,
+                "status": status_to_log, # Используем статус из сохраненных/определенных данных
+                "error_message": error_msg_to_log or None,
                 "success_count": success_count,
                 "failure_count": failure_count
             }) 

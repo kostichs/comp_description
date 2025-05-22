@@ -89,7 +89,7 @@ def normalize_urls_in_file(input_file: str, output_file: str = None) -> str:
         logger.error(f"Ошибка при нормализации URL: {e}")
         return None
 
-def remove_duplicates_by_domain(input_file: str, output_file: str = None) -> str:
+def remove_duplicates_by_domain(input_file: str, output_file: str = None) -> tuple[str, dict]:
     """
     Удаляет дубликаты компаний по нормализованным доменам.
     
@@ -98,7 +98,7 @@ def remove_duplicates_by_domain(input_file: str, output_file: str = None) -> str
         output_file: Путь для сохранения результата (если не указан, перезаписывает входной файл)
         
     Returns:
-        str: Путь к файлу без дубликатов
+        tuple: (путь к файлу без дубликатов, словарь с информацией о дедупликации)
     """
     # Если output_file не указан, используем input_file
     if not output_file:
@@ -113,136 +113,191 @@ def remove_duplicates_by_domain(input_file: str, output_file: str = None) -> str
     
     try:
         # Загружаем файл
-        df = pd.read_excel(input_file) if is_excel else pd.read_csv(input_file)
+        if is_excel:
+            df = pd.read_excel(input_file, engine='openpyxl')
+        else:
+            df = pd.read_csv(input_file)
         
-        # Проверяем, есть ли хотя бы две колонки
-        if df.shape[1] < 2:
-            logger.error(f"В файле {input_file} меньше двух колонок")
-            return None
+        # Определяем колонку с URL
+        url_column = None
         
-        # Получаем имена колонок
-        column_names = df.columns.tolist()
-        first_column = column_names[0]
-        second_column = column_names[1]
+        # Проверяем первые две колонки
+        for i in range(min(2, len(df.columns))):
+            col = df.columns[i]
+            if df[col].dtype == 'object' and df[col].str.contains('http|www', case=False, na=False).any():
+                url_column = col
+                break
         
-        logger.info(f"Поиск дубликатов по доменам в колонке '{second_column}'")
+        # Если колонка с URL не найдена, ищем по индексу 1 (вторая колонка)
+        if url_column is None and len(df.columns) > 1:
+            url_column = df.columns[1]
         
-        # Создаем словарь {домен: первый индекс}
-        domains_index = {}
-        duplicate_indices = []
+        # Если колонка все равно не найдена, используем первую колонку
+        if url_column is None:
+            url_column = df.columns[0]
         
-        # Создаем копию DataFrame для хранения оригинальных данных
-        df_original = df.copy()
+        original_row_count = len(df)
+        logger.info(f"Поиск дубликатов по доменам в колонке '{url_column}'")
+        logger.info(f"Всего строк в файле до удаления дубликатов: {original_row_count}")
         
-        # Добавляем отладочную информацию
-        logger.info(f"Всего строк в файле до удаления дубликатов: {len(df)}")
+        # Словарь для отслеживания уникальных доменов
+        unique_domains = {}
+        # Список для хранения дубликатов
+        duplicate_rows = []
         
-        # Преобразуем все URL в нижний регистр для сравнения
-        # и создаем временный столбец с нормализованными доменами
-        df['_normalized_domain'] = df[second_column].apply(
-            lambda x: normalize_domain(x) if pd.notna(x) and x else ''
-        )
-        
-        # Находим все дубликаты
-        unique_domains = set()
-        duplicated_domains = set()
-        
-        for idx, row in df.iterrows():
-            domain = row['_normalized_domain']
-            company_name = row[first_column]
+        # Проходим по всем строкам датафрейма
+        for index, row in df.iterrows():
+            # Получаем URL или домен и название компании
+            url = str(row[url_column]) if pd.notna(row[url_column]) else ""
+            company_name = str(row[df.columns[0]]) if pd.notna(row[df.columns[0]]) else "Unknown"
             
-            # Пропускаем пустые значения
-            if pd.isna(domain) or not domain or domain == '':
-                continue
-                
-            # Выводим более подробную информацию
+            # Нормализуем домен
+            domain = normalize_domain(url)
+            
             logger.info(f"Проверка компании: '{company_name}' с доменом '{domain}'")
             
-            # Проверяем, есть ли уже такой домен
-            if domain in unique_domains:
-                # Это дубликат
+            # Если домен уже был встречен, это дубликат
+            if domain in unique_domains and domain:  # Проверяем, что домен не пустой
                 logger.info(f"Найден дубликат домена '{domain}' для компании '{company_name}'")
-                duplicate_indices.append(idx)
-                duplicated_domains.add(domain)
+                duplicate_rows.append(index)
             else:
-                # Это первое вхождение домена
-                unique_domains.add(domain)
+                # Запоминаем домен и индекс строки
+                unique_domains[domain] = index
         
-        # Удаляем временный столбец
-        df.drop('_normalized_domain', axis=1, inplace=True)
+        # Если есть дубликаты, удаляем их и сохраняем датафрейм
+        duplicate_count = len(duplicate_rows)
         
-        # Если есть дубликаты, удаляем их
-        if duplicate_indices:
-            logger.info(f"Удаление {len(duplicate_indices)} дубликатов по следующим доменам: {', '.join(duplicated_domains)}")
-            df_no_duplicates = df.drop(duplicate_indices)
+        if duplicate_count > 0:
+            duplicate_domains = []
+            for index in duplicate_rows:
+                url = str(df.loc[index, url_column]) if pd.notna(df.loc[index, url_column]) else ""
+                domain = normalize_domain(url)
+                if domain and domain not in duplicate_domains:
+                    duplicate_domains.append(domain)
             
-            # Выводим список оставшихся доменов
-            remaining_domains = df_no_duplicates[second_column].apply(
-                lambda x: normalize_domain(x) if pd.notna(x) and x else ''
-            ).tolist()
+            logger.info(f"Удаление {duplicate_count} дубликатов по следующим доменам: {', '.join(duplicate_domains)}")
             
-            logger.info(f"Осталось {len(df_no_duplicates)} компаний с уникальными доменами")
+            # Сохраняем дубликаты в отдельный файл
+            duplicates_df = df.loc[duplicate_rows]
+            duplicates_output_file = f"{os.path.splitext(output_file)[0]}_duplicates{os.path.splitext(output_file)[1]}"
             
-            # Сохраняем файл без дубликатов
+            # Удаляем дубликаты
+            df = df.drop(duplicate_rows)
+            logger.info(f"Осталось {len(df)} компаний с уникальными доменами")
+            
+            # Сохраняем датафрейм без дубликатов
             if is_excel:
-                df_no_duplicates.to_excel(output_file, index=False)
+                df.to_excel(output_file, index=False, engine='openpyxl')
             else:
-                df_no_duplicates.to_csv(output_file, index=False)
+                df.to_csv(output_file, index=False)
             
-            logger.info(f"Удалено {len(duplicate_indices)} дубликатов")
+            # Сохраняем дубликаты
+            if is_excel:
+                duplicates_df.to_excel(duplicates_output_file, index=False, engine='openpyxl')
+            else:
+                duplicates_df.to_csv(duplicates_output_file, index=False)
+            
+            logger.info(f"Удалено {duplicate_count} дубликатов")
             logger.info(f"Файл без дубликатов сохранен: {output_file}")
-            
-            # Сохраняем дубликаты в отдельный файл для анализа
-            duplicates_file = str(input_path.with_stem(f"{input_path.stem}_duplicates"))
-            df_duplicates = df_original.iloc[duplicate_indices]
-            
-            if is_excel:
-                df_duplicates.to_excel(duplicates_file, index=False)
-            else:
-                df_duplicates.to_csv(duplicates_file, index=False)
-                
-            logger.info(f"Дубликаты сохранены в файл: {duplicates_file}")
+            logger.info(f"Дубликаты сохранены в файл: {duplicates_output_file}")
         else:
-            logger.info("Дубликатов не найдено")
+            logger.info("Дубликаты по доменам не найдены")
             
-            # Если дубликатов нет, просто возвращаем исходный файл
-            return input_file
+        # Собираем информацию о дедупликации
+        deduplication_info = {
+            "original_count": original_row_count,
+            "duplicates_removed": duplicate_count,
+            "final_count": len(df)
+        }
         
-        return output_file
-    
+        return output_file, deduplication_info
+        
     except Exception as e:
         logger.error(f"Ошибка при удалении дубликатов: {e}")
-        return None
+        raise
 
-def normalize_and_remove_duplicates(input_file: str, output_file: str = None) -> str:
+def normalize_and_remove_duplicates(input_file: str, output_file: str = None) -> tuple[str, dict]:
     """
-    Нормализует URL и удаляет дубликаты в одной операции.
+    Нормализует URL и удаляет дубликаты по доменам в одной операции.
     
     Args:
         input_file: Путь к входному файлу (CSV или Excel)
         output_file: Путь для сохранения результата (если не указан, перезаписывает входной файл)
         
     Returns:
-        str: Путь к файлу с нормализованными URL без дубликатов
+        tuple: (путь к файлу без дубликатов, словарь с информацией о дедупликации)
     """
-    # Если output_file не указан, генерируем временный файл
-    if not output_file:
-        input_path = Path(input_file)
-        output_file = str(input_path.with_stem(f"{input_path.stem}_normalized_no_duplicates"))
+    try:
+        # Шаг 1: Нормализация URL
+        normalized_file = normalize_urls_in_file(input_file, output_file)
+        
+        # Шаг 2: Удаление дубликатов
+        result_file, deduplication_info = remove_duplicates_by_domain(normalized_file)
+        
+        # Логируем детальную информацию о дедупликации
+        logger.info(f"normalize_and_remove_duplicates результат: файл={result_file}, удалено дубликатов={deduplication_info['duplicates_removed']}")
+        
+        # Обновляем метаданные сессии, если файл находится в каталоге сессии
+        try:
+            from src.data_io import load_session_metadata, save_session_metadata
+            
+            # Проверяем, содержит ли путь к файлу слово 'sessions'
+            file_path = Path(result_file)
+            if 'sessions' in str(file_path):
+                # Предполагаем, что ID сессии - это имя родительской директории
+                session_id = file_path.parent.name
+                
+                # Загружаем метаданные
+                all_metadata = load_session_metadata()
+                session_found_and_updated = False # Флаг для проверки
+                for meta_idx, meta in enumerate(all_metadata):
+                    if meta.get("session_id") == session_id:
+                        logger.info(f"Found session {session_id} in metadata. Updating...")
+                        # Обновляем количество компаний в метаданных
+                        meta["original_companies_count"] = deduplication_info["original_count"]
+                        meta["companies_count"] = deduplication_info["final_count"]
+                        meta["total_companies"] = deduplication_info["final_count"]
+                        
+                        # Добавляем информацию о дедупликации
+                        meta["deduplication_info"] = deduplication_info
+                        
+                        # Добавляем сообщение о дедупликации
+                        if "processing_messages" not in meta:
+                            meta["processing_messages"] = []
+                        
+                        import time
+                        dedup_message_text = f"Обнаружено и удалено {deduplication_info['duplicates_removed']} дубликатов. Обрабатывается {deduplication_info['final_count']} уникальных компаний вместо {deduplication_info['original_count']}."
+                        
+                        # Проверяем, есть ли уже такое сообщение
+                        message_exists = any(
+                            msg.get("type") == "deduplication" and msg.get("message") == dedup_message_text 
+                            for msg in meta["processing_messages"]
+                        )
+                        
+                        if not message_exists:
+                            meta["processing_messages"].append({
+                                "type": "deduplication",
+                                "message": dedup_message_text,
+                                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                            })
+                        
+                        logger.info(f"Values for session {session_id} before save: total_companies={meta.get('total_companies')}, deduplication_info={meta.get('deduplication_info')}")
+                        # Обновляем элемент в списке all_metadata напрямую по индексу, чтобы быть уверенным
+                        all_metadata[meta_idx] = meta 
+                        save_session_metadata(all_metadata)
+                        logger.info(f"Обновлены метаданные сессии {session_id} с информацией о дедупликации")
+                        session_found_and_updated = True
+                        break
+                if not session_found_and_updated:
+                    logger.warning(f"Session {session_id} not found in metadata during deduplication update step. Metadata not updated with dedup info.")
+        except Exception as e:
+            logger.error(f"Ошибка при обновлении метаданных сессии: {e}")
+        
+        return result_file, deduplication_info
     
-    # Сначала нормализуем URL
-    normalized_file = normalize_urls_in_file(input_file, output_file)
-    if not normalized_file:
-        logger.error("Не удалось нормализовать URL")
-        return None
-    
-    # Затем удаляем дубликаты
-    no_duplicates_file = remove_duplicates_by_domain(normalized_file, output_file)
-    if not no_duplicates_file:
-        logger.error("Не удалось удалить дубликаты")
-        return normalized_file  # Возвращаем хотя бы нормализованный файл
-    
-    return no_duplicates_file
+    except Exception as e:
+        logger.error(f"Ошибка в процессе нормализации и удаления дубликатов: {e}")
+        raise
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Нормализация URL и удаление дубликатов во входных данных")
