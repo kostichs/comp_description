@@ -9,10 +9,10 @@ import logging
 import time
 import os
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Callable
+from typing import Dict, List, Any, Optional, Tuple, Callable, Union
 import aiohttp
 from openai import AsyncOpenAI
-from scrapingbee import ScrapingBeeClient
+from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 import json
 import re
 
@@ -30,7 +30,7 @@ from src.data_io import save_results_csv, save_results_json, save_structured_dat
 from src.pipeline.utils import generate_and_save_raw_markdown_report_async
 
 # Импортируем функции валидации
-from src.input_validators import normalize_domain
+from src.input_validators import normalize_domain #, CompanyInfo
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ async def _process_single_company_async(
     company_name: str,
     openai_client: AsyncOpenAI,
     aiohttp_session: aiohttp.ClientSession,
-    sb_client: ScrapingBeeClient,
+    sb_client: Optional[CustomScrapingBeeClient],
     serper_api_key: str,
     finder_instances: Dict[str, Finder],
     description_generator: DescriptionGenerator,
@@ -546,10 +546,10 @@ async def _process_single_company_async(
         return result_data
 
 async def process_companies(
-    company_names: List[str],
+    company_names: List[Union[str, Tuple[str, str]]],
     openai_client: AsyncOpenAI,
     aiohttp_session: aiohttp.ClientSession,
-    sb_client: ScrapingBeeClient,
+    sb_client: Optional[CustomScrapingBeeClient],
     serper_api_key: str,
     llm_config: Dict[str, Any],
     raw_markdown_output_path: Path,
@@ -621,10 +621,23 @@ async def process_companies(
     if run_standard_pipeline_cfg:
         # HomepageFinder для поиска официального сайта
         current_openai_api_key = openai_client.api_key if openai_client else None
-        finder_instances["homepage_finder"] = HomepageFinder(serper_api_key=serper_api_key, openai_api_key=current_openai_api_key)
+        finder_instances["homepage_finder"] = HomepageFinder(
+            company_name=company_name, 
+            aiohttp_session=aiohttp_session, 
+            scraping_bee_client=sb_client
+        )
         
         # LinkedInFinder для поиска LinkedIn URL
-        finder_instances["linkedin_finder"] = LinkedInFinder(serper_api_key=serper_api_key, openai_api_key=current_openai_api_key)
+        finder_instances["linkedin_finder"] = LinkedInFinder(
+            company_name=company_name, 
+            url=None, 
+            openai_client=openai_client, 
+            aiohttp_session=aiohttp_session, 
+            scraping_bee_client=sb_client,
+            serper_api_key=serper_api_key, 
+            llm_config=llm_config, 
+            finders=finder_instances
+        )
     
     # DomainCheckFinder для проверки URL
     if run_domain_check_finder_cfg:

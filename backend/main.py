@@ -17,7 +17,7 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 import aiohttp
 from openai import AsyncOpenAI
-from scrapingbee import ScrapingBeeClient
+from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 import tempfile # Added for temporary file for zip archive
 
 # Adjust sys.path to allow importing from src
@@ -137,7 +137,7 @@ async def execute_pipeline_for_session_async(
     logger.info("[EXECUTE_PIPELINE] Initializing API clients and aiohttp session...")
     async with aiohttp.ClientSession() as aiohttp_session:
         logger.info("[EXECUTE_PIPELINE] aiohttp.ClientSession created.")
-        sb_client = ScrapingBeeClient(api_key=scrapingbee_api_key) 
+        sb_client = CustomScrapingBeeClient(api_key=scrapingbee_api_key) 
         logger.info("[EXECUTE_PIPELINE] ScrapingBeeClient created.")
         openai_async_client = AsyncOpenAI(api_key=openai_api_key)
         logger.info("[EXECUTE_PIPELINE] AsyncOpenAI client created.")

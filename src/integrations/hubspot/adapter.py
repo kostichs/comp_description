@@ -11,7 +11,7 @@ from typing import Dict, List, Any, Optional, Tuple, Callable, Union
 from pathlib import Path
 import aiohttp
 from openai import AsyncOpenAI
-from scrapingbee import ScrapingBeeClient
+from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 from dotenv import load_dotenv
 from urllib.parse import urlparse # Добавлено для HubSpotAdapter
 import asyncio # Добавляем импорт asyncio
@@ -274,7 +274,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                                    session_dir_path: Path, llm_config: Dict[str, Any],
                                    context_text: str | None, company_col_index: int, 
                                    aiohttp_session: aiohttp.ClientSession,
-                                   sb_client: ScrapingBeeClient, openai_client: AsyncOpenAI, 
+                                   sb_client: CustomScrapingBeeClient, openai_client: AsyncOpenAI,
                                    serper_api_key: str, # Оставляем, т.к. используется в process_companies
                                    expected_csv_fieldnames: list[str], broadcast_update: Optional[Callable] = None,
                                    main_batch_size: int = 5, run_standard_pipeline: bool = True,
@@ -292,19 +292,35 @@ class HubSpotPipelineAdapter(PipelineAdapter):
             # Импортируем функцию нормализации и удаления дубликатов
             from normalize_urls import normalize_and_remove_duplicates
             
-            # Применяем нормализацию и удаление дубликатов
-            processed_file, deduplication_info = normalize_and_remove_duplicates(str(input_file_path), str(processed_file_path))
+            # Вызываем асинхронную функцию normalize_and_remove_duplicates
+            # Убедимся, что передаем session_id
+            normalized_file, dedup_info = await normalize_and_remove_duplicates(
+                str(input_file_path), 
+                str(processed_file_path),
+                session_id_for_metadata=self.session_id, # Передаем session_id
+                scrapingbee_client=sb_client # <--- Добавляем sb_client сюда
+            )
             
-            if processed_file:
-                logger.info(f"Successfully processed {input_file_path}, saved to {processed_file}")
+            if normalized_file:
+                logger.info(f"Successfully processed {input_file_path} (URL check, dedup), saved to {normalized_file}")
+                logger.info(f"Processing details: {dedup_info}")
                 # Используем обработанный файл вместо исходного
-                input_file_path = processed_file
+                input_file_path = normalized_file
                 
-                # Сохраняем информацию о дедупликации для последующего использования
-                self.deduplication_info = deduplication_info
-                logger.info(f"Deduplication info: {deduplication_info}")
+                # Сохраняем информацию о дедупликации и проверке URL для последующего использования
+                # self.deduplication_info теперь может содержать более расширенную информацию из dedup_info
+                self.deduplication_info = dedup_info 
+                
+                # Дополнительно, если нужно обновить метаданные сессии на этом этапе (хотя normalize_and_remove_duplicates это уже делает)
+                # Можно рассмотреть, нужно ли дублировать логику или положиться на внутреннее обновление в normalize_and_remove_duplicates.
+                # Пока что self.deduplication_info сохраняется для возможного использования в других частях HubSpotPipelineAdapter.
+
+            elif dedup_info and dedup_info.get("error"):
+                logger.error(f"Failed to process {input_file_path} (URL check, dedup): {dedup_info.get('error')}. Using original file.")
+                # В случае ошибки, можно также сохранить dedup_info в метаданные сессии, если это необходимо
+                # Например, добавив их в self.session_data или специальное поле.
             else:
-                logger.warning(f"Failed to process {input_file_path}, using original file")
+                logger.warning(f"Processing {input_file_path} (URL check, dedup) did not return a file. Using original file.")
         except Exception as e:
             logger.error(f"Error processing {input_file_path}: {e}")
             logger.warning("Using original file without normalization and deduplication")

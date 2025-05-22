@@ -17,7 +17,7 @@ from src.pipeline.utils.logging import setup_session_logging
 from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR # Import session helpers
 from src.config import load_env_vars, load_llm_config # Import config loaders
 from openai import AsyncOpenAI
-from scrapingbee import ScrapingBeeClient
+from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 
 async def run_session_pipeline(session_id: str, broadcast_update=None):
     """
@@ -121,7 +121,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
         session_logger.info("Initializing API clients...")
         try:
             openai_client = AsyncOpenAI(api_key=openai_api_key)
-            sb_client = ScrapingBeeClient(api_key=scrapingbee_api_key) 
+            sb_client = CustomScrapingBeeClient(api_key=scrapingbee_api_key) 
         except Exception as e_client:
             pipeline_error = f"API Client initialization failed: {e_client}"
             raise 

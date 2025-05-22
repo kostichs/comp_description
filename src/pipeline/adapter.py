@@ -14,7 +14,7 @@ import ssl
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple, Callable
 from openai import AsyncOpenAI
-from scrapingbee import ScrapingBeeClient
+from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 
 # Standard pipeline components
 from src.config import load_env_vars, load_llm_config
@@ -209,7 +209,7 @@ class PipelineAdapter:
     def _init_clients(self):
         """Initialize API clients"""
         self.openai_client = AsyncOpenAI(api_key=self.api_keys["openai"])
-        self.sb_client = ScrapingBeeClient(api_key=self.api_keys["scrapingbee"])
+        self.sb_client = CustomScrapingBeeClient(api_key=self.api_keys["scrapingbee"])
         
     def _setup_directories(self):
         """Set up output directories and paths"""
@@ -263,8 +263,8 @@ class PipelineAdapter:
     async def run_pipeline_for_file(self, input_file_path: str | Path, output_csv_path: str | Path, 
                                pipeline_log_path: str, session_dir_path: Path, llm_config: Dict[str, Any],
                                context_text: str | None, company_col_index: int, aiohttp_session: aiohttp.ClientSession,
-                               sb_client: ScrapingBeeClient, openai_client: AsyncOpenAI, serper_api_key: str,
-                               expected_csv_fieldnames: list[str], broadcast_update: callable = None,
+                               sb_client: Optional[CustomScrapingBeeClient], openai_client: AsyncOpenAI, serper_api_key: str,
+                               expected_csv_fieldnames: list[str], broadcast_update: Optional[Callable] = None,
                                main_batch_size: int = DEFAULT_BATCH_SIZE, run_standard_pipeline: bool = True,
                                run_llm_deep_search_pipeline: bool = True) -> tuple[int, int, list[dict]]:
         """
