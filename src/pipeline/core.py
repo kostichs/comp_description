@@ -206,6 +206,9 @@ async def _process_single_company_async(
                 if "llm_deep_search_finder" in finder_instances:
                     llm_deep_search_finder = finder_instances["llm_deep_search_finder"]
                     
+                    # Переменная для контроля пропуска deep search
+                    skip_deep_search = False
+                    
                     # Передаем конфигурацию перегрузки, если она есть
                     if llm_deep_search_config_override:
                         llm_deep_search_finder.update_config(llm_deep_search_config_override)
