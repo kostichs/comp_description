@@ -209,28 +209,74 @@ async def _process_single_company_async(
                     if llm_deep_search_config_override:
                         llm_deep_search_finder.update_config(llm_deep_search_config_override)
                     
-                    llm_search_result = await llm_deep_search_finder.find(
-                        company_name, 
-                        company_homepage_url=found_homepage_url,
-                        linkedin_url=linkedin_url,
-                        context_text=context_text
-                    )
+                    # Если URL не найден и это одноколоночный вариант, сначала используем режим url_only_mode
+                    if not found_homepage_url and not second_column_data and not homepage_url_from_tuple:
+                        # Шаг 1: Сначала находим только URL в url_only_mode
+                        logger.info(f"{run_stage_log} - First step: Using URL-only mode to find homepage URL")
+                        url_only_result = await llm_deep_search_finder.find(
+                            company_name,
+                            url_only_mode=True
+                        )
+                        
+                        if url_only_result and isinstance(url_only_result, dict) and url_only_result.get("extracted_homepage_url"):
+                            found_homepage_url = url_only_result["extracted_homepage_url"]
+                            logger.info(f"{run_stage_log} - URL-only mode found homepage URL: {found_homepage_url}")
+                        
+                        # Проверяем URL в HubSpot, если клиент есть
+                        skip_deep_search = False
+                        if found_homepage_url and hubspot_client:
+                            try:
+                                logger.info(f"{run_stage_log} - Checking URL {found_homepage_url} in HubSpot before deep search")
+                                hubspot_company = await hubspot_client.get_company_by_domain(found_homepage_url)
+                                
+                                if hubspot_company and hubspot_client.has_fresh_description(hubspot_company):
+                                    logger.info(f"{run_stage_log} - Company with domain {found_homepage_url} found in HubSpot with fresh description")
+                                    description_text = hubspot_company.get("description", "")
+                                    if description_text:
+                                        logger.info(f"{run_stage_log} - Using existing description from HubSpot")
+                                        skip_deep_search = True
+                                        # Добавляем базовую информацию для использования в других местах
+                                        structured_data = {
+                                            "homepage": found_homepage_url,
+                                            "extracted_homepage_url": found_homepage_url,
+                                            "hubspot_id": hubspot_company.get("id"),
+                                            "hubspot_source": True
+                                        }
+                                        llm_deep_search_raw_result = description_text
+                            except Exception as e:
+                                logger.error(f"{run_stage_log} - Error checking HubSpot: {e}", exc_info=True)
                     
-                    if llm_search_result and isinstance(llm_search_result, dict):
-                        structured_data = llm_search_result
-                        # Сохраняем сырой результат для использования в качестве описания, если нужно
-                        if "result" in llm_search_result:
-                            llm_deep_search_raw_result = llm_search_result["result"]
+                    # Шаг 2: Если первый шаг не пропускаем и нужно выполнить полный поиск
+                    if not skip_deep_search:
+                        logger.info(f"{run_stage_log} - Running full LLM deep search")
+                        llm_search_result = await llm_deep_search_finder.find(
+                            company_name, 
+                            company_homepage_url=found_homepage_url,
+                            linkedin_url=linkedin_url,
+                            context_text=context_text
+                        )
                         
-                        if "homepage" in structured_data and structured_data["homepage"] and not found_homepage_url:
-                            found_homepage_url = structured_data["homepage"]
-                            logger.info(f"{run_stage_log} - Using homepage from LLM deep search: {found_homepage_url}")
-                        
-                        if "linkedin" in structured_data and structured_data["linkedin"] and not linkedin_url:
-                            linkedin_url = structured_data["linkedin"]
-                            logger.info(f"{run_stage_log} - Using LinkedIn from LLM deep search: {linkedin_url}")
-                    else:
-                        logger.warning(f"{run_stage_log} - LLM deep search finder did not return valid data")
+                        if llm_search_result and isinstance(llm_search_result, dict):
+                            structured_data = llm_search_result
+                            # Сохраняем сырой результат для использования в качестве описания, если нужно
+                            if "result" in llm_search_result:
+                                llm_deep_search_raw_result = llm_search_result["result"]
+                            
+                            # Проверяем наличие homepage в структурированных данных
+                            if "homepage" in structured_data and structured_data["homepage"] and not found_homepage_url:
+                                found_homepage_url = structured_data["homepage"]
+                                logger.info(f"{run_stage_log} - Using homepage from LLM deep search: {found_homepage_url}")
+                            
+                            # Проверяем наличие extracted_homepage_url в результате LLMDeepSearchFinder
+                            if "extracted_homepage_url" in structured_data and structured_data["extracted_homepage_url"] and not found_homepage_url:
+                                found_homepage_url = structured_data["extracted_homepage_url"]
+                                logger.info(f"{run_stage_log} - Using extracted homepage URL from LLM deep search: {found_homepage_url}")
+                            
+                            if "linkedin" in structured_data and structured_data["linkedin"] and not linkedin_url:
+                                linkedin_url = structured_data["linkedin"]
+                                logger.info(f"{run_stage_log} - Using LinkedIn from LLM deep search: {linkedin_url}")
+                        else:
+                            logger.warning(f"{run_stage_log} - LLM deep search finder did not return valid data")
                 else:
                     logger.warning(f"{run_stage_log} - LLM deep search finder not available")
             except Exception as e:

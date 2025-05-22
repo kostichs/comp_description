@@ -92,55 +92,50 @@ async def _extract_homepage_from_report_text_async(
     temperature: float = 0.0
 ) -> Optional[str]:
     """
-    Извлекает наиболее вероятный URL официального сайта из текста отчета с помощью LLM
-    и затем очищает его от Markdown или лишнего текста.
+    Извлекает URL домашней страницы компании из текста отчета.
+    
+    Args:
+        company_name: Название компании
+        report_text: Текст отчета
+        openai_client: Клиент OpenAI для запросов к LLM
+        model: Модель для запросов к LLM
+        temperature: Температура для запросов к LLM
+        
+    Returns:
+        Optional[str]: URL домашней страницы или None, если не найден
     """
-    if not report_text or not report_text.strip():
-        logger.warning(f"Empty report text for {company_name}. Cannot extract homepage URL.")
+    if not report_text:
         return None
     
-    # Логирование отрывка текста отчета для отладки
-    logger.debug(f"Extracting homepage URL for '{company_name}' from report text. First 500 chars: {report_text[:500]}...")
+    # Улучшенное регулярное выражение для поиска URL
+    url_pattern = r'https?://[\w\.-]+\.[a-zA-Z]{2,}(?:/[\w\.\-\%_]*)*'
     
-    # Поиск очевидных URL напрямую в тексте до запроса LLM
-    url_pattern = r'https?://[\w\.-/]+\.[a-zA-Z]{2,}(?:/[\w\康熙字典统一码擴充區乙\.\-\%_]*)?'
-    
-    # Обновленный паттерн, который учитывает форматирование Markdown в виде [URL](URL) или [текст](URL)
-    # Ищем URL после упоминания "Official Homepage URL" или подобных фраз, поддерживая различные форматы
-    homepage_section_pattern = r'(?i)official\s+(?:homepage|website|site)\s*(?:url)?[:\s]*(?:\[([^\]]+)\])?\s*(?:\(https?://[^\)]+\))?\s*(https?://[^\s\)\]]+)?'
-    
-    # Проверка прямых упоминаний в секции про официальный сайт
-    direct_homepage_match = re.search(homepage_section_pattern, report_text)
-    if direct_homepage_match:
-        # Проверяем, какая группа содержит URL
-        direct_url = None
-        if direct_homepage_match.group(2):  # Простой URL формат
-            direct_url = direct_homepage_match.group(2)
-            logger.info(f"DIRECT MATCH (plain URL): Found homepage URL in report text for '{company_name}': {direct_url}")
-        elif direct_homepage_match.group(1) and "http" in direct_homepage_match.group(1):  # URL внутри квадратных скобок
-            direct_url = direct_homepage_match.group(1)
-            logger.info(f"DIRECT MATCH (markdown text): Found homepage URL in report text for '{company_name}': {direct_url}")
-        
-        if direct_url:
-            return direct_url
-    
-    # Поиск Markdown-ссылок в секциях о сайте компании, например [текст](URL)
-    markdown_link_pattern = r'(?i)official\s+(?:homepage|website|site)(?:url)?[:\s]*\[([^\]]+)\]\(([^\)]+)\)'
-    markdown_match = re.search(markdown_link_pattern, report_text)
-    if markdown_match:
-        url_from_markdown = markdown_match.group(2)  # URL в скобках
-        logger.info(f"MARKDOWN MATCH: Found homepage URL in markdown format for '{company_name}': {url_from_markdown}")
-        return url_from_markdown
-    
-    # Поиск в структурированных секциях
+    # Улучшенные шаблоны разделов, где обычно указывается URL домашней страницы
     homepage_sections = [
-        r'(?i)## *Basic Company Information[\s\S]*?(?:Official|Main)[\s\S]*?(?:Homepage|Website|URL)[^\n]*?\n*([^\n]*)',
-        r'(?i)Official\s+(?:Website|Homepage|URL)[^\n]*?\n*([^\n]*)',
-        r'(?i)Website[^\n]*?\n*([^\n]*)'
+        # Базовые секции с URL
+        r'(?i)official\s+homepage\s+url\s*:?\s*([^\n\r]+)',  # Official Homepage URL: ...
+        r'(?i)company\'?s?\s+website\s*:?\s*([^\n\r]+)',     # Company's Website: ...
+        r'(?i)website\s*:?\s*([^\n\r]+)',                    # Website: ...
+        r'(?i)official\s+website\s*:?\s*([^\n\r]+)',         # Official Website: ...
+        r'(?i)homepage\s*:?\s*([^\n\r]+)',                   # Homepage: ...
+        r'(?i)web\s+address\s*:?\s*([^\n\r]+)',              # Web Address: ...
+        r'(?i)web\s+site\s*:?\s*([^\n\r]+)',                 # Web Site: ...
+        
+        # Секции с возможными URL
+        r'(?i)can\s+be\s+found\s+at\s+([^\n\r\.]+)',         # can be found at ...
+        r'(?i)available\s+at\s+([^\n\r\.]+)',                # available at ...
+        r'(?i)headquartered\s+at\s+([^\n\r\.]+)',            # headquartered at ...
+        r'(?i)located\s+at\s+([^\n\r\.]+)',                  # located at ...
+        
+        # Поиск в более крупных секциях
+        r'(?i)basic\s+company\s+information.*?homepage.*?([^\n\r]{5,150})',  # В разделе Basic Company Information
+        r'(?i)company\s+name.*?website.*?([^\n\r]{5,150})',  # После имени компании, где упоминается website
+        r'(?i)founded\s+in.*?website.*?([^\n\r]{5,150})',    # После года основания, где упоминается website
     ]
     
+    # 1. Сначала ищем URL в ключевых секциях
     for pattern in homepage_sections:
-        section_match = re.search(pattern, report_text)
+        section_match = re.search(pattern, report_text, re.DOTALL)
         if section_match:
             section_text = section_match.group(1)
             logger.debug(f"Found potential homepage section for '{company_name}': '{section_text}'")
@@ -159,25 +154,93 @@ async def _extract_homepage_from_report_text_async(
                 logger.info(f"SECTION MATCH (plain): Found homepage URL in structured section for '{company_name}': {extracted_url}")
                 return extracted_url
     
-    # Если не удалось найти URL прямым анализом, используем LLM
+    # 2. Ищем прямые упоминания доменов компании без http/https
+    company_name_parts = re.sub(r'[^\w\s]', '', company_name.lower()).split()
+    
+    # Ищем домены, которые содержат части имени компании
+    domain_pattern = r'(?<!\S)(?:www\.)?([a-zA-Z0-9][\w\-]*\.(?:com|org|net|io|co|ai|app|tech|us|uk|ca|de|fr|es|it|au|jp|cn)(?:\.[a-zA-Z]{2})?)(?!\S)'
+    domain_matches = re.finditer(domain_pattern, report_text)
+    
+    potential_domains = []
+    for match in domain_matches:
+        domain = match.group(0)
+        if not domain.startswith('www.'):
+            domain = 'www.' + domain
+        
+        # Проверяем, содержит ли домен часть имени компании
+        domain_lower = domain.lower()
+        for part in company_name_parts:
+            if len(part) >= 3 and part.lower() in domain_lower:  # Минимум 3 символа для предотвращения ложных срабатываний
+                potential_domains.append("https://" + domain)
+                break
+    
+    if potential_domains:
+        logger.info(f"DOMAIN MATCH: Found potential domains for '{company_name}': {potential_domains[0]}")
+        return potential_domains[0]  # Возвращаем первый найденный домен
+    
+    # 3. Ищем все URL в документе и проверяем, какие из них наиболее вероятно являются основным сайтом
+    all_urls = re.findall(url_pattern, report_text)
+    
+    if all_urls:
+        # Фильтруем URL, исключая известные нежелательные домены
+        filtered_urls = []
+        excluded_domains = ['wikipedia.org', 'linkedin.com', 'facebook.com', 'twitter.com', 'youtube.com', 
+                           'instagram.com', 'google.com', 'crunchbase.com', 'bloomberg.com', 'sec.gov', 
+                           'github.com', 'yahoo.com', 'forbes.com', 'businesswire.com', 'prnewswire.com']
+        
+        for url in all_urls:
+            if not any(excluded in url.lower() for excluded in excluded_domains):
+                filtered_urls.append(url)
+        
+        if filtered_urls:
+            # Сортируем URL по "вероятности" быть основным сайтом (короткие URL, содержащие название компании)
+            scored_urls = []
+            for url in filtered_urls:
+                score = 0
+                url_lower = url.lower()
+                
+                # Бонус за короткий URL
+                if url.count('/') <= 3:  # Только домен или домен с одним путем
+                    score += 5
+                
+                # Бонус за наличие частей имени компании в домене
+                for part in company_name_parts:
+                    if len(part) >= 3 and part.lower() in url_lower:
+                        score += 3
+                
+                # Бонус за .com домен
+                if '.com' in url_lower:
+                    score += 2
+                
+                # Бонус за отсутствие параметров запроса
+                if '?' not in url:
+                    score += 1
+                
+                scored_urls.append((url, score))
+            
+            # Сортируем по убыванию оценки
+            scored_urls.sort(key=lambda x: x[1], reverse=True)
+            
+            if scored_urls and scored_urls[0][1] > 0:
+                best_url = scored_urls[0][0]
+                logger.info(f"URL SCORE MATCH: Found best URL for '{company_name}' with score {scored_urls[0][1]}: {best_url}")
+                return best_url
+    
+    # 4. Если не удалось найти URL прямым анализом, используем LLM
     logger.info(f"No direct URL matches found in report for '{company_name}'. Querying LLM...")
     
     prompt_messages = [
-        {
-            "role": "system", 
-            "content": (
-                "You are an expert assistant that extracts the official homepage URL of a company from a given text. "
-                "The text is a business report that might contain multiple URLs, including sources, news articles, etc. "
-                "Your task is to identify and return ONLY the main official website (homepage) of the company. "
-                "If multiple potential homepages are mentioned, choose the most likely one. "
-                "If no clear official homepage URL is found, return 'None'. "
-                "The URL should be a complete, valid URL (e.g., https://www.example.com)."
-            )
-        },
-        {
-            "role": "user", 
-            "content": f"Company Name: {company_name}\n\nBusiness Report Text:\n```\n{report_text[:15000]} \n```\n\nBased on the text above, what is the official homepage URL for '{company_name}'? Return only the URL or 'None'."
-        }
+        {"role": "system", "content": (
+            "You are a specialized AI focused on extracting the official homepage URL of companies from text. "
+            "Your task is to carefully read the provided business report and identify the company's official website URL. "
+            "ONLY respond with the complete URL (including http:// or https://) and nothing else. "
+            "If you cannot find a clear URL in the text, respond with 'None'."
+        )},
+        {"role": "user", "content": (
+            f"Extract the official homepage URL for '{company_name}' from this business report. "
+            f"Respond ONLY with the complete URL including the http:// or https:// prefix, or 'None' if no clear URL is found.\n\n"
+            f"Report text:\n{report_text[:5000]}"  # Ограничиваем размер для эффективности
+        )}
     ]
     
     try:
@@ -211,29 +274,22 @@ async def _extract_homepage_from_report_text_async(
                 extracted_url = plain_url_match.group(0)
                 logger.info(f"Extracted homepage for '{company_name}' from LLM response (Plain URL): {extracted_url}")
                 return extracted_url
-            
-            # Если регулярное выражение не нашло URL, но ответ не "None", пробуем найти что-то похожее на URL
-            if "." in llm_response_text and ("http" in llm_response_text.lower() or "www" in llm_response_text.lower()):
-                logger.warning(f"LLM response for '{company_name}' looks like URL but regex didn't match: '{llm_response_text}'")
-                # Попытка с более слабым регулярным выражением
-                weak_url_pattern = r'(https?://)?[\w\.-]+\.[a-zA-Z]{2,}(?:/[\w\康熙字典统一码擴充區乙\.\-\%_]*)?'
-                weak_match = re.search(weak_url_pattern, llm_response_text)
-                if weak_match:
-                    weak_url = weak_match.group(0)
-                    # Если URL не начинается с http, добавляем https://
-                    if not weak_url.startswith(('http://', 'https://')):
-                        weak_url = 'https://' + weak_url
-                    logger.info(f"Using weak regex match for '{company_name}': {weak_url}")
-                    return weak_url
-            
-            logger.warning(f"LLM response for '{company_name}' was '{llm_response_text}', but no clean URL could be extracted.")
-            return None
-        else:
-            logger.info(f"LLM did not find a clear homepage URL for '{company_name}' in the report (returned: {llm_response_text}).")
-            return None
+                
+            # Если URL не найден, но ответ не 'None', пробуем обработать как обычный домен
+            if llm_response_text.lower() != 'none':
+                potential_domain = llm_response_text.strip()
+                if '.' in potential_domain and ' ' not in potential_domain:
+                    # Добавляем префикс https:// если его нет
+                    if not potential_domain.startswith(('http://', 'https://')):
+                        potential_domain = 'https://' + potential_domain
+                    logger.info(f"Converted LLM response to URL for '{company_name}': {potential_domain}")
+                    return potential_domain
+        
     except Exception as e:
-        logger.error(f"Error extracting homepage for '{company_name}' from report text: {e}", exc_info=True)
-        return None
+        logger.error(f"Error querying LLM for homepage extraction for '{company_name}': {e}")
+    
+    # Если все методы не сработали, возвращаем None
+    return None
 
 class LLMDeepSearchFinder(Finder):
     """
@@ -268,6 +324,7 @@ class LLMDeepSearchFinder(Finder):
                      - 'specific_aspects': список аспектов, которые нужно исследовать
                      - 'user_context': дополнительный контекст от пользователя
                      - 'company_homepage_url': URL домашней страницы компании (если уже известен)
+                     - 'url_only_mode': если True, поиск будет направлен только на получение URL компании
                      
         Returns:
             dict: Результат поиска {
@@ -279,20 +336,38 @@ class LLMDeepSearchFinder(Finder):
         """
         specific_aspects = context.get('specific_aspects', self._get_default_aspects())
         user_context = context.get('user_context', None)
+        url_only_mode = context.get('url_only_mode', False)
         
         if self.verbose:
             logger.info(f"\n--- LLM Deep Search для компании '{company_name}' ---")
             logger.info(f"Модель: {self.model}")
-            logger.info(f"Исследуемые аспекты: {len(specific_aspects)} пунктов")
+            if url_only_mode:
+                logger.info(f"Режим: только поиск URL (url_only_mode=True)")
+            else:
+                logger.info(f"Исследуемые аспекты: {len(specific_aspects)} пунктов")
             if context.get('company_homepage_url'):
                 logger.info(f"Предоставленный URL компании: {context.get('company_homepage_url')}")
         
         try:
+            # Если установлен режим поиска только URL, используем облегченный запрос
+            if url_only_mode:
+                return await self._find_url_only(company_name, context)
+            
+            # Проверяем, был ли предоставлен контекст от пользователя
+            linkedin_url = context.get('linkedin_url', None)
+            context_text = context.get('context_text', None)
+            combined_context = {}
+            
+            # Передаем URL домашней страницы, если он уже известен
+            if context.get('company_homepage_url'):
+                combined_context['company_homepage_url'] = context.get('company_homepage_url')
+            
+            # Получаем текст отчета от LLM
             report_dict = await self._query_llm_for_deep_info(
-                company_name=company_name,
-                specific_aspects_to_cover=specific_aspects,
-                user_context_text=user_context,
-                context=context  # Передаем весь контекст в метод _query_llm_for_deep_info
+                company_name, 
+                specific_aspects, 
+                user_context, 
+                context=combined_context
             )
             
             if "error" in report_dict:
@@ -346,6 +421,121 @@ class LLMDeepSearchFinder(Finder):
                 "sources": [],
                 "extracted_homepage_url": None,
                 "_finder_instance_type": self.__class__.__name__
+            }
+            
+    async def _find_url_only(self, company_name: str, context: Dict[str, Any] = {}) -> dict:
+        """
+        Облегченный метод только для поиска URL компании.
+        Использует оптимизированный промпт и более быстрые настройки.
+        
+        Args:
+            company_name: Название компании
+            context: Контекст поиска
+            
+        Returns:
+            dict: Результат поиска с URL
+        """
+        logger.info(f"Running URL-only search for company '{company_name}'")
+        
+        # Системный промпт для режима поиска только URL
+        system_prompt = (
+            "You are a specialized AI researcher focused exclusively on finding the official website URLs for companies. "
+            "Your only task is to identify and return the most likely official homepage URL for the company name provided. "
+            "Focus on finding the main corporate website, not social media profiles, third-party listings, or subsidiary sites. "
+            "You must search for the most current information and provide a complete URL including http:// or https://."
+        )
+        
+        # Пользовательский промпт для запроса только URL
+        user_prompt = (
+            f"Find the official homepage URL for the company: {company_name}\n\n"
+            f"IMPORTANT: I need ONLY the company's official website URL. Return ONLY the complete URL with no explanations or additional text."
+        )
+        
+        try:
+            # Делаем запрос к модели с оптимизированными параметрами для быстрого ответа
+            completion = await self.client.chat.completions.create(
+                model=self.model,  # Используем ту же модель с поиском
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0.0,  # Низкая температура для более детерминированного ответа
+                max_tokens=100    # Ограничиваем размер ответа для скорости
+            )
+            
+            url_response = None
+            extracted_sources = []
+            
+            if completion.choices and completion.choices[0].message:
+                message = completion.choices[0].message
+                if message.content:
+                    response_content = message.content.strip()
+                    
+                    # Извлекаем URL из ответа
+                    url_pattern = r'https?://[\w\.-]+\.[a-zA-Z]{2,}(?:/[\w\.\-\%_]*)*'
+                    url_match = re.search(url_pattern, response_content)
+                    
+                    if url_match:
+                        url_response = url_match.group(0)
+                        logger.info(f"URL-only search found URL for '{company_name}': {url_response}")
+                    else:
+                        # Если URL не найден в стандартном формате, проверяем на доменное имя без протокола
+                        domain_pattern = r'(?<!\S)(?:www\.)?([a-zA-Z0-9][\w\-]*\.(?:com|org|net|io|co|ai|app|tech|us|uk|ca|de|fr|es|it|au|jp|cn)(?:\.[a-zA-Z]{2})?)(?!\S)'
+                        domain_match = re.search(domain_pattern, response_content)
+                        
+                        if domain_match:
+                            domain = domain_match.group(0)
+                            if not domain.startswith(('http://', 'https://', 'www.')):
+                                domain = 'https://www.' + domain
+                            elif domain.startswith('www.'):
+                                domain = 'https://' + domain
+                            
+                            url_response = domain
+                            logger.info(f"URL-only search found domain for '{company_name}': {url_response}")
+                        else:
+                            # Если не найден даже домен, проверяем весь ответ на соответствие домену
+                            clean_response = response_content.strip()
+                            if '.' in clean_response and ' ' not in clean_response and len(clean_response) < 100:
+                                if not clean_response.startswith(('http://', 'https://')):
+                                    clean_response = 'https://' + clean_response
+                                
+                                url_response = clean_response
+                                logger.info(f"URL-only search using full response as URL for '{company_name}': {url_response}")
+                
+                # Извлекаем источники из аннотаций, если они есть
+                if hasattr(message, 'annotations') and message.annotations:
+                    for ann in message.annotations:
+                        if ann.type == "url_citation" and hasattr(ann, 'url_citation'):
+                            try:
+                                cited_title = getattr(ann.url_citation, 'title', "N/A") or "N/A"
+                                cited_url = getattr(ann.url_citation, 'url', "N/A") or "N/A"
+                                extracted_sources.append({"title": cited_title, "url": cited_url})
+                            except Exception as e_ann:
+                                logger.warning(f"Ошибка при извлечении URL-цитаты из аннотации: {e_ann}")
+            
+            # Формируем результат
+            return {
+                "source": "llm_deep_search",
+                "result": f"URL-only search for {company_name}",
+                "raw_result": f"URL-only search for {company_name}",
+                "sources": extracted_sources,
+                "extracted_homepage_url": url_response,
+                "_finder_instance_type": self.__class__.__name__,
+                "url_only_mode": True
+            }
+        except Exception as e:
+            error_msg = f"Error in URL-only search for '{company_name}': {str(e)}"
+            logger.error(error_msg)
+            logger.error(traceback.format_exc())
+            return {
+                "source": "llm_deep_search",
+                "result": None,
+                "raw_result": None,
+                "error": error_msg,
+                "sources": [],
+                "extracted_homepage_url": None,
+                "_finder_instance_type": self.__class__.__name__,
+                "url_only_mode": True
             }
     
     def _get_default_aspects(self) -> List[str]:
