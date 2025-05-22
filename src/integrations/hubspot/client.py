@@ -95,7 +95,7 @@ class HubSpotClient:
                             "value": normalized_domain
                         }]
                     }],
-                    "properties": ["name", "domain", "ai_description", "ai_description_updated"],
+                    "properties": ["name", "domain", "ai_description", "ai_description_updated", "linkedin_company_page"],
                     "limit": 1
                 }
                 

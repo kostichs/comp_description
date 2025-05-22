@@ -620,23 +620,15 @@ async def process_companies(
     # Стандартные finders
     if run_standard_pipeline_cfg:
         # HomepageFinder для поиска официального сайта
-        current_openai_api_key = openai_client.api_key if openai_client else None
         finder_instances["homepage_finder"] = HomepageFinder(
-            company_name=company_name, 
-            aiohttp_session=aiohttp_session, 
-            scraping_bee_client=sb_client
+            serper_api_key=serper_api_key,
+            openai_api_key=openai_client.api_key if openai_client else None
         )
         
         # LinkedInFinder для поиска LinkedIn URL
         finder_instances["linkedin_finder"] = LinkedInFinder(
-            company_name=company_name, 
-            url=None, 
-            openai_client=openai_client, 
-            aiohttp_session=aiohttp_session, 
-            scraping_bee_client=sb_client,
-            serper_api_key=serper_api_key, 
-            llm_config=llm_config, 
-            finders=finder_instances
+            serper_api_key=serper_api_key,
+            openai_api_key=openai_client.api_key if openai_client else None
         )
     
     # DomainCheckFinder для проверки URL
@@ -679,27 +671,27 @@ async def process_companies(
         tasks = []
         
         # Запускаем обработку для каждой компании в батче
-        for j, company_item in enumerate(batch):
+        for j, company_input_item in enumerate(batch):
             # Получаем имя компании и второй столбец, если они предоставлены как кортеж или словарь
-            if isinstance(company_item, dict):
-                company_name = company_item.get('name')
-                company_url = company_item.get('url')
+            if isinstance(company_input_item, dict):
+                company_name = company_input_item.get('name')
+                company_url = company_input_item.get('url')
                 
                 # Если URL есть, нормализуем его и добавляем во второй столбец данных
                 if company_url:
                     if not second_column_data:
                         second_column_data = {}
                     second_column_data[company_name] = company_url
-            elif isinstance(company_item, tuple):
-                company_name = company_item[0]
-                if len(company_item) > 1:
-                    company_url = company_item[1]
+            elif isinstance(company_input_item, tuple):
+                company_name = company_input_item[0]
+                if len(company_input_item) > 1:
+                    company_url = company_input_item[1]
                     if company_url:
                         if not second_column_data:
                             second_column_data = {}
                         second_column_data[company_name] = company_url
             else:
-                company_name = company_item
+                company_name = company_input_item
             
             # Создаем задачу для обработки компании
             task = _process_single_company_async(

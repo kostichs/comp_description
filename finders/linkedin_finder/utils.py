@@ -71,8 +71,8 @@ def normalize_linkedin_url(url: str) -> str | None:
             return None
 
         # Собираем чистый URL, без подпутей после слага и без параметров
-        # Всегда добавляем слеш в конце базового URL компании/школы/витрины
-        return f"https://www.linkedin.com/{profile_type}/{cleaned_slug}/"
+        # Удаляем слеш в конце базового URL компании/школы/витрины
+        return f"https://www.linkedin.com/{profile_type}/{cleaned_slug}"
     except Exception as e:
         # Можно добавить логирование ошибки, если есть логгер
         # logger.error(f"Error normalizing LinkedIn URL '{url}': {e}")

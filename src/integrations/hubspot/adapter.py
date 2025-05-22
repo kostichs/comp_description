@@ -89,11 +89,12 @@ class HubSpotAdapter:
             properties = company.get("properties", {})
             description = properties.get("ai_description") 
             updated_timestamp = properties.get("ai_description_updated")
+            linkedin_page = properties.get("linkedin_company_page") # Извлекаем LinkedIn URL
             
             logger.info(
                 f"Found company in HubSpot: {properties.get('name')}, "
                 f"description length: {len(description) if description else 0}, "
-                f"updated: {updated_timestamp}"
+                f"updated: {updated_timestamp}, LinkedIn: {linkedin_page}"
             )
             
             if description and updated_timestamp:
@@ -104,6 +105,7 @@ class HubSpotAdapter:
                         f"Last updated: {updated_timestamp}"
                     )
                     # Найдено свежее описание, поэтому возвращаем True (пропускаем обработку)
+                    # Возвращаем company, чтобы иметь доступ к linkedin_page в вызывающем коде
                     return True, company 
                 else:
                     logger.info(
@@ -121,7 +123,13 @@ class HubSpotAdapter:
             logger.error(f"Error checking company '{company_name}' in HubSpot: {e}", exc_info=True)
             return False, None # Ошибка, не пропускаем обработку
     
-    async def create_company(self, company_name: str, url: str, description: str) -> Optional[Dict[str, Any]]:
+    async def create_company(
+        self, 
+        company_name: str, 
+        url: str, 
+        description: str,
+        linkedin_url: Optional[str] = None  # Добавляем LinkedIn URL
+    ) -> Optional[Dict[str, Any]]:
         """
         Создание новой компании в HubSpot.
         """
@@ -147,8 +155,10 @@ class HubSpotAdapter:
                 "ai_description": description, # Используем кастомное поле HubSpot
                 "ai_description_updated": now # Используем кастомное поле HubSpot
             }
+            if linkedin_url: # Добавляем LinkedIn если есть
+                properties["linkedin_company_page"] = linkedin_url
             
-            logger.info(f"Creating new company '{company_name}' with domain '{domain}' in HubSpot")
+            logger.info(f"Creating new company '{company_name}' with domain '{domain}' in HubSpot. LinkedIn: {linkedin_url}")
             company = await self.client.create_company(domain, properties)
             
             if company:
@@ -167,7 +177,8 @@ class HubSpotAdapter:
         company_data: Optional[Dict[str, Any]], 
         company_name: str,
         url: str,
-        description: str
+        description: str,
+        linkedin_url: Optional[str] = None # Добавляем LinkedIn URL
     ) -> bool:
         """
         Сохранение описания компании в HubSpot.
@@ -188,8 +199,10 @@ class HubSpotAdapter:
                     "ai_description": description, # Используем кастомное поле HubSpot
                     "ai_description_updated": now # Используем кастомное поле HubSpot
                 }
+                if linkedin_url: # Добавляем LinkedIn если есть
+                    properties_to_update["linkedin_company_page"] = linkedin_url
                 
-                logger.info(f"Updating description for company '{company_name}' (ID: {company_id}) in HubSpot")
+                logger.info(f"Updating description and LinkedIn for company '{company_name}' (ID: {company_id}) in HubSpot. LinkedIn: {linkedin_url}")
                 result = await self.client.update_company_properties(company_id, properties_to_update)
                 
                 if result:
@@ -200,7 +213,8 @@ class HubSpotAdapter:
                     return False
             else: # Компания не найдена, создаем новую
                 logger.info(f"Company '{company_name}' not found in HubSpot, creating new entry.")
-                new_company = await self.create_company(company_name, url, description)
+                # Передаем linkedin_url при создании новой компании
+                new_company = await self.create_company(company_name, url, description, linkedin_url)
                 return new_company is not None
         
         except Exception as e:
@@ -213,14 +227,15 @@ class HubSpotAdapter:
         """
         return self.client._normalize_domain(url) # Используем метод из HubSpotClient
     
-    def get_description_from_company(self, company_data: Dict[str, Any]) -> Tuple[str, str]:
+    def get_company_details_from_hubspot_data(self, company_data: Dict[str, Any]) -> Tuple[str, str, Optional[str]]:
         """
-        Извлечение описания и временной метки из данных о компании.
+        Извлечение описания, временной метки и URL LinkedIn из данных о компании HubSpot.
         """
         properties = company_data.get("properties", {})
-        description = properties.get("ai_description", "") # Используем кастомное поле HubSpot
-        timestamp = properties.get("ai_description_updated", "") # Используем кастомное поле HubSpot
-        return description, timestamp
+        description = properties.get("ai_description", "") 
+        timestamp = properties.get("ai_description_updated", "") 
+        linkedin_url = properties.get("linkedin_company_page") # Может быть None
+        return description, timestamp, linkedin_url
 
 class HubSpotPipelineAdapter(PipelineAdapter):
     """
@@ -365,11 +380,11 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 # ИСПРАВЛЕНО: если description_is_fresh == True, значит, описание свежее и компания есть в HubSpot
                 if description_is_fresh and hubspot_company_data: 
                     logger.info(f"Company '{company_name}' has a fresh description in HubSpot. Skipping processing.")
-                    description, timestamp = self.hubspot_adapter.get_description_from_company(hubspot_company_data)
+                    description, timestamp, linkedin_url = self.hubspot_adapter.get_company_details_from_hubspot_data(hubspot_company_data)
                     result_from_hubspot = {
                         "Company_Name": company_name,
                         "Official_Website": company_url or hubspot_company_data.get("properties",{}).get("domain",""), 
-                        "LinkedIn_URL": "", 
+                        "LinkedIn_URL": linkedin_url or "", 
                         "Description": description,
                         "Timestamp": timestamp,
                         "Data_Source": "HubSpot" 
@@ -470,17 +485,19 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                     company_name = result_item.get("Company_Name")
                     company_url = result_item.get("Official_Website")
                     description = result_item.get("Description")
+                    linkedin_url_from_pipeline = result_item.get("LinkedIn_URL") # Получаем LinkedIn URL из результатов пайплайна
                     
                     # Ищем исходные данные HubSpot для этой компании
                     original_company_info = next((c for c in companies_to_process_standard if c["name"] == company_name), None)
                     hubspot_company_data_for_save = original_company_info.get("hubspot_data") if original_company_info else None
 
-                    if company_name and company_url and description:
+                    if company_name and company_url and description: # Условие остается прежним, но LinkedIn URL передается всегда, если есть
                         await self.hubspot_adapter.save_company_description(
                             hubspot_company_data_for_save, # Данные из HubSpot, если были
                             company_name,
                             company_url,
-                            description
+                            description,
+                            linkedin_url_from_pipeline # Передаем LinkedIn URL из пайплайна
                         )
                     else:
                         logger.warning(f"Skipping HubSpot save for '{company_name}' due to missing data (URL or Description).")

@@ -78,38 +78,39 @@ class LinkedInFinder(Finder):
             # Ищем паттерн /company/company-name. company-name может содержать буквы, цифры, дефисы.
             match = re.search(r'(/company/([a-zA-Z0-9_-]+/?))?', parsed_url.path, re.IGNORECASE)
             
-            if match and match.group(1): # match.group(1) это /company/company-name/ или /company/company-name
-                clean_path = match.group(1)
-                # Убедимся, что путь заканчивается на слеш
-                if not clean_path.endswith('/'):
-                    clean_path += '/'
+            if match and match.group(1): 
+                # Извлекаем часть пути, которая соответствует /company/slug
+                # match.group(2) должен содержать сам slug
+                company_slug_part = match.group(2)
+                if company_slug_part:
+                    # Убираем возможный слеш в конце слага, если он там есть
+                    clean_slug = company_slug_part.strip('/') 
+                    clean_path = f"/company/{clean_slug}" # Собираем путь без слеша в конце
                 
-                # Собираем URL, отбрасывая все после /company/company-name/
-                # и параметры запроса/фрагменты
-                # Используем оригинальную схему и netloc
-                normalized = urllib.parse.urlunparse((
-                    parsed_url.scheme or 'https', 
-                    parsed_url.netloc, 
-                    clean_path, 
-                    '',  # params - очищаем
-                    '',  # query - очищаем
-                    ''   # fragment - очищаем
-                ))
-                return normalized.lower() # Приводим к нижнему регистру для единообразия
-            else:
-                logger.warning(f"Could not extract base /company/path from LinkedIn URL: {url}")
-                # Если не удалось извлечь /company/path, возможно, URL уже "чистый" или имеет нестандартную структуру
-                # Попробуем просто очистить query и fragment от исходного URL, если он выглядит как company URL
-                if '/company/' in parsed_url.path: # Дополнительная проверка
-                     base_path_only = parsed_url.path.split('?')[0].split('#')[0]
-                     if not base_path_only.endswith('/'): base_path_only += '/'
-                     return urllib.parse.urlunparse((
+                    normalized = urllib.parse.urlunparse((
                         parsed_url.scheme or 'https', 
                         parsed_url.netloc, 
-                        base_path_only,
-                        '', '', ''
-                     )).lower()
-                return url # Возвращаем исходный, если ничего не подошло
+                        clean_path, 
+                        '',  
+                        '',  
+                        ''   
+                    ))
+                    return normalized.lower()
+            else:
+                logger.warning(f"Could not extract base /company/path from LinkedIn URL: {url}")
+                if '/company/' in parsed_url.path:
+                     base_path_part = parsed_url.path.split('?')[0].split('#')[0]
+                     # Попытка извлечь /company/slug и убрать лишние слеши
+                     company_match_in_base = re.search(r'(/company/[^/]+)', base_path_part)
+                     if company_match_in_base:
+                         clean_path_fallback = company_match_in_base.group(1) # Уже без слеша в конце
+                         return urllib.parse.urlunparse((
+                            parsed_url.scheme or 'https', 
+                            parsed_url.netloc, 
+                            clean_path_fallback,
+                            '', '', ''
+                         )).lower()
+                return url
 
         except Exception as e:
             logger.error(f"Error normalizing LinkedIn URL '{url}': {e}", exc_info=True)
