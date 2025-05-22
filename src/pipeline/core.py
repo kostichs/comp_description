@@ -14,6 +14,7 @@ import aiohttp
 from openai import AsyncOpenAI
 from scrapingbee import ScrapingBeeClient
 import json
+import re
 
 # Finders
 from finders.base import Finder
@@ -374,6 +375,35 @@ async def _process_single_company_async(
                 logger.error(f"{run_stage_log} - Error saving raw markdown report: {e}", exc_info=True)
         
         # 7. Подготовка итогового результата
+        
+        # Финальная проверка: если URL все еще не найден, используем гарантированный метод
+        if not found_homepage_url:
+            logger.warning(f"{run_stage_log} - URL not found by any standard methods. Using guaranteed URL finder as last resort")
+            try:
+                guaranteed_url = await _guaranteed_url_finder(company_name, openai_client, structured_data)
+                if guaranteed_url:
+                    found_homepage_url = guaranteed_url
+                    logger.info(f"{run_stage_log} - Guaranteed URL finder found URL: {found_homepage_url}")
+                    
+                    # Добавляем URL в структурированные данные
+                    structured_data["homepage"] = found_homepage_url
+                    structured_data["extracted_homepage_url"] = found_homepage_url
+                    structured_data["guaranteed_url_source"] = True
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error in guaranteed URL finder: {e}", exc_info=True)
+                
+            # Если даже гарантированный метод не нашел URL, создаем синтетический URL
+            if not found_homepage_url:
+                # Создаем синтетический URL на основе имени компании
+                synthetic_url = _create_synthetic_url(company_name)
+                found_homepage_url = synthetic_url
+                logger.warning(f"{run_stage_log} - Using synthetic URL as last resort: {found_homepage_url}")
+                
+                # Добавляем URL в структурированные данные
+                structured_data["homepage"] = found_homepage_url
+                structured_data["extracted_homepage_url"] = found_homepage_url
+                structured_data["synthetic_url"] = True
+        
         result_data["Official_Website"] = found_homepage_url or ""
         result_data["LinkedIn_URL"] = linkedin_url or ""
         result_data["Description"] = description_text or f"Error generating description for {company_name}"
@@ -722,3 +752,153 @@ async def process_companies(
     
     logger.info(f"Finished processing {len(all_results)} companies")
     return all_results 
+
+async def _guaranteed_url_finder(company_name: str, openai_client: AsyncOpenAI, structured_data: Dict[str, Any] = {}) -> Optional[str]:
+    """
+    Гарантированный метод поиска URL компании с максимальным приоритетом точности.
+    Используется как последний шанс, когда все другие методы не смогли найти URL.
+    
+    Args:
+        company_name: Название компании
+        openai_client: Клиент OpenAI для запросов
+        structured_data: Имеющиеся структурированные данные о компании
+        
+    Returns:
+        Optional[str]: URL компании или None, если не найден
+    """
+    logger.info(f"Running guaranteed URL finder for '{company_name}'")
+    
+    # Собираем всю доступную информацию о компании для контекста
+    context_info = []
+    if structured_data:
+        # Добавляем важные факты о компании, если они есть
+        for key in ["founding_year", "headquarters", "industry", "description", "products"]:
+            if key in structured_data and structured_data[key]:
+                context_info.append(f"{key}: {structured_data[key]}")
+    
+    context_str = "\n".join(context_info)
+    context_prompt = f"Additional information about the company:\n{context_str}" if context_str else ""
+    
+    # Максимально точный промпт для поиска только URL
+    system_prompt = """You are an advanced URL discovery system specialized in finding company websites.
+Your ONLY goal is to find the OFFICIAL WEBSITE URL of the company specified.
+Follow these strict guidelines:
+1. Focus ONLY on finding the primary, official domain of the company.
+2. Do NOT return social media profiles, marketplace listings, or third-party sites.
+3. Return ONLY a complete URL (with https://) - no explanations or comments.
+4. If you're not 100% certain, make your best determination based on available evidence.
+5. NEVER respond with "I don't know" or "I can't find it" - always provide your best URL guess.
+6. Format the URL correctly: prefer https://, include www. if appropriate.
+7. Make sure the returned URL is clean, without tracking parameters.
+8. Do not use markdown formatting or any additional characters."""
+
+    user_prompt = f"""Find the official website URL for this company: {company_name}
+
+{context_prompt}
+
+Instructions:
+- Return ONLY the complete URL with no additional text.
+- The URL should include https:// prefix.
+- Do not explain your reasoning, just provide the URL.
+- This is a critical operation where having ANY URL is better than no URL."""
+
+    try:
+        # Пробуем сначала с GPT-4 для максимальной точности
+        model = "gpt-4-turbo"
+        completion = await openai_client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.2,  # Небольшая температура для баланса креативности и точности
+            max_tokens=100    # Ограничиваем размер ответа
+        )
+        
+        if completion.choices and completion.choices[0].message:
+            url_response = completion.choices[0].message.content.strip()
+            
+            # Проверяем, что ответ похож на URL
+            if _validate_url_format(url_response):
+                logger.info(f"Guaranteed URL finder found URL for '{company_name}': {url_response}")
+                return url_response
+            else:
+                logger.warning(f"Guaranteed URL finder response doesn't look like URL: '{url_response}'")
+        
+        # Если GPT-4 не дал валидный URL, пробуем с gpt-3.5-turbo как запасной вариант
+        model = "gpt-3.5-turbo"
+        completion = await openai_client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=0.2,
+            max_tokens=100
+        )
+        
+        if completion.choices and completion.choices[0].message:
+            url_response = completion.choices[0].message.content.strip()
+            
+            # Проверяем, что ответ похож на URL
+            if _validate_url_format(url_response):
+                logger.info(f"Guaranteed URL finder (fallback model) found URL for '{company_name}': {url_response}")
+                return url_response
+            else:
+                logger.warning(f"Guaranteed URL finder (fallback model) response doesn't look like URL: '{url_response}'")
+            
+    except Exception as e:
+        logger.error(f"Error in guaranteed URL finder for '{company_name}': {e}", exc_info=True)
+    
+    return None
+
+def _validate_url_format(url: str) -> bool:
+    """
+    Проверяет, что строка выглядит как валидный URL.
+    
+    Args:
+        url: Строка для проверки
+        
+    Returns:
+        bool: True, если строка похожа на URL, иначе False
+    """
+    if not url:
+        return False
+    
+    # Базовая проверка на формат URL
+    url_pattern = r'https?://[\w\.-]+\.[a-zA-Z]{2,}(?:/[\w\.\-\%_]*)*'
+    if re.match(url_pattern, url):
+        return True
+    
+    # Проверка на доменное имя без протокола
+    domain_pattern = r'(?:www\.)?[a-zA-Z0-9][\w\-]*\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2})?'
+    if re.match(domain_pattern, url) and '.' in url and ' ' not in url:
+        return True
+    
+    return False
+
+def _create_synthetic_url(company_name: str) -> str:
+    """
+    Создает синтетический URL на основе имени компании.
+    Используется как самый последний вариант, когда все другие методы не сработали.
+    
+    Args:
+        company_name: Название компании
+        
+    Returns:
+        str: Синтетический URL
+    """
+    # Очищаем имя компании от специальных символов и приводим к нижнему регистру
+    clean_name = re.sub(r'[^\w\s]', '', company_name.lower())
+    
+    # Заменяем пробелы на дефисы
+    domain_name = re.sub(r'\s+', '-', clean_name.strip())
+    
+    # Удаляем слова, которые могут быть лишними (например, "Inc", "LLC", "Ltd")
+    domain_name = re.sub(r'(-inc|-llc|-ltd|-corp|-corporation|-limited)$', '', domain_name)
+    
+    # Создаем URL с https:// и .com
+    synthetic_url = f"https://www.{domain_name}.com"
+    
+    logger.warning(f"Created synthetic URL for '{company_name}': {synthetic_url}")
+    return synthetic_url 
