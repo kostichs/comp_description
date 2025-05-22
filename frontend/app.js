@@ -574,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let effectiveTotal = 0;
         let effectiveProcessed = processedCount; // По умолчанию
-        let deduplicationText = '';
+        let deduplicationTextParts = []; // Массив для частей текста о дедупликации
 
         if (sessionData) {
             // 1. Приоритет: sessionData.total_companies (обновляется после дедупликации)
@@ -604,12 +604,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
 
-            // Формирование текста о дедупликации
+            // Формирование текста о дедупликации и неживых ссылках
             if (sessionData.deduplication_info) {
                 const dedupInfo = sessionData.deduplication_info;
-                if (typeof dedupInfo.duplicates_removed === 'number' && dedupInfo.duplicates_removed > 0 &&
-                    typeof dedupInfo.final_count === 'number' && typeof dedupInfo.original_count === 'number') {
-                    deduplicationText = `<div class="deduplication-info">Removed ${dedupInfo.duplicates_removed} duplicates</div>`;
+                if (typeof dedupInfo.duplicates_removed === 'number' && dedupInfo.duplicates_removed > 0) {
+                    deduplicationTextParts.push(`Duplicates: ${dedupInfo.duplicates_removed}`);
+                }
+                // Добавляем информацию о неживых ссылках
+                if (typeof dedupInfo.dead_urls_removed === 'number' && dedupInfo.dead_urls_removed > 0) {
+                    deduplicationTextParts.push(`Dead links: ${dedupInfo.dead_urls_removed}`);
                 }
             }
         } else {
@@ -622,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (completed) {
             effectiveProcessed = effectiveTotal; // Если завершено, обработано = всего
         } else {
-            if (effectiveProcessed > effectiveTotal) {
+            if (effectiveProcessed > effectiveTotal && effectiveTotal > 0) { // Добавил effectiveTotal > 0 чтобы не обнулять processed, если total еще не определен
                 effectiveProcessed = effectiveTotal; // Обработано не может быть больше общего
             }
         }
@@ -633,13 +636,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log('[NEW] updateProgressBar FINAL values:', { effectiveProcessed, effectiveTotal, completed });
 
+        // Собираем текст о дедупликации и неживых ссылках
+        const additionalInfoHtml = deduplicationTextParts.length > 0 ? `<div class="deduplication-info">${deduplicationTextParts.join(', ')}</div>` : '';
+
         progressStatus.style.display = 'block';
         if (!completed) {
-            progressStatus.style.color = '#007bff';
-            progressStatus.innerHTML = `Processing... ${effectiveProcessed} of ${effectiveTotal} processed ${deduplicationText}`;
-        } else {
+            progressStatus.style.color = '#007bff'; // Синий для "в процессе"
+            if (sessionData && sessionData.status === 'error') { // Если есть ошибка, но completed=false
+                 progressStatus.style.color = 'red';
+                 progressStatus.innerHTML = `Error. ${effectiveProcessed} of ${effectiveTotal} processed. ${additionalInfoHtml}`.trim();
+            } else {
+                 progressStatus.innerHTML = `Processing... ${effectiveProcessed} of ${effectiveTotal} processed ${additionalInfoHtml}`.trim();
+            }
+        } else { // completed === true
             progressStatus.style.color = 'green';
-            progressStatus.innerHTML = `Completed: ${effectiveProcessed} of ${effectiveTotal} processed ${deduplicationText}`;
+            progressStatus.innerHTML = `Completed: ${effectiveProcessed} of ${effectiveTotal} processed ${additionalInfoHtml}`.trim();
         }
     }
 

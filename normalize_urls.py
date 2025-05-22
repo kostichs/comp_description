@@ -15,7 +15,7 @@ import asyncio
 import socket
 from urllib.parse import urlparse
 import time
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 import ssl
 from src.input_validators import normalize_domain
 from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
@@ -427,377 +427,191 @@ async def normalize_and_remove_duplicates(
     scrapingbee_client: Optional[CustomScrapingBeeClient] = None
 ) -> tuple[Optional[str], dict]:
     """
-    Асинхронно нормализует URL, проверяет их жизнеспособность, обрабатывает редиректы,
-    удаляет дубликаты по доменам и компании с неживыми URL.
-    
-    Args:
-        input_file: Путь к входному файлу (CSV или Excel)
-        output_file: Путь для сохранения результата (если не указан, перезаписывает входной файл)
-        session_id_for_metadata: ID сессии для обновления метаданных (если None, метаданные не обновляются)
-        scrapingbee_client: Опциональный клиент ScrapingBee для продвинутой проверки URL.
-        
-    Returns:
-        tuple: (путь к файлу без дубликатов, словарь с информацией об обработке)
-               Возвращает (None, info_dict) если произошла критическая ошибка при загрузке файла.
+    Асинхронно нормализует URL, проверяет их жизнеспособность, удаляет дубликаты по домену 
+    и сохраняет результат. Обновляет метаданные сессии.
     """
     if not output_file:
-        output_file = input_file
+        # Если output_file не указан, создаем имя на основе input_file
+        input_path = Path(input_file)
+        # Пример: input_file = "path/to/companies.xlsx"
+        # output_file_name = "processed_companies.xlsx"
+        output_file_name = f"processed_{input_path.name}"
+        # Сохраняем в той же директории, где и input_file, если это сессия
+        # или в текущей директории, если это не путь с 'sessions'
+        if input_path.parent and 'sessions' in str(input_path.parent):
+             output_file_path = input_path.parent / output_file_name
+        else:
+            # Если input_file просто имя файла, сохраняем в текущую директорию
+            output_file_path = Path(output_file_name)
+    else:
+        output_file_path = Path(output_file)
+
+    # Убедимся, что директория для output_file существует
+    output_file_path.parent.mkdir(parents=True, exist_ok=True)
     
     input_path = Path(input_file)
     if not input_path.exists():
-        logger.error(f"Файл не найден: {input_file}")
-        # Возвращаем None для пути файла и информацию об ошибке
-        return None, {
-            "error": f"Файл не найден: {input_file}",
-            "original_count": 0,
-            "live_urls_count": 0,
-            "dead_urls_removed": 0,
-            "redirected_urls_updated": 0,
-            "duplicates_removed": 0,
-            "final_count": 0,
-            "processing_messages": [{"type": "error", "message": f"Файл не найден: {input_file}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}]
-        }
+        error_msg = f"Файл не найден: {input_file}"
+        logger.error(error_msg)
+        return None, {"error": error_msg, "processing_messages": [{"type": "error", "message": error_msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}]}
 
     is_excel = input_path.suffix.lower() in ['.xlsx', '.xls']
-    
-    processing_info = {
-        "original_count": 0,
-        "live_urls_count": 0,
-        "dead_urls_removed": 0,
-        "redirected_urls_updated": 0,
-        "duplicates_removed": 0,
-        "final_count": 0,
-        "processing_messages": []
-    }
-
     try:
-        df = pd.read_excel(input_file, engine='openpyxl') if is_excel else pd.read_csv(input_file)
+        df = pd.read_excel(input_file) if is_excel else pd.read_csv(input_file)
+        if df.empty:
+             logger.warning(f"Входной файл {input_file} пуст.")
+             # Создаем пустой файл результата с ожидаемыми колонками
+             pd.DataFrame(columns=['Company Name', 'Website']).to_excel(output_file_path, index=False) if is_excel else pd.DataFrame(columns=['Company Name', 'Website']).to_csv(output_file_path, index=False)
+             details = {
+                "original_count": 0, "live_urls_count": 0, "dead_urls_removed": 0,
+                "redirected_urls_updated": 0, "duplicates_removed": 0, "final_count": 0,
+                "processing_messages": [{"type": "warning", "message": f"Входной файл {input_file} был пуст.", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}]
+             }
+             if session_id_for_metadata:
+                _update_session_metadata_light(session_id_for_metadata, details)
+             return str(output_file_path), details
     except Exception as e:
-        logger.error(f"Ошибка загрузки файла {input_file}: {e}")
-        processing_info["error"] = f"Ошибка загрузки файла: {e}"
-        processing_info["processing_messages"].append({"type": "error", "message": f"Ошибка загрузки файла: {e}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-        return None, processing_info
+        error_msg = f"Ошибка при чтении файла {input_file}: {e}"
+        logger.error(error_msg, exc_info=True)
+        return None, {"error": error_msg, "processing_messages": [{"type": "error", "message": error_msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}]}
 
+    if df.shape[1] < 2:
+        error_msg = "Файл должен содержать как минимум две колонки: 'Company Name' и 'Website'."
+        logger.error(error_msg)
+        return None, {"error": error_msg, "processing_messages": [{"type": "error", "message": error_msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}]}
 
-    processing_info["original_count"] = len(df)
-    if df.empty:
-        logger.info(f"Файл {input_file} пуст. Пропускаем обработку.")
-        processing_info["processing_messages"].append({"type": "info", "message": "Исходный файл пуст.", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-        # Сохраняем пустой файл, если output_file отличается или если это требуется
-        if is_excel:
-            df.to_excel(output_file, index=False, engine='openpyxl')
-        else:
-            df.to_csv(output_file, index=False)
-        return output_file, processing_info
-
-
-    # Определяем колонку с URL (обычно вторая)
-    url_column_name = df.columns[1] if len(df.columns) > 1 else df.columns[0]
-    company_column_name = df.columns[0]
-
-    # --- Шаг 1: Асинхронная проверка жизнеспособности URL и обновление ---
-    valid_rows = []
-    tasks = []
+    # Используем первые две колонки
+    company_name_col = df.columns[0]
+    website_col = df.columns[1]
     
-    # Используем общий SSLContext, который не проверяет сертификаты, если основная проверка SSL не удалась в get_url_status_and_final_location_async
-    # Однако, get_url_status_and_final_location_async уже имеет логику повторных попыток с отключением SSL, так что здесь стандартный
-    connector = aiohttp.TCPConnector(ssl=False) # Отключаем проверку SSL на уровне коннектора для большей устойчивости, если это глобально приемлемо
-                                               # или можно оставить ssl=None для стандартной проверки и положиться на логику в get_url_status_and_final_location_async
-    
-    async with aiohttp.ClientSession(connector=connector) as http_session:
+    original_company_count = len(df)
+    logger.info(f"Начальная обработка {original_company_count} компаний из файла {input_file}")
+
+    live_companies_data = []
+    dead_urls_removed_count = 0
+    redirected_urls_updated_count = 0
+    processing_messages = [] # Локальный список сообщений для этой операции
+
+    conn = aiohttp.TCPConnector(ssl=False) # Отключаем проверку SSL глобально для этой сессии aiohttp
+    async with aiohttp.ClientSession(connector=conn) as session:
+        tasks = []
         for index, row in df.iterrows():
-            original_url = str(row[url_column_name]).strip() if pd.notna(row[url_column_name]) else ""
-            company_name = str(row[company_column_name]).strip() if pd.notna(row[company_column_name]) else "Unknown Company"
-            
-            if not original_url:
-                logger.info(f"Для компании '{company_name}' URL отсутствует. Строка будет сохранена без изменений URL.")
-                # Мы все еще можем захотеть сохранить эту строку, если она не будет удалена как дубликат позже
-                # Поэтому просто добавляем ее с пустым 'processed_url'
-                # valid_rows.append({**row.to_dict(), '_original_url': original_url, '_processed_url': "", '_domain_for_dedup': ""})
-                # Вместо valid_rows, мы будем сразу добавлять в tasks None или placeholder, 
-                # чтобы сохранить порядок для сопоставления с df.iterrows()
-                tasks.append(None) # Placeholder для строк без URL
-                continue
-
-            tasks.append(get_url_status_and_final_location_async(original_url, http_session, scrapingbee_client=scrapingbee_client))
-
+            company_name = str(row[company_name_col])
+            original_url = str(row[website_col])
+            tasks.append(get_url_status_and_final_location_async(original_url, session, scrapingbee_client=scrapingbee_client))
+        
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
-    temp_df_rows = []
-    # current_df_idx = 0 # Индекс для сопоставления с исходным df - теперь не нужен, т.к. results имеет ту же длину, что и df
+    for i, result in enumerate(results):
+        company_name = str(df.iloc[i][company_name_col])
+        original_url = str(df.iloc[i][website_col])
 
-    # for i, row_data in enumerate(df.to_dict(orient='records')):
-    for i, (df_index, row_series) in enumerate(df.iterrows()): # Используем iterrows для доступа к данным строки как Series
-        row_data = row_series.to_dict()
-        original_url_for_row = str(row_data.get(url_column_name, "")).strip()
-        company_name_for_row = str(row_data.get(company_column_name, "Unknown Company")).strip()
-
-        res = results[i] # Получаем результат по тому же индексу, что и строка в df
-
-        if res is None: # Это placeholder для строк, где URL отсутствовал
-            temp_df_rows.append({**row_data, '_original_url': "", '_processed_url': "", '_domain_for_dedup': ""})
-            continue 
-
-        # if not original_url_for_row: # Если URL изначально отсутствовал - эта логика теперь выше, через placeholder
-        #     temp_df_rows.append({**row_data, '_original_url': "", '_processed_url': "", '_domain_for_dedup': ""})
-        #     continue # Переходим к следующей строке из df
-
-        # # Теперь берем результат из `results`
-        # res = results[current_df_idx]
-        # current_df_idx +=1 # Увеличиваем индекс для следующего непустого URL
-
-
-        if isinstance(res, Exception):
-            logger.error(f"Ошибка при проверке URL {original_url_for_row} для компании '{company_name_for_row}': {res}")
-            processing_info["dead_urls_removed"] += 1
-            msg = f"Компания '{company_name_for_row}' ({original_url_for_row}) удалена: ошибка проверки URL ({res})."
-            processing_info["processing_messages"].append({"type": "warning", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-            continue # Пропускаем эту компанию
-
-        is_live, final_url, error_message = res
-
-        if not is_live:
-            logger.warning(f"URL {original_url_for_row} для компании '{company_name_for_row}' неживой. Причина: {error_message}. Компания будет удалена.")
-            processing_info["dead_urls_removed"] += 1
-            msg = f"Компания '{company_name_for_row}' ({original_url_for_row}) удалена: URL неактивен ({error_message})."
-            processing_info["processing_messages"].append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-            continue # Пропускаем эту компанию
-
-        processing_info["live_urls_count"] += 1
-        updated_url = final_url if final_url else original_url_for_row # Используем final_url если он есть
-        
-        if final_url and original_url_for_row != final_url:
-            logger.info(f"URL для компании '{company_name_for_row}' обновлен с {original_url_for_row} на {final_url} (редирект).")
-            processing_info["redirected_urls_updated"] += 1
-            msg = f"URL для '{company_name_for_row}' изменен с {original_url_for_row} на {final_url} из-за редиректа."
-            processing_info["processing_messages"].append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-        
-        normalized_final_domain = normalize_domain(updated_url)
-        
-        new_row_data = {**row_data}
-        new_row_data[url_column_name] = updated_url # Обновляем URL в данных
-        new_row_data['_original_url'] = original_url_for_row
-        new_row_data['_processed_url'] = updated_url
-        new_row_data['_domain_for_dedup'] = normalized_final_domain
-        temp_df_rows.append(new_row_data)
-
-    if not temp_df_rows:
-        logger.info("После проверки жизнеспособности URL не осталось валидных компаний.")
-        df_processed = pd.DataFrame(columns=df.columns) # Создаем пустой DataFrame с теми же колонками
-    else:
-        df_processed = pd.DataFrame(temp_df_rows)
-        # Удаляем временные колонки, если они не нужны в финальном файле
-        # df_processed = df_processed.drop(columns=['_original_url', '_processed_url', '_domain_for_dedup'], errors='ignore')
-
-    # --- Шаг 2: Нормализация URL в DataFrame (если еще не сделано для final_url) и Дедупликация ---
-    # Убедимся, что URL-колонка содержит именно те URL, по которым будем делать дедупликацию.
-    # '_domain_for_dedup' уже содержит нормализованный домен от final_url (или пусто, если URL не было).
-
-    # Логика дедупликации:
-    unique_domains_map = {} # {domain: index_in_df_processed}
-    rows_to_drop_indices = []
-    
-    # Проходим по df_processed для дедупликации
-    # Важно: df_processed уже отфильтрован от "мертвых" URL
-    for index, row_series in df_processed.iterrows():
-        # Используем _domain_for_dedup, который мы рассчитали ранее
-        domain_to_check = row_series['_domain_for_dedup']
-        company_name = str(row_series[company_column_name]) if pd.notna(row_series[company_column_name]) else "Unknown"
-
-        if not domain_to_check: # Если домена нет (например, URL отсутствовал изначально), не считаем дубликатом
-            logger.info(f"Компания '{company_name}' не имеет домена для проверки дубликатов, строка сохраняется.")
+        if isinstance(result, Exception):
+            logger.error(f"Ошибка при обработке URL {original_url} для компании {company_name}: {result}")
+            processing_messages.append({"type": "error", "message": f"URL {original_url} ({company_name}) вызвал ошибку: {result}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+            dead_urls_removed_count +=1 
             continue
 
-        if domain_to_check in unique_domains_map:
-            logger.info(f"Найден дубликат домена '{domain_to_check}' для компании '{company_name}'. Компания будет удалена.")
-            rows_to_drop_indices.append(index)
-            processing_info["duplicates_removed"] += 1
-            # Можно добавить сообщение в processing_messages, если нужно детализировать какой дубликат удален
-            msg = f"Компания '{company_name}' (URL: {row_series['_processed_url']}) удалена как дубликат домена '{domain_to_check}'."
-            processing_info["processing_messages"].append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+        is_live, final_url, error_message = result
+        if is_live and final_url:
+            live_companies_data.append({"name": company_name, "original_url": original_url, "final_url": final_url})
+            if final_url != original_url and normalize_domain(final_url) != normalize_domain(original_url): # Считаем редиректом, только если домен изменился
+                redirected_urls_updated_count += 1
+                msg = f"URL для '{company_name}' изменен с {original_url} на {final_url} из-за редиректа."
+                logger.info(msg)
+                processing_messages.append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
         else:
-            unique_domains_map[domain_to_check] = index
-            logger.info(f"Компания '{company_name}' с доменом '{domain_to_check}' добавлена как уникальная.")
+            dead_urls_removed_count += 1
+            msg = f"URL {original_url} для компании '{company_name}' неживой. Причина: {error_message}. Компания будет удалена."
+            logger.warning(msg)
+            processing_messages.append({"type": "warning", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+            
+    logger.info(f"Проверка URL завершена. Живых URL: {len(live_companies_data)}, Удалено неживых: {dead_urls_removed_count}, Обновлено редиректов: {redirected_urls_updated_count}")
 
-    if rows_to_drop_indices:
-        df_final = df_processed.drop(rows_to_drop_indices)
-        logger.info(f"Удалено {len(rows_to_drop_indices)} дубликатов по домену.")
+    # Дедупликация по финальному URL (домену)
+    unique_domains = set()
+    final_unique_companies_data = []
+    duplicates_removed_count_after_url_check = 0
+
+    for company_data in live_companies_data:
+        domain = normalize_domain(company_data["final_url"])
+        if domain not in unique_domains:
+            unique_domains.add(domain)
+            final_unique_companies_data.append(company_data)
+        else:
+            duplicates_removed_count_after_url_check += 1
+            msg = f"Компания '{company_data['name']}' (URL: {company_data['final_url']}) удалена как дубликат домена '{domain}'."
+            logger.info(msg)
+            processing_messages.append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+            
+    logger.info(f"Дедупликация завершена. Удалено дубликатов: {duplicates_removed_count_after_url_check}.")
+    
+    # Создание DataFrame для сохранения
+    if final_unique_companies_data:
+        output_df = pd.DataFrame([{"Company Name": lcd["name"], "Website": lcd["final_url"]} for lcd in final_unique_companies_data])
     else:
-        df_final = df_processed
-        logger.info("Дубликаты по доменам не найдены после проверки жизнеспособности URL.")
+        output_df = pd.DataFrame(columns=['Company Name', 'Website'])
 
-    # Удаляем временные колонки перед сохранением
-    df_final = df_final.drop(columns=['_original_url', '_processed_url', '_domain_for_dedup'], errors='ignore')
-    
-    processing_info["final_count"] = len(df_final)
-
-    # --- Шаг 3: Сохранение результата ---
     try:
-        if is_excel:
-            df_final.to_excel(output_file, index=False, engine='openpyxl')
+        if output_file_path.suffix.lower() in ['.xlsx', '.xls']:
+            output_df.to_excel(output_file_path, index=False)
         else:
-            df_final.to_csv(output_file, index=False)
-        logger.info(f"Файл с обработанными компаниями сохранен: {output_file}")
+            output_df.to_csv(output_file_path, index=False)
+        logger.info(f"Файл с обработанными компаниями сохранен: {output_file_path}")
     except Exception as e:
-        logger.error(f"Ошибка сохранения файла {output_file}: {e}")
-        processing_info["error"] = f"Ошибка сохранения файла: {e}"
-        # Обновляем сообщение об ошибке, если оно уже есть, или добавляем новое
-        error_msg_obj = next((msg for msg in processing_info["processing_messages"] if msg.get("type") == "error"), None)
-        if error_msg_obj:
-            error_msg_obj["message"] += f"; Ошибка сохранения файла: {e}"
-        else:
-            processing_info["processing_messages"].append({"type": "error", "message": f"Ошибка сохранения файла: {e}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-        # В этом случае output_file может быть не создан или быть неполным
-        # но мы все равно возвращаем имя файла, куда пытались сохранить
+        error_msg = f"Ошибка при сохранении файла {output_file_path}: {e}"
+        logger.error(error_msg, exc_info=True)
+        processing_messages.append({"type": "error", "message": error_msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+        # В этом случае deduplication_details все равно должны быть возвращены с ошибкой сохранения
+        # но сам файл output_file_path может быть не создан или быть некорректным.
 
-    # --- Шаг 4: Обновление метаданных сессии (если session_id предоставлен) ---
+    deduplication_details = {
+        "original_count": original_company_count,
+        "live_urls_count": len(final_unique_companies_data), # Количество живых и уже уникальных
+        "dead_urls_removed": dead_urls_removed_count,
+        "redirected_urls_updated": redirected_urls_updated_count,
+        "duplicates_removed": duplicates_removed_count_after_url_check, # Дубликаты, удаленные на этом этапе
+        "final_count": len(output_df)
+    }
+
     if session_id_for_metadata:
-        try:
-            from src.data_io import load_session_metadata, save_session_metadata
-            
-            all_metadata = load_session_metadata()
-            session_found_and_updated = False
-            for meta_idx, meta in enumerate(all_metadata):
-                if meta.get("session_id") == session_id_for_metadata:
-                    logger.info(f"Обновление метаданных для сессии {session_id_for_metadata}...")
-                    meta["original_companies_count"] = processing_info["original_count"] # Исходное до всех проверок
-                    meta["companies_count"] = processing_info["final_count"] # Итоговое после всех проверок и дедупликации
-                    meta["total_companies"] = processing_info["final_count"] # Это поле используется фронтендом
-                    
-                    # Объединяем существующие processing_messages с новыми
-                    if "processing_messages" not in meta:
-                        meta["processing_messages"] = []
-                    
-                    # Добавляем новые сообщения, избегая дублирования по тексту и типу
-                    existing_messages_tuples = {(m.get("type"), m.get("message")) for m in meta["processing_messages"]}
-                    for new_msg in processing_info["processing_messages"]:
-                        if (new_msg.get("type"), new_msg.get("message")) not in existing_messages_tuples:
-                            meta["processing_messages"].append(new_msg)
-                            existing_messages_tuples.add((new_msg.get("type"), new_msg.get("message")))
+        _update_session_metadata_light(session_id_for_metadata, deduplication_details, processing_messages)
 
-                    # Добавляем общую информацию о дедупликации и проверке URL
-                    # Это поле может быть расширено, если фронтенд ожидает более структурированную информацию
-                    meta["extended_deduplication_info"] = {
-                        "original_upload_count": processing_info["original_count"],
-                        "dead_urls_removed": processing_info["dead_urls_removed"],
-                        "redirected_urls_updated": processing_info["redirected_urls_updated"],
-                        "duplicates_removed_after_url_check": processing_info["duplicates_removed"],
-                        "final_company_count": processing_info["final_count"]
-                    }
-                    
-                    # Сохраняем старое поле deduplication_info для обратной совместимости, если оно ожидается где-то
-                    # но делаем его более простым, основываясь на общем количестве удаленных строк
-                    total_removed_for_simple_dedup = processing_info["dead_urls_removed"] + processing_info["duplicates_removed"]
-                    meta["deduplication_info"] = {
-                         "original_count": processing_info["original_count"],
-                         "duplicates_removed": total_removed_for_simple_dedup, # Общее количество "потерянных" строк
-                         "final_count": processing_info["final_count"]
-                    }
+    return str(output_file_path), deduplication_details
 
-                    all_metadata[meta_idx] = meta
-                    save_session_metadata(all_metadata)
-                    logger.info(f"Метаданные сессии {session_id_for_metadata} обновлены.")
-                    session_found_and_updated = True
-                    break
-            if not session_found_and_updated:
-                logger.warning(f"Сессия {session_id_for_metadata} не найдена в метаданных. Метаданные не обновлены.")
-        except ImportError:
-             logger.error("Не удалось импортировать data_io для обновления метаданных сессии.")
-        except Exception as e:
-            logger.error(f"Ошибка при обновлении метаданных сессии {session_id_for_metadata}: {e}")
-            # Добавляем эту ошибку в processing_info, чтобы она могла быть возвращена
-            processing_info["processing_messages"].append({"type": "error", "message": f"Ошибка обновления метаданных сессии: {e}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+def _update_session_metadata_light(session_id: str, dedup_info: dict, new_messages: Optional[List[dict]] = None):
+    """Вспомогательная функция для обновления метаданных сессии."""
+    try:
+        from src.data_io import load_session_metadata, save_session_metadata
+        logger.info(f"Обновление метаданных (light) для сессии {session_id}...")
+        all_metadata = load_session_metadata()
+        session_updated = False
+        for session_meta in all_metadata:
+            if session_meta.get("session_id") == session_id:
+                session_meta["total_companies"] = dedup_info.get("final_count", 0)
+                session_meta["companies_count"] = dedup_info.get("final_count", 0)
+                session_meta["deduplication_info"] = dedup_info # Сохраняем все детали сюда
 
-
-    # Удаляем больше не нужные функции, так как их логика теперь встроена
-    # normalize_urls_in_file и remove_duplicates_by_domain
-    # Оставляем их, если они используются где-то еще или для CLI.
-    # Для чистоты кода их можно было бы удалить или сделать приватными, если они больше не нужны извне.
-
-    return output_file, processing_info
-    
-# def normalize_and_remove_duplicates(input_file: str, output_file: str = None) -> tuple[str, dict]:
-#     """
-#     Нормализует URL и удаляет дубликаты по доменам в одной операции.
-    
-#     Args:
-#         input_file: Путь к входному файлу (CSV или Excel)
-#         output_file: Путь для сохранения результата (если не указан, перезаписывает входной файл)
+                current_messages = session_meta.get("processing_messages", [])
+                if new_messages:
+                    # Добавляем только действительно новые сообщения, проверяя по тексту и типу
+                    existing_message_tuples = {(m.get("type"), m.get("message")) for m in current_messages}
+                    messages_to_add_now = [
+                        msg for msg in new_messages
+                        if (msg.get("type"), msg.get("message")) not in existing_message_tuples
+                    ]
+                    if messages_to_add_now:
+                         session_meta["processing_messages"] = current_messages + messages_to_add_now
+                session_updated = True
+                break
         
-#     Returns:
-#         tuple: (путь к файлу без дубликатов, словарь с информацией о дедупликации)
-#     """
-#     try:
-#         # Шаг 1: Нормализация URL
-#         normalized_file = normalize_urls_in_file(input_file, output_file)
-        
-#         # Шаг 2: Удаление дубликатов
-#         result_file, deduplication_info = remove_duplicates_by_domain(normalized_file)
-        
-#         # Логируем детальную информацию о дедупликации
-#         logger.info(f"normalize_and_remove_duplicates результат: файл={result_file}, удалено дубликатов={deduplication_info['duplicates_removed']}")
-        
-#         # Обновляем метаданные сессии, если файл находится в каталоге сессии
-#         try:
-#             from src.data_io import load_session_metadata, save_session_metadata
-            
-#             # Проверяем, содержит ли путь к файлу слово 'sessions'
-#             file_path = Path(result_file)
-#             if 'sessions' in str(file_path):
-#                 # Предполагаем, что ID сессии - это имя родительской директории
-#                 session_id = file_path.parent.name
-                
-#                 # Загружаем метаданные
-#                 all_metadata = load_session_metadata()
-#                 session_found_and_updated = False # Флаг для проверки
-#                 for meta_idx, meta in enumerate(all_metadata):
-#                     if meta.get("session_id") == session_id:
-#                         logger.info(f"Found session {session_id} in metadata. Updating...")
-#                         # Обновляем количество компаний в метаданных
-#                         meta["original_companies_count"] = deduplication_info["original_count"]
-#                         meta["companies_count"] = deduplication_info["final_count"]
-#                         meta["total_companies"] = deduplication_info["final_count"]
-                        
-#                         # Добавляем информацию о дедупликации
-#                         meta["deduplication_info"] = deduplication_info
-                        
-#                         # Добавляем сообщение о дедупликации
-#                         if "processing_messages" not in meta:
-#                             meta["processing_messages"] = []
-                        
-#                         import time
-#                         dedup_message_text = f"Removed {deduplication_info['duplicates_removed']} duplicates."
-                        
-#                         # Проверяем, есть ли уже такое сообщение
-#                         message_exists = any(
-#                             msg.get("type") == "deduplication" and msg.get("message") == dedup_message_text 
-#                             for msg in meta["processing_messages"]
-#                         )
-                        
-#                         if not message_exists:
-#                             meta["processing_messages"].append({
-#                                 "type": "deduplication",
-#                                 "message": dedup_message_text,
-#                                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-#                             })
-                        
-#                         logger.info(f"Values for session {session_id} before save: total_companies={meta.get('total_companies')}, deduplication_info={meta.get('deduplication_info')}")
-#                         # Обновляем элемент в списке all_metadata напрямую по индексу, чтобы быть уверенным
-#                         all_metadata[meta_idx] = meta 
-#                         save_session_metadata(all_metadata)
-#                         logger.info(f"Обновлены метаданные сессии {session_id} с информацией о дедупликации")
-#                         session_found_and_updated = True
-#                         break
-#                 if not session_found_and_updated:
-#                     logger.warning(f"Session {session_id} not found in metadata during deduplication update step. Metadata not updated with dedup info.")
-#         except Exception as e:
-#             logger.error(f"Ошибка при обновлении метаданных сессии: {e}")
-        
-#         return result_file, deduplication_info
-    
-#     except Exception as e:
-#         logger.error(f"Ошибка в процессе нормализации и удаления дубликатов: {e}")
-#         raise
+        if session_updated:
+            save_session_metadata(all_metadata)
+            logger.info(f"Метаданные сессии {session_id} обновлены (light).")
+        else:
+            logger.warning(f"Сессия {session_id} не найдена в метаданных для обновления (light).")
+    except Exception as e:
+        logger.error(f"Ошибка при обновлении метаданных сессии {session_id} (light): {e}", exc_info=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Нормализация URL, проверка жизнеспособности и удаление дубликатов во входных данных")
@@ -822,7 +636,7 @@ if __name__ == "__main__":
 
     loop = asyncio.get_event_loop()
     try:
-        result_file, processing_details = loop.run_until_complete(
+        result_file, deduplication_details = loop.run_until_complete(
             normalize_and_remove_duplicates(
                 args.input_file, 
                 output_file_path, 
@@ -833,16 +647,11 @@ if __name__ == "__main__":
         if result_file:
             logger.info(f"Обработка завершена. Результат в файле: {result_file}")
         else:
-            logger.error(f"Обработка завершилась с ошибкой. Детали: {processing_details.get('error')}")
+            logger.error(f"Обработка завершилась с ошибкой. Детали: {deduplication_details.get('error')}")
         
         logger.info("Детали обработки:")
-        for key, value in processing_details.items():
-            if key == "processing_messages":
-                logger.info("  Сообщения:")
-                for msg_data in value:
-                    logger.info(f"    - [{msg_data.get('type', 'N/A')}] {msg_data.get('timestamp', '')}: {msg_data.get('message', 'Нет сообщения')}")
-            else:
-                logger.info(f"  {key}: {value}")
+        for key, value in deduplication_details.items():
+            logger.info(f"  {key}: {value}")
 
     except Exception as e:
         logger.error(f"Критическая ошибка при запуске обработки из CLI: {e}", exc_info=True)
