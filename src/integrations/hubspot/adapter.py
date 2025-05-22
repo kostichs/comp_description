@@ -383,6 +383,11 @@ class HubSpotPipelineAdapter(PipelineAdapter):
 
         # Если остались компании для стандартной обработки
         if companies_to_process_standard:
+            # Определяем, нужно ли дописывать в CSV/JSON
+            # Если all_results уже содержит что-то (из HubSpot), то нужно дописывать.
+            should_append_csv = len(all_results) > 0
+            should_append_json = len(all_results) > 0 # Аналогично для JSON, если он используется таким же образом
+
             # Преобразуем companies_to_process_standard в формат, ожидаемый process_companies
             # List[Union[str, Tuple[str, str]]]
             company_names_for_core_processing = []
@@ -426,6 +431,8 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 # second_column_data - не передаем, т.к. URL уже в company_names_for_core_processing
                 # hubspot_client - не передаем
                 use_raw_llm_data_as_description=self.llm_config.get('use_raw_llm_data_as_description', True), # Берем из llm_config
+                csv_append_mode=should_append_csv, # Используем флаг для CSV
+                json_append_mode=should_append_json # Используем флаг для JSON
             )
             
             # process_companies возвращает только список результатов.

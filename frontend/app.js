@@ -208,26 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Deduplication info in fetchSessionData:', sessionData.deduplication_info);
             }
             
-            // Добавляем вывод сообщения о дедупликации, если оно есть
-            if (sessionData.processing_messages) {
-                const dedupMessages = sessionData.processing_messages.filter(msg => msg.type === 'deduplication');
-                if (dedupMessages.length > 0) {
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = 'system-message';
-                    messageDiv.textContent = dedupMessages[0].message;
-                    // Вставляем сообщение перед progressStatus
-                    const progressStatusEl = document.getElementById('progressStatus');
-                    if (progressStatusEl && progressStatusEl.parentNode) {
-                        // Удаляем старое сообщение о дедупликации, если оно есть
-                        const existingDedupMessage = progressStatusEl.parentNode.querySelector('.system-message');
-                        if (existingDedupMessage) {
-                            existingDedupMessage.remove();
-                        }
-                        progressStatusEl.parentNode.insertBefore(messageDiv, progressStatusEl);
-                    }
-                }
-            }
-            
             if (sessionData.status === 'completed' || sessionData.status === 'error') {
                 // Показываем секцию результатов, как только узнаем, что процесс завершен или есть ошибка.
                 // Таблица либо заполнится, либо покажет сообщение "нет результатов" / "ошибка загрузки".
@@ -382,32 +362,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const sessionData = await response.json(); // Получаем свежие данные о сессии
                 updateStatus(`Status: ${sessionData.status}`);
                 
-                // Обработка сообщений о дедупликации (остается, так как это UI элемент)
-                if (sessionData.processing_messages) {
-                    const dedupMessages = sessionData.processing_messages.filter(msg => msg.type === 'deduplication');
-                    if (dedupMessages.length > 0) {
-                        const existingMessage = document.querySelector('.system-message');
-                        if (!existingMessage) {
-                            const messageDiv = document.createElement('div');
-                            messageDiv.className = 'system-message';
-                            messageDiv.textContent = dedupMessages[0].message;
-                            const progressStatusEl = document.getElementById('progressStatus'); // Переименовано
-                            if (progressStatusEl && progressStatusEl.parentNode) {
-                                progressStatusEl.parentNode.insertBefore(messageDiv, progressStatusEl);
-                            }
-                        }
-                    }
-                }
-                
-                // Передаем sessionData в fetchAndDisplayResults
                 await fetchAndDisplayResults(sessionId, sessionData); 
                 
                 if (sessionData.status === 'completed' || sessionData.status === 'error') {
                     stopPollingStatus();
-                    // fetchAndDisplayResults уже был вызван выше, нет нужды вызывать снова
-                    // await fetchAndDisplayResults(sessionId, sessionData); 
                     if (sessionData.status === 'completed'){
-                        // Передаем sessionData для корректного определения total и processed
                         let finalCount = (sessionData.deduplication_info && sessionData.deduplication_info.final_count) 
                                          ? sessionData.deduplication_info.final_count 
                                          : sessionData.total_companies;
@@ -650,7 +609,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const dedupInfo = sessionData.deduplication_info;
                 if (typeof dedupInfo.duplicates_removed === 'number' && dedupInfo.duplicates_removed > 0 &&
                     typeof dedupInfo.final_count === 'number' && typeof dedupInfo.original_count === 'number') {
-                    deduplicationText = `<div class="deduplication-info">Обнаружено и удалено ${dedupInfo.duplicates_removed} дубликатов. Обрабатывается ${dedupInfo.final_count} уникальных компаний вместо ${dedupInfo.original_count}.</div>`;
+                    deduplicationText = `<div class="deduplication-info">Removed ${dedupInfo.duplicates_removed} duplicates</div>`;
                 }
             }
         } else {

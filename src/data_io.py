@@ -194,8 +194,8 @@ def load_session_metadata() -> list[dict]:
             # Log the actual content being loaded for the specific session if possible
             # This requires knowing the session_id, which this generic function doesn't.
             # So, we log a snippet or hash if it's too large.
-            content_snippet = content_before_load[:500] + "..." if len(content_before_load) > 500 else content_before_load
-            logging.info(f"Successfully loaded session metadata from '{SESSIONS_METADATA_FILE}'. Content snippet: {content_snippet}")
+            # content_snippet = content_before_load[:500] + "..." if len(content_before_load) > 500 else content_before_load
+            # logging.info(f"Successfully loaded session metadata from '{SESSIONS_METADATA_FILE}'. Content snippet: {content_snippet}")
             
             if not isinstance(metadata, list):
                  logging.error(f"Invalid format in \'{SESSIONS_METADATA_FILE}\'. Expected a list. Returning empty list.")
@@ -216,8 +216,8 @@ def save_session_metadata(metadata: list[dict]):
     # This requires knowing session_id, so we might log a relevant part or full if small
     try:
         metadata_str_for_log = json.dumps(metadata, indent=2, ensure_ascii=False)
-        snippet_to_log = metadata_str_for_log[:500] + "..." if len(metadata_str_for_log) > 500 else metadata_str_for_log
-        logging.info(f"Attempting to save session metadata. Data snippet: {snippet_to_log}")
+        # snippet_to_log = metadata_str_for_log[:500] + "..." if len(metadata_str_for_log) > 500 else metadata_str_for_log
+        # logging.info(f"Attempting to save session metadata. Data snippet: {snippet_to_log}")
     except Exception as log_e:
         logging.warning(f"Could not serialize metadata for logging before save: {log_e}")
 

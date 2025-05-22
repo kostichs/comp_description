@@ -266,7 +266,7 @@ def normalize_and_remove_duplicates(input_file: str, output_file: str = None) ->
                             meta["processing_messages"] = []
                         
                         import time
-                        dedup_message_text = f"Обнаружено и удалено {deduplication_info['duplicates_removed']} дубликатов. Обрабатывается {deduplication_info['final_count']} уникальных компаний вместо {deduplication_info['original_count']}."
+                        dedup_message_text = f"Removed {deduplication_info['duplicates_removed']} duplicates."
                         
                         # Проверяем, есть ли уже такое сообщение
                         message_exists = any(

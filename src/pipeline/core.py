@@ -416,78 +416,80 @@ async def _process_single_company_async(
         result_data["structured_data"] = structured_data
         
         # Если задан output_csv_path, сохраняем результат текущей компании в CSV
-        if output_csv_path:
-            try:
-                # Создаем список с одним результатом для текущей компании
-                current_result = {key: result_data.get(key, "") for key in csv_fields}
-                
-                # Используем portalocker для блокировки файла на Windows
-                import csv
-                from contextlib import contextmanager
-                
-                @contextmanager
-                def locked_file(filename, mode):
-                    """Контекстный менеджер для безопасной работы с файлами."""
-                    try:
-                        # Открываем файл эксклюзивно
-                        import os
-                        import time  # Добавляем импорт модуля time
-                        # Использование опции 'b' для бинарного режима, чтобы избежать проблем с переводами строк
-                        file_handle = open(filename, mode + 'b', buffering=0)
-                        try:
-                            # Пытаемся получить эксклюзивную блокировку
-                            if os.name == 'nt':  # Windows
-                                import msvcrt
-                                msvcrt.locking(file_handle.fileno(), msvcrt.LK_NBLCK, 1)
-                            else:  # Unix/Linux
-                                import fcntl
-                                fcntl.flock(file_handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                        except (IOError, OSError):
-                            # Не можем получить блокировку, закрываем файл и пробуем снова
-                            file_handle.close()
-                            time.sleep(0.1)
-                            file_handle = open(filename, mode + 'b', buffering=0)
-                            if os.name == 'nt':
-                                msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
-                            else:
-                                fcntl.flock(file_handle, fcntl.LOCK_EX)
-                        
-                        # Создаем текстовый wrapper для бинарного файла
-                        import io
-                        text_file = io.TextIOWrapper(file_handle, encoding='utf-8')
-                        yield text_file
-                    finally:
-                        try:
-                            # Снимаем блокировку и закрываем файл
-                            text_file.detach()  # Отсоединяем TextIOWrapper, чтобы не закрыть основной файл дважды
-                            if os.name == 'nt':
-                                file_handle.seek(0)
-                                try:
-                                    msvcrt.locking(file_handle.fileno(), msvcrt.LK_UNLCK, 1)
-                                except:
-                                    pass  # Игнорируем ошибки при разблокировке
-                            file_handle.close()
-                        except:
-                            pass  # Игнорируем ошибки при закрытии
-                
-                # Добавляем запись в CSV файл, используя нашу функцию блокировки
-                try:
-                    with locked_file(output_csv_path, 'a') as f:
-                        writer = csv.DictWriter(f, fieldnames=csv_fields)
-                        writer.writerow(current_result)
-                    logger.info(f"{run_stage_log} - Result saved to {output_csv_path}")
-                except Exception as e:
-                    # Запасной план: просто добавляем строку в файл без блокировки
-                    try:
-                        with open(output_csv_path, 'a', encoding='utf-8', newline='') as f:
-                            writer = csv.DictWriter(f, fieldnames=csv_fields)
-                            writer.writerow(current_result)
-                        logger.info(f"{run_stage_log} - Result saved to {output_csv_path} (without locking)")
-                    except Exception as inner_e:
-                        logger.error(f"{run_stage_log} - Error saving result to CSV (fallback): {inner_e}", exc_info=True)
-                        raise inner_e
-            except Exception as e:
-                logger.error(f"{run_stage_log} - Error saving result to CSV: {e}", exc_info=True)
+        # ---- НАЧАЛО БЛОКА ДЛЯ КОММЕНТИРОВАНИЯ ----
+        # if output_csv_path:
+        #     try:
+        #         # Создаем список с одним результатом для текущей компании
+        #         current_result = {key: result_data.get(key, "") for key in csv_fields}
+        #         
+        #         # Используем portalocker для блокировки файла на Windows
+        #         import csv
+        #         from contextlib import contextmanager
+        #         
+        #         @contextmanager
+        #         def locked_file(filename, mode):
+        #             """Контекстный менеджер для безопасной работы с файлами."""
+        #             try:
+        #                 # Открываем файл эксклюзивно
+        #                 import os
+        #                 import time  # Добавляем импорт модуля time
+        #                 # Использование опции 'b' для бинарного режима, чтобы избежать проблем с переводами строк
+        #                 file_handle = open(filename, mode + 'b', buffering=0)
+        #                 try:
+        #                     # Пытаемся получить эксклюзивную блокировку
+        #                     if os.name == 'nt':  # Windows
+        #                         import msvcrt
+        #                         msvcrt.locking(file_handle.fileno(), msvcrt.LK_NBLCK, 1)
+        #                     else:  # Unix/Linux
+        #                         import fcntl
+        #                         fcntl.flock(file_handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        #                 except (IOError, OSError):
+        #                     # Не можем получить блокировку, закрываем файл и пробуем снова
+        #                     file_handle.close()
+        #                     time.sleep(0.1)
+        #                     file_handle = open(filename, mode + 'b', buffering=0)
+        #                     if os.name == 'nt':
+        #                         msvcrt.locking(file_handle.fileno(), msvcrt.LK_LOCK, 1)
+        #                     else:
+        #                         fcntl.flock(file_handle, fcntl.LOCK_EX)
+        #                 
+        #                 # Создаем текстовый wrapper для бинарного файла
+        #                 import io
+        #                 text_file = io.TextIOWrapper(file_handle, encoding='utf-8')
+        #                 yield text_file
+        #             finally:
+        #                 try:
+        #                     # Снимаем блокировку и закрываем файл
+        #                     text_file.detach()  # Отсоединяем TextIOWrapper, чтобы не закрыть основной файл дважды
+        #                     if os.name == 'nt':
+        #                         file_handle.seek(0)
+        #                         try:
+        #                             msvcrt.locking(file_handle.fileno(), msvcrt.LK_UNLCK, 1)
+        #                         except:
+        #                             pass  # Игнорируем ошибки при разблокировке
+        #                     file_handle.close()
+        #                 except:
+        #                     pass  # Игнорируем ошибки при закрытии
+        #         
+        #         # Добавляем запись в CSV файл, используя нашу функцию блокировки
+        #         try:
+        #             with locked_file(output_csv_path, 'a') as f:
+        #                 writer = csv.DictWriter(f, fieldnames=csv_fields)
+        #                 writer.writerow(current_result)
+        #             # logger.info(f"{run_stage_log} - Result saved to {output_csv_path}") # Закомментировано
+        #         except Exception as e:
+        #             # Запасной план: просто добавляем строку в файл без блокировки
+        #             try:
+        #                 with open(output_csv_path, 'a', encoding='utf-8', newline='') as f:
+        #                     writer = csv.DictWriter(f, fieldnames=csv_fields)
+        #                     writer.writerow(current_result)
+        #                 # logger.info(f"{run_stage_log} - Result saved to {output_csv_path} (without locking)") # Закомментировано
+        #             except Exception as inner_e:
+        #                 logger.error(f"{run_stage_log} - Error saving result to CSV (fallback): {inner_e}", exc_info=True)
+        #                 raise inner_e
+        #     except Exception as e:
+        #         logger.error(f"{run_stage_log} - Error saving result to CSV: {e}", exc_info=True)
+        # ---- КОНЕЦ БЛОКА ДЛЯ КОММЕНТИРОВАНИЯ ----
         
         # Если задан output_json_path, сохраняем structured_data в JSON инкрементально
         if output_json_path and structured_data:
@@ -535,7 +537,7 @@ async def _process_single_company_async(
                     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
         
-        logger.info(f"{run_stage_log} - Processing completed successfully")
+        # logger.info(f"{run_stage_log} - Processing completed successfully") # Закомментировано
         return result_data
     
     except Exception as e:
@@ -563,7 +565,9 @@ async def process_companies(
     llm_deep_search_config_override: Optional[Dict[str, Any]] = None,
     second_column_data: Optional[Dict[str, str]] = None,
     hubspot_client: Optional[Any] = None,
-    use_raw_llm_data_as_description: bool = False
+    use_raw_llm_data_as_description: bool = False,
+    csv_append_mode: bool = False,
+    json_append_mode: bool = False
 ) -> List[Dict[str, Any]]:
     """
     Process multiple companies in parallel batches
@@ -589,6 +593,8 @@ async def process_companies(
         second_column_data: Data from the second column (company_name -> url mapping)
         hubspot_client: HubSpot client (optional)
         use_raw_llm_data_as_description: Whether to use raw LLM data as description
+        csv_append_mode: Whether to append to CSV file instead of overwriting
+        json_append_mode: Whether to append to JSON file instead of overwriting
         
     Returns:
         List[Dict[str, Any]]: List of results
@@ -614,10 +620,11 @@ async def process_companies(
     # Стандартные finders
     if run_standard_pipeline_cfg:
         # HomepageFinder для поиска официального сайта
-        finder_instances["homepage_finder"] = HomepageFinder()
+        current_openai_api_key = openai_client.api_key if openai_client else None
+        finder_instances["homepage_finder"] = HomepageFinder(serper_api_key=serper_api_key, openai_api_key=current_openai_api_key)
         
         # LinkedInFinder для поиска LinkedIn URL
-        finder_instances["linkedin_finder"] = LinkedInFinder()
+        finder_instances["linkedin_finder"] = LinkedInFinder(serper_api_key=serper_api_key, openai_api_key=current_openai_api_key)
     
     # DomainCheckFinder для проверки URL
     if run_domain_check_finder_cfg:
@@ -630,13 +637,20 @@ async def process_companies(
     if run_llm_deep_search_pipeline_cfg:
         # Инициализация LLMDeepSearchFinder
         config_override = llm_deep_search_config_override or {}
-        llm_deep_search_finder = LLMDeepSearchFinder(
-            openai_client=openai_client,
-            scrapingbee_client=sb_client,
-            serper_api_key=serper_api_key,
-            **config_override
-        )
-        finder_instances["llm_deep_search_finder"] = llm_deep_search_finder
+        # Получаем openai_api_key из openai_client, если он есть
+        current_openai_api_key = openai_client.api_key if openai_client else None
+        
+        if not current_openai_api_key:
+            logger.error("OpenAI API key is not available for LLMDeepSearchFinder. Skipping this finder.")
+            finder_instances["llm_deep_search_finder"] = None # или можно не добавлять его вообще
+        else:
+            llm_deep_search_finder = LLMDeepSearchFinder(
+                openai_api_key=current_openai_api_key,
+                # scrapingbee_client и serper_api_key не принимаются конструктором LLMDeepSearchFinder
+                # Они, вероятно, используются внутри его метода find или передаются через context
+                **config_override
+            )
+            finder_instances["llm_deep_search_finder"] = llm_deep_search_finder
     
     # Создаем экземпляр DescriptionGenerator для генерации описаний
     description_generator = DescriptionGenerator(openai_client)
@@ -731,16 +745,21 @@ async def process_companies(
                 results.append(result)
                 
         # Сохраняем промежуточные результаты в CSV и JSON
-        if output_csv_path:
-            await save_results_csv(
+        if output_csv_path and results: # Проверяем, что results не пустой
+            save_results_csv(
                 results=results, 
                 output_path=output_csv_path, 
-                fieldnames=expected_csv_fieldnames
+                expected_fields=expected_csv_fieldnames,
+                append_mode=csv_append_mode
             )
         
-        if output_json_path:
-            await save_results_json(results=results, output_path=output_json_path)
-    
+        if output_json_path and results: # Проверяем, что results не пустой
+            save_results_json(
+                results=results, 
+                output_path=output_json_path,
+                append_mode=json_append_mode
+            )
+            
     return results
 
 async def _guaranteed_url_finder(company_name: str, openai_client: AsyncOpenAI, structured_data: Dict[str, Any] = {}) -> Optional[str]:

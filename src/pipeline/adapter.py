@@ -390,7 +390,9 @@ class PipelineAdapter:
             output_csv_path=str(output_csv_path),
             output_json_path=str(structured_data_json_path),
             expected_csv_fieldnames=expected_csv_fieldnames,
-            use_raw_llm_data_as_description=self.use_raw_llm_data_as_description
+            use_raw_llm_data_as_description=self.use_raw_llm_data_as_description,
+            csv_append_mode=False,
+            json_append_mode=False
         )
         
         # 4. Подсчет успехов/ошибок

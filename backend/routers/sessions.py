@@ -30,7 +30,7 @@ async def get_session(session_id: str):
             removed = dedup_info.get("duplicates_removed", 0)
             final = dedup_info.get("final_count", 0)
             
-            dedup_message_text = f"Обнаружено и удалено {removed} дубликатов. Обрабатывается {final} уникальных компаний вместо {original}."
+            dedup_message_text = f"Removed {removed} duplicates"
             
             processing_messages = session_data.get("processing_messages", [])
             has_dedup_message = any(msg.get("type") == "deduplication" and msg.get("message") == dedup_message_text for msg in processing_messages)
