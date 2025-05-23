@@ -416,7 +416,8 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                     company_info_dict["hubspot_data"] = hubspot_company_data # Сохраняем данные HubSpot для обновления, даже если описание устарело
                     companies_to_process_standard.append(company_info_dict)
             logger.info(f"{len(companies_to_process_standard)} companies require standard processing after HubSpot check.")
-        else: # HubSpot не используется, все компании идут на стандартную обработку
+        else: 
+            # HubSpot не используется, все компании идут на стандартную обработку
             logger.info("HubSpot integration is not active. All companies will be processed by the standard pipeline.")
             companies_to_process_standard = list(company_data_list)
 

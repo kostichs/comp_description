@@ -733,6 +733,11 @@ async def process_companies(
         batch = company_names[i:i + batch_size]
         tasks = []
         
+        # Определяем режим сохранения: первый batch создает файл с нуля, остальные дописывают
+        is_first_batch = (i == 0)
+        current_csv_append_mode = csv_append_mode if not is_first_batch else False
+        current_json_append_mode = json_append_mode if not is_first_batch else False
+        
         # Запускаем обработку для каждой компании в батче
         for j, company_input_item in enumerate(batch):
             # Получаем имя компании и второй столбец, если они предоставлены как кортеж или словарь
@@ -788,12 +793,13 @@ async def process_companies(
         batch_results = await asyncio.gather(*tasks, return_exceptions=True)
         
         # Обрабатываем результаты
+        batch_results_to_save = []  # Только результаты текущего batch'а для сохранения
         for j, result in enumerate(batch_results):
             # Если возникло исключение, логируем его и добавляем ошибку в результаты
             if isinstance(result, Exception):
                 company_name = batch[j]
                 logger.error(f"Error processing company {company_name}: {result}", exc_info=True)
-                results.append({
+                error_result = {
                     "Company_Name": company_name,
                     "Official_Website": None,
                     "LinkedIn_URL": None,
@@ -801,7 +807,9 @@ async def process_companies(
                     "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
                     "error": str(result),
                     "structured_data": {}
-                })
+                }
+                results.append(error_result)
+                batch_results_to_save.append(error_result)
             else:
                 # Проверяем, что URL официального сайта нормализован
                 if result.get("Official_Website"):
@@ -811,21 +819,22 @@ async def process_companies(
                         result["Official_Website"] = normalized_url
                 
                 results.append(result)
+                batch_results_to_save.append(result)
                 
-        # Сохраняем промежуточные результаты в CSV и JSON
-        if output_csv_path and results: # Проверяем, что results не пустой
+        # Сохраняем промежуточные результаты в CSV и JSON (только текущий batch)
+        if output_csv_path and batch_results_to_save: # Сохраняем только результаты текущего batch'а
             save_results_csv(
-                results=results, 
+                results=batch_results_to_save, 
                 output_path=output_csv_path, 
                 expected_fields=expected_csv_fieldnames,
-                append_mode=csv_append_mode
+                append_mode=current_csv_append_mode
             )
         
-        if output_json_path and results: # Проверяем, что results не пустой
+        if output_json_path and batch_results_to_save: # Сохраняем только результаты текущего batch'а
             save_results_json(
-                results=results, 
+                results=batch_results_to_save, 
                 output_path=output_json_path,
-                append_mode=json_append_mode
+                append_mode=current_json_append_mode
             )
             
     return results
