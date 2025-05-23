@@ -446,8 +446,31 @@ async def get_session_results(session_id: str):
         for col in df.select_dtypes(include=['float', 'float64']).columns:
             df[col] = df[col].apply(lambda x: None if pd.isna(x) or np.isinf(x) else x)
             
+        # Конвертируем DataFrame в словари
         results = df.to_dict(orient='records')
-        return results
+        
+        # Дополнительная очистка для JSON сериализации
+        def clean_for_json(obj):
+            if isinstance(obj, float):
+                if np.isnan(obj) or np.isinf(obj):
+                    return None
+                return obj
+            elif isinstance(obj, (np.integer, np.floating)):
+                return obj.item()
+            elif obj is pd.NaT or obj is None:
+                return None
+            elif isinstance(obj, str):
+                return obj
+            else:
+                return str(obj)
+        
+        # Применяем очистку ко всем значениям
+        cleaned_results = []
+        for result in results:
+            cleaned_result = {key: clean_for_json(value) for key, value in result.items()}
+            cleaned_results.append(cleaned_result)
+            
+        return cleaned_results
     except pd.errors.EmptyDataError:
         logging.warning(f"Results file {output_csv_path} is empty for session {session_id}. Returning empty list.")
         return []

@@ -15,6 +15,7 @@ from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 from dotenv import load_dotenv
 from urllib.parse import urlparse # Добавлено для HubSpotAdapter
 import asyncio # Добавляем импорт asyncio
+import time
 
 from src.pipeline.adapter import PipelineAdapter
 from src.pipeline.core import process_companies
@@ -372,13 +373,39 @@ class HubSpotPipelineAdapter(PipelineAdapter):
         failure_count = 0
         
         companies_to_process_standard: List[Dict[str, Any]] = []
+        companies_with_template_descriptions: List[Dict[str, Any]] = []  # Для дубликатов и мертвых ссылок
         
-        # Предварительная проверка компаний в HubSpot
         if self.use_hubspot and self.hubspot_adapter:
             logger.info("HubSpot integration is active. Checking companies before processing...")
             for i, company_info_dict in enumerate(company_data_list):
                 company_name = company_info_dict["name"]
                 company_url = company_info_dict.get("url")
+                company_status = company_info_dict.get("status", "VALID")  # По умолчанию VALID для старого формата
+
+                # Если компания помечена как дубликат или с мертвой ссылкой, создаем шаблонное описание
+                if company_status in ["DUPLICATE", "DEAD_URL"]:
+                    if company_status == "DUPLICATE":
+                        template_description = f"This is a duplicate entry. The company '{company_name}' with domain '{company_url}' was already processed earlier in this dataset."
+                    else:  # DEAD_URL
+                        template_description = f"Unable to access website. The URL '{company_url}' for company '{company_name}' is not accessible or does not exist."
+                    
+                    template_result = {
+                        "Company_Name": company_name,
+                        "Official_Website": company_url or "",
+                        "LinkedIn_URL": "",
+                        "Description": template_description,
+                        "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                        "Data_Source": "Template",
+                        "HubSpot_Company_ID": ""
+                    }
+                    
+                    for field in expected_csv_fieldnames:
+                        if field not in template_result:
+                            template_result[field] = ""
+                    
+                    companies_with_template_descriptions.append(template_result)
+                    logger.info(f"Company '{company_name}' marked as {company_status}, using template description")
+                    continue
 
                 # description_is_fresh будет True, если найдено свежее описание и обработку можно пропустить
                 description_is_fresh, hubspot_company_data = await self.hubspot_adapter.check_company_description(company_name, company_url)
@@ -403,7 +430,10 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                             result_from_hubspot[field] = ""
 
                     all_results.append(result_from_hubspot)
-                    save_results_csv([result_from_hubspot], output_csv_path, expected_csv_fieldnames, append_mode=True)
+                    
+                    # Убираем поле Data_Source перед сохранением в CSV
+                    hubspot_result_for_csv = {key: value for key, value in result_from_hubspot.items() if key != "Data_Source"}
+                    save_results_csv([hubspot_result_for_csv], output_csv_path, expected_csv_fieldnames, append_mode=True)
                     success_count +=1
                     if broadcast_update:
                         # Учитываем уже обработанные компании для корректного прогресс-бара
@@ -416,10 +446,62 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                     company_info_dict["hubspot_data"] = hubspot_company_data # Сохраняем данные HubSpot для обновления, даже если описание устарело
                     companies_to_process_standard.append(company_info_dict)
             logger.info(f"{len(companies_to_process_standard)} companies require standard processing after HubSpot check.")
+            logger.info(f"{len(companies_with_template_descriptions)} companies received template descriptions.")
         else: 
-            # HubSpot не используется, все компании идут на стандартную обработку
-            logger.info("HubSpot integration is not active. All companies will be processed by the standard pipeline.")
-            companies_to_process_standard = list(company_data_list)
+            # HubSpot не используется, обрабатываем компании по статусам
+            logger.info("HubSpot integration is not active. Processing companies by status.")
+            for company_info_dict in company_data_list:
+                company_name = company_info_dict["name"]
+                company_url = company_info_dict.get("url")
+                company_status = company_info_dict.get("status", "VALID")  # По умолчанию VALID для старого формата
+
+                # Если компания помечена как дубликат или с мертвой ссылкой, создаем шаблонное описание
+                if company_status in ["DUPLICATE", "DEAD_URL"]:
+                    if company_status == "DUPLICATE":
+                        template_description = f"This is a duplicate entry. The company '{company_name}' with domain '{company_url}' was already processed earlier in this dataset."
+                    else:  # DEAD_URL
+                        template_description = f"Unable to access website. The URL '{company_url}' for company '{company_name}' is not accessible or does not exist."
+                    
+                    template_result = {
+                        "Company_Name": company_name,
+                        "Official_Website": company_url or "",
+                        "LinkedIn_URL": "",
+                        "Description": template_description,
+                        "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                        "Data_Source": "Template",
+                        "HubSpot_Company_ID": ""
+                    }
+                    
+                    for field in expected_csv_fieldnames:
+                        if field not in template_result:
+                            template_result[field] = ""
+                    
+                    companies_with_template_descriptions.append(template_result)
+                    logger.info(f"Company '{company_name}' marked as {company_status}, using template description")
+                else:
+                    companies_to_process_standard.append(company_info_dict)
+            
+            logger.info(f"{len(companies_to_process_standard)} companies will be processed by standard pipeline.")
+            logger.info(f"{len(companies_with_template_descriptions)} companies received template descriptions.")
+        
+        # Сохраняем компании с шаблонными описаниями в CSV
+        if companies_with_template_descriptions:
+            # Убираем поле Data_Source из сохранения, чтобы не засорять результирующий файл
+            template_results_for_csv = []
+            for template_result in companies_with_template_descriptions:
+                csv_result = {key: value for key, value in template_result.items() if key != "Data_Source"}
+                template_results_for_csv.append(csv_result)
+            
+            save_results_csv(template_results_for_csv, output_csv_path, expected_csv_fieldnames, append_mode=True)
+            all_results.extend(companies_with_template_descriptions)
+            success_count += len(companies_with_template_descriptions)
+            
+            # Обновляем прогресс для каждой компании с шаблонным описанием
+            if broadcast_update:
+                total_companies_count = len(company_data_list)
+                for template_company in companies_with_template_descriptions:
+                    processed_count = len(all_results)
+                    await broadcast_update(self.session_id, {"status": "processing", "progress": (processed_count / total_companies_count) * 100, "message": f"Processed {template_company['Company_Name']} (template)"})
 
         # Если остались компании для стандартной обработки
         if companies_to_process_standard:

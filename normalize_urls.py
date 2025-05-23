@@ -427,8 +427,11 @@ async def normalize_and_remove_duplicates(
     scrapingbee_client: Optional[CustomScrapingBeeClient] = None
 ) -> tuple[Optional[str], dict]:
     """
-    Асинхронно нормализует URL, проверяет их жизнеспособность, удаляет дубликаты по домену 
-    и сохраняет результат. Обновляет метаданные сессии.
+    Асинхронно нормализует URL, проверяет их жизнеспособность, помечает дубликаты 
+    и сохраняет результат с метками статуса. Обновляет метаданные сессии.
+    
+    ВАЖНО: Теперь дубликаты и мертвые ссылки НЕ удаляются, а помечаются для 
+    дальнейшей обработки в пайплайне с шаблонными описаниями.
     """
     if not output_file:
         # Если output_file не указан, создаем имя на основе input_file
@@ -461,10 +464,10 @@ async def normalize_and_remove_duplicates(
         if df.empty:
              logger.warning(f"Входной файл {input_file} пуст.")
              # Создаем пустой файл результата с ожидаемыми колонками
-             pd.DataFrame(columns=['Company Name', 'Website']).to_excel(output_file_path, index=False) if is_excel else pd.DataFrame(columns=['Company Name', 'Website']).to_csv(output_file_path, index=False)
+             pd.DataFrame(columns=['Company Name', 'Website', 'Status']).to_excel(output_file_path, index=False) if is_excel else pd.DataFrame(columns=['Company Name', 'Website', 'Status']).to_csv(output_file_path, index=False)
              details = {
-                "original_count": 0, "live_urls_count": 0, "dead_urls_removed": 0,
-                "redirected_urls_updated": 0, "duplicates_removed": 0, "final_count": 0,
+                "original_count": 0, "live_urls_count": 0, "dead_urls_count": 0,
+                "redirected_urls_updated": 0, "duplicates_count": 0, "final_count": 0,
                 "processing_messages": [{"type": "warning", "message": f"Входной файл {input_file} был пуст.", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}]
              }
              if session_id_for_metadata:
@@ -487,8 +490,8 @@ async def normalize_and_remove_duplicates(
     original_company_count = len(df)
     logger.info(f"Начальная обработка {original_company_count} компаний из файла {input_file}")
 
-    live_companies_data = []
-    dead_urls_removed_count = 0
+    all_companies_data = []  # Все компании с их статусами
+    dead_urls_count = 0
     redirected_urls_updated_count = 0
     processing_messages = [] # Локальный список сообщений для этой операции
 
@@ -509,48 +512,71 @@ async def normalize_and_remove_duplicates(
         if isinstance(result, Exception):
             logger.error(f"Ошибка при обработке URL {original_url} для компании {company_name}: {result}")
             processing_messages.append({"type": "error", "message": f"URL {original_url} ({company_name}) вызвал ошибку: {result}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-            dead_urls_removed_count +=1 
+            all_companies_data.append({
+                "name": company_name, 
+                "original_url": original_url, 
+                "final_url": original_url,
+                "status": "DEAD_URL",
+                "error_message": str(result)
+            })
+            dead_urls_count += 1 
             continue
 
         is_live, final_url, error_message = result
         if is_live and final_url:
-            live_companies_data.append({"name": company_name, "original_url": original_url, "final_url": final_url})
+            all_companies_data.append({
+                "name": company_name, 
+                "original_url": original_url, 
+                "final_url": final_url,
+                "status": "VALID"
+            })
             if final_url != original_url and normalize_domain(final_url) != normalize_domain(original_url): # Считаем редиректом, только если домен изменился
                 redirected_urls_updated_count += 1
                 msg = f"URL для '{company_name}' изменен с {original_url} на {final_url} из-за редиректа."
                 logger.info(msg)
                 processing_messages.append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
         else:
-            dead_urls_removed_count += 1
-            msg = f"URL {original_url} для компании '{company_name}' неживой. Причина: {error_message}. Компания будет удалена."
+            dead_urls_count += 1
+            msg = f"URL {original_url} для компании '{company_name}' неживой. Причина: {error_message}. Компания будет помечена как DEAD_URL."
             logger.warning(msg)
             processing_messages.append({"type": "warning", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+            all_companies_data.append({
+                "name": company_name, 
+                "original_url": original_url, 
+                "final_url": original_url,
+                "status": "DEAD_URL",
+                "error_message": error_message or "URL неживой"
+            })
             
-    logger.info(f"Проверка URL завершена. Живых URL: {len(live_companies_data)}, Удалено неживых: {dead_urls_removed_count}, Обновлено редиректов: {redirected_urls_updated_count}")
+    logger.info(f"Проверка URL завершена. Живых URL: {len([c for c in all_companies_data if c['status'] == 'VALID'])}, Неживых URL: {dead_urls_count}, Обновлено редиректов: {redirected_urls_updated_count}")
 
-    # Дедупликация по финальному URL (домену)
-    unique_domains = set()
-    final_unique_companies_data = []
-    duplicates_removed_count_after_url_check = 0
-
-    for company_data in live_companies_data:
-        domain = normalize_domain(company_data["final_url"])
-        if domain not in unique_domains:
-            unique_domains.add(domain)
-            final_unique_companies_data.append(company_data)
-        else:
-            duplicates_removed_count_after_url_check += 1
-            msg = f"Компания '{company_data['name']}' (URL: {company_data['final_url']}) удалена как дубликат домена '{domain}'."
-            logger.info(msg)
-            processing_messages.append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-            
-    logger.info(f"Дедупликация завершена. Удалено дубликатов: {duplicates_removed_count_after_url_check}.")
+    # Определение дубликатов по финальному URL (домену)
+    seen_domains = {}  # domain -> first_company_data
+    duplicates_count = 0
     
-    # Создание DataFrame для сохранения
-    if final_unique_companies_data:
-        output_df = pd.DataFrame([{"Company Name": lcd["name"], "Website": lcd["final_url"]} for lcd in final_unique_companies_data])
-    else:
-        output_df = pd.DataFrame(columns=['Company Name', 'Website'])
+    for company_data in all_companies_data:
+        if company_data["status"] == "VALID":  # Проверяем дубликаты только среди валидных URL
+            domain = normalize_domain(company_data["final_url"])
+            if domain in seen_domains:
+                # Это дубликат
+                company_data["status"] = "DUPLICATE"
+                duplicates_count += 1
+                msg = f"Компания '{company_data['name']}' (URL: {company_data['final_url']}) помечена как дубликат домена '{domain}'."
+                logger.info(msg)
+                processing_messages.append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+            else:
+                # Первая компания с этим доменом
+                seen_domains[domain] = company_data
+            
+    logger.info(f"Проверка дубликатов завершена. Найдено дубликатов: {duplicates_count}.")
+    
+    # Создание DataFrame для сохранения (сохраняем ВСЕ компании с их статусами)
+    output_df = pd.DataFrame([{
+        "Company Name": cd["name"], 
+        "Website": cd["final_url"],
+        "Status": cd["status"],
+        "Error_Message": cd.get("error_message", "")
+    } for cd in all_companies_data])
 
     try:
         if output_file_path.suffix.lower() in ['.xlsx', '.xls']:
@@ -562,19 +588,22 @@ async def normalize_and_remove_duplicates(
         error_msg = f"Ошибка при сохранении файла {output_file_path}: {e}"
         logger.error(error_msg, exc_info=True)
         processing_messages.append({"type": "error", "message": error_msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-        # В этом случае deduplication_details все равно должны быть возвращены с ошибкой сохранения
-        # но сам файл output_file_path может быть не создан или быть некорректным.
 
+    valid_companies_count = len([c for c in all_companies_data if c["status"] == "VALID"])
+    
     deduplication_details = {
         "original_count": original_company_count,
-        "live_urls_count": len(final_unique_companies_data), # Количество живых и уже уникальных
-        "dead_urls_removed": dead_urls_removed_count,
+        "live_urls_count": valid_companies_count,  # Количество живых и уникальных
+        "dead_urls_count": dead_urls_count,  # Изменили название с dead_urls_removed
         "redirected_urls_updated": redirected_urls_updated_count,
-        "duplicates_removed": duplicates_removed_count_after_url_check, # Дубликаты, удаленные на этом этапе
-        "final_count": len(output_df)
+        "duplicates_count": duplicates_count,  # Изменили название с duplicates_removed
+        "final_count": len(output_df)  # Общее количество (включая помеченные)
     }
 
     if session_id_for_metadata:
+        # Для обратной совместимости добавляем старые поля
+        deduplication_details["dead_urls_removed"] = dead_urls_count
+        deduplication_details["duplicates_removed"] = duplicates_count
         _update_session_metadata_light(session_id_for_metadata, deduplication_details, processing_messages)
 
     return str(output_file_path), deduplication_details

@@ -24,8 +24,9 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
         col_index: Index of the first column to load (default 0)
     
     Returns:
-        List of dictionaries, where each dictionary has 'name' and 'url' keys.
+        List of dictionaries, where each dictionary has 'name', 'url', and optionally 'status' keys.
         'url' can be None if not present in the input file.
+        'status' indicates processing status (VALID, DUPLICATE, DEAD_URL).
         Returns None if file could not be loaded or is empty.
     """
     file_path_str = str(file_path)
@@ -38,11 +39,22 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
         # Сначала попробуем загрузить весь файл, чтобы определить количество столбцов
         df_loaded = reader(file_path_str)
         
-        # Проверяем, есть ли два столбца
-        has_two_columns = df_loaded.shape[1] >= 2
+        # Проверяем наличие колонки Status (новый формат после normalize_and_remove_duplicates)
+        has_status_column = 'Status' in df_loaded.columns
+        has_two_or_more_columns = df_loaded.shape[1] >= 2
         
-        # Если есть два столбца, загружаем оба
-        if has_two_columns:
+        if has_status_column:
+            # Новый формат с колонкой Status
+            logging.info(f"Detected Status column in {file_path_str}, using processed format")
+            # Ожидаемые колонки: Company Name, Website, Status, Error_Message
+            required_cols = ['Company Name', 'Website', 'Status']
+            if not all(col in df_loaded.columns for col in required_cols):
+                # Пробуем загрузить по позициям, если названия колонок не соответствуют
+                df_loaded = reader(file_path_str, header=0)
+                if df_loaded.shape[1] >= 3:
+                    df_loaded.columns = list(df_loaded.columns[:2]) + ['Status'] + list(df_loaded.columns[3:])
+        elif has_two_or_more_columns:
+            # Старый формат с двумя колонками
             logging.info(f"Detected two or more columns in {file_path_str}, using first two columns")
             # Используем первые два столбца
             df_loaded = reader(file_path_str, usecols=[0, 1], header=0)
@@ -58,10 +70,10 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
             df_loaded = reader(file_path_str, header=None)
             
             # Проверяем, есть ли два столбца
-            has_two_columns = df_loaded.shape[1] >= 2
+            has_two_or_more_columns = df_loaded.shape[1] >= 2
             
             # Если есть два столбца, загружаем оба
-            if has_two_columns:
+            if has_two_or_more_columns:
                 logging.info(f"Detected two or more columns in {file_path_str} (without header), using first two columns")
                 df_loaded = reader(file_path_str, usecols=[0, 1], header=None)
             else:
@@ -76,9 +88,52 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
         return None
 
     if df_loaded is not None and not df_loaded.empty:
-        # Проверяем, сколько столбцов в датафрейме
-        if df_loaded.shape[1] >= 2:
-            # Если есть два или больше столбцов
+        # Проверяем наличие колонки Status для определения формата
+        has_status_column = 'Status' in df_loaded.columns
+        
+        if has_status_column:
+            # Новый формат с колонкой Status - обрабатываем все компании включая помеченные
+            company_names_series = df_loaded.iloc[:, 0].astype(str).str.strip()
+            website_series = df_loaded.iloc[:, 1].astype(str).str.strip()
+            status_series = df_loaded['Status'].astype(str).str.strip()
+            
+            result_list_of_dicts = []
+            for name, website, status in zip(company_names_series, website_series, status_series):
+                if name and name.lower() not in ['nan', '']:
+                    # Нормализуем URL если он есть и статус VALID
+                    url_value = None
+                    if website and website.lower() not in ['nan', '']:
+                        if status == 'VALID':
+                            # Для валидных компаний нормализуем URL
+                            normalized_url = normalize_domain(website)
+                            if normalized_url:
+                                url_value = normalized_url
+                                # Логируем изменение, если URL был нормализован
+                                if normalized_url != website:
+                                    logging.info(f"Normalized URL for '{name}': '{website}' -> '{normalized_url}'")
+                        else:
+                            # Для невалидных компаний сохраняем URL как есть
+                            url_value = website
+                    
+                    # Добавляем в результат
+                    result_list_of_dicts.append({
+                        'name': name, 
+                        'url': url_value,
+                        'status': status if status.lower() not in ['nan', ''] else 'VALID'
+                    })
+            
+            if result_list_of_dicts:
+                valid_count = len([c for c in result_list_of_dicts if c.get('status') == 'VALID'])
+                duplicate_count = len([c for c in result_list_of_dicts if c.get('status') == 'DUPLICATE'])
+                dead_url_count = len([c for c in result_list_of_dicts if c.get('status') == 'DEAD_URL'])
+                logging.info(f"Loaded {len(result_list_of_dicts)} companies from {file_path_str}: {valid_count} valid, {duplicate_count} duplicates, {dead_url_count} dead URLs")
+                return result_list_of_dicts
+            else:
+                logging.warning(f"No valid company names in {file_path_str} (processed format).")
+                return None
+                
+        elif df_loaded.shape[1] >= 2:
+            # Старый формат с двумя или более колонками
             company_names_series = df_loaded.iloc[:, 0].astype(str).str.strip()
             second_column_series = df_loaded.iloc[:, 1].astype(str).str.strip()
             
@@ -96,7 +151,7 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
                             if normalized_url != second_value:
                                 logging.info(f"Normalized URL for '{name}': '{second_value}' -> '{normalized_url}'")
                     
-                    # Добавляем в результат
+                    # Добавляем в результат (старый формат без статуса)
                     result_list_of_dicts.append({'name': name, 'url': url_value})
             
             if result_list_of_dicts:
