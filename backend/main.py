@@ -19,6 +19,7 @@ import aiohttp
 from openai import AsyncOpenAI
 from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 import tempfile # Added for temporary file for zip archive
+import numpy as np
 
 # Adjust sys.path to allow importing from src
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -443,7 +444,7 @@ async def get_session_results(session_id: str):
         
         # Обрабатываем специальные числовые значения, которые не могут быть сериализованы в JSON
         for col in df.select_dtypes(include=['float', 'float64']).columns:
-            df[col] = df[col].apply(lambda x: None if pd.isna(x) or pd.isinf(x) else x)
+            df[col] = df[col].apply(lambda x: None if pd.isna(x) or np.isinf(x) else x)
             
         results = df.to_dict(orient='records')
         return results

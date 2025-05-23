@@ -88,15 +88,39 @@ class HubSpotClient:
             
             async with aiohttp.ClientSession() as session:
                 payload = {
-                    "filterGroups": [{
-                        "filters": [{
-                            "propertyName": "domain",
-                            "operator": "EQ",
-                            "value": normalized_domain
-                        }]
-                    }],
-                    "properties": ["name", "domain", "ai_description", "ai_description_updated", "linkedin_company_page"],
-                    "limit": 1
+                    "filterGroups": [
+                        {
+                            "filters": [{
+                                "propertyName": "domain",
+                                "operator": "CONTAINS_TOKEN",
+                                "value": normalized_domain
+                            }]
+                        },
+                        {
+                            "filters": [{
+                                "propertyName": "domain", 
+                                "operator": "EQ",
+                                "value": normalized_domain
+                            }]
+                        },
+                        {
+                            "filters": [{
+                                "propertyName": "website",
+                                "operator": "EQ", 
+                                "value": normalized_domain
+                            }]
+                        }
+                        # Можно добавить дополнительные поля для веб-сайтов, если они есть в вашем HubSpot
+                        # {
+                        #     "filters": [{
+                        #         "propertyName": "additional_website",
+                        #         "operator": "EQ",
+                        #         "value": normalized_domain
+                        #     }]
+                        # }
+                    ],
+                    "properties": ["name", "domain", "website", "ai_description", "ai_description_updated", "linkedin_company_page"],
+                    "limit": 10  # Увеличиваем лимит на случай нескольких совпадений
                 }
                 
                 async with session.post(endpoint, headers=self.headers, json=payload) as response:
@@ -105,11 +129,39 @@ class HubSpotClient:
                         results = data.get("results", [])
                         
                         if results:
-                            company = results[0]
-                            # Кэшируем результат
-                            self._cache[cache_key] = company
-                            logger.info(f"Found company in HubSpot: {company.get('properties', {}).get('name')}")
-                            return company
+                            # Если найдено несколько компаний, выберем лучшее совпадение
+                            # Приоритет: точное совпадение domain > точное совпадение website > первый результат
+                            best_match = None
+                            
+                            for company in results:
+                                properties = company.get("properties", {})
+                                company_domain = properties.get("domain", "")
+                                company_website = properties.get("website", "")
+                                
+                                # Проверяем множественные домены в поле domain
+                                domain_match_found = self._check_domain_match(company_domain, normalized_domain)
+                                # Проверяем поле website
+                                website_match_found = self._check_domain_match(company_website, normalized_domain)
+                                
+                                # Точное совпадение с полем domain имеет наивысший приоритет
+                                if domain_match_found:
+                                    best_match = company
+                                    logger.info(f"Found domain match in HubSpot: {properties.get('name')} (domain field: {company_domain})")
+                                    break
+                                # Совпадение с полем website
+                                elif website_match_found:
+                                    if not best_match:  # Только если еще не найдено совпадение с domain
+                                        best_match = company
+                                        logger.info(f"Found website match in HubSpot: {properties.get('name')} (website field: {company_website})")
+                                # Если не найдено совпадений, используем первый результат как fallback
+                                elif not best_match:
+                                    best_match = company
+                                    logger.info(f"Using first result in HubSpot: {properties.get('name')} (domain: {company_domain}, website: {company_website})")
+                            
+                            if best_match:
+                                # Кэшируем результат
+                                self._cache[cache_key] = best_match
+                                return best_match
                         else:
                             logger.info(f"No company found for domain: {normalized_domain}")
                             # Кэшируем отрицательный результат
@@ -366,6 +418,56 @@ class HubSpotClient:
         for key in keys_to_delete:
             del self._cache[key]
             logger.info(f"Cache invalidated for company ID {company_id} (key: {key})")
+
+    def _check_domain_match(self, domain_field: str, normalized_target_domain: str) -> bool:
+        """
+        Проверка совпадения домена с нормализованным доменом.
+        Обрабатывает как одиночные домены, так и множественные (разделенные ; или другими разделителями).
+        
+        Args:
+            domain_field (str): Поле домена из HubSpot (может содержать несколько доменов)
+            normalized_target_domain (str): Нормализованный целевой домен для поиска
+            
+        Returns:
+            bool: True, если один из доменов совпадает, иначе False
+        """
+        if not domain_field or not normalized_target_domain:
+            return False
+            
+        try:
+            # Возможные разделители доменов в HubSpot
+            separators = [';', ',', '\n', '\r\n', '|']
+            
+            # Разбиваем поле на отдельные домены
+            domains = [domain_field.strip()]  # Начинаем с исходного значения
+            
+            for sep in separators:
+                if sep in domain_field:
+                    domains = []
+                    for part in domain_field.split(sep):
+                        part = part.strip()
+                        if part:  # Игнорируем пустые части
+                            domains.append(part)
+                    break  # Используем первый найденный разделитель
+            
+            # Проверяем каждый домен на совпадение
+            for domain in domains:
+                domain = domain.strip()
+                if not domain:
+                    continue
+                    
+                # Нормализуем домен из HubSpot
+                normalized_hubspot_domain = self._normalize_domain(domain)
+                
+                if normalized_hubspot_domain == normalized_target_domain:
+                    logger.debug(f"Domain match found: '{domain}' -> '{normalized_hubspot_domain}' == '{normalized_target_domain}'")
+                    return True
+                    
+            return False
+            
+        except Exception as e:
+            logger.error(f"Error checking domain match for '{domain_field}': {e}")
+            return False
 
 
 # Пример использования и тестирования
