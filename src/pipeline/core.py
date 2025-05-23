@@ -567,7 +567,9 @@ async def _process_single_company_async(
                     company_name=company_name,
                     url=found_homepage_url,
                     description=description_text,
-                    linkedin_url=linkedin_url
+                    linkedin_url=linkedin_url,
+                    aiohttp_session=aiohttp_session,  # Добавляем HTTP сессию
+                    sb_client=sb_client  # Добавляем ScrapingBee клиент
                 )
                 
                 if hubspot_success:

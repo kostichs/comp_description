@@ -53,13 +53,16 @@ class HubSpotAdapter:
         self.max_age_months = max_age_months
         logger.info(f"HubSpot Adapter initialized with max age: {max_age_months} months. API key {'present' if api_key else 'MISSING'}.")
     
-    async def check_company_description(self, company_name: str, url: str) -> Tuple[bool, Optional[Dict[str, Any]]]:
+    async def check_company_description(self, company_name: str, url: str, aiohttp_session=None, sb_client=None) -> Tuple[bool, Optional[Dict[str, Any]]]:
         """
         Проверка наличия актуального описания компании в HubSpot.
+        Ищет по исходному и конечному домену (после редиректов).
         
         Args:
             company_name (str): Название компании
             url (str): URL компании
+            aiohttp_session: HTTP сессия для проверки редиректов
+            sb_client: ScrapingBee клиент
             
         Returns:
             Tuple[bool, Optional[Dict[str, Any]]]: 
@@ -75,16 +78,15 @@ class HubSpotAdapter:
             return False, None # Не пропускаем, нет URL
         
         try:
-            domain = self._extract_domain_from_url(url)
-            if not domain:
-                logger.warning(f"Could not extract domain from URL '{url}' for company '{company_name}'")
-                return False, None # Не пропускаем, нет домена
+            logger.info(f"Checking HubSpot for company '{company_name}' with URL '{url}'")
             
-            logger.info(f"Checking HubSpot for company '{company_name}' with domain '{domain}'")
-            company = await self.client.search_company_by_domain(domain)
+            # Используем новую функцию поиска по нескольким доменам
+            company, used_domain = await search_company_by_multiple_domains(
+                self.client, url, aiohttp_session, sb_client
+            )
             
             if not company:
-                logger.info(f"Company '{company_name}' with domain '{domain}' not found in HubSpot")
+                logger.info(f"Company '{company_name}' not found in HubSpot by any domain")
                 return False, None # Не пропускаем, компания не найдена
             
             properties = company.get("properties", {})
@@ -93,7 +95,7 @@ class HubSpotAdapter:
             linkedin_page = properties.get("linkedin_company_page") # Извлекаем LinkedIn URL
             
             logger.info(
-                f"Found company in HubSpot: {properties.get('name')}, "
+                f"Found company in HubSpot by domain '{used_domain}': {properties.get('name')}, "
                 f"description length: {len(description) if description else 0}, "
                 f"updated: {updated_timestamp}, LinkedIn: {linkedin_page}"
             )
@@ -179,7 +181,9 @@ class HubSpotAdapter:
         company_name: str,
         url: str,
         description: str,
-        linkedin_url: Optional[str] = None # Добавляем LinkedIn URL
+        linkedin_url: Optional[str] = None, # Добавляем LinkedIn URL
+        aiohttp_session=None, # Добавляем HTTP сессию
+        sb_client=None # Добавляем ScrapingBee клиент
     ) -> Tuple[bool, Optional[str]]:
         """
         Сохранение описания компании в HubSpot.
@@ -192,9 +196,12 @@ class HubSpotAdapter:
         company_id_to_return: Optional[str] = None
         try:
             if not company_data and url: # Если компания не найдена ранее, ищем снова
-                domain = self._extract_domain_from_url(url)
-                if domain:
-                    company_data = await self.client.search_company_by_domain(domain)
+                # Используем поиск по нескольким доменам
+                company_data, used_domain = await search_company_by_multiple_domains(
+                    self.client, url, aiohttp_session, sb_client
+                )
+                if company_data:
+                    logger.info(f"Found company '{company_name}' in HubSpot by domain: {used_domain}")
             
             if company_data:
                 company_id = company_data.get("id")
@@ -408,7 +415,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                     continue
 
                 # description_is_fresh будет True, если найдено свежее описание и обработку можно пропустить
-                description_is_fresh, hubspot_company_data = await self.hubspot_adapter.check_company_description(company_name, company_url)
+                description_is_fresh, hubspot_company_data = await self.hubspot_adapter.check_company_description(company_name, company_url, aiohttp_session, sb_client)
                 
                 # ИСПРАВЛЕНО: если description_is_fresh == True, значит, описание свежее и компания есть в HubSpot
                 if description_is_fresh and hubspot_company_data: 
@@ -651,6 +658,70 @@ def format_hubspot_company_id(hubspot_id: Optional[str]) -> str:
     if not hubspot_id:
         return ""
     return f"https://app.hubspot.com/contacts/39585958/record/0-2/{hubspot_id}"
+
+async def search_company_by_multiple_domains(hubspot_client, url: str, aiohttp_session=None, sb_client=None) -> Tuple[Optional[Dict[str, Any]], str]:
+    """
+    Ищет компанию в HubSpot по исходному и конечному домену (после редиректов).
+    
+    Args:
+        hubspot_client: Клиент HubSpot
+        url: Исходный URL
+        aiohttp_session: HTTP сессия для проверки редиректов
+        sb_client: ScrapingBee клиент
+        
+    Returns:
+        Tuple[Optional[Dict[str, Any]], str]: (Данные компании или None, использованный домен)
+    """
+    # Получаем исходный нормализованный домен
+    original_domain = hubspot_client._normalize_domain(url)
+    if not original_domain:
+        logger.warning(f"Could not extract domain from URL '{url}'")
+        return None, ""
+    
+    # Сначала ищем по исходному домену
+    logger.info(f"Searching in HubSpot by original domain: {original_domain}")
+    company = await hubspot_client.search_company_by_domain(original_domain)
+    if company:
+        logger.info(f"Found company in HubSpot by original domain: {original_domain}")
+        return company, original_domain
+    
+    # Если не найдено по исходному домену, получаем конечный URL после редиректов
+    if aiohttp_session:
+        try:
+            from normalize_urls import get_url_status_and_final_location_async
+            
+            # Добавляем протокол если его нет для проверки редиректов
+            url_with_protocol = url
+            if not url_with_protocol.startswith(('http://', 'https://')):
+                url_with_protocol = 'https://' + url_with_protocol
+                
+            logger.info(f"Checking redirects for URL: {url_with_protocol}")
+            is_live, final_url, error_msg = await get_url_status_and_final_location_async(
+                url_with_protocol, aiohttp_session, scrapingbee_client=sb_client
+            )
+            
+            if is_live and final_url:
+                final_domain = hubspot_client._normalize_domain(final_url)
+                
+                # Проверяем, отличается ли конечный домен от исходного
+                if final_domain and final_domain != original_domain:
+                    logger.info(f"Final domain after redirects: {final_domain} (different from original: {original_domain})")
+                    
+                    # Ищем по конечному домену
+                    logger.info(f"Searching in HubSpot by final domain: {final_domain}")
+                    company = await hubspot_client.search_company_by_domain(final_domain)
+                    if company:
+                        logger.info(f"Found company in HubSpot by final domain: {final_domain}")
+                        return company, final_domain
+                else:
+                    logger.info(f"Final domain is the same as original: {original_domain}")
+            else:
+                logger.warning(f"Could not get final URL for {url_with_protocol}: {error_msg}")
+        except Exception as e:
+            logger.error(f"Error checking redirects for URL {url}: {e}")
+    
+    logger.info(f"Company not found in HubSpot by either original ({original_domain}) or final domain")
+    return None, original_domain
 
 if __name__ == "__main__":
     # asyncio.run(test_hubspot_adapter()) # Для базовой проверки HubSpotAdapter

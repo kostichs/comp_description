@@ -115,6 +115,10 @@ async def get_url_status_and_final_location_async(
 
                 if 200 <= response.status < 400: # Успешный статус или редирект, который разрешился успешно
                     return True, final_url_after_redirect, None
+                elif response.status == 500 and final_url_after_redirect != current_url_to_try:
+                    # Если сервер вернул 500, но есть редирект на другой URL - проверим конечный URL
+                    logger.info(f"[URL_CHECK] Статус 500 для {current_url_to_try}, но есть редирект на {final_url_after_redirect}. Считаем успешным.")
+                    return True, final_url_after_redirect, None
                 elif response.status == 403: # Forbidden часто означает, что сайт жив, но блокирует HEAD
                      logger.warning(f"[URL_CHECK] HEAD для {current_url_to_try} вернул 403. Пробуем GET.")
                      async with session.get(current_url_to_try, timeout=client_timeout, allow_redirects=True, headers=common_headers) as get_response:
@@ -187,6 +191,28 @@ async def get_url_status_and_final_location_async(
             last_aiohttp_error_message = f"Неожиданная ошибка при проверке {current_url_to_try}: {str(e)}"
             continue # К следующей попытке aiohttp
             
+    # Если все попытки aiohttp не увенчались успехом, пробуем проверить базовый домен (без пути)
+    # перед тем как переходить к ScrapingBee
+    parsed_original = urlparse(url if url.startswith(('http://', 'https://')) else f'https://{original_url}')
+    base_domain_url = f"{parsed_original.scheme}://{parsed_original.netloc}"
+    
+    # Проверяем базовый домен только если исходный URL содержал путь
+    if parsed_original.path and parsed_original.path != '/' and base_domain_url != url:
+        logger.info(f"[URL_CHECK] Основной URL не прошел проверку. Проверяем базовый домен: {base_domain_url}")
+        try:
+            client_timeout = aiohttp.ClientTimeout(total=timeout)
+            async with session.head(base_domain_url, timeout=client_timeout, allow_redirects=True, headers=common_headers) as response:
+                final_url_base = str(response.url)
+                logger.info(f"[URL_CHECK] HEAD базового домена {base_domain_url}: статус {response.status}, финальный URL: {final_url_base}")
+                
+                if 200 <= response.status < 400:
+                    return True, final_url_base, None
+                elif response.status == 500 and final_url_base != base_domain_url:
+                    logger.info(f"[URL_CHECK] Статус 500 для базового домена {base_domain_url}, но есть редирект на {final_url_base}. Считаем успешным.")
+                    return True, final_url_base, None
+        except Exception as e_base:
+            logger.warning(f"[URL_CHECK] Ошибка при проверке базового домена {base_domain_url}: {e_base}")
+    
     # Если все попытки aiohttp не увенчались успехом, пробуем ScrapingBee, если клиент предоставлен
     if scrapingbee_client:
         logger.info(f"[URL_CHECK] Aiohttp не смог проверить URL: {original_url}. Пробуем через ScrapingBee.")
@@ -573,7 +599,7 @@ async def normalize_and_remove_duplicates(
     # Создание DataFrame для сохранения (сохраняем ВСЕ компании с их статусами)
     output_df = pd.DataFrame([{
         "Company Name": cd["name"], 
-        "Website": cd["final_url"],
+        "Website": normalize_domain(cd["final_url"]) if cd["status"] == "VALID" else normalize_domain(cd["original_url"]),  # Сохраняем нормализованный домен
         "Status": cd["status"],
         "Error_Message": cd.get("error_message", "")
     } for cd in all_companies_data])
