@@ -554,7 +554,8 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 hubspot_client=self.hubspot_adapter if self.use_hubspot else None, # Передаем HubSpot адаптер
                 use_raw_llm_data_as_description=self.llm_config.get('use_raw_llm_data_as_description', True), # Берем из llm_config
                 csv_append_mode=should_append_csv, # Используем флаг для CSV
-                json_append_mode=should_append_json # Используем флаг для JSON
+                json_append_mode=should_append_json, # Используем флаг для JSON
+                already_saved_count=len(all_results)  # Передаем количество уже сохраненных результатов
             )
             
             # process_companies возвращает только список результатов.

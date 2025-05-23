@@ -630,7 +630,8 @@ async def process_companies(
     hubspot_client: Optional[Any] = None,
     use_raw_llm_data_as_description: bool = False,
     csv_append_mode: bool = False,
-    json_append_mode: bool = False
+    json_append_mode: bool = False,
+    already_saved_count: int = 0  # Количество уже сохраненных результатов
 ) -> List[Dict[str, Any]]:
     """
     Process multiple companies in parallel batches
@@ -658,6 +659,7 @@ async def process_companies(
         use_raw_llm_data_as_description: Whether to use raw LLM data as description
         csv_append_mode: Whether to append to CSV file instead of overwriting
         json_append_mode: Whether to append to JSON file instead of overwriting
+        already_saved_count: Number of already saved results
         
     Returns:
         List[Dict[str, Any]]: List of results
@@ -723,119 +725,173 @@ async def process_companies(
     # Создаем экземпляр DescriptionGenerator для генерации описаний
     description_generator = DescriptionGenerator(openai_client)
     
-    # Процессинг компаний батчами
+    # Процессинг компаний динамической очередью с семафором
     results = []
     total_companies = len(company_names)
     
-    # Обрабатываем все компании батчами
-    for i in range(0, total_companies, batch_size):
-        # Создаем батч компаний
-        batch = company_names[i:i + batch_size]
-        tasks = []
-        
-        # Определяем режим сохранения: первый batch создает файл с нуля, остальные дописывают
-        is_first_batch = (i == 0)
-        current_csv_append_mode = csv_append_mode if not is_first_batch else False
-        current_json_append_mode = json_append_mode if not is_first_batch else False
-        
-        # Запускаем обработку для каждой компании в батче
-        for j, company_input_item in enumerate(batch):
+    # Создаем семафор для ограничения количества одновременно обрабатываемых компаний
+    semaphore = asyncio.Semaphore(batch_size)
+    
+    # Создаем очередь для управления порядком сохранения результатов
+    result_queue = asyncio.Queue()
+    company_counter = {"value": 0}  # Счетчик завершенных компаний
+    
+    async def process_company_with_semaphore(company_input_item, company_index):
+        """Обрабатывает одну компанию с использованием семафора"""
+        async with semaphore:  # Семафор ограничивает количество одновременных задач
             # Получаем имя компании и второй столбец, если они предоставлены как кортеж или словарь
+            local_second_column_data = second_column_data.copy() if second_column_data else {}
+            
             if isinstance(company_input_item, dict):
                 company_name = company_input_item.get('name')
                 company_url = company_input_item.get('url')
                 
                 # Если URL есть, нормализуем его и добавляем во второй столбец данных
                 if company_url:
-                    if not second_column_data:
-                        second_column_data = {}
-                    second_column_data[company_name] = company_url
+                    local_second_column_data[company_name] = company_url
             elif isinstance(company_input_item, tuple):
                 company_name = company_input_item[0]
                 if len(company_input_item) > 1:
                     company_url = company_input_item[1]
                     if company_url:
-                        if not second_column_data:
-                            second_column_data = {}
-                        second_column_data[company_name] = company_url
+                        local_second_column_data[company_name] = company_url
             else:
                 company_name = company_input_item
             
-            # Создаем задачу для обработки компании
-            task = _process_single_company_async(
-                company_name=company_name,
-                openai_client=openai_client,
-                aiohttp_session=aiohttp_session,
-                sb_client=sb_client,
-                serper_api_key=serper_api_key,
-                finder_instances=finder_instances,
-                description_generator=description_generator,
-                llm_config=llm_config,
-                raw_markdown_output_path=raw_markdown_output_path,
-                output_csv_path=output_csv_path,
-                output_json_path=output_json_path,
-                csv_fields=expected_csv_fieldnames or [],
-                company_index=i + j,
-                total_companies=total_companies,
-                context_text=context_text,
-                run_llm_deep_search_pipeline=run_llm_deep_search_pipeline_cfg,
-                run_standard_homepage_finders=run_standard_pipeline_cfg,
-                run_domain_check_finder=run_domain_check_finder_cfg,
-                llm_deep_search_config_override=llm_deep_search_config_override,
-                broadcast_update=broadcast_update,
-                second_column_data=second_column_data,
-                hubspot_client=hubspot_client,
-                use_raw_llm_data_as_description=use_raw_llm_data_as_description
-            )
-            tasks.append(task)
-        
-        # Ждем завершения всех задач в батче
-        batch_results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        # Обрабатываем результаты
-        batch_results_to_save = []  # Только результаты текущего batch'а для сохранения
-        for j, result in enumerate(batch_results):
-            # Если возникло исключение, логируем его и добавляем ошибку в результаты
-            if isinstance(result, Exception):
-                company_name = batch[j]
-                logger.error(f"Error processing company {company_name}: {result}", exc_info=True)
+            try:
+                logger.info(f"[{company_index+1}/{total_companies}] Starting processing company: {company_name}")
+                
+                # Обрабатываем компанию
+                result = await _process_single_company_async(
+                    company_name=company_name,
+                    openai_client=openai_client,
+                    aiohttp_session=aiohttp_session,
+                    sb_client=sb_client,
+                    serper_api_key=serper_api_key,
+                    finder_instances=finder_instances,
+                    description_generator=description_generator,
+                    llm_config=llm_config,
+                    raw_markdown_output_path=raw_markdown_output_path,
+                    output_csv_path=output_csv_path,
+                    output_json_path=output_json_path,
+                    csv_fields=expected_csv_fieldnames or [],
+                    company_index=company_index,
+                    total_companies=total_companies,
+                    context_text=context_text,
+                    run_llm_deep_search_pipeline=run_llm_deep_search_pipeline_cfg,
+                    run_standard_homepage_finders=run_standard_pipeline_cfg,
+                    run_domain_check_finder=run_domain_check_finder_cfg,
+                    llm_deep_search_config_override=llm_deep_search_config_override,
+                    broadcast_update=broadcast_update,
+                    second_column_data=local_second_column_data,
+                    hubspot_client=hubspot_client,
+                    use_raw_llm_data_as_description=use_raw_llm_data_as_description
+                )
+                
+                logger.info(f"[{company_index+1}/{total_companies}] Successfully processed company: {company_name}")
+                
+                # Помещаем результат в очередь для сохранения
+                await result_queue.put((company_index, result, None))
+                
+            except Exception as e:
+                logger.error(f"[{company_index+1}/{total_companies}] Error processing company {company_name}: {e}", exc_info=True)
                 error_result = {
                     "Company_Name": company_name,
                     "Official_Website": None,
                     "LinkedIn_URL": None,
                     "Description": None,
                     "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                    "error": str(result),
+                    "HubSpot_Company_ID": "",
+                    "error": str(e),
                     "structured_data": {}
                 }
-                results.append(error_result)
-                batch_results_to_save.append(error_result)
-            else:
+                # Помещаем ошибку в очередь для сохранения
+                await result_queue.put((company_index, error_result, e))
+    
+    async def result_saver():
+        """Сохраняет результаты по мере их готовности"""
+        saved_count = already_saved_count  # Начинаем с уже сохраненных результатов
+        logger.info(f"Result saver started, waiting for {total_companies} companies, already saved: {already_saved_count}")
+        
+        while saved_count < total_companies + already_saved_count:
+            try:
+                company_index, result, error = await result_queue.get()
+                logger.info(f"Received result for company index {company_index}, saved_count: {saved_count}")
+                
                 # Проверяем, что URL официального сайта нормализован
-                if result.get("Official_Website"):
+                if not error and result.get("Official_Website"):
                     normalized_url = normalize_domain(result["Official_Website"])
                     if normalized_url != result["Official_Website"]:
                         logger.info(f"Normalized URL in result: '{result['Official_Website']}' -> '{normalized_url}'")
                         result["Official_Website"] = normalized_url
                 
                 results.append(result)
-                batch_results_to_save.append(result)
                 
-        # Сохраняем промежуточные результаты в CSV и JSON (только текущий batch)
-        if output_csv_path and batch_results_to_save: # Сохраняем только результаты текущего batch'а
-            save_results_csv(
-                results=batch_results_to_save, 
-                output_path=output_csv_path, 
-                expected_fields=expected_csv_fieldnames,
-                append_mode=current_csv_append_mode
-            )
-        
-        if output_json_path and batch_results_to_save: # Сохраняем только результаты текущего batch'а
-            save_results_json(
-                results=batch_results_to_save, 
-                output_path=output_json_path,
-                append_mode=current_json_append_mode
-            )
+                # Определяем режим сохранения: если уже есть сохраненные результаты, всегда используем append
+                current_csv_append_mode = csv_append_mode or (already_saved_count > 0)
+                current_json_append_mode = json_append_mode or (already_saved_count > 0)
+                
+                # Сохраняем результат сразу же
+                try:
+                    if output_csv_path:
+                        save_results_csv(
+                            results=[result], 
+                            output_path=output_csv_path, 
+                            expected_fields=expected_csv_fieldnames,
+                            append_mode=current_csv_append_mode
+                        )
+                        logger.info(f"Saved result to CSV for company: {result.get('Company_Name', 'Unknown')}")
+                    
+                    if output_json_path:
+                        save_results_json(
+                            results=[result], 
+                            output_path=output_json_path,
+                            append_mode=current_json_append_mode
+                        )
+                        logger.info(f"Saved result to JSON for company: {result.get('Company_Name', 'Unknown')}")
+                        
+                except Exception as save_error:
+                    logger.error(f"Error saving result for company {result.get('Company_Name', 'Unknown')}: {save_error}", exc_info=True)
+                
+                saved_count += 1
+                company_counter["value"] = saved_count - already_saved_count  # Показываем прогресс только для текущей обработки
+                logger.info(f"Progress: {saved_count - already_saved_count}/{total_companies} companies processed, total saved: {saved_count}")
+                
+            except Exception as queue_error:
+                logger.error(f"Error in result_saver while processing queue: {queue_error}", exc_info=True)
+                break
+                
+        logger.info(f"Result saver finished, saved {saved_count - already_saved_count} new companies, total: {saved_count}")
+    
+    # Запускаем задачи для всех компаний
+    processing_tasks = []
+    logger.info(f"Creating {total_companies} processing tasks with semaphore limit {batch_size}")
+    
+    for i, company_input_item in enumerate(company_names):
+        task = asyncio.create_task(process_company_with_semaphore(company_input_item, i))
+        processing_tasks.append(task)
+    
+    logger.info(f"Created {len(processing_tasks)} processing tasks")
+    
+    # Запускаем сохранитель результатов
+    saver_task = asyncio.create_task(result_saver())
+    logger.info("Started result saver task")
+    
+    # Ждем завершения всех задач обработки
+    logger.info("Waiting for all processing tasks to complete...")
+    processing_results = await asyncio.gather(*processing_tasks, return_exceptions=True)
+    
+    # Проверяем результаты обработки
+    exceptions_count = sum(1 for result in processing_results if isinstance(result, Exception))
+    if exceptions_count > 0:
+        logger.warning(f"Processing completed with {exceptions_count} task exceptions")
+    else:
+        logger.info("All processing tasks completed successfully")
+    
+    # Ждем завершения сохранения всех результатов
+    logger.info("Waiting for result saver to complete...")
+    await saver_task
+    logger.info("Result saver completed")
             
     return results
 
