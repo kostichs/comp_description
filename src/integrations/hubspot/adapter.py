@@ -468,7 +468,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 expected_csv_fieldnames=expected_csv_fieldnames,
                 # llm_deep_search_config_override - можно добавить, если есть в self
                 # second_column_data - не передаем, т.к. URL уже в company_names_for_core_processing
-                # hubspot_client - не передаем
+                hubspot_client=self.hubspot_adapter if self.use_hubspot else None, # Передаем HubSpot адаптер
                 use_raw_llm_data_as_description=self.llm_config.get('use_raw_llm_data_as_description', True), # Берем из llm_config
                 csv_append_mode=should_append_csv, # Используем флаг для CSV
                 json_append_mode=should_append_json # Используем флаг для JSON

@@ -15,6 +15,8 @@ from openai import AsyncOpenAI
 from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 import json
 import re
+from src.input_validators import normalize_domain
+from normalize_urls import get_url_status_and_final_location_async
 
 # Finders
 from finders.base import Finder
@@ -30,7 +32,7 @@ from src.data_io import save_results_csv, save_results_json, save_structured_dat
 from src.pipeline.utils import generate_and_save_raw_markdown_report_async
 
 # Импортируем функции валидации
-from src.input_validators import normalize_domain #, CompanyInfo
+# from src.input_validators import normalize_domain #, CompanyInfo
 
 logger = logging.getLogger(__name__)
 
@@ -108,6 +110,7 @@ async def _process_single_company_async(
         "LinkedIn_URL": None,
         "Description": None,
         "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "HubSpot_Company_ID": "",
         "structured_data": {}
     }
     
@@ -226,8 +229,20 @@ async def _process_single_company_async(
                         )
                         
                         if url_only_result and isinstance(url_only_result, dict) and url_only_result.get("extracted_homepage_url"):
-                            found_homepage_url = url_only_result["extracted_homepage_url"]
-                            logger.info(f"{run_stage_log} - URL-only mode found homepage URL: {found_homepage_url}")
+                            potential_url = url_only_result["extracted_homepage_url"]
+                            logger.info(f"{run_stage_log} - URL-only mode found homepage URL, validating: {potential_url}")
+                            
+                            # Проверяем живость URL
+                            is_live, final_url = await _validate_and_get_final_url(
+                                potential_url, aiohttp_session, sb_client, company_name
+                            )
+                            
+                            if is_live and final_url:
+                                found_homepage_url = final_url
+                                logger.info(f"{run_stage_log} - Using validated URL from URL-only mode: {found_homepage_url}")
+                            else:
+                                logger.warning(f"{run_stage_log} - URL from URL-only mode is not live: {potential_url}")
+                                # found_homepage_url остается None, чтобы другие методы могли попробовать найти URL
                         
                         # Проверяем URL в HubSpot, если клиент есть
                         skip_deep_search = False
@@ -271,13 +286,39 @@ async def _process_single_company_async(
                             
                             # Проверяем наличие homepage в структурированных данных
                             if "homepage" in structured_data and structured_data["homepage"] and not found_homepage_url:
-                                found_homepage_url = structured_data["homepage"]
-                                logger.info(f"{run_stage_log} - Using homepage from LLM deep search: {found_homepage_url}")
+                                potential_url = structured_data["homepage"]
+                                logger.info(f"{run_stage_log} - Found homepage in LLM deep search, validating: {potential_url}")
+                                
+                                # Проверяем живость URL
+                                is_live, final_url = await _validate_and_get_final_url(
+                                    potential_url, aiohttp_session, sb_client, company_name
+                                )
+                                
+                                if is_live and final_url:
+                                    found_homepage_url = final_url
+                                    logger.info(f"{run_stage_log} - Using validated homepage from LLM deep search: {found_homepage_url}")
+                                    # Обновляем URL в структурированных данных на финальный
+                                    structured_data["homepage"] = final_url
+                                else:
+                                    logger.warning(f"{run_stage_log} - Homepage from LLM deep search is not live: {potential_url}")
                             
                             # Проверяем наличие extracted_homepage_url в результате LLMDeepSearchFinder
                             if "extracted_homepage_url" in structured_data and structured_data["extracted_homepage_url"] and not found_homepage_url:
-                                found_homepage_url = structured_data["extracted_homepage_url"]
-                                logger.info(f"{run_stage_log} - Using extracted homepage URL from LLM deep search: {found_homepage_url}")
+                                potential_url = structured_data["extracted_homepage_url"]
+                                logger.info(f"{run_stage_log} - Found extracted homepage URL in LLM deep search, validating: {potential_url}")
+                                
+                                # Проверяем живость URL
+                                is_live, final_url = await _validate_and_get_final_url(
+                                    potential_url, aiohttp_session, sb_client, company_name
+                                )
+                                
+                                if is_live and final_url:
+                                    found_homepage_url = final_url
+                                    logger.info(f"{run_stage_log} - Using validated extracted homepage URL from LLM deep search: {found_homepage_url}")
+                                    # Обновляем URL в структурированных данных на финальный
+                                    structured_data["extracted_homepage_url"] = final_url
+                                else:
+                                    logger.warning(f"{run_stage_log} - Extracted homepage URL from LLM deep search is not live: {potential_url}")
                             
                             if "linkedin" in structured_data and structured_data["linkedin"] and not linkedin_url:
                                 linkedin_url = structured_data["linkedin"]
@@ -386,7 +427,13 @@ async def _process_single_company_async(
         if not found_homepage_url:
             logger.warning(f"{run_stage_log} - URL not found by any standard methods. Using guaranteed URL finder as last resort")
             try:
-                guaranteed_url = await _guaranteed_url_finder(company_name, openai_client, structured_data)
+                guaranteed_url = await _guaranteed_url_finder(
+                    company_name=company_name,
+                    openai_client=openai_client,
+                    structured_data=structured_data,
+                    aiohttp_session=aiohttp_session,
+                    sb_client=sb_client
+                )
                 if guaranteed_url:
                     found_homepage_url = guaranteed_url
                     logger.info(f"{run_stage_log} - Guaranteed URL finder found URL: {found_homepage_url}")
@@ -514,14 +561,25 @@ async def _process_single_company_async(
         if hubspot_client and structured_data:
             try:
                 logger.info(f"{run_stage_log} - Attempting to upload data to HubSpot")
-                hubspot_upload_result = await hubspot_client.update_company(company_name, structured_data, description_text)
-                if hubspot_upload_result:
+                # Используем правильный метод save_company_description который возвращает (success, company_id)
+                hubspot_success, hubspot_company_id = await hubspot_client.save_company_description(
+                    company_data=None,  # Пусть метод сам найдет компанию по URL
+                    company_name=company_name,
+                    url=found_homepage_url,
+                    description=description_text,
+                    linkedin_url=linkedin_url
+                )
+                
+                if hubspot_success:
                     logger.info(f"{run_stage_log} - Data uploaded to HubSpot successfully")
                     # Добавляем информацию о загрузке в HubSpot в результаты
                     result_data.setdefault("integrations", {})["hubspot"] = {
                         "success": True, 
+                        "company_id": hubspot_company_id,
                         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                     }
+                    # Добавляем HubSpot Company ID в основные результаты
+                    result_data["HubSpot_Company_ID"] = hubspot_company_id or ""
                 else:
                     logger.warning(f"{run_stage_log} - Failed to upload data to HubSpot")
                     result_data.setdefault("integrations", {})["hubspot"] = {
@@ -529,6 +587,7 @@ async def _process_single_company_async(
                         "error": "Failed to upload data to HubSpot",
                         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                     }
+                    result_data["HubSpot_Company_ID"] = ""
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error uploading to HubSpot: {e}", exc_info=True)
                 result_data.setdefault("integrations", {})["hubspot"] = {
@@ -536,6 +595,10 @@ async def _process_single_company_async(
                     "error": str(e),
                     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
+                result_data["HubSpot_Company_ID"] = ""
+        else:
+            # Если HubSpot клиент недоступен, добавляем пустое поле
+            result_data["HubSpot_Company_ID"] = ""
         
         # logger.info(f"{run_stage_log} - Processing completed successfully") # Закомментировано
         return result_data
@@ -767,7 +830,13 @@ async def process_companies(
             
     return results
 
-async def _guaranteed_url_finder(company_name: str, openai_client: AsyncOpenAI, structured_data: Dict[str, Any] = {}) -> Optional[str]:
+async def _guaranteed_url_finder(
+    company_name: str, 
+    openai_client: AsyncOpenAI, 
+    structured_data: Dict[str, Any] = {},
+    aiohttp_session: Optional[aiohttp.ClientSession] = None,
+    sb_client: Optional[CustomScrapingBeeClient] = None
+) -> Optional[str]:
     """
     Гарантированный поиск URL компании.
     
@@ -780,6 +849,8 @@ async def _guaranteed_url_finder(company_name: str, openai_client: AsyncOpenAI, 
         company_name: Название компании
         openai_client: Клиент OpenAI для запросов к LLM
         structured_data: Уже собранные структурированные данные
+        aiohttp_session: HTTP сессия для проверки живости URL
+        sb_client: ScrapingBee клиент для проверки живости URL
         
     Returns:
         str: URL компании (всегда возвращает какой-то URL)
@@ -799,7 +870,20 @@ async def _guaranteed_url_finder(company_name: str, openai_client: AsyncOpenAI, 
                 if not normalized_url.startswith(('http://', 'https://')):
                     normalized_url = 'https://' + normalized_url
                 logger.info(f"Found URL in structured data for '{company_name}': {normalized_url}")
-                return normalized_url
+                
+                # Проверяем живость URL, если доступна HTTP сессия
+                if aiohttp_session:
+                    is_live, final_url = await _validate_and_get_final_url(
+                        normalized_url, aiohttp_session, sb_client, company_name
+                    )
+                    if is_live and final_url:
+                        logger.info(f"Validated URL from structured data for '{company_name}': {final_url}")
+                        return final_url
+                    else:
+                        logger.warning(f"URL from structured data is not live for '{company_name}': {normalized_url}")
+                        continue  # Пробуем следующий ключ
+                else:
+                    return normalized_url
     
     # 2. Попытка спросить LLM о домене компании
     if openai_client:
@@ -826,7 +910,19 @@ async def _guaranteed_url_finder(company_name: str, openai_client: AsyncOpenAI, 
                     if not normalized_domain.startswith(('http://', 'https://')):
                         normalized_domain = 'https://' + normalized_domain
                     logger.info(f"LLM suggested domain for '{company_name}': {normalized_domain}")
-                    return normalized_domain
+                    
+                    # Проверяем живость URL, если доступна HTTP сессия
+                    if aiohttp_session:
+                        is_live, final_url = await _validate_and_get_final_url(
+                            normalized_domain, aiohttp_session, sb_client, company_name
+                        )
+                        if is_live and final_url:
+                            logger.info(f"Validated LLM suggested URL for '{company_name}': {final_url}")
+                            return final_url
+                        else:
+                            logger.warning(f"LLM suggested URL is not live for '{company_name}': {normalized_domain}")
+                    else:
+                        return normalized_domain
         except Exception as e:
             logger.error(f"Error asking LLM about domain for '{company_name}': {e}")
     
@@ -837,6 +933,10 @@ async def _guaranteed_url_finder(company_name: str, openai_client: AsyncOpenAI, 
     if normalized_synthetic:
         if not normalized_synthetic.startswith(('http://', 'https://')):
             normalized_synthetic = 'https://' + normalized_synthetic
+        
+        # Для синтетических URL проверку живости пропускаем, так как они вряд ли будут работать
+        # Но возвращаем их как last resort
+        logger.warning(f"Using synthetic URL for '{company_name}' (may not be live): {normalized_synthetic}")
         return normalized_synthetic
     return synthetic_url
 
@@ -985,3 +1085,44 @@ async def _extract_homepage_from_report_text_async(report_text: str, company_nam
     
     logger.warning(f"No homepage URL found for {company_name} in report text")
     return None 
+
+async def _validate_and_get_final_url(
+    url: str,
+    aiohttp_session: aiohttp.ClientSession,
+    sb_client: Optional[CustomScrapingBeeClient] = None,
+    company_name: str = "Unknown"
+) -> Tuple[bool, Optional[str]]:
+    """
+    Проверяет живость URL и возвращает финальный URL после редиректов.
+    
+    Args:
+        url: URL для проверки
+        aiohttp_session: HTTP сессия для запросов
+        sb_client: ScrapingBee клиент (опционально)
+        company_name: Имя компании для логирования
+        
+    Returns:
+        Tuple[bool, Optional[str]]: (is_live, final_url)
+    """
+    if not url:
+        return False, None
+        
+    try:
+        logger.info(f"Validating URL for {company_name}: {url}")
+        is_live, final_url, error_msg = await get_url_status_and_final_location_async(
+            url, aiohttp_session, timeout=10.0, scrapingbee_client=sb_client
+        )
+        
+        if is_live and final_url:
+            if final_url != url:
+                logger.info(f"URL redirected for {company_name}: {url} -> {final_url}")
+            else:
+                logger.info(f"URL validated for {company_name}: {url}")
+            return True, final_url
+        else:
+            logger.warning(f"URL validation failed for {company_name}: {url} - {error_msg}")
+            return False, None
+            
+    except Exception as e:
+        logger.error(f"Error validating URL for {company_name}: {url} - {e}")
+        return False, None 

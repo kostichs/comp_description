@@ -109,6 +109,13 @@ class HubSpotClient:
                                 "operator": "EQ", 
                                 "value": normalized_domain
                             }]
+                        },
+                        {
+                            "filters": [{
+                                "propertyName": "hs_additional_domains",
+                                "operator": "CONTAINS_TOKEN",
+                                "value": normalized_domain
+                            }]
                         }
                         # Можно добавить дополнительные поля для веб-сайтов, если они есть в вашем HubSpot
                         # {
@@ -119,7 +126,7 @@ class HubSpotClient:
                         #     }]
                         # }
                     ],
-                    "properties": ["name", "domain", "website", "ai_description", "ai_description_updated", "linkedin_company_page"],
+                    "properties": ["name", "domain", "website", "hs_additional_domains", "ai_description", "ai_description_updated", "linkedin_company_page"],
                     "limit": 10  # Увеличиваем лимит на случай нескольких совпадений
                 }
                 
@@ -137,26 +144,34 @@ class HubSpotClient:
                                 properties = company.get("properties", {})
                                 company_domain = properties.get("domain", "")
                                 company_website = properties.get("website", "")
+                                company_additional_domains = properties.get("hs_additional_domains", "")
                                 
-                                # Проверяем множественные домены в поле domain
+                                # Проверяем основной домен
                                 domain_match_found = self._check_domain_match(company_domain, normalized_domain)
                                 # Проверяем поле website
                                 website_match_found = self._check_domain_match(company_website, normalized_domain)
+                                # Проверяем дополнительные домены
+                                additional_domains_match_found = self._check_domain_match(company_additional_domains, normalized_domain)
                                 
                                 # Точное совпадение с полем domain имеет наивысший приоритет
                                 if domain_match_found:
                                     best_match = company
                                     logger.info(f"Found domain match in HubSpot: {properties.get('name')} (domain field: {company_domain})")
                                     break
+                                # Совпадение с дополнительными доменами имеет второй приоритет
+                                elif additional_domains_match_found:
+                                    if not best_match:
+                                        best_match = company
+                                        logger.info(f"Found additional domains match in HubSpot: {properties.get('name')} (hs_additional_domains field: {company_additional_domains})")
                                 # Совпадение с полем website
                                 elif website_match_found:
-                                    if not best_match:  # Только если еще не найдено совпадение с domain
+                                    if not best_match:  # Только если еще не найдено совпадение с domain или additional_domains
                                         best_match = company
                                         logger.info(f"Found website match in HubSpot: {properties.get('name')} (website field: {company_website})")
                                 # Если не найдено совпадений, используем первый результат как fallback
                                 elif not best_match:
                                     best_match = company
-                                    logger.info(f"Using first result in HubSpot: {properties.get('name')} (domain: {company_domain}, website: {company_website})")
+                                    logger.info(f"Using first result in HubSpot: {properties.get('name')} (domain: {company_domain}, website: {company_website}, additional_domains: {company_additional_domains})")
                             
                             if best_match:
                                 # Кэшируем результат
