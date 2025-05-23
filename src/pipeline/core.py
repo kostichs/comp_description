@@ -558,7 +558,7 @@ async def _process_single_company_async(
                 logger.error(f"{run_stage_log} - Error saving structured data: {e}", exc_info=True)
         
         # 8. Сохранение в HubSpot, если клиент доступен
-        if hubspot_client and structured_data:
+        if hubspot_client and found_homepage_url and description_text:
             try:
                 logger.info(f"{run_stage_log} - Attempting to upload data to HubSpot")
                 # Используем правильный метод save_company_description который возвращает (success, company_id)

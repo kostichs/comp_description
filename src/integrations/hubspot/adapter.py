@@ -486,36 +486,6 @@ class HubSpotPipelineAdapter(PipelineAdapter):
             success_count += std_success
             failure_count += std_failure
             
-            # После обработки, если HubSpot включен, сохраняем результаты в HubSpot
-            if self.use_hubspot and self.hubspot_adapter:
-                logger.info("Saving/updating processed companies in HubSpot...")
-                for result_item in std_results:
-                    company_name = result_item.get("Company_Name")
-                    company_url = result_item.get("Official_Website")
-                    description = result_item.get("Description")
-                    linkedin_url_from_pipeline = result_item.get("LinkedIn_URL") # Получаем LinkedIn URL из результатов пайплайна
-                    
-                    # Ищем исходные данные HubSpot для этой компании
-                    original_company_info = next((c for c in companies_to_process_standard if c["name"] == company_name), None)
-                    hubspot_company_data_for_save = original_company_info.get("hubspot_data") if original_company_info else None
-
-                    if company_name and company_url and description: # Условие остается прежним, но LinkedIn URL передается всегда, если есть
-                        # save_company_description теперь возвращает (success, hub_id)
-                        success, hub_id = await self.hubspot_adapter.save_company_description(
-                            hubspot_company_data_for_save, # Данные из HubSpot, если были
-                            company_name,
-                            company_url,
-                            description,
-                            linkedin_url_from_pipeline # Передаем LinkedIn URL из пайплайна
-                        )
-                        if success and hub_id:
-                            result_item["HubSpot_Company_ID"] = hub_id # <--- Сохраняем ID в result_item
-                        else:
-                            result_item["HubSpot_Company_ID"] = "" # или оставляем пустым, если не удалось сохранить/получить ID
-                    else:
-                        logger.warning(f"Skipping HubSpot save for '{company_name}' due to missing data (URL or Description).")
-                        result_item["HubSpot_Company_ID"] = "" # Также добавляем пустое поле ID
-            
             all_results.extend(std_results)
             # Результаты уже сохранены в CSV внутри process_companies_batch
 
