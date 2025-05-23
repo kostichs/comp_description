@@ -20,9 +20,6 @@ async def get_session(session_id: str):
             logger.error(f"Session {session_id} not found")
             raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
         
-        # Просто логируем загруженные значения (они должны быть обновлены normalize_urls.py)
-        logger.info(f"Session {session_id}: Загруженные данные - total_companies: {session_data.get('total_companies')}, companies_count: {session_data.get('companies_count')}, dedup_info: {session_data.get('deduplication_info')}")
-
         # Формирование и добавление сообщения о дедупликации (если нужно и его еще нет)
         dedup_info = session_data.get("deduplication_info")
         if dedup_info and isinstance(dedup_info.get("final_count"), int) and dedup_info.get("duplicates_removed", 0) > 0:
