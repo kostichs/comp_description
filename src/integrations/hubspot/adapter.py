@@ -422,7 +422,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                         "Description": description,
                         "Timestamp": timestamp,
                         "Data_Source": "HubSpot",
-                        "HubSpot_Company_ID": hubspot_id or "" # <--- Добавляем ID в результат
+                        "HubSpot_Company_ID": format_hubspot_company_id(hubspot_id) # <--- Добавляем ID в результат
                     }
                     
                     for field in expected_csv_fieldnames:
@@ -637,6 +637,20 @@ async def test_hubspot_pipeline_adapter():
         os.remove(temp_input_path)
     if temp_llm_config_path.exists():
         os.remove(temp_llm_config_path)
+
+def format_hubspot_company_id(hubspot_id: Optional[str]) -> str:
+    """
+    Форматирует HubSpot Company ID со ссылкой для результирующего файла.
+    
+    Args:
+        hubspot_id: ID компании в HubSpot или None
+        
+    Returns:
+        str: Отформатированная строка с ID и ссылкой или пустая строка
+    """
+    if not hubspot_id:
+        return ""
+    return f"https://app.hubspot.com/contacts/39585958/record/0-2/{hubspot_id}"
 
 if __name__ == "__main__":
     # asyncio.run(test_hubspot_adapter()) # Для базовой проверки HubSpotAdapter

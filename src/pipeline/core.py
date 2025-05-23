@@ -579,7 +579,8 @@ async def _process_single_company_async(
                         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                     }
                     # Добавляем HubSpot Company ID в основные результаты
-                    result_data["HubSpot_Company_ID"] = hubspot_company_id or ""
+                    from src.integrations.hubspot.adapter import format_hubspot_company_id
+                    result_data["HubSpot_Company_ID"] = format_hubspot_company_id(hubspot_company_id)
                 else:
                     logger.warning(f"{run_stage_log} - Failed to upload data to HubSpot")
                     result_data.setdefault("integrations", {})["hubspot"] = {
