@@ -320,6 +320,8 @@ async def extract_data_with_schema(
         "You are a meticulous data extraction AI. Your task is to analyze the provided text about a company and populate a JSON object "
        f"strictly according to the fields and structure defined in the provided JSON schema named '{schema_name}'. "
         "Extract information ONLY from the provided text. "
+        "CRITICAL: Ignore any meta-commentary, research thoughts, or analysis statements like 'After thorough research', 'It appears that', 'Based on my investigation', etc. "
+        "Focus ONLY on factual company information and data. Do NOT include LLM thoughts or research commentary in any field, especially 'overall_summary'. "
         "If information for a specific field (especially optional or array/object sub-fields) is not found in the text, you MUST use 'null' for that field or an empty array [] for array types, as appropriate, to ensure all keys defined in the schema's 'properties' are present in your output if they are also in the schema's 'required' list, or if the schema implies their presence due to 'additionalProperties: false'."
         "For array fields (e.g., annual_revenue_history, funding_rounds, core_products_services), extract all distinct relevant items found in the text that fit the item's sub-schema. If no items are found for an array, return an empty array []."
         "Pay close attention to nested structures and ensure all required fields within nested objects are populated (using null if data is absent)."

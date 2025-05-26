@@ -1,0 +1,147 @@
+{
+  "Company_Name": "Collektorskoye agenstvo \"ID Collect \"",
+  "Normalized_Company_Name": "Collektorskoye agenstvo \"ID Collect",
+  "Resolved_Company_Name": "",
+  "Official_Website": "https://idcollect.ru/",
+  "LinkedIn_URL": "",
+  "Description": "ID Collect LLC, founded in 2017, is headquartered in Moscow, Russia. As a private entity, it operates as a member of the international fintech group IDF Eurasia. The company does not have publicly listed founders, which indicates a potentially collaborative or private ownership structure.\n\nThe core service offered by ID Collect is debt collection, utilizing advanced underlying technologies such as data science, machine learning, artificial intelligence, and proprietary IT developments. The company primarily serves business-to-business (B2B) customers within the financial services industry, focusing its operations within the Russian market.\n\nIn terms of financial activities, ID Collect completed a significant funding round with a third series bond issue in 2023, raising 800 million RUB at a 15% coupon rate and a three-year maturity. The company has also expanded its regional presence by opening six new centers in 2023, doubling its network to 13 regions across Russia. Although specific annual revenue figures are not disclosed, the strategic initiatives and focus on technological advancements underscore ID Collect's commitment to enhancing service delivery. The company offers a user portal that allows clients to manage their debts online, further solidifying its position as a significant player in the Russian debt collection market.",
+  "Timestamp": "2025-05-26 20:24:06",
+  "HubSpot_Company_ID": "",
+  "structured_data": {
+    "source": "llm_deep_search",
+    "result": "**1. Basic Company Information:**\n\n- **Company Name:** ID Collect LLC (АйДи Коллект) (ID Collect LLC)\n- **Founding Year:** 2017\n\n- **Headquarters Location:** Moscow, Russia\n- **Founders:** No specific data found on founders\n\n- **Ownership Background:** ID Collect is a private company and a member of the international fintech group IDF Eurasia. ([idfeurasia.com](https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai))\n- **Official Homepage URL:** https://www.idcollect.ru/\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n  - **Debt Collection Services:** ID Collect specializes in purchasing overdue debts and operates under an agency scheme to manage and collect these debts. ([idfeurasia.com](https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai))\n\n- **Underlying Technologies:**\n  - **Data Science:** Utilized to analyze debtor parameters and forecast the probability of debt repayment.\n  - **Machine Learning:** Employed to calculate return rates and potential revenue from debt portfolios.\n  - **Artificial Intelligence:** Used to predict debt repayment timelines and determine optimal interaction methods and frequencies with debtors.\n  - **Proprietary IT Developments:** Automate the preparation of documents for judicial debt collection and other operational processes. ([idfeurasia.com](https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai))\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2B, serving financial institutions and other organizations requiring debt collection services.\n- **Industries Served:** Financial services, including banks and microfinance institutions.\n\n- **Geographic Markets:** Operates across Russia, with regional centers in cities such as Rostov-on-Don, Ufa, Samara, Chelyabinsk, and Perm. ([idfeurasia.com](https://idfeurasia.com/en/news_en/id-collect-has-doubled-the-regional-network/?utm_source=openai))\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n  - No specific data found on annual revenue figures.\n\n- **Funding Rounds:**\n  - **August 10, 2021:** Debut bond issue of 400 million rubles with a 12% coupon rate and a 3-year maturity. ([idfeurasia.com](https://idfeurasia.com/en/news_en/the-debut-issue-of-id-collect-worth-400-million-rubles-was-placed-in-a-few-hours/?utm_source=openai))\n  - **April 26 - May 17, 2023:** Third series bond issue of 800 million rubles with a 15% coupon rate and a 3-year maturity. ([idfeurasia.com](https://idfeurasia.com/en/news_en/id-collect-has-completed-the-placement-of-a-bond-issue-for-800-million-rubles/?utm_source=openai))\n\n- **Employee Count:** No specific data found on employee count.\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n  - **Regional Expansion:** In 2023, ID Collect opened six new regional centers, doubling its regional network to 13 regions in Russia. ([idfeurasia.com](https://idfeurasia.com/en/news_en/id-collect-has-doubled-the-regional-network/?utm_source=openai))\n\n- **Key Competitors:** No specific data found on key competitors.\n- **Overall Summary:** ID Collect has established itself as a significant player in the Russian debt collection market, leveraging advanced technologies and expanding its regional presence to enhance service delivery.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current job openings.\n- **Working Languages:** Russian\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** ID Collect offers a personal account feature on its website, allowing clients to access information about their debts and make payments. ([lipetsk.hh.ru](https://lipetsk.hh.ru/interview/32891?utm_source=openai))\n- **Compliance Standards:** ID Collect is a member of the National Association of Professional Debt Recovery Agencies (NAPCA), indicating adherence to industry standards and best practices. ([idfeurasia.com](https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai))",
+    "raw_result": "**1. Basic Company Information:**\n\n- **Company Name:** ID Collect LLC (АйДи Коллект) (ID Collect LLC)\n- **Founding Year:** 2017\n\n- **Headquarters Location:** Moscow, Russia\n- **Founders:** No specific data found on founders\n\n- **Ownership Background:** ID Collect is a private company and a member of the international fintech group IDF Eurasia. ([idfeurasia.com](https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai))\n- **Official Homepage URL:** https://www.idcollect.ru/\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n  - **Debt Collection Services:** ID Collect specializes in purchasing overdue debts and operates under an agency scheme to manage and collect these debts. ([idfeurasia.com](https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai))\n\n- **Underlying Technologies:**\n  - **Data Science:** Utilized to analyze debtor parameters and forecast the probability of debt repayment.\n  - **Machine Learning:** Employed to calculate return rates and potential revenue from debt portfolios.\n  - **Artificial Intelligence:** Used to predict debt repayment timelines and determine optimal interaction methods and frequencies with debtors.\n  - **Proprietary IT Developments:** Automate the preparation of documents for judicial debt collection and other operational processes. ([idfeurasia.com](https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai))\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2B, serving financial institutions and other organizations requiring debt collection services.\n- **Industries Served:** Financial services, including banks and microfinance institutions.\n\n- **Geographic Markets:** Operates across Russia, with regional centers in cities such as Rostov-on-Don, Ufa, Samara, Chelyabinsk, and Perm. ([idfeurasia.com](https://idfeurasia.com/en/news_en/id-collect-has-doubled-the-regional-network/?utm_source=openai))\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n  - No specific data found on annual revenue figures.\n\n- **Funding Rounds:**\n  - **August 10, 2021:** Debut bond issue of 400 million rubles with a 12% coupon rate and a 3-year maturity. ([idfeurasia.com](https://idfeurasia.com/en/news_en/the-debut-issue-of-id-collect-worth-400-million-rubles-was-placed-in-a-few-hours/?utm_source=openai))\n  - **April 26 - May 17, 2023:** Third series bond issue of 800 million rubles with a 15% coupon rate and a 3-year maturity. ([idfeurasia.com](https://idfeurasia.com/en/news_en/id-collect-has-completed-the-placement-of-a-bond-issue-for-800-million-rubles/?utm_source=openai))\n\n- **Employee Count:** No specific data found on employee count.\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n  - **Regional Expansion:** In 2023, ID Collect opened six new regional centers, doubling its regional network to 13 regions in Russia. ([idfeurasia.com](https://idfeurasia.com/en/news_en/id-collect-has-doubled-the-regional-network/?utm_source=openai))\n\n- **Key Competitors:** No specific data found on key competitors.\n- **Overall Summary:** ID Collect has established itself as a significant player in the Russian debt collection market, leveraging advanced technologies and expanding its regional presence to enhance service delivery.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current job openings.\n- **Working Languages:** Russian\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** ID Collect offers a personal account feature on its website, allowing clients to access information about their debts and make payments. ([lipetsk.hh.ru](https://lipetsk.hh.ru/interview/32891?utm_source=openai))\n- **Compliance Standards:** ID Collect is a member of the National Association of Professional Debt Recovery Agencies (NAPCA), indicating adherence to industry standards and best practices. ([idfeurasia.com](https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai))",
+    "sources": [
+      {
+        "title": "ID Collect | IDF Eurasia",
+        "url": "https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai"
+      },
+      {
+        "title": "ID Collect | IDF Eurasia",
+        "url": "https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai"
+      },
+      {
+        "title": "ID Collect | IDF Eurasia",
+        "url": "https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai"
+      },
+      {
+        "title": "ID Collect has doubled the regional network | IDF Eurasia",
+        "url": "https://idfeurasia.com/en/news_en/id-collect-has-doubled-the-regional-network/?utm_source=openai"
+      },
+      {
+        "title": "The debut issue of ID Collect worth 400 million rubles was placed in a few hours | IDF Eurasia",
+        "url": "https://idfeurasia.com/en/news_en/the-debut-issue-of-id-collect-worth-400-million-rubles-was-placed-in-a-few-hours/?utm_source=openai"
+      },
+      {
+        "title": "ID Collect has completed the placement of a bond issue for 800 million rubles | IDF Eurasia",
+        "url": "https://idfeurasia.com/en/news_en/id-collect-has-completed-the-placement-of-a-bond-issue-for-800-million-rubles/?utm_source=openai"
+      },
+      {
+        "title": "ID Collect has doubled the regional network | IDF Eurasia",
+        "url": "https://idfeurasia.com/en/news_en/id-collect-has-doubled-the-regional-network/?utm_source=openai"
+      },
+      {
+        "title": "ID Collect: постройте карьеру будущего в диджитал-коллекшене",
+        "url": "https://lipetsk.hh.ru/interview/32891?utm_source=openai"
+      },
+      {
+        "title": "ID Collect | IDF Eurasia",
+        "url": "https://idfeurasia.com/en/products-en/id-collect/?utm_source=openai"
+      }
+    ],
+    "extracted_homepage_url": "https://idcollect.ru/",
+    "_finder_instance_type": "LLMDeepSearchFinder",
+    "company_name": "ID Collect LLC",
+    "founding_year": 2017,
+    "headquarters_city": "Moscow",
+    "headquarters_country": "Russia",
+    "ownership_background": "ID Collect is a private company and a member of the international fintech group IDF Eurasia.",
+    "core_products_services": [
+      {
+        "name": "Debt Collection Services",
+        "launch_year": null
+      }
+    ],
+    "underlying_technologies": [
+      "Data Science",
+      "Machine Learning",
+      "Artificial Intelligence",
+      "Proprietary IT Developments"
+    ],
+    "customer_types": [
+      "B2B"
+    ],
+    "industries_served": [
+      "Financial services"
+    ],
+    "geographic_markets": [
+      "Russia"
+    ],
+    "financial_details": {
+      "annual_revenue_history": [],
+      "funding_rounds": [
+        {
+          "round_name": "Debut bond issue",
+          "year_closed": 2021,
+          "amount": 400000000,
+          "currency": "RUB",
+          "key_investors": [],
+          "note": "12% coupon rate and a 3-year maturity."
+        },
+        {
+          "round_name": "Third series bond issue",
+          "year_closed": 2023,
+          "amount": 800000000,
+          "currency": "RUB",
+          "key_investors": [],
+          "note": "15% coupon rate and a 3-year maturity."
+        }
+      ]
+    },
+    "strategic_initiatives": [
+      "Regional Expansion: In 2023, ID Collect opened six new regional centers, doubling its regional network to 13 regions in Russia."
+    ],
+    "overall_summary": "ID Collect has established itself as a significant player in the Russian debt collection market, leveraging advanced technologies and expanding its regional presence to enhance service delivery.",
+    "working_languages": [
+      "Russian"
+    ],
+    "user_portal_details": {
+      "has_user_portal": true,
+      "has_transaction_interface": null,
+      "has_dashboard": null,
+      "has_streaming_service": null,
+      "has_personalization": null,
+      "description": "ID Collect offers a personal account feature on its website, allowing clients to access information about their debts and make payments."
+    },
+    "security_compliance_details": {
+      "has_secure_transactions": null,
+      "compliance_standards": [
+        "National Association of Professional Debt Recovery Agencies (NAPCA)"
+      ],
+      "security_certifications": [],
+      "additional_security_mentions": null
+    }
+  },
+  "resolution_metadata": {
+    "resolution_used": false,
+    "reason": "resolution_disabled"
+  },
+  "encoding_issues": [],
+  "google_search_data": {
+    "selected_url": "https://idcollect.ru/",
+    "top_5_results": [
+      {
+        "url": "https://findozor.net/forum/threads/kollektorskoe-agentstvo-id-collect-aidi-kollekt.3316/post-1244466",
+        "title": "Коллекторское агентство «ID Collect» / Айди Коллект - Финдозор",
+        "snippet": "Что будет, если долг передан в КА «ID Collect» Обсуждаем, как ведет себя КА «Айди Коллект». Как Айди коллект ведет себя при взыскании ...",
+        "position": 1
+      },
+      {
+        "url": "https://bankrotom.ru/id-collect-kollektorskoe-agentstvo",
+        "title": "ID Collect: коллекторское агентство - БМ - Bankrotom.ru",
+        "snippet": "Расскажем, как работает коллекторское агентство «Айди Коллект» (оно же — «ID Collect»), насколько успешно оно выступает в судах против заемщиков ...",
+        "position": 2
+      }
+    ]
+  }
+}

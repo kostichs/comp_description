@@ -41,16 +41,15 @@ class DescriptionGenerator:
     и OpenAI модель для создания структурированных, информативных описаний.
     """
     
-    def __init__(self, api_key: str, model_config: Dict[str, Any] = None):
+    def __init__(self, openai_client: AsyncOpenAI, model_config: Dict[str, Any] = None):
         """
-        Инициализирует генератор описаний с API ключом и опциональной конфигурацией модели.
+        Инициализирует генератор описаний с OpenAI клиентом и опциональной конфигурацией модели.
         
         Args:
-            api_key: API ключ для OpenAI
+            openai_client: Клиент OpenAI
             model_config: Конфигурация модели (опционально)
         """
-        self.api_key = api_key
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.client = openai_client
         self.model_config = model_config or DEFAULT_MODEL_CONFIG
         
     async def generate_description(self, company_name: str, findings: list) -> Union[dict, str]:
@@ -107,8 +106,8 @@ class DescriptionGenerator:
             sources_text = sources_text[:max_text_length]
         
         try:
-            # Шаг 1: Извлекаем структурированные данные из текста по схеме
-            structured_data = await extract_data_with_schema(
+            # Шаг 1: Извлекаем структурированные данные из текста по схеме с retry логикой
+            structured_data = await self._extract_with_retry(
                 company_name=company_name,
                 about_snippet=sources_text,
                 sub_schema=COMPANY_PROFILE_SCHEMA,
@@ -118,12 +117,12 @@ class DescriptionGenerator:
             )
             
             if not structured_data or isinstance(structured_data, str) or structured_data.get("error"):
-                error_msg = f"Не удалось извлечь структурированные данные для компании {company_name}. Результат: {structured_data}"
+                error_msg = f"Failed to extract structured data for company {company_name}. Result: {structured_data}"
                 logger.error(error_msg)
                 return structured_data if isinstance(structured_data, dict) and structured_data.get("error") else error_msg
             
-            # Шаг 2: Генерируем текстовое описание на основе структурированных данных
-            description = await generate_text_summary_from_json_async(
+            # Шаг 2: Генерируем текстовое описание на основе структурированных данных с retry логикой
+            description = await self._generate_summary_with_retry(
                 structured_data=structured_data,
                 company_name=company_name,
                 openai_client=self.client,
@@ -139,10 +138,15 @@ class DescriptionGenerator:
             return result
             
         except Exception as e:
-            error_msg = f"Ошибка при генерации описания для компании {company_name}: {str(e)}"
+            error_msg = f"Error generating description for company {company_name}: {str(e)}"
             logger.error(error_msg)
             logger.error(traceback.format_exc())
-            return error_msg
+            
+            # Возвращаем базовое описание вместо полного краха
+            return {
+                "description": f"Error generating detailed description for {company_name}. Basic info: Company name - {company_name}",
+                "error": str(e)
+            }
     
     async def generate_batch_descriptions(self, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
@@ -305,4 +309,128 @@ class DescriptionGenerator:
         if year:
             return f"{count} employees (as of {year})"
         else:
-            return f"{count} employees" 
+            return f"{count} employees"
+    
+    async def _extract_with_retry(self, company_name: str, about_snippet: str, sub_schema: dict, 
+                                 schema_name: str, llm_config: dict, openai_client: AsyncOpenAI, 
+                                 max_retries: int = 3) -> dict:
+        """
+        Извлекает данные с retry логикой для обработки rate limits и временных ошибок.
+        
+        Args:
+            company_name: Название компании
+            about_snippet: Текст для анализа
+            sub_schema: Схема для извлечения данных
+            schema_name: Название схемы
+            llm_config: Конфигурация LLM
+            openai_client: Клиент OpenAI
+            max_retries: Максимальное количество попыток
+            
+        Returns:
+            dict: Извлеченные данные
+        """
+        import asyncio
+        from openai import RateLimitError, APITimeoutError, APIConnectionError
+        
+        for attempt in range(max_retries):
+            try:
+                logger.info(f"Extracting data for {company_name}, attempt {attempt + 1}/{max_retries}")
+                
+                structured_data = await extract_data_with_schema(
+                    company_name=company_name,
+                    about_snippet=about_snippet,
+                    sub_schema=sub_schema,
+                    schema_name=schema_name,
+                    llm_config=llm_config,
+                    openai_client=openai_client
+                )
+                
+                return structured_data
+                
+            except RateLimitError as e:
+                wait_time = min(2 ** attempt, 60)  # Exponential backoff, max 60 seconds
+                logger.warning(f"Rate limit hit for {company_name}, attempt {attempt + 1}/{max_retries}. Waiting {wait_time}s...")
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"Rate limit exceeded for {company_name} after {max_retries} attempts")
+                    raise e
+                    
+            except (APITimeoutError, APIConnectionError) as e:
+                wait_time = min(2 ** attempt, 30)  # Shorter wait for connection issues
+                logger.warning(f"API connection issue for {company_name}, attempt {attempt + 1}/{max_retries}. Waiting {wait_time}s...")
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"API connection failed for {company_name} after {max_retries} attempts")
+                    raise e
+                    
+            except Exception as e:
+                # Для других ошибок (например, 401 Authentication) не делаем retry
+                logger.error(f"Non-retryable error for {company_name}: {e}")
+                raise e
+        
+        # Этот код никогда не должен выполниться, но на всякий случай
+        raise Exception(f"Unexpected error in retry logic for {company_name}")
+    
+    async def _generate_summary_with_retry(self, structured_data: dict, company_name: str, 
+                                          openai_client: AsyncOpenAI, llm_config: dict, 
+                                          max_retries: int = 3) -> str:
+        """
+        Генерирует текстовое описание с retry логикой для обработки rate limits и временных ошибок.
+        
+        Args:
+            structured_data: Структурированные данные компании
+            company_name: Название компании
+            openai_client: Клиент OpenAI
+            llm_config: Конфигурация LLM
+            max_retries: Максимальное количество попыток
+            
+        Returns:
+            str: Текстовое описание компании
+        """
+        import asyncio
+        from openai import RateLimitError, APITimeoutError, APIConnectionError
+        
+        for attempt in range(max_retries):
+            try:
+                logger.info(f"Generating summary for {company_name}, attempt {attempt + 1}/{max_retries}")
+                
+                description = await generate_text_summary_from_json_async(
+                    structured_data=structured_data,
+                    company_name=company_name,
+                    openai_client=openai_client,
+                    llm_config=llm_config
+                )
+                
+                return description
+                
+            except RateLimitError as e:
+                wait_time = min(2 ** attempt, 60)  # Exponential backoff, max 60 seconds
+                logger.warning(f"Rate limit hit during summary generation for {company_name}, attempt {attempt + 1}/{max_retries}. Waiting {wait_time}s...")
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"Rate limit exceeded during summary generation for {company_name} after {max_retries} attempts")
+                    raise e
+                    
+            except (APITimeoutError, APIConnectionError) as e:
+                wait_time = min(2 ** attempt, 30)  # Shorter wait for connection issues
+                logger.warning(f"API connection issue during summary generation for {company_name}, attempt {attempt + 1}/{max_retries}. Waiting {wait_time}s...")
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(wait_time)
+                    continue
+                else:
+                    logger.error(f"API connection failed during summary generation for {company_name} after {max_retries} attempts")
+                    raise e
+                    
+            except Exception as e:
+                # Для других ошибок (например, 401 Authentication) не делаем retry
+                logger.error(f"Non-retryable error during summary generation for {company_name}: {e}")
+                raise e
+        
+        # Этот код никогда не должен выполниться, но на всякий случай
+        raise Exception(f"Unexpected error in summary retry logic for {company_name}") 

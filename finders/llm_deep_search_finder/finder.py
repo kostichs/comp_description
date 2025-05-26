@@ -456,7 +456,9 @@ class LLMDeepSearchFinder(Finder):
             "You are a specialized AI researcher focused exclusively on finding the official website URLs for companies. "
             "Your only task is to identify and return the most likely official homepage URL for the company name provided. "
             "Focus on finding the main corporate website, not social media profiles, third-party listings, or subsidiary sites. "
-            "You must search for the most current information and provide a complete URL including http:// or https://."
+            "You must search for the most current information and provide a complete URL including http:// or https://. "
+            "If you cannot find the specific company, respond with 'COMPANY_NOT_FOUND' and nothing else. "
+            "Do NOT provide examples of similar companies or list other companies with similar names."
         )
         
         # Пользовательский промпт для запроса только URL
@@ -491,36 +493,44 @@ class LLMDeepSearchFinder(Finder):
                 if message.content:
                     response_content = message.content.strip()
                     
-                    # Извлекаем URL из ответа
-                    url_pattern = r'https?://[\w\.-]+\.[a-zA-Z]{2,}(?:/[\w\.\-\%_]*)*'
-                    url_match = re.search(url_pattern, response_content)
-                    
-                    if url_match:
-                        url_response = url_match.group(0)
-                        logger.info(f"URL-only search found URL for '{company_name}': {url_response}")
+                    # Проверяем, указал ли LLM что компания не найдена
+                    if response_content.strip() == 'COMPANY_NOT_FOUND':
+                        logger.info(f"URL-only search: Company not found - {company_name}")
+                        url_response = None
                     else:
-                        # Если URL не найден в стандартном формате, проверяем на доменное имя без протокола
-                        domain_pattern = r'(?<!\S)(?:www\.)?([a-zA-Z0-9][\w\-]*\.(?:com|org|net|io|co|ai|app|tech|us|uk|ca|de|fr|es|it|au|jp|cn)(?:\.[a-zA-Z]{2})?)(?!\S)'
-                        domain_match = re.search(domain_pattern, response_content)
+                        # Извлекаем URL из ответа
+                        url_pattern = r'https?://[\w\.-]+\.[a-zA-Z]{2,}(?:/[\w\.\-\%_]*)*'
+                        url_match = re.search(url_pattern, response_content)
                         
-                        if domain_match:
-                            domain = domain_match.group(0)
-                            if not domain.startswith(('http://', 'https://', 'www.')):
-                                domain = 'https://www.' + domain
-                            elif domain.startswith('www.'):
-                                domain = 'https://' + domain
-                            
-                            url_response = domain
-                            logger.info(f"URL-only search found domain for '{company_name}': {url_response}")
+                        if url_match:
+                            url_response = url_match.group(0)
+                            logger.info(f"URL-only search found URL for '{company_name}': {url_response}")
                         else:
-                            # Если не найден даже домен, проверяем весь ответ на соответствие домену
-                            clean_response = response_content.strip()
-                            if '.' in clean_response and ' ' not in clean_response and len(clean_response) < 100:
-                                if not clean_response.startswith(('http://', 'https://')):
-                                    clean_response = 'https://' + clean_response
+                            # Если URL не найден в стандартном формате, проверяем на доменное имя без протокола
+                            domain_pattern = r'(?<!\S)(?:www\.)?([a-zA-Z0-9][\w\-]*\.(?:com|org|net|io|co|ai|app|tech|us|uk|ca|de|fr|es|it|au|jp|cn)(?:\.[a-zA-Z]{2})?)(?!\S)'
+                            domain_match = re.search(domain_pattern, response_content)
+                            
+                            if domain_match:
+                                domain = domain_match.group(0)
+                                if not domain.startswith(('http://', 'https://', 'www.')):
+                                    domain = 'https://www.' + domain
+                                elif domain.startswith('www.'):
+                                    domain = 'https://' + domain
                                 
-                                url_response = clean_response
-                                logger.info(f"URL-only search using full response as URL for '{company_name}': {url_response}")
+                                url_response = domain
+                                logger.info(f"URL-only search found domain for '{company_name}': {url_response}")
+                            else:
+                                # Если не найден даже домен, проверяем весь ответ на соответствие домену
+                                clean_response = response_content.strip()
+                                if '.' in clean_response and ' ' not in clean_response and len(clean_response) < 100:
+                                    if not clean_response.startswith(('http://', 'https://')):
+                                        clean_response = 'https://' + clean_response
+                                    
+                                    url_response = clean_response
+                                    logger.info(f"URL-only search using full response as URL for '{company_name}': {url_response}")
+                                else:
+                                    url_response = None
+                                    logger.info(f"URL-only search: No valid URL found for '{company_name}'")
                 
                 # Извлекаем источники из аннотаций, если они есть
                 if hasattr(message, 'annotations') and message.annotations:
@@ -534,7 +544,7 @@ class LLMDeepSearchFinder(Finder):
                                 logger.warning(f"Ошибка при извлечении URL-цитаты из аннотации: {e_ann}")
             
             # Формируем результат
-            return {
+            result = {
                 "source": "llm_deep_search",
                 "result": f"URL-only search for {company_name}",
                 "raw_result": f"URL-only search for {company_name}",
@@ -543,6 +553,9 @@ class LLMDeepSearchFinder(Finder):
                 "_finder_instance_type": self.__class__.__name__,
                 "url_only_mode": True
             }
+            
+            return result
+            
         except Exception as e:
             error_msg = f"Error in URL-only search for '{company_name}': {str(e)}"
             logger.error(error_msg)
@@ -683,7 +696,9 @@ The report MUST follow this structure that corresponds to our JSON schema:
 
 {additional_aspects_placeholder}{user_context_placeholder}
 
-Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or summarize the data. Include as much detail as you can find. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list. Ensure the official homepage URL is explicitly mentioned if found."""
+Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or summarize the data. Include as much detail as you can find. All factual data, especially figures like revenue, subscriber counts, and pricing, should be cited with sources, either inline or in a concluding 'Sources' list. Ensure the official homepage URL is explicitly mentioned if found.
+
+**IMPORTANT**: Do NOT include any research commentary, meta-analysis, or statements about your investigation process. Start directly with "**1. Basic Company Information:**" and proceed with the structured sections. Do NOT write introductory sentences like "After thorough research" or "It appears that"."""
 
         # Формируем полный пользовательский промпт
         user_content = prompt_template.format(
@@ -701,11 +716,16 @@ Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or 
             "Provide FULL and DETAILED information in each section - do not abbreviate or summarize the data. Include as much detail as you can find. "
             "Do not include conversational intros, outros, or disclaimers. "
             "For sections where you cannot find information, simply include a brief note like 'No specific data found on [topic]' rather than leaving the section empty. "
-            "\n\n**IMPORTANT**: If you cannot find any credible information about the company after thorough searching, "
-            "or if the company name appears to be a generic term (like 'remote work', 'job opportunities', etc.) rather than a specific business entity, "
-            "you MUST start your response with 'COMPANY_NOT_FOUND:' followed by an explanation. "
-            "Do NOT fabricate information or provide generic responses about similar concepts. "
-            "Only proceed with a full report if you find concrete evidence that this is a real, specific company."
+            "\n\n**CRITICAL FORMATTING RULE**: Do NOT include any research thoughts, analysis commentary, or meta-statements like 'After thorough research', 'It appears that', 'Based on my investigation', etc. "
+            "Start directly with the structured report sections. Do NOT write about your research process or findings methodology. "
+            "Present ONLY the factual information organized according to the specified structure. "
+            "\n\n**CRITICAL RULE**: If you cannot find any credible information about the EXACT company name provided after thorough searching, "
+            "or if the company name appears to be a generic term rather than a specific business entity, "
+            "you MUST start your response with 'COMPANY_NOT_FOUND:' followed by a brief explanation (maximum 2 sentences). "
+            "NEVER provide examples of similar companies. NEVER list other companies with similar names. NEVER provide generic responses about similar concepts. "
+            "NEVER mention other companies that might be related or have similar names. "
+            "Simply state that the specific company could not be found and suggest verifying the company name. "
+            "Only proceed with a full report if you find concrete evidence that this EXACT company name is a real, specific company."
         )
         
         if self.verbose:

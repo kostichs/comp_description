@@ -15,7 +15,7 @@ from openai import AsyncOpenAI
 from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 import json
 import re
-from src.input_validators import normalize_domain, validate_company_name
+from src.input_validators import normalize_domain, validate_company_name, normalize_company_name, detect_encoding_issues
 from src.company_name_resolver import resolve_company_name_if_needed
 from normalize_urls import get_url_status_and_final_location_async
 
@@ -101,8 +101,22 @@ async def _process_single_company_async(
     """
     run_stage_log = f"[{company_index + 1}/{total_companies}] {company_name}"
     
-    # COMPANY NAME RESOLUTION STAGE (if enabled)
+    # COMPANY NAME NORMALIZATION STAGE
     original_company_name = company_name
+    
+    # Проверяем на проблемы с кодировкой
+    encoding_issues = detect_encoding_issues(company_name)
+    if encoding_issues:
+        logger.warning(f"{run_stage_log} - Detected encoding issues: {', '.join(encoding_issues)}")
+    
+    # Нормализуем название компании
+    normalized_company_name = normalize_company_name(company_name, for_search=True)
+    if normalized_company_name != company_name:
+        logger.info(f"{run_stage_log} - Company name normalized: '{company_name}' -> '{normalized_company_name}'")
+        company_name = normalized_company_name
+        run_stage_log = f"[{company_index + 1}/{total_companies}] {company_name} (normalized from: {original_company_name})"
+    
+    # COMPANY NAME RESOLUTION STAGE (if enabled)
     resolution_metadata = {}
     
     try:
@@ -129,13 +143,15 @@ async def _process_single_company_async(
         
         result_data = {
             "Company_Name": original_company_name,  # Keep original name in output
+            "Normalized_Company_Name": normalized_company_name if normalized_company_name != original_company_name else "",
             "Official_Website": "",
             "LinkedIn_URL": "",
             "Description": error_description,
             "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "structured_data": {},
             "validation_error": validation_error,
-            "resolution_metadata": resolution_metadata
+            "resolution_metadata": resolution_metadata,
+            "encoding_issues": encoding_issues if encoding_issues else []
         }
         
         # Заполняем остальные поля пустыми значениями
@@ -154,6 +170,7 @@ async def _process_single_company_async(
         
     result_data = {
         "Company_Name": original_company_name,  # Keep original name in output
+        "Normalized_Company_Name": normalized_company_name if normalized_company_name != original_company_name else "",
         "Resolved_Company_Name": company_name if resolution_metadata.get("resolution_used", False) else "",
         "Official_Website": None,
         "LinkedIn_URL": None,
@@ -161,7 +178,8 @@ async def _process_single_company_async(
         "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "HubSpot_Company_ID": "",
         "structured_data": {},
-        "resolution_metadata": resolution_metadata
+        "resolution_metadata": resolution_metadata,
+        "encoding_issues": encoding_issues if encoding_issues else []
     }
     
     logger.info(f"{run_stage_log} - Starting processing")
@@ -183,9 +201,38 @@ async def _process_single_company_async(
             run_standard_homepage_finders = False  # Отключаем поиск, так как URL уже есть
             run_domain_check_finder = False  # Также отключаем проверку домена
         
-        # 2. ЭТАП 1: Поиск URL (если его нет)
-        if not found_homepage_url and run_llm_deep_search_pipeline:
-            logger.info(f"{run_stage_log} - STAGE 1: URL Discovery using LLM Deep Search")
+        # 2. ЭТАП 1: Поиск URL через Homepage Finder (приоритетный метод)
+        google_search_data = None
+        if not found_homepage_url and run_standard_homepage_finders:
+            logger.info(f"{run_stage_log} - STAGE 1: URL Discovery using Homepage Finder")
+            try:
+                if "homepage_finder" in finder_instances:
+                    homepage_finder = finder_instances["homepage_finder"]
+                    homepage_result = await homepage_finder.find(
+                        company_name,
+                        session=aiohttp_session,
+                        serper_api_key=serper_api_key
+                    )
+                    
+                    # Сохраняем данные поиска Google для последующего анализа
+                    if homepage_result and "google_search_data" in homepage_result:
+                        google_search_data = homepage_result["google_search_data"]
+                        logger.info(f"{run_stage_log} - Saved Google search data with {len(google_search_data.get('top_5_results', []))} results")
+                    
+                    if homepage_result and "result" in homepage_result and homepage_result["result"]:
+                        found_homepage_url = homepage_result["result"]
+                        logger.info(f"{run_stage_log} - ✅ STAGE 1 SUCCESS: Homepage Finder found URL: {found_homepage_url}")
+                    else:
+                        logger.warning(f"{run_stage_log} - ❌ STAGE 1 FAILED: Homepage Finder did not return a URL")
+                else:
+                    logger.warning(f"{run_stage_log} - Homepage finder not available")
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error in Homepage Finder stage: {e}", exc_info=True)
+        
+        # 2.1. ЭТАП 1B: Поиск URL через LLM Deep Search (для сравнения с Homepage Finder)
+        llm_deep_search_url = None
+        if run_llm_deep_search_pipeline:
+            logger.info(f"{run_stage_log} - STAGE 1B: URL Discovery using LLM Deep Search for comparison")
             try:
                 if "llm_deep_search_finder" in finder_instances:
                     llm_deep_search_finder = finder_instances["llm_deep_search_finder"]
@@ -202,7 +249,7 @@ async def _process_single_company_async(
                     
                     if url_only_result and isinstance(url_only_result, dict) and url_only_result.get("extracted_homepage_url"):
                         potential_url = url_only_result["extracted_homepage_url"]
-                        logger.info(f"{run_stage_log} - URL discovery found potential URL: {potential_url}")
+                        logger.info(f"{run_stage_log} - LLM URL discovery found potential URL: {potential_url}")
                         
                         # Проверяем живость URL
                         is_live, final_url = await _validate_and_get_final_url(
@@ -210,16 +257,44 @@ async def _process_single_company_async(
                         )
                         
                         if is_live and final_url:
-                            found_homepage_url = final_url
-                            logger.info(f"{run_stage_log} - ✅ STAGE 1 SUCCESS: Found and validated URL: {found_homepage_url}")
+                            llm_deep_search_url = final_url
+                            logger.info(f"{run_stage_log} - ✅ STAGE 1B SUCCESS: Found and validated URL: {llm_deep_search_url}")
                         else:
-                            logger.warning(f"{run_stage_log} - ❌ STAGE 1 FAILED: URL not live: {potential_url}")
+                            logger.warning(f"{run_stage_log} - ❌ STAGE 1B FAILED: URL not live: {potential_url}")
                     else:
-                        logger.warning(f"{run_stage_log} - ❌ STAGE 1 FAILED: No URL found in discovery mode")
+                        logger.warning(f"{run_stage_log} - ❌ STAGE 1B FAILED: No URL found in discovery mode")
                 else:
                     logger.warning(f"{run_stage_log} - LLM deep search finder not available for URL discovery")
             except Exception as e:
-                logger.error(f"{run_stage_log} - Error in URL discovery stage: {e}", exc_info=True)
+                logger.error(f"{run_stage_log} - Error in LLM URL discovery stage: {e}", exc_info=True)
+        
+        # 2.2. СРАВНЕНИЕ И ВЫБОР ЛУЧШЕГО URL (если есть результаты от обоих источников)
+        if found_homepage_url or llm_deep_search_url:
+            logger.info(f"{run_stage_log} - STAGE 1.5: Comparing and selecting best URL")
+            try:
+                selected_url, url_source = await _compare_and_select_best_url(
+                    company_name=company_name,
+                    homepage_finder_url=found_homepage_url,
+                    google_search_data=google_search_data,
+                    llm_deep_search_url=llm_deep_search_url,
+                    openai_client=openai_client,
+                    run_stage_log=run_stage_log
+                )
+                
+                if selected_url:
+                    found_homepage_url = selected_url
+                    logger.info(f"{run_stage_log} - ✅ STAGE 1.5 SUCCESS: Selected URL from {url_source}: {found_homepage_url}")
+                else:
+                    logger.warning(f"{run_stage_log} - ❌ STAGE 1.5 FAILED: No URL selected")
+                    
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error in URL comparison stage: {e}", exc_info=True)
+                # В случае ошибки используем Homepage Finder URL если есть
+                if found_homepage_url:
+                    logger.info(f"{run_stage_log} - Using Homepage Finder URL due to comparison error: {found_homepage_url}")
+                elif llm_deep_search_url:
+                    found_homepage_url = llm_deep_search_url
+                    logger.info(f"{run_stage_log} - Using LLM Deep Search URL due to comparison error: {found_homepage_url}")
         
         # 3. ЭТАП 2: Полный анализ компании (когда есть URL)
         structured_data = {}
@@ -292,75 +367,27 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error in company analysis stage: {e}", exc_info=True)
         
-        # 4. ЗАПАСНЫЕ МЕТОДЫ: Стандартные finders (только если оба этапа LLM не сработали)
-        if not found_homepage_url and run_standard_homepage_finders:
-            logger.info(f"{run_stage_log} - BACKUP: Both LLM stages failed, trying standard homepage finder")
-            try:
-                if "homepage_finder" in finder_instances:
-                    homepage_finder = finder_instances["homepage_finder"]
-                    homepage_result = await homepage_finder.find(
-                        company_name,
-                        session=aiohttp_session,
-                        serper_api_key=serper_api_key
-                    )
-                    if homepage_result and "url" in homepage_result:
-                        found_homepage_url = homepage_result["url"]
-                        logger.info(f"{run_stage_log} - ✅ BACKUP SUCCESS: Standard finder found URL: {found_homepage_url}")
-                        
-                        # Если нашли URL через backup, запускаем ЭТАП 2 для полного анализа
-                        if run_llm_deep_search_pipeline and "llm_deep_search_finder" in finder_instances:
-                            logger.info(f"{run_stage_log} - Running STAGE 2 analysis with backup URL")
-                            try:
-                                llm_deep_search_finder = finder_instances["llm_deep_search_finder"]
-                                llm_search_result = await llm_deep_search_finder.find(
-                                    company_name, 
-                                    company_homepage_url=found_homepage_url,
-                                    linkedin_url=linkedin_url,
-                                    context_text=context_text
-                                )
-                                
-                                if llm_search_result and isinstance(llm_search_result, dict):
-                                    structured_data = llm_search_result
-                                    if "result" in llm_search_result:
-                                        llm_deep_search_raw_result = llm_search_result["result"]
-                                    
-                                    if "linkedin" in structured_data and structured_data["linkedin"] and not linkedin_url:
-                                        linkedin_url = structured_data["linkedin"]
-                                        logger.info(f"{run_stage_log} - Found LinkedIn URL in backup analysis: {linkedin_url}")
-                                    
-                                    logger.info(f"{run_stage_log} - ✅ BACKUP ANALYSIS SUCCESS: Full analysis completed with backup URL")
-                            except Exception as e:
-                                logger.error(f"{run_stage_log} - Error in backup analysis: {e}", exc_info=True)
-                    else:
-                        logger.warning(f"{run_stage_log} - ❌ BACKUP FAILED: Standard finder did not return a URL")
-                else:
-                    logger.warning(f"{run_stage_log} - Homepage finder not available")
-            except Exception as e:
-                logger.error(f"{run_stage_log} - Error running backup homepage finder: {e}", exc_info=True)
+        # 4. Дополнительные методы поиска URL (если все предыдущие не сработали)
+        # Homepage Finder уже запущен на этапе 1, поэтому здесь больше нет дополнительных методов
         
         # 5. Проверка доступности URL (если включена и найден URL)
         if found_homepage_url and run_domain_check_finder:
-            logger.info(f"{run_stage_log} - Running domain check finder for {found_homepage_url}")
+            logger.info(f"{run_stage_log} - Checking URL liveness for {found_homepage_url}")
             try:
-                if "domain_check_finder" in finder_instances:
-                    domain_check_finder = finder_instances["domain_check_finder"]
-                    domain_check_result = await domain_check_finder.find(found_homepage_url)
-                    
-                    if domain_check_result and domain_check_result.get("is_valid"):
-                        if domain_check_result.get("redirected_url"):
-                            # Если URL перенаправлен, используем новый URL
-                            logger.info(f"{run_stage_log} - URL redirected to: {domain_check_result['redirected_url']}")
-                            found_homepage_url = domain_check_result["redirected_url"]
-                        
-                        logger.info(f"{run_stage_log} - URL valid: {found_homepage_url}")
-                    else:
-                        logger.warning(f"{run_stage_log} - URL invalid: {found_homepage_url}")
-                        if domain_check_result and "error" in domain_check_result:
-                            logger.warning(f"{run_stage_log} - URL error: {domain_check_result['error']}")
+                # Импортируем функцию проверки URL
+                from finders.domain_check_finder import check_url_liveness
+                
+                # Проверяем доступность URL
+                is_live = await check_url_liveness(found_homepage_url, aiohttp_session, timeout=5.0)
+                
+                if is_live:
+                    logger.info(f"{run_stage_log} - URL is live: {found_homepage_url}")
                 else:
-                    logger.warning(f"{run_stage_log} - Domain check finder not available")
+                    logger.warning(f"{run_stage_log} - URL is not accessible: {found_homepage_url}")
+                    # Можно попробовать нормализовать URL или использовать альтернативные варианты
+                    
             except Exception as e:
-                logger.error(f"{run_stage_log} - Error running domain check finder: {e}", exc_info=True)
+                logger.error(f"{run_stage_log} - Error checking URL liveness: {e}", exc_info=True)
         
         # 6. Поиск LinkedIn URL (запасной метод, если LLM Deep Search не нашел)
         if not linkedin_url:
@@ -474,46 +501,67 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error saving raw markdown report: {e}", exc_info=True)
         
-        # 9. Подготовка итогового результата
-        
-        # Финальная проверка: если URL все еще не найден, используем гарантированный метод
-        if not found_homepage_url:
-            logger.warning(f"{run_stage_log} - URL not found by any standard methods. Using guaranteed URL finder as last resort")
+        # 9. Извлечение официального сайта из LLM данных
+        llm_extracted_url = None
+        if structured_data and use_raw_llm_data_as_description:
+            # Пытаемся извлечь URL из структурированных данных LLM
             try:
-                guaranteed_url = await _guaranteed_url_finder(
-                    company_name=company_name,
-                    openai_client=openai_client,
-                    structured_data=structured_data,
-                    aiohttp_session=aiohttp_session,
-                    sb_client=sb_client
-                )
-                if guaranteed_url:
-                    found_homepage_url = guaranteed_url
-                    logger.info(f"{run_stage_log} - Guaranteed URL finder found URL: {found_homepage_url}")
-                    
-                    # Добавляем URL в структурированные данные
-                    structured_data["homepage"] = found_homepage_url
-                    structured_data["extracted_homepage_url"] = found_homepage_url
-                    structured_data["guaranteed_url_source"] = True
+                # Ищем в различных полях структурированных данных
+                possible_url_fields = [
+                    'official_homepage_url', 'homepage', 'website', 'official_website', 
+                    'company_website', 'site', 'url', 'web_address', 'official_site'
+                ]
+                
+                for field in possible_url_fields:
+                    if field in structured_data and structured_data[field]:
+                        potential_url = structured_data[field]
+                        if isinstance(potential_url, str) and potential_url.strip():
+                            # Нормализуем URL
+                            from src.input_validators import normalize_domain
+                            normalized_url = normalize_domain(potential_url)
+                            if normalized_url:
+                                llm_extracted_url = normalized_url
+                                if not llm_extracted_url.startswith(('http://', 'https://')):
+                                    llm_extracted_url = 'https://' + llm_extracted_url
+                                logger.info(f"{run_stage_log} - Extracted URL from LLM data field '{field}': {llm_extracted_url}")
+                                break
+                
+                # Если не нашли в структурированных полях, пытаемся извлечь из текста описания
+                if not llm_extracted_url and llm_deep_search_raw_result:
+                    extracted_from_text = await _extract_homepage_from_report_text_async(
+                        llm_deep_search_raw_result, company_name, url_only_mode=False
+                    )
+                    if extracted_from_text:
+                        llm_extracted_url = extracted_from_text
+                        logger.info(f"{run_stage_log} - Extracted URL from LLM text: {llm_extracted_url}")
+                        
             except Exception as e:
-                logger.error(f"{run_stage_log} - Error in guaranteed URL finder: {e}", exc_info=True)
-                
-            # Если даже гарантированный метод не нашел URL, создаем синтетический URL
-            if not found_homepage_url:
-                # Создаем синтетический URL на основе имени компании
-                synthetic_url = _create_synthetic_url(company_name)
-                found_homepage_url = synthetic_url
-                logger.warning(f"{run_stage_log} - Using synthetic URL as last resort: {found_homepage_url}")
-                
-                # Добавляем URL в структурированные данные
-                structured_data["homepage"] = found_homepage_url
-                structured_data["extracted_homepage_url"] = found_homepage_url
-                structured_data["synthetic_url"] = True
+                logger.error(f"{run_stage_log} - Error extracting URL from LLM data: {e}")
         
-        result_data["Official_Website"] = found_homepage_url or ""
+        # 10. Подготовка итогового результата
+        
+        # Приоритет для финального URL:
+        # 1. URL извлеченный из LLM данных (если используем сырые данные LLM)
+        # 2. URL найденный через поисковые методы (found_homepage_url)
+        final_url = None
+        if use_raw_llm_data_as_description and llm_extracted_url:
+            final_url = llm_extracted_url
+            logger.info(f"{run_stage_log} - Using LLM extracted URL as final result: {final_url}")
+        elif found_homepage_url:
+            final_url = found_homepage_url
+            logger.info(f"{run_stage_log} - Using search found URL as final result: {final_url}")
+        
+        if not final_url:
+            logger.warning(f"{run_stage_log} - No valid URL found for company")
+        
+        result_data["Official_Website"] = final_url or ""
         result_data["LinkedIn_URL"] = linkedin_url or ""
         result_data["Description"] = description_text or f"Error generating description for {company_name}"
         result_data["structured_data"] = structured_data
+        
+        # Добавляем данные поиска Google для анализа
+        if google_search_data:
+            result_data["google_search_data"] = google_search_data
         
         # Если задан output_csv_path, сохраняем результат текущей компании в CSV
         # ---- НАЧАЛО БЛОКА ДЛЯ КОММЕНТИРОВАНИЯ ----
@@ -610,45 +658,147 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error saving structured data: {e}", exc_info=True)
         
-        # 10. Сохранение в HubSpot, если клиент доступен
-        if hubspot_client and found_homepage_url and description_text:
-            try:
-                logger.info(f"{run_stage_log} - Attempting to upload data to HubSpot")
-                # Используем правильный метод save_company_description который возвращает (success, company_id)
-                hubspot_success, hubspot_company_id = await hubspot_client.save_company_description(
-                    company_data=None,  # Пусть метод сам найдет компанию по URL
-                    company_name=company_name,
-                    url=found_homepage_url,
-                    description=description_text,
-                    linkedin_url=linkedin_url,
-                    aiohttp_session=aiohttp_session,  # Добавляем HTTP сессию
-                    sb_client=sb_client  # Добавляем ScrapingBee клиент
-                )
-                
-                if hubspot_success:
-                    logger.info(f"{run_stage_log} - Data uploaded to HubSpot successfully")
-                    # Добавляем информацию о загрузке в HubSpot в результаты
-                    result_data.setdefault("integrations", {})["hubspot"] = {
-                        "success": True, 
-                        "company_id": hubspot_company_id,
-                        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-                    }
-                    # Добавляем HubSpot Company ID в основные результаты
-                    from src.integrations.hubspot.adapter import format_hubspot_company_id
-                    result_data["HubSpot_Company_ID"] = format_hubspot_company_id(hubspot_company_id)
-                else:
-                    logger.warning(f"{run_stage_log} - Failed to upload data to HubSpot")
+        # 10. Проверка качества данных перед сохранением в HubSpot
+        def is_valid_for_hubspot(description: str, homepage_url: str, company_name: str) -> Tuple[bool, str]:
+            """Проверяет качество данных перед сохранением в HubSpot"""
+            
+            # Проверка 1: Есть ли описание
+            if not description or description.strip() == "":
+                return False, "No description generated"
+            
+            # Проверка 2: Описание не является сообщением об ошибке
+            error_indicators = [
+                "Error generating description",
+                "Недостаточно данных для генерации описания",
+                "Error processing",
+                "could not locate any specific",
+                "After an extensive search, I could not locate",
+                "It is possible that the company operates under a different name",
+                "does not correspond to a known business entity",
+                "appears to be ambiguous",
+                "no publicly available information",
+                "has not disclosed any",
+                "absence of information suggests",
+                "information cannot be established",
+                "significant gap in understanding",
+                "no information provided about",
+                "lack of foundational details",
+                "business operations and market positioning remain unclear",
+                "comprehensive overview cannot be established",
+                "no financial details",
+                "no information available",
+                "cannot be determined",
+                "information is not available"
+            ]
+            
+            for error_indicator in error_indicators:
+                if error_indicator.lower() in description.lower():
+                    return False, f"Description contains error indicator: {error_indicator}"
+            
+            # Проверка 3: Описание не слишком короткое (менее 100 символов для более строгой проверки)
+            if len(description.strip()) < 100:
+                return False, "Description too short (less than 100 characters)"
+            
+            # Проверка 4: Описание содержит достаточно конкретной информации
+            # Проверяем наличие конкретных деталей о компании
+            concrete_info_indicators = [
+                "founded in", "established in", "headquarters in", "based in",
+                "specializes in", "provides", "offers", "develops", "creates",
+                "revenue", "employees", "clients", "customers", "products",
+                "services", "technology", "platform", "software", "solutions"
+            ]
+            
+            concrete_info_count = sum(1 for indicator in concrete_info_indicators 
+                                    if indicator.lower() in description.lower())
+            
+            if concrete_info_count < 2:
+                return False, f"Description lacks concrete information (found {concrete_info_count} indicators, need at least 2)"
+            
+            # Проверка 5: Есть ли валидный URL
+            if not homepage_url or homepage_url.strip() == "":
+                return False, "No homepage URL found"
+            
+            # Проверка 6: URL не является поисковиком или общим сайтом
+            invalid_domains = [
+                "google.com", "bing.com", "yahoo.com", "duckduckgo.com",
+                "wikipedia.org", "linkedin.com", "facebook.com", "twitter.com"
+            ]
+            
+            for invalid_domain in invalid_domains:
+                if invalid_domain in homepage_url.lower():
+                    return False, f"Homepage URL is invalid domain: {invalid_domain}"
+            
+            # Проверка 6.1: URL не является синтетическим (созданным системой)
+            if "dcsg-tech-co.com" in homepage_url.lower() or any(word in homepage_url.lower() for word in ["synthetic", "generated", "placeholder"]):
+                return False, "Homepage URL appears to be synthetic/generated"
+            
+            # Проверка 7: Описание содержит название компании или похожие слова
+            company_words = company_name.lower().replace('"', '').split()
+            description_lower = description.lower()
+            
+            # Убираем общие слова
+            common_words = {"inc", "llc", "ltd", "corp", "corporation", "company", "co", "gmbh", "kg", "oo", "ooo", "tech", "l.l.c"}
+            meaningful_words = [word for word in company_words if word not in common_words and len(word) > 2]
+            
+            if meaningful_words:
+                # Проверяем, есть ли хотя бы одно значимое слово из названия компании в описании
+                found_words = [word for word in meaningful_words if word in description_lower]
+                if not found_words:
+                    return False, f"Description doesn't contain company name words: {meaningful_words}"
+            
+            return True, "Valid for HubSpot"
+        
+        # Сохранение в HubSpot только если данные прошли проверку качества
+        if hubspot_client:
+            is_valid, validation_message = is_valid_for_hubspot(description_text, found_homepage_url, company_name)
+            
+            if is_valid and found_homepage_url and description_text:
+                try:
+                    logger.info(f"{run_stage_log} - Data passed quality checks, attempting to upload to HubSpot")
+                    # Используем правильный метод save_company_description который возвращает (success, company_id)
+                    hubspot_success, hubspot_company_id = await hubspot_client.save_company_description(
+                        company_data=None,  # Пусть метод сам найдет компанию по URL
+                        company_name=company_name,
+                        url=found_homepage_url,
+                        description=description_text,
+                        linkedin_url=linkedin_url,
+                        aiohttp_session=aiohttp_session,  # Добавляем HTTP сессию
+                        sb_client=sb_client  # Добавляем ScrapingBee клиент
+                    )
+                    
+                    if hubspot_success:
+                        logger.info(f"{run_stage_log} - Data uploaded to HubSpot successfully")
+                        # Добавляем информацию о загрузке в HubSpot в результаты
+                        result_data.setdefault("integrations", {})["hubspot"] = {
+                            "success": True, 
+                            "company_id": hubspot_company_id,
+                            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                        }
+                        # Добавляем HubSpot Company ID в основные результаты
+                        from src.integrations.hubspot.adapter import format_hubspot_company_id
+                        result_data["HubSpot_Company_ID"] = format_hubspot_company_id(hubspot_company_id)
+                    else:
+                        logger.warning(f"{run_stage_log} - Failed to upload data to HubSpot")
+                        result_data.setdefault("integrations", {})["hubspot"] = {
+                            "success": False,
+                            "error": "Failed to upload data to HubSpot",
+                            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                        }
+                        result_data["HubSpot_Company_ID"] = ""
+                except Exception as e:
+                    logger.error(f"{run_stage_log} - Error uploading to HubSpot: {e}", exc_info=True)
                     result_data.setdefault("integrations", {})["hubspot"] = {
                         "success": False,
-                        "error": "Failed to upload data to HubSpot",
+                        "error": str(e),
                         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                     }
                     result_data["HubSpot_Company_ID"] = ""
-            except Exception as e:
-                logger.error(f"{run_stage_log} - Error uploading to HubSpot: {e}", exc_info=True)
+            else:
+                # Данные не прошли проверку качества
+                logger.warning(f"{run_stage_log} - Data failed quality check, skipping HubSpot upload: {validation_message}")
                 result_data.setdefault("integrations", {})["hubspot"] = {
                     "success": False,
-                    "error": str(e),
+                    "error": f"Quality check failed: {validation_message}",
                     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
                 result_data["HubSpot_Company_ID"] = ""
@@ -874,12 +1024,7 @@ async def process_companies(
                 company_index, result, error = await result_queue.get()
                 logger.info(f"Received result for company index {company_index}, saved_count: {saved_count}")
                 
-                # Проверяем, что URL официального сайта нормализован
-                if not error and result.get("Official_Website"):
-                    normalized_url = normalize_domain(result["Official_Website"])
-                    if normalized_url != result["Official_Website"]:
-                        logger.info(f"Normalized URL in result: '{result['Official_Website']}' -> '{normalized_url}'")
-                        result["Official_Website"] = normalized_url
+                # URL уже правильно нормализован в процессе обработки, дополнительная нормализация не нужна
                 
                 results.append(result)
                 
@@ -951,167 +1096,6 @@ async def process_companies(
             
     return results
 
-async def _guaranteed_url_finder(
-    company_name: str, 
-    openai_client: AsyncOpenAI, 
-    structured_data: Dict[str, Any] = {},
-    aiohttp_session: Optional[aiohttp.ClientSession] = None,
-    sb_client: Optional[CustomScrapingBeeClient] = None
-) -> Optional[str]:
-    """
-    Гарантированный поиск URL компании.
-    
-    Эта функция обеспечивает почти 100% вероятность получения URL для компании.
-    Она использует следующие методы в порядке приоритета:
-    1. Извлечение URL из структурированных данных, если они уже есть
-    2. Генерация URL на основе названия компании
-    
-    Args:
-        company_name: Название компании
-        openai_client: Клиент OpenAI для запросов к LLM
-        structured_data: Уже собранные структурированные данные
-        aiohttp_session: HTTP сессия для проверки живости URL
-        sb_client: ScrapingBee клиент для проверки живости URL
-        
-    Returns:
-        str: URL компании (всегда возвращает какой-то URL)
-    """
-    # Импортируем функцию нормализации URL
-    from src.input_validators import normalize_domain
-    
-    # 1. Попытка извлечь URL из структурированных данных
-    url_keys = ['website', 'official_website', 'homepage', 'url', 'official_site']
-    for key in url_keys:
-        if key in structured_data and structured_data[key]:
-            url = structured_data[key]
-            # Нормализуем URL
-            normalized_url = normalize_domain(url)
-            if normalized_url:
-                # Добавляем протокол, если его нет
-                if not normalized_url.startswith(('http://', 'https://')):
-                    normalized_url = 'https://' + normalized_url
-                logger.info(f"Found URL in structured data for '{company_name}': {normalized_url}")
-                
-                # Проверяем живость URL, если доступна HTTP сессия
-                if aiohttp_session:
-                    is_live, final_url = await _validate_and_get_final_url(
-                        normalized_url, aiohttp_session, sb_client, company_name
-                    )
-                    if is_live and final_url:
-                        logger.info(f"Validated URL from structured data for '{company_name}': {final_url}")
-                        return final_url
-                    else:
-                        logger.warning(f"URL from structured data is not live for '{company_name}': {normalized_url}")
-                        continue  # Пробуем следующий ключ
-                else:
-                    return normalized_url
-    
-    # 2. Попытка спросить LLM о домене компании
-    if openai_client:
-        try:
-            logger.info(f"Asking LLM about domain for '{company_name}'")
-            response = await openai_client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant that provides domain names for companies. Respond with ONLY the most likely domain name, without http:// or https:// prefixes. If you're unsure, make an educated guess based on the company name."},
-                    {"role": "user", "content": f"What is the most likely domain name for the company '{company_name}'? Respond with ONLY the domain name (e.g., 'example.com'), without any explanation or other text."}
-                ],
-                temperature=0.1,
-                max_tokens=30
-            )
-            
-            domain = response.choices[0].message.content.strip()
-            
-            # Проверяем, что домен содержит точку и не содержит пробелов
-            if '.' in domain and ' ' not in domain:
-                # Нормализуем домен
-                normalized_domain = normalize_domain(domain)
-                if normalized_domain:
-                    # Добавляем протокол, если его нет
-                    if not normalized_domain.startswith(('http://', 'https://')):
-                        normalized_domain = 'https://' + normalized_domain
-                    logger.info(f"LLM suggested domain for '{company_name}': {normalized_domain}")
-                    
-                    # Проверяем живость URL, если доступна HTTP сессия
-                    if aiohttp_session:
-                        is_live, final_url = await _validate_and_get_final_url(
-                            normalized_domain, aiohttp_session, sb_client, company_name
-                        )
-                        if is_live and final_url:
-                            logger.info(f"Validated LLM suggested URL for '{company_name}': {final_url}")
-                            return final_url
-                        else:
-                            logger.warning(f"LLM suggested URL is not live for '{company_name}': {normalized_domain}")
-                    else:
-                        return normalized_domain
-        except Exception as e:
-            logger.error(f"Error asking LLM about domain for '{company_name}': {e}")
-    
-    # 3. Если все методы не сработали, создаем синтетический URL
-    synthetic_url = _create_synthetic_url(company_name)
-    # Нормализуем синтетический URL
-    normalized_synthetic = normalize_domain(synthetic_url)
-    if normalized_synthetic:
-        if not normalized_synthetic.startswith(('http://', 'https://')):
-            normalized_synthetic = 'https://' + normalized_synthetic
-        
-        # Для синтетических URL проверку живости пропускаем, так как они вряд ли будут работать
-        # Но возвращаем их как last resort
-        logger.warning(f"Using synthetic URL for '{company_name}' (may not be live): {normalized_synthetic}")
-        return normalized_synthetic
-    return synthetic_url
-
-def _validate_url_format(url: str) -> bool:
-    """
-    Проверяет, что строка выглядит как валидный URL.
-    
-    Args:
-        url: Строка для проверки
-        
-    Returns:
-        bool: True, если строка похожа на URL, иначе False
-    """
-    if not url:
-        return False
-    
-    # Базовая проверка на формат URL
-    url_pattern = r'https?://[\w\.-]+\.[a-zA-Z]{2,}(?:/[\w\.\-\%_]*)*'
-    if re.match(url_pattern, url):
-        return True
-    
-    # Проверка на доменное имя без протокола
-    domain_pattern = r'(?:www\.)?[a-zA-Z0-9][\w\-]*\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2})?'
-    if re.match(domain_pattern, url) and '.' in url and ' ' not in url:
-        return True
-    
-    return False
-
-def _create_synthetic_url(company_name: str) -> str:
-    """
-    Создает синтетический URL на основе имени компании.
-    Используется как самый последний вариант, когда все другие методы не сработали.
-    
-    Args:
-        company_name: Название компании
-        
-    Returns:
-        str: Синтетический URL
-    """
-    # Очищаем имя компании от специальных символов и приводим к нижнему регистру
-    clean_name = re.sub(r'[^\w\s]', '', company_name.lower())
-    
-    # Заменяем пробелы на дефисы
-    domain_name = re.sub(r'\s+', '-', clean_name.strip())
-    
-    # Удаляем слова, которые могут быть лишними (например, "Inc", "LLC", "Ltd")
-    domain_name = re.sub(r'(-inc|-llc|-ltd|-corp|-corporation|-limited)$', '', domain_name)
-    
-    # Создаем URL с https:// и .com
-    synthetic_url = f"https://www.{domain_name}.com"
-    
-    logger.warning(f"Created synthetic URL for '{company_name}': {synthetic_url}")
-    return synthetic_url
-
 async def _extract_homepage_from_report_text_async(report_text: str, company_name: str, url_only_mode: bool = False) -> Optional[str]:
     """
     Извлекает URL официального сайта компании из текста отчета LLM.
@@ -1136,18 +1120,31 @@ async def _extract_homepage_from_report_text_async(report_text: str, company_nam
     # Начинаем с более агрессивных методов поиска URL в тексте
     # Приоритетные паттерны URL
     url_patterns = [
-        r"(?:Official Website|Company Website|Website|Site|Homepage|Home page|Official Site|Corporate Website|URL|Web address|Web site|Official URL):\s*(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+(?:\/[-a-zA-Z0-9%_.~#?&=]*)?)",
-        r"(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+(?:\/[-a-zA-Z0-9%_.~#?&=]*)?)",
-        r"\[([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+)\]",
-        r"domain(?:\s+name)?:\s*([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+)"
+        # Markdown ссылки: [text](https://example.com)
+        r"\[.*?\]\((https?://[^\)]+)\)",
+        # Markdown ссылки без протокола: [text](example.com)
+        r"\[.*?\]\(([a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z0-9\.\-/]+)\)",
+        # Официальные поля с URL
+        r"(?:Official\s+Homepage\s+URL|Official\s+Website|Company\s+Website|Website|Site|Homepage|Home\s+page|Official\s+Site|Corporate\s+Website|URL|Web\s+address|Web\s+site|Official\s+URL):\s*\*?\*?\s*(?:\[.*?\]\()?(https?://[^\s\)]+)",
+        # Официальные поля без протокола
+        r"(?:Official\s+Homepage\s+URL|Official\s+Website|Company\s+Website|Website|Site|Homepage|Home\s+page|Official\s+Site|Corporate\s+Website|URL|Web\s+address|Web\s+site|Official\s+URL):\s*\*?\*?\s*(?:\[.*?\]\()?([a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z0-9\.\-/]+)",
+        # Простые URL с протоколом
+        r"(https?://[a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z0-9\.\-/]+)",
+        # Простые домены
+        r"([a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2})?(?:/[a-zA-Z0-9\.\-/]*)?)"
     ]
     
     # Если включен режим только URL, используем только базовые паттерны
     if url_only_mode:
         url_patterns = [
-            r"(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+(?:\/[-a-zA-Z0-9%_.~#?&=]*)?)",
-            r"\[([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+)\]",
-            r"([a-zA-Z0-9][-a-zA-Z0-9]*\.[-a-zA-Z0-9.]+)"
+            # Markdown ссылки: [text](https://example.com)
+            r"\[.*?\]\((https?://[^\)]+)\)",
+            # Markdown ссылки без протокола: [text](example.com)
+            r"\[.*?\]\(([a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z0-9\.\-/]+)\)",
+            # Простые URL с протоколом
+            r"(https?://[a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z0-9\.\-/]+)",
+            # Простые домены
+            r"([a-zA-Z0-9][-a-zA-Z0-9]*\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2})?(?:/[a-zA-Z0-9\.\-/]*)?)"
         ]
     
     for pattern in url_patterns:
@@ -1157,16 +1154,24 @@ async def _extract_homepage_from_report_text_async(report_text: str, company_nam
             url = matches[0]
             if isinstance(url, tuple):
                 url = url[0]  # Извлекаем домен из группы
-                
-            # Нормализуем URL, извлекая только домен
-            normalized_url = normalize_domain(url)
             
-            if normalized_url:
-                logger.info(f"Found URL via pattern matching: {url} -> normalized to {normalized_url}")
-                # Если URL не содержит протокол, добавляем https://
-                if not normalized_url.startswith(('http://', 'https://')):
-                    normalized_url = 'https://' + normalized_url
-                return normalized_url
+            # Очищаем URL от лишних символов
+            url = url.strip().rstrip(')')
+            
+            # Если URL уже содержит протокол, используем его как есть
+            if url.startswith(('http://', 'https://')):
+                logger.info(f"Found complete URL via pattern matching: {url}")
+                return url
+            else:
+                # Нормализуем URL, извлекая только домен
+                normalized_url = normalize_domain(url)
+                
+                if normalized_url:
+                    # Если URL не содержит протокол, добавляем https://
+                    if not normalized_url.startswith(('http://', 'https://')):
+                        normalized_url = 'https://' + normalized_url
+                    logger.info(f"Found URL via pattern matching: {url} -> normalized to {normalized_url}")
+                    return normalized_url
     
     # Если в режиме URL-only и ничего не нашли через паттерны, возвращаем None
     if url_only_mode:
@@ -1206,6 +1211,108 @@ async def _extract_homepage_from_report_text_async(report_text: str, company_nam
     
     logger.warning(f"No homepage URL found for {company_name} in report text")
     return None 
+
+async def _compare_and_select_best_url(
+    company_name: str,
+    homepage_finder_url: Optional[str],
+    google_search_data: Optional[dict],
+    llm_deep_search_url: Optional[str],
+    openai_client: AsyncOpenAI,
+    run_stage_log: str
+) -> Tuple[Optional[str], str]:
+    """
+    Сравнивает результаты Homepage Finder и LLM Deep Search для выбора лучшего URL.
+    
+    Args:
+        company_name: Название компании
+        homepage_finder_url: URL найденный Homepage Finder
+        google_search_data: Данные поиска Google (первые 5 результатов)
+        llm_deep_search_url: URL найденный LLM Deep Search
+        openai_client: OpenAI клиент
+        run_stage_log: Префикс для логирования
+        
+    Returns:
+        Tuple[Optional[str], str]: (выбранный_url, источник)
+    """
+    # Если есть только один источник, используем его
+    if homepage_finder_url and not llm_deep_search_url:
+        logger.info(f"{run_stage_log} - Using Homepage Finder URL (only source): {homepage_finder_url}")
+        return homepage_finder_url, "homepage_finder"
+    
+    if llm_deep_search_url and not homepage_finder_url:
+        logger.info(f"{run_stage_log} - Using LLM Deep Search URL (only source): {llm_deep_search_url}")
+        return llm_deep_search_url, "llm_deep_search"
+    
+    if not homepage_finder_url and not llm_deep_search_url:
+        logger.warning(f"{run_stage_log} - No URLs found from either source")
+        return None, "none"
+    
+    # Если оба источника дали одинаковые URL, используем Homepage Finder (приоритет)
+    if homepage_finder_url == llm_deep_search_url:
+        logger.info(f"{run_stage_log} - Both sources found same URL: {homepage_finder_url}")
+        return homepage_finder_url, "both_same"
+    
+    # Если URL разные, используем LLM для сравнения
+    logger.info(f"{run_stage_log} - Comparing different URLs: HF={homepage_finder_url} vs LLM={llm_deep_search_url}")
+    
+    try:
+        # Подготавливаем данные для сравнения
+        google_results_text = ""
+        if google_search_data and google_search_data.get("top_5_results"):
+            google_results_text = "\n".join([
+                f"{i}. {result['title']}\n   URL: {result['url']}\n   Snippet: {result['snippet']}"
+                for i, result in enumerate(google_search_data["top_5_results"], 1)
+            ])
+        
+        comparison_prompt = f"""
+Analyze these two URLs found for company "{company_name}" and determine which is more likely to be the correct official website:
+
+URL 1 (Homepage Finder): {homepage_finder_url}
+URL 2 (LLM Deep Search): {llm_deep_search_url}
+
+Google Search Results Context:
+{google_results_text}
+
+Consider:
+1. Which URL appears in the Google search results?
+2. Which URL seems more official/corporate?
+3. Which URL better matches the company name?
+4. Domain authority and legitimacy
+
+Respond with ONLY one of these options:
+- "URL1" if Homepage Finder URL is better
+- "URL2" if LLM Deep Search URL is better
+- "UNCLEAR" if cannot determine
+"""
+
+        response = await openai_client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are an expert at evaluating website URLs for companies. Be concise and decisive."},
+                {"role": "user", "content": comparison_prompt}
+            ],
+            max_tokens=10,
+            temperature=0
+        )
+        
+        decision = response.choices[0].message.content.strip().upper()
+        
+        if decision == "URL1":
+            logger.info(f"{run_stage_log} - LLM chose Homepage Finder URL: {homepage_finder_url}")
+            return homepage_finder_url, "llm_chose_homepage_finder"
+        elif decision == "URL2":
+            logger.info(f"{run_stage_log} - LLM chose LLM Deep Search URL: {llm_deep_search_url}")
+            return llm_deep_search_url, "llm_chose_deep_search"
+        else:
+            # По умолчанию отдаем приоритет Homepage Finder
+            logger.info(f"{run_stage_log} - LLM unclear, defaulting to Homepage Finder: {homepage_finder_url}")
+            return homepage_finder_url, "llm_unclear_default_homepage_finder"
+            
+    except Exception as e:
+        logger.error(f"{run_stage_log} - Error in URL comparison: {e}")
+        # В случае ошибки отдаем приоритет Homepage Finder
+        logger.info(f"{run_stage_log} - Error in comparison, defaulting to Homepage Finder: {homepage_finder_url}")
+        return homepage_finder_url, "error_default_homepage_finder"
 
 async def _validate_and_get_final_url(
     url: str,

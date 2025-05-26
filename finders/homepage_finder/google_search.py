@@ -21,7 +21,7 @@ async def search_google(company_name: str, session: aiohttp.ClientSession, serpe
     juridical_suffixes = [
         "Co., Ltd.", "Co., LTD.", ", Ltd.", ", LTD.", ", Inc.", ", LLC", 
         ", Corp.", ", Corporation", "GmbH", "S.A.", "UAB", "OOO", 
-        "Pty Ltd", "Pvt Ltd", "Limited", "Incorporated"
+        "Pty Ltd", "Pvt Ltd", "Limited", "Incorporated", " L.L.C", " LLC"
     ]
     
     for suffix in juridical_suffixes:
@@ -29,8 +29,11 @@ async def search_google(company_name: str, session: aiohttp.ClientSession, serpe
             clean_name = clean_name[:-len(suffix)].strip()
             break
     
-    # Use both original and cleaned name in search for better coverage
-    search_query = f"company \"{company_name}\" OR \"{clean_name}\" official website homepage"
+    # Также убираем точки из L.L.C для альтернативного поиска
+    clean_name_no_dots = clean_name.replace("L.L.C", "LLC").replace(".", "")
+    
+    # Simple search query - just the company name
+    search_query = company_name
     
     payload = json.dumps({
         "q": search_query,

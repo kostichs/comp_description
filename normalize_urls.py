@@ -77,7 +77,7 @@ async def get_url_status_and_final_location_async(
 
     processed_url = url # URL, который будет использоваться для попыток (может меняться с http на https и наоборот)
     
-    last_aiohttp_error_message = f"Все попытки проверки для {original_url} через aiohttp не удались"
+    last_aiohttp_error_message = f"All aiohttp check attempts for {original_url} failed"
 
     for attempt_num, current_url_to_try in enumerate(filter(None, urls_to_try)): # filter(None, ...) уберет возможный None из списка
         if not current_url_to_try: # Пропускаем вторую попытку, если первая была http или URL был без протокола
@@ -89,23 +89,23 @@ async def get_url_status_and_final_location_async(
             hostname = parsed_url.hostname
 
             if not hostname:
-                logger.warning(f"[URL_CHECK] Не удалось извлечь хост из URL: {current_url_to_try}")
-                if attempt_num == 0 and processed_url.startswith("https://"): continue # Даем шанс http
-                last_aiohttp_error_message = f"Не удалось извлечь хост из URL: {current_url_to_try}"
+                logger.warning(f"[URL_CHECK] Could not extract host from URL: {current_url_to_try}")
+                if attempt_num == 0 and processed_url.startswith("https://"): continue # Give http a chance
+                last_aiohttp_error_message = f"Could not extract host from URL: {current_url_to_try}"
                 continue # К следующей попытке aiohttp
 
             # 1. Проверка DNS (опционально, но может ускорить отказ для неверных доменов)
             try:
                 await asyncio.get_event_loop().getaddrinfo(hostname, None)
-                logger.debug(f"[URL_CHECK] DNS для {hostname} успешно разрешен.")
+                logger.debug(f"[URL_CHECK] DNS for {hostname} resolved successfully.")
             except socket.gaierror:
-                logger.warning(f"[URL_CHECK] Ошибка разрешения DNS для {hostname} (из URL: {current_url_to_try})")
-                if attempt_num == 0 and processed_url.startswith("https://"): continue # Даем шанс http
-                last_aiohttp_error_message = f"Ошибка разрешения DNS для {hostname}"
+                logger.warning(f"[URL_CHECK] DNS resolution error for {hostname} (from URL: {current_url_to_try})")
+                if attempt_num == 0 and processed_url.startswith("https://"): continue # Give http a chance
+                last_aiohttp_error_message = f"DNS resolution error for {hostname}"
                 continue # К следующей попытке aiohttp
             except Exception as e_dns: # Другие ошибки DNS
-                logger.warning(f"[URL_CHECK] Неожиданная ошибка DNS для {hostname}: {e_dns}")
-                # Не прерываем здесь, дадим шанс HTTP запросу
+                logger.warning(f"[URL_CHECK] Unexpected DNS error for {hostname}: {e_dns}")
+                # Don't break here, give HTTP request a chance
 
             # 2. HEAD запрос для проверки доступности и редиректов
             client_timeout = aiohttp.ClientTimeout(total=timeout)
@@ -140,13 +140,13 @@ async def get_url_status_and_final_location_async(
                     continue # К следующей попытке aiohttp
 
         except asyncio.TimeoutError:
-            logger.warning(f"[URL_CHECK] Таймаут запроса к {current_url_to_try} (лимит: {timeout}с)")
+            logger.warning(f"[URL_CHECK] Request timeout to {current_url_to_try} (limit: {timeout}s)")
             if attempt_num == 0 and processed_url.startswith("https://"): continue
-            # return False, None, f"Таймаут запроса к {current_url_to_try}"
-            last_aiohttp_error_message = f"Таймаут запроса к {current_url_to_try}"
+            # return False, None, f"Request timeout to {current_url_to_try}"
+            last_aiohttp_error_message = f"Request timeout to {current_url_to_try}"
             continue # К следующей попытке aiohttp
         except aiohttp.ClientSSLError as e_ssl:
-            logger.warning(f"[URL_CHECK] Ошибка SSL для {current_url_to_try}: {e_ssl}. Пробуем без SSL проверки или http.")
+            logger.warning(f"[URL_CHECK] SSL error for {current_url_to_try}: {e_ssl}. Trying without SSL verification or http.")
             # Попробуем без SSL верификации (если это первая попытка с https)
             if attempt_num == 0 and current_url_to_try.startswith("https://"):
                  try:
@@ -166,29 +166,29 @@ async def get_url_status_and_final_location_async(
                      logger.warning(f"[URL_CHECK] Ошибка при попытке без SSL проверки для {current_url_to_try}: {e_no_ssl}")
             # Если это была вторая попытка (http) или ошибка SSL не на https, то это неудача
             if attempt_num == 1 or not current_url_to_try.startswith("https://"):
-                 # return False, None, f"Ошибка SSL для {current_url_to_try}: {e_ssl}"
-                 last_aiohttp_error_message = f"Ошибка SSL для {current_url_to_try}: {e_ssl}"
+                 # return False, None, f"SSL error for {current_url_to_try}: {e_ssl}"
+                 last_aiohttp_error_message = f"SSL error for {current_url_to_try}: {e_ssl}"
                  # Не выходим, а продолжаем, чтобы дать шанс ScrapingBee
             # Иначе, даем шанс второй итерации (с http)
             continue
 
-        except aiohttp.ClientConnectorError as e_conn: # Ошибки соединения (например, Connection Refused)
-            logger.warning(f"[URL_CHECK] Ошибка соединения для {current_url_to_try}: {e_conn}")
+        except aiohttp.ClientConnectorError as e_conn: # Connection errors (e.g., Connection Refused)
+            logger.warning(f"[URL_CHECK] Connection error for {current_url_to_try}: {e_conn}")
             if attempt_num == 0 and processed_url.startswith("https://"): continue
-            # return False, None, f"Ошибка соединения для {current_url_to_try}: {e_conn}"
-            last_aiohttp_error_message = f"Ошибка соединения для {current_url_to_try}: {e_conn}"
+            # return False, None, f"Connection error for {current_url_to_try}: {e_conn}"
+            last_aiohttp_error_message = f"Connection error for {current_url_to_try}: {e_conn}"
             continue # К следующей попытке aiohttp
-        except aiohttp.ClientError as e_client: # Другие ошибки клиента aiohttp
-            logger.warning(f"[URL_CHECK] Ошибка клиента Aiohttp для {current_url_to_try}: {e_client}")
+        except aiohttp.ClientError as e_client: # Other aiohttp client errors
+            logger.warning(f"[URL_CHECK] Aiohttp client error for {current_url_to_try}: {e_client}")
             if attempt_num == 0 and processed_url.startswith("https://"): continue
-            # return False, None, f"Ошибка клиента Aiohttp для {current_url_to_try}: {e_client}"
-            last_aiohttp_error_message = f"Ошибка клиента Aiohttp для {current_url_to_try}: {e_client}"
+            # return False, None, f"Aiohttp client error for {current_url_to_try}: {e_client}"
+            last_aiohttp_error_message = f"Aiohttp client error for {current_url_to_try}: {e_client}"
             continue # К следующей попытке aiohttp
-        except Exception as e: # Любые другие неожиданные ошибки
-            logger.error(f"[URL_CHECK] Неожиданная ошибка при проверке {current_url_to_try}: {e}", exc_info=True)
+        except Exception as e: # Any other unexpected errors
+            logger.error(f"[URL_CHECK] Unexpected error checking {current_url_to_try}: {e}", exc_info=True)
             if attempt_num == 0 and processed_url.startswith("https://"): continue
-            # return False, None, f"Неожиданная ошибка при проверке {current_url_to_try}: {str(e)}"
-            last_aiohttp_error_message = f"Неожиданная ошибка при проверке {current_url_to_try}: {str(e)}"
+            # return False, None, f"Unexpected error checking {current_url_to_try}: {str(e)}"
+            last_aiohttp_error_message = f"Unexpected error checking {current_url_to_try}: {str(e)}"
             continue # К следующей попытке aiohttp
             
     # Если все попытки aiohttp не увенчались успехом, пробуем проверить базовый домен (без пути)
@@ -198,7 +198,7 @@ async def get_url_status_and_final_location_async(
     
     # Проверяем базовый домен только если исходный URL содержал путь
     if parsed_original.path and parsed_original.path != '/' and base_domain_url != url:
-        logger.info(f"[URL_CHECK] Основной URL не прошел проверку. Проверяем базовый домен: {base_domain_url}")
+        logger.info(f"[URL_CHECK] Main URL failed check. Checking base domain: {base_domain_url}")
         try:
             client_timeout = aiohttp.ClientTimeout(total=timeout)
             async with session.head(base_domain_url, timeout=client_timeout, allow_redirects=True, headers=common_headers) as response:
@@ -246,7 +246,7 @@ async def get_url_status_and_final_location_async(
             return False, None, f"{last_aiohttp_error_message}; ScrapingBee error: {str(e_sb)}"
 
     # Если и ScrapingBee не помог (или не был доступен), возвращаем последнюю ошибку от aiohttp
-    logger.warning(f"[URL_CHECK] Все попытки проверки для {original_url} не удались (включая ScrapingBee, если использовался).")
+    logger.warning(f"[URL_CHECK] All check attempts for {original_url} failed (including ScrapingBee if used).")
     return False, None, last_aiohttp_error_message
 
 def normalize_urls_in_file(input_file: str, output_file: str = None) -> str:
@@ -500,21 +500,33 @@ async def normalize_and_remove_duplicates(
                 _update_session_metadata_light(session_id_for_metadata, details)
              return str(output_file_path), details
     except Exception as e:
-        error_msg = f"Ошибка при чтении файла {input_file}: {e}"
+        error_msg = f"Error reading file {input_file}: {e}"
         logger.error(error_msg, exc_info=True)
         return None, {"error": error_msg, "processing_messages": [{"type": "error", "message": error_msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}]}
 
     if df.shape[1] < 2:
-        error_msg = "Файл должен содержать как минимум две колонки: 'Company Name' и 'Website'."
-        logger.error(error_msg)
-        return None, {"error": error_msg, "processing_messages": [{"type": "error", "message": error_msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")}]}
+        logger.info(f"File {input_file} contains only one column - skipping URL normalization and deduplication")
+        # For single-column files, simply return successful result without processing
+        return input_file, {
+            "original_count": len(df),
+            "live_urls_count": 0,
+            "dead_urls_count": 0,
+            "redirected_urls_updated": 0,
+            "duplicates_count": 0,
+            "final_count": len(df),
+            "processing_messages": [{
+                "type": "info", 
+                "message": "Single column file detected - URL normalization skipped", 
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+            }]
+        }
 
     # Используем первые две колонки
     company_name_col = df.columns[0]
     website_col = df.columns[1]
     
     original_company_count = len(df)
-    logger.info(f"Начальная обработка {original_company_count} компаний из файла {input_file}")
+    logger.info(f"Initial processing of {original_company_count} companies from file {input_file}")
 
     all_companies_data = []  # Все компании с их статусами
     dead_urls_count = 0
@@ -536,8 +548,8 @@ async def normalize_and_remove_duplicates(
         original_url = str(df.iloc[i][website_col])
 
         if isinstance(result, Exception):
-            logger.error(f"Ошибка при обработке URL {original_url} для компании {company_name}: {result}")
-            processing_messages.append({"type": "error", "message": f"URL {original_url} ({company_name}) вызвал ошибку: {result}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
+            logger.error(f"Error processing URL {original_url} for company {company_name}: {result}")
+            processing_messages.append({"type": "error", "message": f"URL {original_url} ({company_name}) caused error: {result}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
             all_companies_data.append({
                 "name": company_name, 
                 "original_url": original_url, 
@@ -556,14 +568,14 @@ async def normalize_and_remove_duplicates(
                 "final_url": final_url,
                 "status": "VALID"
             })
-            if final_url != original_url and normalize_domain(final_url) != normalize_domain(original_url): # Считаем редиректом, только если домен изменился
+            if final_url != original_url and normalize_domain(final_url) != normalize_domain(original_url): # Count as redirect only if domain changed
                 redirected_urls_updated_count += 1
-                msg = f"URL для '{company_name}' изменен с {original_url} на {final_url} из-за редиректа."
+                msg = f"URL for '{company_name}' changed from {original_url} to {final_url} due to redirect."
                 logger.info(msg)
                 processing_messages.append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
         else:
             dead_urls_count += 1
-            msg = f"URL {original_url} для компании '{company_name}' неживой. Причина: {error_message}. Компания будет помечена как DEAD_URL."
+            msg = f"URL {original_url} for company '{company_name}' is not live. Reason: {error_message}. Company will be marked as DEAD_URL."
             logger.warning(msg)
             processing_messages.append({"type": "warning", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
             all_companies_data.append({
@@ -574,7 +586,7 @@ async def normalize_and_remove_duplicates(
                 "error_message": error_message or "URL неживой"
             })
             
-    logger.info(f"Проверка URL завершена. Живых URL: {len([c for c in all_companies_data if c['status'] == 'VALID'])}, Неживых URL: {dead_urls_count}, Обновлено редиректов: {redirected_urls_updated_count}")
+    logger.info(f"URL check completed. Live URLs: {len([c for c in all_companies_data if c['status'] == 'VALID'])}, Dead URLs: {dead_urls_count}, Redirects updated: {redirected_urls_updated_count}")
 
     # Определение дубликатов по финальному URL (домену)
     seen_domains = {}  # domain -> first_company_data
@@ -584,17 +596,17 @@ async def normalize_and_remove_duplicates(
         if company_data["status"] == "VALID":  # Проверяем дубликаты только среди валидных URL
             domain = normalize_domain(company_data["final_url"])
             if domain in seen_domains:
-                # Это дубликат
+                # This is a duplicate
                 company_data["status"] = "DUPLICATE"
                 duplicates_count += 1
-                msg = f"Компания '{company_data['name']}' (URL: {company_data['final_url']}) помечена как дубликат домена '{domain}'."
+                msg = f"Company '{company_data['name']}' (URL: {company_data['final_url']}) marked as duplicate of domain '{domain}'."
                 logger.info(msg)
                 processing_messages.append({"type": "info", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
             else:
                 # Первая компания с этим доменом
                 seen_domains[domain] = company_data
             
-    logger.info(f"Проверка дубликатов завершена. Найдено дубликатов: {duplicates_count}.")
+    logger.info(f"Duplicate check completed. Found duplicates: {duplicates_count}.")
     
     # Создание DataFrame для сохранения (сохраняем ВСЕ компании с их статусами)
     output_df = pd.DataFrame([{
@@ -609,9 +621,9 @@ async def normalize_and_remove_duplicates(
             output_df.to_excel(output_file_path, index=False)
         else:
             output_df.to_csv(output_file_path, index=False)
-        logger.info(f"Файл с обработанными компаниями сохранен: {output_file_path}")
+        logger.info(f"File with processed companies saved: {output_file_path}")
     except Exception as e:
-        error_msg = f"Ошибка при сохранении файла {output_file_path}: {e}"
+        error_msg = f"Error saving file {output_file_path}: {e}"
         logger.error(error_msg, exc_info=True)
         processing_messages.append({"type": "error", "message": error_msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
 
@@ -638,7 +650,7 @@ def _update_session_metadata_light(session_id: str, dedup_info: dict, new_messag
     """Вспомогательная функция для обновления метаданных сессии."""
     try:
         from src.data_io import load_session_metadata, save_session_metadata
-        logger.info(f"Обновление метаданных (light) для сессии {session_id}...")
+        logger.info(f"Updating metadata (light) for session {session_id}...")
         all_metadata = load_session_metadata()
         session_updated = False
         for session_meta in all_metadata:
@@ -662,11 +674,11 @@ def _update_session_metadata_light(session_id: str, dedup_info: dict, new_messag
         
         if session_updated:
             save_session_metadata(all_metadata)
-            logger.info(f"Метаданные сессии {session_id} обновлены (light).")
+            logger.info(f"Session {session_id} metadata updated (light).")
         else:
-            logger.warning(f"Сессия {session_id} не найдена в метаданных для обновления (light).")
+            logger.warning(f"Session {session_id} not found in metadata for update (light).")
     except Exception as e:
-        logger.error(f"Ошибка при обновлении метаданных сессии {session_id} (light): {e}", exc_info=True)
+        logger.error(f"Error updating session {session_id} metadata (light): {e}", exc_info=True)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Нормализация URL, проверка жизнеспособности и удаление дубликатов во входных данных")

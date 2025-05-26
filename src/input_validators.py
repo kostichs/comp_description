@@ -1,13 +1,15 @@
 """
 Валидаторы входных данных для проекта генерации описаний компаний.
 
-Этот модуль содержит функции для нормализации URL.
+Этот модуль содержит функции для нормализации URL и названий компаний.
 """
 
 import logging
 from urllib.parse import urlparse
 import re
 import unicodedata
+import html
+from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -142,7 +144,7 @@ def is_generic_term(text: str) -> bool:
     
     return False
 
-def validate_company_name(company_name: str) -> tuple[bool, str]:
+def validate_company_name(company_name: str) -> Tuple[bool, str]:
     """
     Валидирует название компании, проверяя что это не общий термин.
     
@@ -167,4 +169,173 @@ def validate_company_name(company_name: str) -> tuple[bool, str]:
     if company_name.strip().isdigit():
         return False, "Company name cannot consist only of digits"
     
-    return True, "" 
+    return True, ""
+
+def normalize_company_name(company_name: str, for_search: bool = False) -> str:
+    """
+    Нормализует название компании, исправляя проблемы с кодировкой и Unicode.
+    
+    Args:
+        company_name: Исходное название компании
+        for_search: Если True, применяет дополнительную нормализацию для поиска
+        
+    Returns:
+        str: Нормализованное название компании
+    """
+    if not company_name or not isinstance(company_name, str):
+        return ""
+    
+    # Шаг 1: Исправление проблем с кодировкой
+    normalized = company_name
+    
+    # Исправляем распространенные проблемы с кодировкой UTF-8
+    encoding_fixes = {
+        # Эстонские символы
+        'OÃœ': 'OÜ',
+        'oÃœ': 'oü',
+        
+        # Немецкие символы
+        'VÃ–LGY': 'VÖLGY',
+        'vÃ¶lgy': 'völgy',
+        'Ã¤': 'ä',
+        'Ã¶': 'ö',
+        'Ã¼': 'ü',
+        'ÃŸ': 'ß',
+        
+        # Французские символы
+        'Ã ': 'à',
+        'Ã¡': 'á',
+        'Ã¢': 'â',
+        'Ã£': 'ã',
+        'Ã¨': 'è',
+        'Ã©': 'é',
+        'Ãª': 'ê',
+        'Ã«': 'ë',
+        'Ã¬': 'ì',
+        'Ã­': 'í',
+        'Ã®': 'î',
+        'Ã¯': 'ï',
+        'Ã²': 'ò',
+        'Ã³': 'ó',
+        'Ã´': 'ô',
+        'Ãµ': 'õ',
+        'Ã¹': 'ù',
+        'Ãº': 'ú',
+        'Ã»': 'û',
+        'Ã§': 'ç',
+        
+        # Испанские символы
+        'Ã±': 'ñ',
+        
+        # Скандинавские символы
+        'Ã¥': 'å',
+        'Ã†': 'Æ',
+        'Ã¸': 'ø',
+        'Ã…': 'Å',
+    }
+    
+    # Применяем исправления кодировки
+    for broken, correct in encoding_fixes.items():
+        normalized = normalized.replace(broken, correct)
+    
+    # Шаг 2: Декодирование HTML entities
+    try:
+        normalized = html.unescape(normalized)
+    except Exception as e:
+        logger.debug(f"HTML unescape failed for '{company_name}': {e}")
+    
+    # Шаг 3: Нормализация Unicode
+    try:
+        # Нормализуем Unicode в форму NFC (Canonical Decomposition, followed by Canonical Composition)
+        normalized = unicodedata.normalize('NFC', normalized)
+    except Exception as e:
+        logger.debug(f"Unicode normalization failed for '{company_name}': {e}")
+    
+    # Шаг 4: Попытка исправить поврежденную кодировку через re-encoding
+    try:
+        # Попробуем различные методы исправления кодировки
+        if any(ord(char) > 127 for char in normalized):
+            # Метод 1: latin-1 -> utf-8
+            try:
+                fixed = normalized.encode('latin-1').decode('utf-8')
+                if fixed != normalized and len(fixed) > 0:
+                    logger.info(f"Fixed encoding (latin-1->utf-8): '{normalized}' -> '{fixed}'")
+                    normalized = fixed
+            except (UnicodeEncodeError, UnicodeDecodeError):
+                # Метод 2: cp1252 -> utf-8 (Windows кодировка)
+                try:
+                    fixed = normalized.encode('cp1252').decode('utf-8')
+                    if fixed != normalized and len(fixed) > 0:
+                        logger.info(f"Fixed encoding (cp1252->utf-8): '{normalized}' -> '{fixed}'")
+                        normalized = fixed
+                except (UnicodeEncodeError, UnicodeDecodeError):
+                    pass
+    except Exception as e:
+        logger.debug(f"Encoding fix failed for '{company_name}': {e}")
+    
+    # Шаг 5: Очистка и нормализация для поиска (если требуется)
+    if for_search:
+        # Удаляем лишние пробелы
+        normalized = ' '.join(normalized.split())
+        
+        # Удаляем кавычки в начале и конце
+        normalized = normalized.strip('"\'""''')
+        
+        # Нормализуем регистр для некоторых общих сокращений
+        normalized = re.sub(r'\b(inc|llc|ltd|corp|gmbh|co|kg|oo|ooo)\b\.?', 
+                           lambda m: m.group(0).upper(), normalized, flags=re.IGNORECASE)
+    
+    # Шаг 6: Финальная очистка
+    normalized = normalized.strip()
+    
+    # Логируем изменения, если они были
+    if normalized != company_name:
+        logger.info(f"Normalized company name: '{company_name}' -> '{normalized}'")
+    
+    return normalized
+
+def detect_encoding_issues(text: str) -> list:
+    """
+    Обнаруживает потенциальные проблемы с кодировкой в тексте.
+    
+    Args:
+        text: Текст для анализа
+        
+    Returns:
+        list: Список обнаруженных проблем
+    """
+    issues = []
+    
+    if not text:
+        return issues
+    
+    # Проверяем на распространенные паттерны поврежденной кодировки
+    encoding_patterns = [
+        (r'Ã[œŒ]', 'Possible corrupted Ü/ü characters'),
+        (r'Ã[–—]', 'Possible corrupted Ö/ö characters'),
+        (r'Ã[¤¥]', 'Possible corrupted ä characters'),
+        (r'Ã[±]', 'Possible corrupted ñ character'),
+        (r'Ã[§]', 'Possible corrupted ç character'),
+        (r'Ã[¡-¿]', 'Possible corrupted accented characters'),
+        (r'Ð[Ñ-ï]', 'Possible corrupted Cyrillic characters'),
+        (r'â€[™œž]', 'Possible corrupted quotation marks'),
+        (r'â€["]', 'Possible corrupted dash characters'),
+    ]
+    
+    for pattern, description in encoding_patterns:
+        if re.search(pattern, text):
+            issues.append(description)
+    
+    # Проверяем на смешанные кодировки
+    has_latin = bool(re.search(r'[a-zA-Z]', text))
+    has_cyrillic = bool(re.search(r'[а-яё]', text, re.IGNORECASE))
+    has_special_chars = bool(re.search(r'[À-ÿ]', text))
+    
+    if has_latin and has_cyrillic and has_special_chars:
+        issues.append('Mixed character sets detected (Latin + Cyrillic + Special)')
+    
+    # Проверяем на подозрительные последовательности
+    if re.search(r'[Ã][^a-zA-Z0-9\s]', text):
+        issues.append('Suspicious Ã character sequences')
+    
+    return issues 

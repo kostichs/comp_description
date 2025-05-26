@@ -56,7 +56,7 @@
 - [ ] Настроить модель для ограниченного поиска URL:
   ```yaml
   url_search_only_config:
-    model: "gpt-3.5-turbo"  # Можно использовать более быструю модель для простых запросов
+    model: "gpt-4o-mini"  # Можно использовать более быструю модель для простых запросов
     temperature: 0.0
     max_tokens: 150
     response_format:
