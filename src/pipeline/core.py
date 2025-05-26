@@ -183,12 +183,50 @@ async def _process_single_company_async(
             run_standard_homepage_finders = False  # Отключаем поиск, так как URL уже есть
             run_domain_check_finder = False  # Также отключаем проверку домена
         
-        # 2. Глубокий поиск информации о компании с помощью LLM (ОСНОВНОЙ МЕТОД)
+        # 2. ЭТАП 1: Поиск URL (если его нет)
+        if not found_homepage_url and run_llm_deep_search_pipeline:
+            logger.info(f"{run_stage_log} - STAGE 1: URL Discovery using LLM Deep Search")
+            try:
+                if "llm_deep_search_finder" in finder_instances:
+                    llm_deep_search_finder = finder_instances["llm_deep_search_finder"]
+                    
+                    # Передаем конфигурацию перегрузки, если она есть
+                    if llm_deep_search_config_override:
+                        llm_deep_search_finder.update_config(llm_deep_search_config_override)
+                    
+                    logger.info(f"{run_stage_log} - Running URL-only search to find company website")
+                    url_only_result = await llm_deep_search_finder.find(
+                        company_name,
+                        url_only_mode=True
+                    )
+                    
+                    if url_only_result and isinstance(url_only_result, dict) and url_only_result.get("extracted_homepage_url"):
+                        potential_url = url_only_result["extracted_homepage_url"]
+                        logger.info(f"{run_stage_log} - URL discovery found potential URL: {potential_url}")
+                        
+                        # Проверяем живость URL
+                        is_live, final_url = await _validate_and_get_final_url(
+                            potential_url, aiohttp_session, sb_client, company_name
+                        )
+                        
+                        if is_live and final_url:
+                            found_homepage_url = final_url
+                            logger.info(f"{run_stage_log} - ✅ STAGE 1 SUCCESS: Found and validated URL: {found_homepage_url}")
+                        else:
+                            logger.warning(f"{run_stage_log} - ❌ STAGE 1 FAILED: URL not live: {potential_url}")
+                    else:
+                        logger.warning(f"{run_stage_log} - ❌ STAGE 1 FAILED: No URL found in discovery mode")
+                else:
+                    logger.warning(f"{run_stage_log} - LLM deep search finder not available for URL discovery")
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error in URL discovery stage: {e}", exc_info=True)
+        
+        # 3. ЭТАП 2: Полный анализ компании (когда есть URL)
         structured_data = {}
         llm_deep_search_raw_result = None
         
-        if run_llm_deep_search_pipeline:
-            logger.info(f"{run_stage_log} - Running LLM deep search finder (PRIMARY METHOD)")
+        if found_homepage_url and run_llm_deep_search_pipeline:
+            logger.info(f"{run_stage_log} - STAGE 2: Full Company Analysis with URL: {found_homepage_url}")
             try:
                 if "llm_deep_search_finder" in finder_instances:
                     llm_deep_search_finder = finder_instances["llm_deep_search_finder"]
@@ -196,14 +234,10 @@ async def _process_single_company_async(
                     # Переменная для контроля пропуска deep search
                     skip_deep_search = False
                     
-                    # Передаем конфигурацию перегрузки, если она есть
-                    if llm_deep_search_config_override:
-                        llm_deep_search_finder.update_config(llm_deep_search_config_override)
-                    
-                    # Проверяем URL в HubSpot, если клиент есть и URL уже найден
-                    if found_homepage_url and hubspot_client:
+                    # Проверяем URL в HubSpot, если клиент есть
+                    if hubspot_client:
                         try:
-                            logger.info(f"{run_stage_log} - Checking URL {found_homepage_url} in HubSpot before deep search")
+                            logger.info(f"{run_stage_log} - Checking URL {found_homepage_url} in HubSpot before analysis")
                             hubspot_company = await hubspot_client.search_company_by_domain(found_homepage_url)
                             
                             if hubspot_company and hubspot_client.has_fresh_description(hubspot_company):
@@ -224,32 +258,9 @@ async def _process_single_company_async(
                         except Exception as e:
                             logger.error(f"{run_stage_log} - Error checking HubSpot: {e}", exc_info=True)
                     
-                    # Если URL не найден, сначала используем режим url_only_mode
-                    if not found_homepage_url and not second_column_data and not homepage_url_from_tuple and not skip_deep_search:
-                        logger.info(f"{run_stage_log} - No URL found yet, using URL-only mode first")
-                        url_only_result = await llm_deep_search_finder.find(
-                            company_name,
-                            url_only_mode=True
-                        )
-                        
-                        if url_only_result and isinstance(url_only_result, dict) and url_only_result.get("extracted_homepage_url"):
-                            potential_url = url_only_result["extracted_homepage_url"]
-                            logger.info(f"{run_stage_log} - URL-only mode found homepage URL, validating: {potential_url}")
-                            
-                            # Проверяем живость URL
-                            is_live, final_url = await _validate_and_get_final_url(
-                                potential_url, aiohttp_session, sb_client, company_name
-                            )
-                            
-                            if is_live and final_url:
-                                found_homepage_url = final_url
-                                logger.info(f"{run_stage_log} - Using validated URL from URL-only mode: {found_homepage_url}")
-                            else:
-                                logger.warning(f"{run_stage_log} - URL from URL-only mode is not live: {potential_url}")
-                    
-                    # Выполняем полный LLM Deep Search (основной метод)
+                    # Выполняем полный LLM Deep Search с найденным URL
                     if not skip_deep_search:
-                        logger.info(f"{run_stage_log} - Running full LLM deep search")
+                        logger.info(f"{run_stage_log} - Running full company analysis with validated URL")
                         llm_search_result = await llm_deep_search_finder.find(
                             company_name, 
                             company_homepage_url=found_homepage_url,
@@ -263,55 +274,27 @@ async def _process_single_company_async(
                             if "result" in llm_search_result:
                                 llm_deep_search_raw_result = llm_search_result["result"]
                             
-                            # Проверяем наличие homepage в структурированных данных
-                            if "homepage" in structured_data and structured_data["homepage"] and not found_homepage_url:
-                                potential_url = structured_data["homepage"]
-                                logger.info(f"{run_stage_log} - Found homepage in LLM deep search, validating: {potential_url}")
-                                
-                                # Проверяем живость URL
-                                is_live, final_url = await _validate_and_get_final_url(
-                                    potential_url, aiohttp_session, sb_client, company_name
-                                )
-                                
-                                if is_live and final_url:
-                                    found_homepage_url = final_url
-                                    logger.info(f"{run_stage_log} - Using validated homepage from LLM deep search: {found_homepage_url}")
-                                    # Обновляем URL в структурированных данных на финальный
-                                    structured_data["homepage"] = final_url
-                                else:
-                                    logger.warning(f"{run_stage_log} - Homepage from LLM deep search is not live: {potential_url}")
-                            
-                            # Проверяем наличие extracted_homepage_url в результате LLMDeepSearchFinder
-                            if "extracted_homepage_url" in structured_data and structured_data["extracted_homepage_url"] and not found_homepage_url:
-                                potential_url = structured_data["extracted_homepage_url"]
-                                logger.info(f"{run_stage_log} - Found extracted homepage URL in LLM deep search, validating: {potential_url}")
-                                
-                                # Проверяем живость URL
-                                is_live, final_url = await _validate_and_get_final_url(
-                                    potential_url, aiohttp_session, sb_client, company_name
-                                )
-                                
-                                if is_live and final_url:
-                                    found_homepage_url = final_url
-                                    logger.info(f"{run_stage_log} - Using validated extracted homepage URL from LLM deep search: {found_homepage_url}")
-                                    # Обновляем URL в структурированных данных на финальный
-                                    structured_data["extracted_homepage_url"] = final_url
-                                else:
-                                    logger.warning(f"{run_stage_log} - Extracted homepage URL from LLM deep search is not live: {potential_url}")
+                            # Обновляем URL в структурированных данных, если он изменился
+                            if "homepage" in structured_data:
+                                structured_data["homepage"] = found_homepage_url
+                            if "extracted_homepage_url" in structured_data:
+                                structured_data["extracted_homepage_url"] = found_homepage_url
                             
                             if "linkedin" in structured_data and structured_data["linkedin"] and not linkedin_url:
                                 linkedin_url = structured_data["linkedin"]
-                                logger.info(f"{run_stage_log} - Using LinkedIn from LLM deep search: {linkedin_url}")
+                                logger.info(f"{run_stage_log} - Found LinkedIn URL in analysis: {linkedin_url}")
+                            
+                            logger.info(f"{run_stage_log} - ✅ STAGE 2 SUCCESS: Full analysis completed")
                         else:
-                            logger.warning(f"{run_stage_log} - LLM deep search finder did not return valid data")
+                            logger.warning(f"{run_stage_log} - ❌ STAGE 2 FAILED: LLM analysis did not return valid data")
                 else:
-                    logger.warning(f"{run_stage_log} - LLM deep search finder not available")
+                    logger.warning(f"{run_stage_log} - LLM deep search finder not available for analysis")
             except Exception as e:
-                logger.error(f"{run_stage_log} - Error running LLM deep search finder: {e}", exc_info=True)
+                logger.error(f"{run_stage_log} - Error in company analysis stage: {e}", exc_info=True)
         
-        # 3. ЗАПАСНЫЕ МЕТОДЫ: Стандартные finders (только если LLM Deep Search не нашел URL)
+        # 4. ЗАПАСНЫЕ МЕТОДЫ: Стандартные finders (только если оба этапа LLM не сработали)
         if not found_homepage_url and run_standard_homepage_finders:
-            logger.info(f"{run_stage_log} - LLM Deep Search didn't find URL, trying standard homepage finder as backup")
+            logger.info(f"{run_stage_log} - BACKUP: Both LLM stages failed, trying standard homepage finder")
             try:
                 if "homepage_finder" in finder_instances:
                     homepage_finder = finder_instances["homepage_finder"]
@@ -322,15 +305,40 @@ async def _process_single_company_async(
                     )
                     if homepage_result and "url" in homepage_result:
                         found_homepage_url = homepage_result["url"]
-                        logger.info(f"{run_stage_log} - Backup homepage finder found URL: {found_homepage_url}")
+                        logger.info(f"{run_stage_log} - ✅ BACKUP SUCCESS: Standard finder found URL: {found_homepage_url}")
+                        
+                        # Если нашли URL через backup, запускаем ЭТАП 2 для полного анализа
+                        if run_llm_deep_search_pipeline and "llm_deep_search_finder" in finder_instances:
+                            logger.info(f"{run_stage_log} - Running STAGE 2 analysis with backup URL")
+                            try:
+                                llm_deep_search_finder = finder_instances["llm_deep_search_finder"]
+                                llm_search_result = await llm_deep_search_finder.find(
+                                    company_name, 
+                                    company_homepage_url=found_homepage_url,
+                                    linkedin_url=linkedin_url,
+                                    context_text=context_text
+                                )
+                                
+                                if llm_search_result and isinstance(llm_search_result, dict):
+                                    structured_data = llm_search_result
+                                    if "result" in llm_search_result:
+                                        llm_deep_search_raw_result = llm_search_result["result"]
+                                    
+                                    if "linkedin" in structured_data and structured_data["linkedin"] and not linkedin_url:
+                                        linkedin_url = structured_data["linkedin"]
+                                        logger.info(f"{run_stage_log} - Found LinkedIn URL in backup analysis: {linkedin_url}")
+                                    
+                                    logger.info(f"{run_stage_log} - ✅ BACKUP ANALYSIS SUCCESS: Full analysis completed with backup URL")
+                            except Exception as e:
+                                logger.error(f"{run_stage_log} - Error in backup analysis: {e}", exc_info=True)
                     else:
-                        logger.warning(f"{run_stage_log} - Backup homepage finder did not return a URL")
+                        logger.warning(f"{run_stage_log} - ❌ BACKUP FAILED: Standard finder did not return a URL")
                 else:
                     logger.warning(f"{run_stage_log} - Homepage finder not available")
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error running backup homepage finder: {e}", exc_info=True)
         
-        # 4. Проверка доступности URL (если включена и найден URL)
+        # 5. Проверка доступности URL (если включена и найден URL)
         if found_homepage_url and run_domain_check_finder:
             logger.info(f"{run_stage_log} - Running domain check finder for {found_homepage_url}")
             try:
@@ -354,7 +362,7 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error running domain check finder: {e}", exc_info=True)
         
-        # 5. Поиск LinkedIn URL (запасной метод, если LLM Deep Search не нашел)
+        # 6. Поиск LinkedIn URL (запасной метод, если LLM Deep Search не нашел)
         if not linkedin_url:
             logger.info(f"{run_stage_log} - Running LinkedIn finder as backup")
             try:
@@ -375,7 +383,7 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error running backup LinkedIn finder: {e}", exc_info=True)
         
-        # 6. Генерация описания компании с помощью Description Generator или использование сырых данных
+        # 7. Генерация описания компании с помощью Description Generator или использование сырых данных
         description_text = None
         
         # Если указано использовать сырые данные от LLM Deep Search, пропускаем генерацию через DescriptionGenerator
@@ -442,7 +450,7 @@ async def _process_single_company_async(
                 logger.error(f"{run_stage_log} - Error generating description: {e}", exc_info=True)
                 description_text = f"Error generating description for {company_name}: {str(e)}"
         
-        # 7. Сохранение результатов в Raw Markdown формате
+        # 8. Сохранение результатов в Raw Markdown формате
         if raw_markdown_output_path and structured_data:
             try:
                 # Преобразуем структурированные данные в формат для markdown
@@ -466,7 +474,7 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error saving raw markdown report: {e}", exc_info=True)
         
-        # 8. Подготовка итогового результата
+        # 9. Подготовка итогового результата
         
         # Финальная проверка: если URL все еще не найден, используем гарантированный метод
         if not found_homepage_url:
@@ -602,7 +610,7 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error saving structured data: {e}", exc_info=True)
         
-        # 9. Сохранение в HubSpot, если клиент доступен
+        # 10. Сохранение в HubSpot, если клиент доступен
         if hubspot_client and found_homepage_url and description_text:
             try:
                 logger.info(f"{run_stage_log} - Attempting to upload data to HubSpot")
