@@ -7,6 +7,7 @@ import re
 from typing import Dict, List, Any, Optional
 import aiohttp
 from openai import AsyncOpenAI, APIError, APITimeoutError, RateLimitError
+from src.input_validators import is_generic_term
 
 # Добавляем корневую директорию проекта в путь Python
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -338,6 +339,19 @@ class LLMDeepSearchFinder(Finder):
         user_context = context.get('user_context', None)
         url_only_mode = context.get('url_only_mode', False)
         
+        # Проверяем название компании на общие термины
+        if is_generic_term(company_name):
+            logger.warning(f"[LLM_DEEP_SEARCH] Detected generic term instead of company name: '{company_name}'")
+            return {
+                "source": "llm_deep_search",
+                "result": None,
+                "raw_result": None,
+                "error": f"'{company_name}' appears to be a generic term rather than a specific company name",
+                "sources": [],
+                "extracted_homepage_url": None,
+                "_finder_instance_type": self.__class__.__name__
+            }
+        
         if self.verbose:
             logger.info(f"\n--- LLM Deep Search для компании '{company_name}' ---")
             logger.info(f"Модель: {self.model}")
@@ -453,15 +467,21 @@ class LLMDeepSearchFinder(Finder):
         
         try:
             # Делаем запрос к модели с оптимизированными параметрами для быстрого ответа
-            completion = await self.client.chat.completions.create(
-                model=self.model,  # Используем ту же модель с поиском
-                messages=[
+            # Проверяем, поддерживает ли модель temperature
+            api_params = {
+                "model": self.model,
+                "messages": [
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
                 ],
-                temperature=0.0,  # Низкая температура для более детерминированного ответа
-                max_tokens=100    # Ограничиваем размер ответа для скорости
-            )
+                "max_tokens": 100  # Ограничиваем размер ответа для скорости
+            }
+            
+            # Добавляем temperature только для моделей, которые его поддерживают
+            if "search" not in self.model.lower():
+                api_params["temperature"] = 0.0
+            
+            completion = await self.client.chat.completions.create(**api_params)
             
             url_response = None
             extracted_sources = []
@@ -680,7 +700,12 @@ Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or 
             "The report MUST follow the exact sections in the prompt, as these will be used to extract structured data into a JSON schema. "
             "Provide FULL and DETAILED information in each section - do not abbreviate or summarize the data. Include as much detail as you can find. "
             "Do not include conversational intros, outros, or disclaimers. "
-            "For sections where you cannot find information, simply include a brief note like 'No specific data found on [topic]' rather than leaving the section empty."
+            "For sections where you cannot find information, simply include a brief note like 'No specific data found on [topic]' rather than leaving the section empty. "
+            "\n\n**IMPORTANT**: If you cannot find any credible information about the company after thorough searching, "
+            "or if the company name appears to be a generic term (like 'remote work', 'job opportunities', etc.) rather than a specific business entity, "
+            "you MUST start your response with 'COMPANY_NOT_FOUND:' followed by an explanation. "
+            "Do NOT fabricate information or provide generic responses about similar concepts. "
+            "Only proceed with a full report if you find concrete evidence that this is a real, specific company."
         )
         
         if self.verbose:
@@ -704,6 +729,17 @@ Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or 
                 message = completion.choices[0].message
                 if message.content:
                     answer_content = message.content.strip()
+                    
+                    # Проверяем, указал ли LLM что компания не найдена
+                    if answer_content.startswith('COMPANY_NOT_FOUND:'):
+                        logger.warning(f"LLM Deep Search: Company not found - {company_name}")
+                        error_message = answer_content.replace('COMPANY_NOT_FOUND:', '').strip()
+                        return {
+                            "error": f"Company not found: {error_message}",
+                            "report_text": None,
+                            "sources": [],
+                            "extracted_homepage_url": None
+                        }
                     
                     # Проверяем, был ли URL уже предоставлен во входных данных
                     if context and 'company_homepage_url' in context and context.get('company_homepage_url'):

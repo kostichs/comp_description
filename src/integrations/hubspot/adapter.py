@@ -21,6 +21,7 @@ from src.pipeline.adapter import PipelineAdapter
 from src.pipeline.core import process_companies
 from src.data_io import load_and_prepare_company_names, save_results_csv, load_session_metadata, save_session_metadata
 from .client import HubSpotClient
+from src.input_validators import validate_company_name
 
 logger = logging.getLogger(__name__)
 
@@ -193,6 +194,19 @@ class HubSpotAdapter:
             logger.warning("HubSpot API key not available in HubSpotAdapter. Skipping save.")
             return False, None # Возвращаем ID как None
 
+        # Проверяем, содержит ли описание ошибки валидации - НЕ сохраняем такие компании
+        validation_error_indicators = [
+            "Invalid company name detected",
+            "appears to be a generic term",
+            "validation error",
+            "This entry was skipped",
+            "This entry was not processed"
+        ]
+        
+        if any(indicator in description for indicator in validation_error_indicators):
+            logger.warning(f"Skipping HubSpot save for '{company_name}' due to validation error in description")
+            return False, None
+
         company_id_to_return: Optional[str] = None
         try:
             if not company_data and url: # Если компания не найдена ранее, ищем снова
@@ -250,6 +264,45 @@ class HubSpotAdapter:
         timestamp = properties.get("ai_description_updated", "") 
         linkedin_url = properties.get("linkedin_company_page") # Может быть None
         return description, timestamp, linkedin_url
+    
+    async def search_company_by_domain(self, domain: str) -> Optional[Dict[str, Any]]:
+        """
+        Поиск компании в HubSpot по домену.
+        Делегирует вызов к HubSpotClient.
+        
+        Args:
+            domain: Домен для поиска
+            
+        Returns:
+            Optional[Dict[str, Any]]: Данные компании или None
+        """
+        if not self.client.api_key:
+            logger.warning("HubSpot API key not available in HubSpotAdapter. Cannot search by domain.")
+            return None
+            
+        return await self.client.search_company_by_domain(domain)
+    
+    def has_fresh_description(self, company_data: Dict[str, Any]) -> bool:
+        """
+        Проверяет, есть ли у компании свежее описание.
+        
+        Args:
+            company_data: Данные компании из HubSpot
+            
+        Returns:
+            bool: True если описание свежее, False иначе
+        """
+        if not company_data:
+            return False
+            
+        properties = company_data.get("properties", {})
+        description = properties.get("ai_description")
+        updated_timestamp = properties.get("ai_description_updated")
+        
+        if not description or not updated_timestamp:
+            return False
+            
+        return self.client.is_description_fresh(updated_timestamp, self.max_age_months)
 
 class HubSpotPipelineAdapter(PipelineAdapter):
     """
@@ -389,6 +442,31 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 company_url = company_info_dict.get("url")
                 company_status = company_info_dict.get("status", "VALID")  # По умолчанию VALID для старого формата
 
+                # НОВАЯ ВАЛИДАЦИЯ: проверяем название компании
+                is_valid_name, validation_error = validate_company_name(company_name)
+                if not is_valid_name:
+                    logger.warning(f"Company name validation failed for '{company_name}': {validation_error}")
+                    
+                    template_description = f"Invalid company name detected. {validation_error}. This entry was skipped from processing."
+                    
+                    template_result = {
+                        "Company_Name": company_name,
+                        "Official_Website": company_url or "",
+                        "LinkedIn_URL": "",
+                        "Description": template_description,
+                        "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                        "Data_Source": "Validation_Error",
+                        "HubSpot_Company_ID": ""
+                    }
+                    
+                    for field in expected_csv_fieldnames:
+                        if field not in template_result:
+                            template_result[field] = ""
+                    
+                    companies_with_template_descriptions.append(template_result)
+                    logger.info(f"Company '{company_name}' skipped due to validation error: {validation_error}")
+                    continue
+
                 # Если компания помечена как дубликат или с мертвой ссылкой, создаем шаблонное описание
                 if company_status in ["DUPLICATE", "DEAD_URL"]:
                     if company_status == "DUPLICATE":
@@ -461,6 +539,31 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 company_name = company_info_dict["name"]
                 company_url = company_info_dict.get("url")
                 company_status = company_info_dict.get("status", "VALID")  # По умолчанию VALID для старого формата
+
+                # НОВАЯ ВАЛИДАЦИЯ: проверяем название компании
+                is_valid_name, validation_error = validate_company_name(company_name)
+                if not is_valid_name:
+                    logger.warning(f"Company name validation failed for '{company_name}': {validation_error}")
+                    
+                    template_description = f"Invalid company name detected. {validation_error}. This entry was skipped from processing."
+                    
+                    template_result = {
+                        "Company_Name": company_name,
+                        "Official_Website": company_url or "",
+                        "LinkedIn_URL": "",
+                        "Description": template_description,
+                        "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                        "Data_Source": "Validation_Error",
+                        "HubSpot_Company_ID": ""
+                    }
+                    
+                    for field in expected_csv_fieldnames:
+                        if field not in template_result:
+                            template_result[field] = ""
+                    
+                    companies_with_template_descriptions.append(template_result)
+                    logger.info(f"Company '{company_name}' skipped due to validation error: {validation_error}")
+                    continue
 
                 # Если компания помечена как дубликат или с мертвой ссылкой, создаем шаблонное описание
                 if company_status in ["DUPLICATE", "DEAD_URL"]:
@@ -658,6 +761,18 @@ def format_hubspot_company_id(hubspot_id: Optional[str]) -> str:
     if not hubspot_id:
         return ""
     return f"https://app.hubspot.com/contacts/39585958/record/0-2/{hubspot_id}"
+
+def format_hubspot_company_id(company_id: Optional[str]) -> str:
+    """
+    Форматирует ID компании HubSpot для отображения.
+    
+    Args:
+        company_id: ID компании или None
+        
+    Returns:
+        str: Отформатированный ID или пустая строка
+    """
+    return str(company_id) if company_id else ""
 
 async def search_company_by_multiple_domains(hubspot_client, url: str, aiohttp_session=None, sb_client=None) -> Tuple[Optional[Dict[str, Any]], str]:
     """

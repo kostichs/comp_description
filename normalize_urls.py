@@ -83,7 +83,7 @@ async def get_url_status_and_final_location_async(
         if not current_url_to_try: # Пропускаем вторую попытку, если первая была http или URL был без протокола
             continue
 
-        logger.info(f"[URL_CHECK] Aiohttp Попытка {attempt_num + 1} для URL: {current_url_to_try}")
+        logger.info(f"[URL_CHECK] Aiohttp Attempt {attempt_num + 1} for URL: {current_url_to_try}")
         try:
             parsed_url = urlparse(current_url_to_try)
             hostname = parsed_url.hostname
@@ -111,19 +111,19 @@ async def get_url_status_and_final_location_async(
             client_timeout = aiohttp.ClientTimeout(total=timeout)
             async with session.head(current_url_to_try, timeout=client_timeout, allow_redirects=True, headers=common_headers) as response:
                 final_url_after_redirect = str(response.url)
-                logger.info(f"[URL_CHECK] HEAD для {current_url_to_try}: статус {response.status}, финальный URL: {final_url_after_redirect}")
+                logger.info(f"[URL_CHECK] HEAD for {current_url_to_try}: status {response.status}, final URL: {final_url_after_redirect}")
 
                 if 200 <= response.status < 400: # Успешный статус или редирект, который разрешился успешно
                     return True, final_url_after_redirect, None
                 elif response.status == 500 and final_url_after_redirect != current_url_to_try:
                     # Если сервер вернул 500, но есть редирект на другой URL - проверим конечный URL
-                    logger.info(f"[URL_CHECK] Статус 500 для {current_url_to_try}, но есть редирект на {final_url_after_redirect}. Считаем успешным.")
+                    logger.info(f"[URL_CHECK] Status 500 for {current_url_to_try}, but redirect to {final_url_after_redirect}. Considering successful.")
                     return True, final_url_after_redirect, None
                 elif response.status == 403: # Forbidden часто означает, что сайт жив, но блокирует HEAD
-                     logger.warning(f"[URL_CHECK] HEAD для {current_url_to_try} вернул 403. Пробуем GET.")
+                     logger.warning(f"[URL_CHECK] HEAD for {current_url_to_try} returned 403. Trying GET.")
                      async with session.get(current_url_to_try, timeout=client_timeout, allow_redirects=True, headers=common_headers) as get_response:
                         final_get_url = str(get_response.url)
-                        logger.info(f"[URL_CHECK] GET (после 403) для {current_url_to_try}: статус {get_response.status}, финальный URL: {final_get_url}")
+                        logger.info(f"[URL_CHECK] GET (after 403) for {current_url_to_try}: status {get_response.status}, final URL: {final_get_url}")
                         if 200 <= get_response.status < 400:
                             return True, final_get_url, None
                         else:

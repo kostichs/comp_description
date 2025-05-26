@@ -13,6 +13,44 @@ from openai import AsyncOpenAI
 
 logger = logging.getLogger(__name__)
 
+def sanitize_filename(filename: str) -> str:
+    """
+    Очищает имя файла от недопустимых символов для Windows/Unix.
+    
+    Args:
+        filename: Исходное имя файла
+        
+    Returns:
+        str: Безопасное имя файла
+    """
+    # Недопустимые символы для Windows: < > : " | ? * \ /
+    # Также удаляем управляющие символы
+    invalid_chars = '<>:"|?*\\/'
+    
+    # Заменяем недопустимые символы на подчеркивания
+    sanitized = filename
+    for char in invalid_chars:
+        sanitized = sanitized.replace(char, '_')
+    
+    # Удаляем управляющие символы
+    sanitized = ''.join(char for char in sanitized if ord(char) >= 32)
+    
+    # Заменяем множественные пробелы и подчеркивания на одиночные
+    sanitized = re.sub(r'[_\s]+', '_', sanitized)
+    
+    # Удаляем ведущие и завершающие подчеркивания и точки
+    sanitized = sanitized.strip('_. ')
+    
+    # Ограничиваем длину (Windows имеет ограничение в 255 символов для имени файла)
+    if len(sanitized) > 200:  # Оставляем место для расширения и суффиксов
+        sanitized = sanitized[:200]
+    
+    # Если имя файла пустое после очистки, используем fallback
+    if not sanitized:
+        sanitized = "unnamed_company"
+    
+    return sanitized
+
 async def translate_to_english_if_needed(text: str, openai_client: AsyncOpenAI) -> str:
     """
     Принудительно переводит весь текст на английский язык.
@@ -123,7 +161,8 @@ async def generate_and_save_raw_markdown_report_async(
         
         if not raw_data_for_llm_prompt.strip() or len(raw_data_for_llm_prompt) < 50:
             logger.warning(f"No substantial raw data to format for {company_name}. Saving raw dump.")
-            md_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_dump.md"
+            safe_filename = sanitize_filename(company_name)
+            md_path = markdown_output_path / f"{safe_filename}_raw_data_dump.md"
             markdown_output_path.mkdir(parents=True, exist_ok=True); 
             with open(md_path, "w", encoding="utf-8") as f: f.write(raw_data_for_llm_prompt)
             logger.info(f"Saved raw dump for {company_name} to {md_path}"); return
@@ -166,18 +205,21 @@ async def generate_and_save_raw_markdown_report_async(
             response = await openai_client.chat.completions.create(model=model, messages=messages, temperature=temp, max_tokens=max_tokens)
             if response.choices and response.choices[0].message and response.choices[0].message.content:
                 md_content = response.choices[0].message.content.strip()
-                md_path = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_formatted_en.md"
+                safe_filename = sanitize_filename(company_name)
+                md_path = markdown_output_path / f"{safe_filename}_raw_data_formatted_en.md"
                 markdown_output_path.mkdir(parents=True, exist_ok=True); 
                 with open(md_path, "w", encoding="utf-8") as f: f.write(md_content)
                 logger.info(f"Saved formatted Markdown with English translation for {company_name} to {md_path}")
             else:
                 logger.warning(f"LLM did not generate content for Markdown report for {company_name}. Saving unformatted dump.")
-                md_path_dump = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_unformatted_llm_empty.md"
+                safe_filename = sanitize_filename(company_name)
+                md_path_dump = markdown_output_path / f"{safe_filename}_raw_data_unformatted_llm_empty.md"
                 with open(md_path_dump, "w", encoding="utf-8") as f: f.write(translated_raw_data)
                 logger.info(f"Saved unformatted dump to {md_path_dump}")
         except Exception as e_llm:
             logger.error(f"Error during LLM formatting for {company_name}: {e_llm}. Saving unformatted dump.", exc_info=True)
-            md_path_error = markdown_output_path / f"{company_name.replace(' ', '_').replace('/', '_')}_raw_data_unformatted_llm_error.md"
+            safe_filename = sanitize_filename(company_name)
+            md_path_error = markdown_output_path / f"{safe_filename}_raw_data_unformatted_llm_error.md"
             with open(md_path_error, "w", encoding="utf-8") as f: f.write(translated_raw_data)
             logger.info(f"Saved unformatted dump due to LLM error to {md_path_error}")
     except Exception as e:

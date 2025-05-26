@@ -15,7 +15,8 @@ from openai import AsyncOpenAI
 from src.external_apis.scrapingbee_client import CustomScrapingBeeClient
 import json
 import re
-from src.input_validators import normalize_domain
+from src.input_validators import normalize_domain, validate_company_name
+from src.company_name_resolver import resolve_company_name_if_needed
 from normalize_urls import get_url_status_and_final_location_async
 
 # Finders
@@ -98,6 +99,53 @@ async def _process_single_company_async(
     Returns:
         Dict: The result of processing the company
     """
+    run_stage_log = f"[{company_index + 1}/{total_companies}] {company_name}"
+    
+    # COMPANY NAME RESOLUTION STAGE (if enabled)
+    original_company_name = company_name
+    resolution_metadata = {}
+    
+    try:
+        # Try to resolve company name if needed (juridical names, founder names, etc.)
+        resolved_name, resolution_metadata = await resolve_company_name_if_needed(
+            company_name, openai_client
+        )
+        
+        if resolution_metadata.get("resolution_used", False):
+            logger.info(f"{run_stage_log} - Company name resolved: '{company_name}' → '{resolved_name}'")
+            company_name = resolved_name
+            run_stage_log = f"[{company_index + 1}/{total_companies}] {company_name} (resolved from: {original_company_name})"
+        
+    except Exception as e:
+        logger.error(f"{run_stage_log} - Error during company name resolution: {e}")
+        # Continue with original name if resolution fails
+    
+    # ВАЛИДАЦИЯ НАЗВАНИЯ КОМПАНИИ (after potential resolution)
+    is_valid_name, validation_error = validate_company_name(company_name)
+    if not is_valid_name:
+        logger.warning(f"{run_stage_log} - Company name validation failed: {validation_error}")
+        
+        error_description = f"Invalid company name detected: {validation_error}. This entry was not processed to avoid generating incorrect data."
+        
+        result_data = {
+            "Company_Name": original_company_name,  # Keep original name in output
+            "Official_Website": "",
+            "LinkedIn_URL": "",
+            "Description": error_description,
+            "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "structured_data": {},
+            "validation_error": validation_error,
+            "resolution_metadata": resolution_metadata
+        }
+        
+        # Заполняем остальные поля пустыми значениями
+        for field in csv_fields:
+            if field not in result_data:
+                result_data[field] = ""
+        
+        logger.info(f"{run_stage_log} - Skipped due to validation error: {validation_error}")
+        return result_data
+    
     # Проверяем, является ли company_name кортежем, и разделяем на имя и URL, если это так
     homepage_url_from_tuple = None
     if isinstance(company_name, tuple) and len(company_name) >= 2:
@@ -105,16 +153,17 @@ async def _process_single_company_async(
         company_name = company_name[0]
         
     result_data = {
-        "Company_Name": company_name,
+        "Company_Name": original_company_name,  # Keep original name in output
+        "Resolved_Company_Name": company_name if resolution_metadata.get("resolution_used", False) else "",
         "Official_Website": None,
         "LinkedIn_URL": None,
         "Description": None,
         "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "HubSpot_Company_ID": "",
-        "structured_data": {}
+        "structured_data": {},
+        "resolution_metadata": resolution_metadata
     }
     
-    run_stage_log = f"[{company_index+1}/{total_companies}] {company_name}"
     logger.info(f"{run_stage_log} - Starting processing")
     
     try:
@@ -134,80 +183,12 @@ async def _process_single_company_async(
             run_standard_homepage_finders = False  # Отключаем поиск, так как URL уже есть
             run_domain_check_finder = False  # Также отключаем проверку домена
         
-        # Если нет данных второго столбца и включен стандартный пайплайн, ищем официальный сайт
-        if run_standard_homepage_finders:
-            # 1. Поиск официального сайта компании с помощью homepage_finder
-            logger.info(f"{run_stage_log} - Running homepage finder")
-            try:
-                if "homepage_finder" in finder_instances:
-                    homepage_finder = finder_instances["homepage_finder"]
-                    # Передаем aiohttp_session напрямую в context
-                    homepage_result = await homepage_finder.find(
-                        company_name,
-                        session=aiohttp_session,
-                        serper_api_key=serper_api_key
-                    )
-                    if homepage_result and "url" in homepage_result:
-                        found_homepage_url = homepage_result["url"]
-                        logger.info(f"{run_stage_log} - Homepage finder found URL: {found_homepage_url}")
-                    else:
-                        logger.warning(f"{run_stage_log} - Homepage finder did not return a URL")
-                else:
-                    logger.warning(f"{run_stage_log} - Homepage finder not available")
-            except Exception as e:
-                logger.error(f"{run_stage_log} - Error running homepage finder: {e}", exc_info=True)
-        
-        # 2. Проверка доступности URL (если включена и найден URL)
-        if found_homepage_url and run_domain_check_finder:
-            logger.info(f"{run_stage_log} - Running domain check finder for {found_homepage_url}")
-            try:
-                if "domain_check_finder" in finder_instances:
-                    domain_check_finder = finder_instances["domain_check_finder"]
-                    domain_check_result = await domain_check_finder.find(found_homepage_url)
-                    
-                    if domain_check_result and domain_check_result.get("is_valid"):
-                        if domain_check_result.get("redirected_url"):
-                            # Если URL перенаправлен, используем новый URL
-                            logger.info(f"{run_stage_log} - URL redirected to: {domain_check_result['redirected_url']}")
-                            found_homepage_url = domain_check_result["redirected_url"]
-                        
-                        logger.info(f"{run_stage_log} - URL valid: {found_homepage_url}")
-                    else:
-                        logger.warning(f"{run_stage_log} - URL invalid: {found_homepage_url}")
-                        if domain_check_result and "error" in domain_check_result:
-                            logger.warning(f"{run_stage_log} - URL error: {domain_check_result['error']}")
-                else:
-                    logger.warning(f"{run_stage_log} - Domain check finder not available")
-            except Exception as e:
-                logger.error(f"{run_stage_log} - Error running domain check finder: {e}", exc_info=True)
-        
-        # 3. Поиск LinkedIn URL
-        logger.info(f"{run_stage_log} - Running LinkedIn finder")
-        try:
-            if "linkedin_finder" in finder_instances:
-                linkedin_finder = finder_instances["linkedin_finder"]
-                # Исправляем передачу session и serper_api_key через context
-                linkedin_result = await linkedin_finder.find(
-                    company_name, 
-                    session=aiohttp_session,
-                    serper_api_key=serper_api_key
-                )
-                if linkedin_result and "result" in linkedin_result and linkedin_result["result"]:
-                    linkedin_url = linkedin_result["result"]
-                    logger.info(f"{run_stage_log} - LinkedIn finder found URL: {linkedin_url}")
-                else:
-                    logger.warning(f"{run_stage_log} - LinkedIn finder did not return a URL")
-            else:
-                logger.warning(f"{run_stage_log} - LinkedIn finder not available")
-        except Exception as e:
-            logger.error(f"{run_stage_log} - Error running LinkedIn finder: {e}", exc_info=True)
-        
-        # 4. Глубокий поиск информации о компании с помощью LLM
+        # 2. Глубокий поиск информации о компании с помощью LLM (ОСНОВНОЙ МЕТОД)
         structured_data = {}
         llm_deep_search_raw_result = None
         
         if run_llm_deep_search_pipeline:
-            logger.info(f"{run_stage_log} - Running LLM deep search finder")
+            logger.info(f"{run_stage_log} - Running LLM deep search finder (PRIMARY METHOD)")
             try:
                 if "llm_deep_search_finder" in finder_instances:
                     llm_deep_search_finder = finder_instances["llm_deep_search_finder"]
@@ -219,10 +200,33 @@ async def _process_single_company_async(
                     if llm_deep_search_config_override:
                         llm_deep_search_finder.update_config(llm_deep_search_config_override)
                     
-                    # Если URL не найден и это одноколоночный вариант, сначала используем режим url_only_mode
-                    if not found_homepage_url and not second_column_data and not homepage_url_from_tuple:
-                        # Шаг 1: Сначала находим только URL в url_only_mode
-                        logger.info(f"{run_stage_log} - First step: Using URL-only mode to find homepage URL")
+                    # Проверяем URL в HubSpot, если клиент есть и URL уже найден
+                    if found_homepage_url and hubspot_client:
+                        try:
+                            logger.info(f"{run_stage_log} - Checking URL {found_homepage_url} in HubSpot before deep search")
+                            hubspot_company = await hubspot_client.search_company_by_domain(found_homepage_url)
+                            
+                            if hubspot_company and hubspot_client.has_fresh_description(hubspot_company):
+                                logger.info(f"{run_stage_log} - Company with domain {found_homepage_url} found in HubSpot with fresh description")
+                                properties = hubspot_company.get("properties", {})
+                                description_text = properties.get("ai_description", "")
+                                if description_text:
+                                    logger.info(f"{run_stage_log} - Using existing description from HubSpot")
+                                    skip_deep_search = True
+                                    # Добавляем базовую информацию для использования в других местах
+                                    structured_data = {
+                                        "homepage": found_homepage_url,
+                                        "extracted_homepage_url": found_homepage_url,
+                                        "hubspot_id": hubspot_company.get("id"),
+                                        "hubspot_source": True
+                                    }
+                                    llm_deep_search_raw_result = description_text
+                        except Exception as e:
+                            logger.error(f"{run_stage_log} - Error checking HubSpot: {e}", exc_info=True)
+                    
+                    # Если URL не найден, сначала используем режим url_only_mode
+                    if not found_homepage_url and not second_column_data and not homepage_url_from_tuple and not skip_deep_search:
+                        logger.info(f"{run_stage_log} - No URL found yet, using URL-only mode first")
                         url_only_result = await llm_deep_search_finder.find(
                             company_name,
                             url_only_mode=True
@@ -242,33 +246,8 @@ async def _process_single_company_async(
                                 logger.info(f"{run_stage_log} - Using validated URL from URL-only mode: {found_homepage_url}")
                             else:
                                 logger.warning(f"{run_stage_log} - URL from URL-only mode is not live: {potential_url}")
-                                # found_homepage_url остается None, чтобы другие методы могли попробовать найти URL
-                        
-                        # Проверяем URL в HubSpot, если клиент есть
-                        skip_deep_search = False
-                        if found_homepage_url and hubspot_client:
-                            try:
-                                logger.info(f"{run_stage_log} - Checking URL {found_homepage_url} in HubSpot before deep search")
-                                hubspot_company = await hubspot_client.get_company_by_domain(found_homepage_url)
-                                
-                                if hubspot_company and hubspot_client.has_fresh_description(hubspot_company):
-                                    logger.info(f"{run_stage_log} - Company with domain {found_homepage_url} found in HubSpot with fresh description")
-                                    description_text = hubspot_company.get("description", "")
-                                    if description_text:
-                                        logger.info(f"{run_stage_log} - Using existing description from HubSpot")
-                                        skip_deep_search = True
-                                        # Добавляем базовую информацию для использования в других местах
-                                        structured_data = {
-                                            "homepage": found_homepage_url,
-                                            "extracted_homepage_url": found_homepage_url,
-                                            "hubspot_id": hubspot_company.get("id"),
-                                            "hubspot_source": True
-                                        }
-                                        llm_deep_search_raw_result = description_text
-                            except Exception as e:
-                                logger.error(f"{run_stage_log} - Error checking HubSpot: {e}", exc_info=True)
                     
-                    # Шаг 2: Если первый шаг не пропускаем и нужно выполнить полный поиск
+                    # Выполняем полный LLM Deep Search (основной метод)
                     if not skip_deep_search:
                         logger.info(f"{run_stage_log} - Running full LLM deep search")
                         llm_search_result = await llm_deep_search_finder.find(
@@ -330,7 +309,73 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error running LLM deep search finder: {e}", exc_info=True)
         
-        # 5. Генерация описания компании с помощью Description Generator или использование сырых данных
+        # 3. ЗАПАСНЫЕ МЕТОДЫ: Стандартные finders (только если LLM Deep Search не нашел URL)
+        if not found_homepage_url and run_standard_homepage_finders:
+            logger.info(f"{run_stage_log} - LLM Deep Search didn't find URL, trying standard homepage finder as backup")
+            try:
+                if "homepage_finder" in finder_instances:
+                    homepage_finder = finder_instances["homepage_finder"]
+                    homepage_result = await homepage_finder.find(
+                        company_name,
+                        session=aiohttp_session,
+                        serper_api_key=serper_api_key
+                    )
+                    if homepage_result and "url" in homepage_result:
+                        found_homepage_url = homepage_result["url"]
+                        logger.info(f"{run_stage_log} - Backup homepage finder found URL: {found_homepage_url}")
+                    else:
+                        logger.warning(f"{run_stage_log} - Backup homepage finder did not return a URL")
+                else:
+                    logger.warning(f"{run_stage_log} - Homepage finder not available")
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error running backup homepage finder: {e}", exc_info=True)
+        
+        # 4. Проверка доступности URL (если включена и найден URL)
+        if found_homepage_url and run_domain_check_finder:
+            logger.info(f"{run_stage_log} - Running domain check finder for {found_homepage_url}")
+            try:
+                if "domain_check_finder" in finder_instances:
+                    domain_check_finder = finder_instances["domain_check_finder"]
+                    domain_check_result = await domain_check_finder.find(found_homepage_url)
+                    
+                    if domain_check_result and domain_check_result.get("is_valid"):
+                        if domain_check_result.get("redirected_url"):
+                            # Если URL перенаправлен, используем новый URL
+                            logger.info(f"{run_stage_log} - URL redirected to: {domain_check_result['redirected_url']}")
+                            found_homepage_url = domain_check_result["redirected_url"]
+                        
+                        logger.info(f"{run_stage_log} - URL valid: {found_homepage_url}")
+                    else:
+                        logger.warning(f"{run_stage_log} - URL invalid: {found_homepage_url}")
+                        if domain_check_result and "error" in domain_check_result:
+                            logger.warning(f"{run_stage_log} - URL error: {domain_check_result['error']}")
+                else:
+                    logger.warning(f"{run_stage_log} - Domain check finder not available")
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error running domain check finder: {e}", exc_info=True)
+        
+        # 5. Поиск LinkedIn URL (запасной метод, если LLM Deep Search не нашел)
+        if not linkedin_url:
+            logger.info(f"{run_stage_log} - Running LinkedIn finder as backup")
+            try:
+                if "linkedin_finder" in finder_instances:
+                    linkedin_finder = finder_instances["linkedin_finder"]
+                    linkedin_result = await linkedin_finder.find(
+                        company_name, 
+                        session=aiohttp_session,
+                        serper_api_key=serper_api_key
+                    )
+                    if linkedin_result and "result" in linkedin_result and linkedin_result["result"]:
+                        linkedin_url = linkedin_result["result"]
+                        logger.info(f"{run_stage_log} - Backup LinkedIn finder found URL: {linkedin_url}")
+                    else:
+                        logger.warning(f"{run_stage_log} - Backup LinkedIn finder did not return a URL")
+                else:
+                    logger.warning(f"{run_stage_log} - LinkedIn finder not available")
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error running backup LinkedIn finder: {e}", exc_info=True)
+        
+        # 6. Генерация описания компании с помощью Description Generator или использование сырых данных
         description_text = None
         
         # Если указано использовать сырые данные от LLM Deep Search, пропускаем генерацию через DescriptionGenerator
@@ -397,7 +442,7 @@ async def _process_single_company_async(
                 logger.error(f"{run_stage_log} - Error generating description: {e}", exc_info=True)
                 description_text = f"Error generating description for {company_name}: {str(e)}"
         
-        # 6. Сохранение результатов в Raw Markdown формате
+        # 7. Сохранение результатов в Raw Markdown формате
         if raw_markdown_output_path and structured_data:
             try:
                 # Преобразуем структурированные данные в формат для markdown
@@ -421,7 +466,7 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error saving raw markdown report: {e}", exc_info=True)
         
-        # 7. Подготовка итогового результата
+        # 8. Подготовка итогового результата
         
         # Финальная проверка: если URL все еще не найден, используем гарантированный метод
         if not found_homepage_url:
@@ -557,7 +602,7 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error saving structured data: {e}", exc_info=True)
         
-        # 8. Сохранение в HubSpot, если клиент доступен
+        # 9. Сохранение в HubSpot, если клиент доступен
         if hubspot_client and found_homepage_url and description_text:
             try:
                 logger.info(f"{run_stage_log} - Attempting to upload data to HubSpot")
@@ -830,9 +875,9 @@ async def process_companies(
                 
                 results.append(result)
                 
-                # Определяем режим сохранения: если уже есть сохраненные результаты, всегда используем append
-                current_csv_append_mode = csv_append_mode or (already_saved_count > 0)
-                current_json_append_mode = json_append_mode or (already_saved_count > 0)
+                # Определяем режим сохранения: первая компания создает файл, остальные добавляются
+                current_csv_append_mode = csv_append_mode or (saved_count > already_saved_count)
+                current_json_append_mode = json_append_mode or (saved_count > already_saved_count)
                 
                 # Сохраняем результат сразу же
                 try:

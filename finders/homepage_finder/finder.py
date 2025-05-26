@@ -68,7 +68,7 @@ class HomepageFinder(Finder):
         # 1. Wikidata (по исходному имени)
         wikidata_url_initial = get_wikidata_url(company_name)
         if wikidata_url_initial:
-            logger.info(f"Найден URL через Wikidata (исходное имя) для '{company_name}': {wikidata_url_initial}")
+            logger.info(f"Found URL via Wikidata (original name) for '{company_name}': {wikidata_url_initial}")
             return {"source": "wikidata", "source_class": "HomepageFinder", "result": wikidata_url_initial}
         
         found_website_from_wiki_pipeline = None
@@ -88,13 +88,13 @@ class HomepageFinder(Finder):
                     logger.debug(f"LLM не используется, берем первую Wiki-ссылку для '{company_name}': {selected_wiki_url}")
 
                 if selected_wiki_url:
-                    logger.info(f"Выбрана Wiki-ссылка для '{company_name}': {selected_wiki_url}")
+                    logger.info(f"Selected Wiki link for '{company_name}': {selected_wiki_url}")
                     wiki_company_name = extract_company_name_from_wiki_url(selected_wiki_url)
                     if wiki_company_name:
                         logger.debug(f"Извлечено имя из Wiki URL '{selected_wiki_url}': {wiki_company_name}")
                         wikidata_url_from_wiki_name = get_wikidata_url(wiki_company_name)
                         if wikidata_url_from_wiki_name:
-                            logger.info(f"Найден URL через Wikidata (имя из Wiki) для '{company_name}': {wikidata_url_from_wiki_name}")
+                            logger.info(f"Found URL via Wikidata (name from Wiki) for '{company_name}': {wikidata_url_from_wiki_name}")
                             found_website_from_wiki_pipeline = wikidata_url_from_wiki_name
                             wiki_source_name = "wikidata_via_wiki"
                     

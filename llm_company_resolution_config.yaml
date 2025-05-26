@@ -1,0 +1,146 @@
+# LLM Company Name Resolution Configuration
+# This configuration is used for the first stage of processing when we have
+# juridical names, founder names, emails, or other indirect company identifiers
+
+# Model settings for company name resolution
+resolution_model: "gpt-4o-search-preview"  # Using search model for real-time lookup
+# resolution_temperature: 0.1  # Temperature not used with search preview model
+
+# System prompt for company name resolution
+resolution_system_prompt: |
+  You are a business intelligence specialist with web search capabilities focused on company identification and name resolution. 
+  Your task is to identify the actual operating company name and brand from various types of input data using real-time web search.
+  
+  You will receive input that could be:
+  - Juridical/legal company names (e.g., "Shanghai Perfect Technology Co., Ltd.")
+  - Founder names or CEO names
+  - Email addresses or domains (e.g., "dshfakljsdhfk@gmail.com")
+  - Organization registration names
+  - Subsidiary or division names
+  - Generic business terms
+  
+  Your goal is to:
+  1. Use web search to find information about the input data
+  2. Determine if the input represents a real, identifiable company
+  3. Find the actual operating/brand name of the company
+  4. Provide the official website URL if found
+  5. Indicate confidence level based on search results
+  
+  Search Strategy:
+  - For emails: Search for the email address, domain, and any associated company information
+  - For person names: Search for the person + "CEO", "founder", "company", "organization"
+  - For juridical names: Search for the full name and variations without legal suffixes
+  - For unknown terms: Search broadly and look for company connections
+  
+  Rules:
+  - ALWAYS perform web searches before making conclusions
+  - Base your analysis on current, searchable information
+  - If search results are unclear or contradictory, indicate low confidence
+  - For emails from generic domains (gmail, yahoo, etc.), search for the specific email address
+  - Always provide reasoning based on your search findings
+  - Be conservative - if search results are insufficient, indicate this clearly
+
+# User prompt template for company resolution
+resolution_user_prompt: |
+  Please analyze the following input using web search to identify the actual company:
+  
+  Input: "{input_data}"
+  
+  IMPORTANT: Use your web search capabilities to find current information about this input. Search thoroughly before making conclusions.
+  
+  Search Tasks:
+  1. If it's an email address: Search for the exact email address and the domain to find associated company information
+  2. If it's a person name: Search for the person + "CEO", "founder", "company", "works at", "LinkedIn"
+  3. If it's a juridical name: Search for the full name and variations without legal suffixes
+  4. If it's unclear: Search broadly and look for any company connections
+  
+  Please provide your analysis in the following JSON format based on your search results:
+  {{
+    "identified_company_name": "The actual operating/brand name of the company found through search",
+    "confidence_level": "high|medium|low",
+    "company_website": "Official website URL if found through search",
+    "input_type": "juridical_name|founder_name|email|domain|generic_term|other",
+    "reasoning": "Detailed explanation based on search results of how you identified the company",
+    "should_proceed": true/false,
+    "alternative_search_terms": ["alternative", "search", "terms"],
+    "search_summary": "Brief summary of what you found through web search"
+  }}
+  
+  Examples of search-based analysis:
+  - Input: "dshfakljsdhfk@gmail.com" → Search for this email and domain → Find associated company if any
+  - Input: "Shanghai Perfect Technology Co., Ltd." → Search for this company → Find actual brand name and website
+  - Input: "Elon Musk" → Search "Elon Musk CEO company" → Find current primary company association
+  - Input: "random@unknowndomain.com" → Search for email and domain → Determine if real company exists
+
+# Response format for structured parsing
+response_format:
+  type: "json_object"
+
+# Validation rules for resolution results
+validation_rules:
+  min_confidence_to_proceed: "medium"  # minimum confidence level to proceed with main pipeline
+  require_company_name: true
+  max_alternative_terms: 5
+
+# Fallback strategies when resolution fails
+fallback_strategies:
+  - "use_original_input"  # Use original input as company name
+  - "skip_processing"     # Skip this entry entirely
+  - "manual_review"       # Flag for manual review
+
+# Integration with main pipeline
+integration:
+  # Whether to run resolution stage before main pipeline
+  enable_resolution_stage: false  # Set to true to enable
+  
+  # When to trigger resolution
+  trigger_conditions:
+    - "contains_juridical_suffixes"  # Co., Ltd., Inc., LLC, etc.
+    - "contains_email_pattern"       # @domain.com patterns
+    - "contains_person_indicators"   # Mr., Dr., CEO, Founder, etc.
+    - "low_company_validation_score" # Failed standard company validation
+  
+  # Juridical suffixes that trigger resolution
+  juridical_suffixes:
+    - "Co., Ltd."
+    - "Co., LTD."
+    - ", Ltd."
+    - ", LTD."
+    - ", Inc."
+    - ", LLC"
+    - ", Corp."
+    - ", Corporation"
+    - "GmbH"
+    - "S.A."
+    - "UAB"
+    - "OOO"
+    - "Pty Ltd"
+    - "Pvt Ltd"
+    - "Limited"
+    - "Incorporated"
+  
+  # Person name indicators
+  person_indicators:
+    - "Mr."
+    - "Mrs."
+    - "Ms."
+    - "Dr."
+    - "CEO"
+    - "Founder"
+    - "President"
+    - "Director"
+    - "Owner"
+  
+  # Email patterns
+  email_patterns:
+    - "@"
+    - ".com"
+    - ".org"
+    - ".net"
+    - ".io"
+
+# Logging configuration for resolution stage
+logging:
+  log_resolution_attempts: true
+  log_confidence_scores: true
+  log_failed_resolutions: true 

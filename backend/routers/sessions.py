@@ -12,7 +12,7 @@ router = APIRouter()
 async def get_session(session_id: str):
     """Получение информации о сессии по ID"""
     try:
-        logger.info(f"GET /api/sessions/{session_id} - Вызов функции get_session из роутера sessions.py")
+        logger.info(f"GET /api/sessions/{session_id} - Calling get_session function from sessions.py router")
         metadata = load_session_metadata()
         session_data = next((m for m in metadata if m.get("session_id") == session_id), None)
         

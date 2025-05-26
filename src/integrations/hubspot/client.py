@@ -484,6 +484,37 @@ class HubSpotClient:
             logger.error(f"Error checking domain match for '{domain_field}': {e}")
             return False
 
+    async def save_company_description(self, company_name: str, description: str, official_website: str = None, **additional_fields) -> tuple[bool, Optional[str]]:
+        """
+        Сохраняет описание компании в HubSpot, создавая новую компанию или обновляя существующую.
+        
+        Args:
+            company_name: Название компании
+            description: Описание компании
+            official_website: Официальный сайт компании (опционально)
+            **additional_fields: Дополнительные поля для сохранения
+            
+        Returns:
+            tuple: (success: bool, company_id: Optional[str])
+        """
+        # Проверяем валидность входных данных
+        if not company_name or not description:
+            logger.error("Company name and description are required")
+            return False, None
+        
+        # Проверяем, содержит ли описание ошибки валидации
+        validation_error_indicators = [
+            "Invalid company name detected",
+            "appears to be a generic term",
+            "validation error",
+            "This entry was skipped",
+            "This entry was not processed"
+        ]
+        
+        if any(indicator in description for indicator in validation_error_indicators):
+            logger.warning(f"Skipping HubSpot save for '{company_name}' due to validation error in description")
+            return False, None
+
 
 # Пример использования и тестирования
 async def test_hubspot_client():
