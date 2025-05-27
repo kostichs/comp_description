@@ -130,19 +130,26 @@
         
         /* New Session Button Styles */
         .new-session-button {
-            padding: 10px 20px;
-            background-color: #6c757d;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #6c757d, #5a6268);
             color: white;
             border: none;
-            border-radius: 20px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: bold;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(108,117,125,0.3);
         }
         
         .new-session-button:hover {
-            background-color: #5a6268;
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, #5a6268, #495057);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(108,117,125,0.4);
+        }
+        
+        .new-session-button:active {
+            transform: translateY(0);
         }
         .session-controls {
             display: flex;
@@ -303,7 +310,7 @@
                 <button type="submit" id="runBtn" form="uploadForm" class="run-button">▶ Run</button>
                 
                 <!-- New Session Button -->
-                <button id="newSessionBtn" style="display:none;" class="new-session-button">🔄 New</button>
+                <button id="newSessionBtn" style="display:none;" class="new-session-button">New Session</button>
             </div>
         </div>
 
