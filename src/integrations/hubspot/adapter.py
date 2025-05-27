@@ -551,7 +551,6 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 batch_size=main_batch_size, # Используем main_batch_size
                 context_text=context_text,
                 run_llm_deep_search_pipeline_cfg=run_llm_deep_search_pipeline, # Передаем флаг
-                run_standard_pipeline_cfg=False, # Standard pipeline отключен
                 # run_domain_check_finder_cfg остается по умолчанию True в process_companies, если нужен другой контроль - добавить
                 broadcast_update=broadcast_update,
                 output_csv_path=str(output_csv_path), # Передаем путь к CSV для инкрементальной записи
@@ -659,7 +658,16 @@ def format_hubspot_company_id(hubspot_id: Optional[str]) -> str:
     """
     if not hubspot_id:
         return ""
-    return f"https://app.hubspot.com/contacts/39585958/record/0-2/{hubspot_id}"
+    
+    # Загружаем базовую ссылку из переменной окружения
+    import os
+    base_url = os.getenv("HUBSPOT_BASE_URL", "https://app.hubspot.com/contacts/39585958/record/0-2/")
+    
+    # Убеждаемся, что URL заканчивается на /
+    if not base_url.endswith("/"):
+        base_url += "/"
+    
+    return f"{base_url}{hubspot_id}"
 
 async def search_company_by_multiple_domains(hubspot_client, url: str, aiohttp_session=None, sb_client=None) -> Tuple[Optional[Dict[str, Any]], str]:
     """

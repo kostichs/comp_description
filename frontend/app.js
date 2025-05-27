@@ -61,15 +61,73 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- UI State Functions ---
-    function showNewSessionUI() {
+    async function showNewSessionUI() {
         console.log('Showing new session UI'); // Отладочная информация
+        
+        // Отменяем активную сессию если она есть
+        if (currentSessionId) {
+            console.log(`Cancelling active session: ${currentSessionId}`);
+            showLoading(); // Показываем индикатор загрузки
+            try {
+                const response = await fetch(`/api/sessions/${currentSessionId}/cancel`, {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(`Successfully cancelled session: ${currentSessionId}`, result);
+                    updateStatus(`Previous session cancelled: ${result.status}`);
+                    
+                    // Ждем немного, чтобы отмена успела обработаться
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                } else {
+                    console.warn(`Failed to cancel session: ${currentSessionId}, status: ${response.status}`);
+                    updateStatus('Failed to cancel previous session');
+                }
+            } catch (error) {
+                console.error(`Error cancelling session ${currentSessionId}:`, error);
+                updateStatus('Error cancelling previous session');
+            } finally {
+                hideLoading(); // Скрываем индикатор загрузки
+            }
+        }
+        
         if (uploadForm) uploadForm.style.display = 'block';
         if (sessionControls) sessionControls.style.display = 'none';
         if (resultsSection) resultsSection.style.display = 'none';
+        if (progressStatus) progressStatus.style.display = 'none';
         if (sessionSelect) sessionSelect.value = '';
+        if (newSessionBtn) newSessionBtn.style.display = 'none';
+        if (runBtn) runBtn.style.display = 'inline-block';
         currentSessionId = null;
         clearResultsTable();
         updateStatus('Ready to create new session');
+        
+        // Скрываем кнопки управления результатами
+        makeResultsControlsVisible(false);
+        
+        // Очищаем поля формы
+        if (inputFile) inputFile.value = '';
+        if (contextTextarea) contextTextarea.value = '';
+        if (document.getElementById('fileNameDisplay')) {
+            document.getElementById('fileNameDisplay').textContent = '';
+        }
+        
+        // Сбрасываем состояние HubSpot toggle на включенное
+        const writeToHubspotCheckbox = document.getElementById('writeToHubspot');
+        if (writeToHubspotCheckbox) {
+            writeToHubspotCheckbox.checked = true;
+        }
+        
+        // Останавливаем polling если он активен
+        if (pollingInterval) {
+            clearInterval(pollingInterval);
+            pollingInterval = null;
+        }
+        
+        // Очищаем глобальные переменные
+        window.deduplicationInfo = null;
+        
+        console.log('New session UI fully reset');
     }
 
     function showCurrentSessionUI(sessionId) {
@@ -87,14 +145,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function clearResultsTable() {
         console.log('Clearing results table'); // Отладочная информация
         if (resultsTableBody) resultsTableBody.innerHTML = '';
+        // Также очищаем статус
+        if (statusDisplay) statusDisplay.textContent = '';
     }
 
     // --- Event Listeners ---
     if (newSessionBtn) {
         console.log('Adding click listener to newSessionBtn'); // Отладочная информация
-        newSessionBtn.addEventListener('click', () => {
+        newSessionBtn.addEventListener('click', async () => {
             console.log('New Session button clicked'); // Отладочная информация
-            showNewSessionUI();
+            await showNewSessionUI();
         });
     }
 
@@ -144,6 +204,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     progressStatus.textContent = `Error: ${error.message}`;
                     progressStatus.style.color = 'red';
                 }
+                // Показываем кнопку New Session при любой ошибке
+                if (newSessionBtn) {
+                    newSessionBtn.style.display = 'inline-block';
+                }
+                // Показываем форму загрузки снова
+                if (uploadForm) {
+                    uploadForm.style.display = 'block';
+                }
+                if (runBtn) {
+                    runBtn.style.display = 'inline-block';
+                }
             } finally {
                 hideLoading();
             }
@@ -169,6 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error starting processing:', error);
             updateStatus(`Error: ${error.message}`);
+            // Показываем кнопку New Session при ошибке
+            if (newSessionBtn) {
+                newSessionBtn.style.display = 'inline-block';
+            }
         } finally {
             hideLoading();
         }
@@ -185,6 +260,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error fetching sessions:', error);
             updateStatus(`Error loading sessions: ${error.message}`);
+            // Показываем кнопку New Session при ошибке загрузки сессий
+            if (newSessionBtn) {
+                newSessionBtn.style.display = 'inline-block';
+            }
         } finally {
             hideLoading();
         }
@@ -229,6 +308,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error fetching session data:', error);
             updateStatus(`Error: ${error.message}`);
+            // Показываем кнопку New Session при ошибке загрузки данных сессии
+            if (newSessionBtn) {
+                newSessionBtn.style.display = 'inline-block';
+            }
         } finally {
             hideLoading();
         }
@@ -422,6 +505,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 progressStatus.textContent = `Error: ${error.message}`;
                 progressStatus.style.color = 'red';
             }
+            // Показываем кнопку New Session при ошибке запуска
+            if (newSessionBtn) {
+                newSessionBtn.style.display = 'inline-block';
+            }
+            // Показываем форму загрузки снова
+            if (uploadForm) {
+                uploadForm.style.display = 'block';
+            }
+            if (runBtn) {
+                runBtn.style.display = 'inline-block';
+            }
         } finally {
             hideLoading();
         }
@@ -466,26 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // --- End Function to Download Session Archive ---
 
-    if (newSessionBtn) {
-        newSessionBtn.addEventListener('click', () => {
-            if (uploadForm) {
-                uploadForm.reset();
-                uploadForm.style.display = 'block';
-            }
-            if (runBtn) runBtn.style.display = 'inline-block';
-            if (resultsSection) resultsSection.style.display = 'none';
-            if (sessionControls) sessionControls.style.display = 'none';
-            if (progressStatus) progressStatus.style.display = 'none';
-            if (newSessionBtn) newSessionBtn.style.display = 'none';
-            currentSessionId = null;
-            // Скрываем кнопку скачивания архива при создании новой сессии
-            const downloadArchiveBtn = document.getElementById('downloadArchiveBtn');
-            if (downloadArchiveBtn) {
-                downloadArchiveBtn.style.display = 'none';
-            }
-            makeResultsControlsVisible(false); // Скрываем все кнопки результатов
-        });
-    }
+
 
     if (downloadResultsBtn) {
         downloadResultsBtn.onclick = async () => {

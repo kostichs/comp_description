@@ -29,6 +29,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
     
     all_metadata = [] # Инициализируем на случай ошибки на раннем этапе
     session_data = {} # Инициализируем на случай ошибки на раннем этапе
+    
     try:
         all_metadata = load_session_metadata()
         session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
@@ -217,6 +218,13 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             pipeline_error = f"Pipeline execution failed: {e_pipeline}"
             raise
 
+    except asyncio.CancelledError:
+        session_logger.info(f"Processing was cancelled for session: {session_id}")
+        session_data['status'] = 'cancelled'
+        session_data['error_message'] = 'Processing cancelled by user'
+        failure_count = 0
+        success_count = 0
+        raise  # Перебрасываем CancelledError для правильной обработки в callback
     except Exception as e_outer:
         session_logger.error(f"Error during processing: {e_outer}", exc_info=True)
         session_data['status'] = 'error'

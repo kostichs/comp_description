@@ -188,20 +188,46 @@ def _processing_task_done_callback(task: asyncio.Task, session_id: str):
     try:
         task.result()  # Проверяем, не было ли исключений в задаче
         logger.info(f"Processing task for session {session_id} finished successfully (via callback).")
-        # Обновить метаданные: статус = "completed"
-        # update_session_status(session_id, "completed") # Пример
+        # Обновляем метаданные: статус = "completed"
+        try:
+            all_metadata = load_session_metadata()
+            session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
+            if session_data and session_data.get('status') != 'cancelled':  # Не перезаписываем статус cancelled
+                session_data['status'] = 'completed'
+                save_session_metadata(all_metadata)
+                logger.info(f"Updated session {session_id} status to 'completed' in metadata")
+        except Exception as e:
+            logger.error(f"Failed to update session {session_id} metadata to completed: {e}")
     except asyncio.CancelledError:
         logger.info(f"Processing task for session {session_id} was cancelled (via callback).")
-        # Обновить метаданные: статус = "cancelled"
-        # update_session_status(session_id, "cancelled") # Пример
+        # Обновляем метаданные: статус = "cancelled"
+        try:
+            all_metadata = load_session_metadata()
+            session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
+            if session_data:
+                session_data['status'] = 'cancelled'
+                session_data['error_message'] = 'Processing cancelled by user'
+                save_session_metadata(all_metadata)
+                logger.info(f"Updated session {session_id} status to 'cancelled' in metadata")
+        except Exception as e:
+            logger.error(f"Failed to update session {session_id} metadata to cancelled: {e}")
     except Exception as e:
         logger.error(f"Processing task for session {session_id} failed with error (via callback): {e}", exc_info=True)
-        # Обновить метаданные: статус = "error", message = str(e)
-        # update_session_status(session_id, "error", str(e)) # Пример
+        # Обновляем метаданные: статус = "error"
+        try:
+            all_metadata = load_session_metadata()
+            session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
+            if session_data:
+                session_data['status'] = 'error'
+                session_data['error_message'] = str(e)
+                save_session_metadata(all_metadata)
+                logger.info(f"Updated session {session_id} status to 'error' in metadata")
+        except Exception as meta_e:
+            logger.error(f"Failed to update session {session_id} metadata to error: {meta_e}")
     finally:
         if session_id in active_processing_tasks:
             del active_processing_tasks[session_id]
-            logger.debug(f"Removed task for session {session_id} from active_processing_tasks.")
+            logger.info(f"Removed task for session {session_id} from active_processing_tasks.")
 
 # --- Конец изменений: Управление фоновыми задачами ---
 
@@ -394,12 +420,14 @@ async def start_session_processing(session_id: str, background_tasks: Background
 
     # --- Wrap task adding in try/except --- 
     try:
-        # Update status to 'queued' or 'starting' immediately before adding task?
-        # Might be better to update status to 'running' inside the task itself.
-        # For now, we just add the task.
+        # Создаем задачу и регистрируем её в active_processing_tasks
+        task = asyncio.create_task(run_session_pipeline(session_id, broadcast_update))
+        active_processing_tasks[session_id] = task
         
-        background_tasks.add_task(run_session_pipeline, session_id, broadcast_update)
-        logging.info(f"Added pipeline run for session {session_id} to background tasks.")
+        # Добавляем callback для очистки задачи после завершения
+        task.add_done_callback(lambda t: _processing_task_done_callback(t, session_id))
+        
+        logging.info(f"Added pipeline run for session {session_id} to background tasks and active_processing_tasks.")
         
         # Update status IN METADATA immediately after successfully adding task?
         # This prevents UI showing old status until task actually starts running.
@@ -626,6 +654,19 @@ async def read_css():
 @app.post("/api/sessions/{session_id}/cancel", tags=["Sessions"], summary="Cancel processing for a session")
 async def cancel_processing_session(session_id: str):
     logger.info(f"Request to cancel processing for session_id: {session_id}")
+    
+    # Обновляем статус в метаданных
+    try:
+        all_metadata = load_session_metadata()
+        session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
+        if session_data:
+            session_data['status'] = 'cancelled'
+            session_data['error_message'] = 'Processing cancelled by user'
+            save_session_metadata(all_metadata)
+            logger.info(f"Updated session {session_id} status to 'cancelled' in metadata")
+    except Exception as e:
+        logger.error(f"Failed to update session {session_id} metadata during cancellation: {e}")
+    
     if session_id in active_processing_tasks:
         task = active_processing_tasks[session_id]
         if not task.done():

@@ -206,11 +206,14 @@ async def _process_single_company_async(
                     if found_homepage_url and hubspot_client:
                         try:
                             logger.info(f"{run_stage_log} - Checking URL {found_homepage_url} in HubSpot before deep search")
-                            hubspot_company = await hubspot_client.get_company_by_domain(found_homepage_url)
+                            # Используем правильный метод из HubSpotAdapter
+                            description_is_fresh, hubspot_company = await hubspot_client.check_company_description(
+                                company_name, found_homepage_url, aiohttp_session, sb_client
+                            )
                             
-                            if hubspot_company and hubspot_client.has_fresh_description(hubspot_company):
+                            if description_is_fresh and hubspot_company:
                                 logger.info(f"{run_stage_log} - Company with domain {found_homepage_url} found in HubSpot with fresh description")
-                                description_text = hubspot_company.get("description", "")
+                                description_text, timestamp, linkedin_url_from_hubspot = hubspot_client.get_company_details_from_hubspot_data(hubspot_company)
                                 if description_text:
                                     logger.info(f"{run_stage_log} - Using existing description from HubSpot")
                                     skip_deep_search = True
@@ -222,6 +225,9 @@ async def _process_single_company_async(
                                         "hubspot_source": True
                                     }
                                     llm_deep_search_raw_result = description_text
+                                    # Используем LinkedIn из HubSpot если он есть и у нас его нет
+                                    if linkedin_url_from_hubspot and not linkedin_url:
+                                        linkedin_url = linkedin_url_from_hubspot
                         except Exception as e:
                             logger.error(f"{run_stage_log} - Error checking HubSpot: {e}", exc_info=True)
                     
@@ -565,6 +571,11 @@ async def _process_single_company_async(
         # logger.info(f"{run_stage_log} - Processing completed successfully") # Закомментировано
         return result_data
     
+    except asyncio.CancelledError:
+        logger.info(f"{run_stage_log} - Processing was cancelled")
+        result_data["Description"] = f"Processing cancelled for {company_name}"
+        result_data["error"] = "cancelled"
+        raise  # Перебрасываем CancelledError выше
     except Exception as e:
         logger.error(f"{run_stage_log} - Unhandled error during processing: {e}", exc_info=True)
         result_data["Description"] = f"Error processing {company_name}: {str(e)}"
@@ -838,21 +849,45 @@ async def process_companies(
     
     # Ждем завершения всех задач обработки
     logger.info("Waiting for all processing tasks to complete...")
-    processing_results = await asyncio.gather(*processing_tasks, return_exceptions=True)
-    
-    # Проверяем результаты обработки
-    exceptions_count = sum(1 for result in processing_results if isinstance(result, Exception))
-    if exceptions_count > 0:
-        logger.warning(f"Processing completed with {exceptions_count} task exceptions")
-    else:
-        logger.info("All processing tasks completed successfully")
-    
-    # Ждем завершения сохранения всех результатов
-    logger.info("Waiting for result saver to complete...")
-    await saver_task
-    logger.info("Result saver completed")
-            
-    return results
+    try:
+        processing_results = await asyncio.gather(*processing_tasks, return_exceptions=True)
+        
+        # Проверяем результаты обработки
+        exceptions_count = sum(1 for result in processing_results if isinstance(result, Exception))
+        if exceptions_count > 0:
+            logger.warning(f"Processing completed with {exceptions_count} task exceptions")
+        else:
+            logger.info("All processing tasks completed successfully")
+        
+        # Ждем завершения сохранения всех результатов
+        logger.info("Waiting for result saver to complete...")
+        await saver_task
+        logger.info("Result saver completed")
+                
+        return results
+    except asyncio.CancelledError:
+        logger.info("Processing was cancelled, cleaning up tasks...")
+        
+        # Отменяем все активные задачи
+        for task in processing_tasks:
+            if not task.done():
+                task.cancel()
+        
+        # Отменяем задачу сохранения
+        if not saver_task.done():
+            saver_task.cancel()
+        
+        # Ждем завершения отмены с таймаутом
+        try:
+            await asyncio.wait_for(
+                asyncio.gather(*processing_tasks, saver_task, return_exceptions=True),
+                timeout=5.0
+            )
+        except asyncio.TimeoutError:
+            logger.warning("Timeout waiting for tasks to cancel")
+        
+        logger.info("Processing cancellation completed")
+        raise  # Перебрасываем CancelledError выше
 
 async def _guaranteed_url_finder(
     company_name: str, 
