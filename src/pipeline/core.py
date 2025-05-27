@@ -798,8 +798,8 @@ async def process_companies(
                 results.append(result)
                 
                 # Определяем режим сохранения: если уже есть сохраненные результаты, всегда используем append
-                current_csv_append_mode = csv_append_mode or (already_saved_count > 0)
-                current_json_append_mode = json_append_mode or (already_saved_count > 0)
+                current_csv_append_mode = csv_append_mode or (saved_count > 0)
+                current_json_append_mode = json_append_mode or (saved_count > 0)
                 
                 # Сохраняем результат сразу же
                 try:

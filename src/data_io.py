@@ -306,14 +306,15 @@ def save_results_csv(results: list[dict], output_path: str, expected_fields: lis
         fieldnames = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
     
     # Determine mode based on append_mode and file existence
-    mode = 'a' if append_mode and os.path.exists(output_path) else 'w'
+    file_exists = os.path.exists(output_path)
+    mode = 'a' if append_mode else 'w'
     
     # Write to CSV
     with open(output_path, mode, newline='', encoding='utf-8-sig') as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         
-        # Write header only if writing a new file
-        if mode == 'w':
+        # Write header only if writing a new file or appending to empty file
+        if mode == 'w' or (mode == 'a' and not file_exists):
             writer.writeheader()
         
         for result in results:
