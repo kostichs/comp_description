@@ -29,17 +29,109 @@
         }
         .header {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            position: relative;
+            padding: 10px 0;
         }
         .header h1 {
             margin: 0;
+            flex-grow: 1;
+            text-align: center;
         }
-        #newSessionBtn {
-            position: absolute;
-            right: 0px;
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* HubSpot Toggle Styles */
+        .hubspot-toggle {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .hubspot-toggle input[type="checkbox"] {
+            display: none;
+        }
+        
+        .toggle-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            min-width: 60px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            user-select: none;
+        }
+        
+        .toggle-icon img {
+            transition: all 0.3s ease;
+            filter: grayscale(100%) opacity(0.6);
+        }
+        
+        .hubspot-toggle input[type="checkbox"]:checked + .toggle-icon {
+            background-color: #f8f9fa;
+            border-color: #ff7a59;
+            color: white;
+        }
+        
+        .hubspot-toggle input[type="checkbox"]:checked + .toggle-icon img {
+            filter: grayscale(0%) opacity(1);
+        }
+        
+        .hubspot-toggle:hover .toggle-icon {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(255,122,89,0.3);
+        }
+        
+        /* Run Button Styles */
+        .run-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(40,167,69,0.3);
+        }
+        
+        .run-button:hover {
+            background: linear-gradient(135deg, #218838, #1ea080);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(40,167,69,0.4);
+        }
+        
+        .run-button:active {
+            transform: translateY(0);
+        }
+        
+        /* New Session Button Styles */
+        .new-session-button {
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .new-session-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
         }
         .session-controls {
             display: flex;
@@ -177,10 +269,7 @@
             color: #495057;
             min-height: 1.2em;
         }
-        #runBtnContainer {
-            text-align: center;
-            margin-top: 20px;
-        }
+
     </style>
 </head>
 <body>
@@ -190,7 +279,21 @@
     <div class="container">
         <div class="header">
             <h1>Company Insights</h1>
-            <button id="newSessionBtn" style="display:none; margin-left:auto;">Start new session</button>
+            <div class="header-controls">
+                <!-- HubSpot Toggle -->
+                <div class="hubspot-toggle" title="Enable/disable writing results to HubSpot CRM">
+                    <input type="checkbox" id="writeToHubspot" checked>
+                    <label for="writeToHubspot" class="toggle-icon">
+                        <img src="/static/icons/hubspot.png" alt="HubSpot" height="20">
+                    </label>
+                </div>
+                
+                <!-- Run Button -->
+                <button type="submit" id="runBtn" form="uploadForm" class="run-button">▶ Run</button>
+                
+                <!-- New Session Button -->
+                <button id="newSessionBtn" style="display:none;" class="new-session-button">🔄 New</button>
+            </div>
         </div>
 
         <form id="uploadForm">
@@ -218,9 +321,7 @@
                 <div id="charCounterContext" style="font-size: 0.8em; text-align: right; color: #6c757d;"></div>
             </div>
 
-            <div id="runBtnContainer">
-                <button type="submit" id="runBtn">Run</button>
-            </div>
+
         </form>
 
         <div id="sessionControls" style="display: none;">

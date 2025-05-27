@@ -104,7 +104,7 @@ class PipelineAdapter:
         
         return True
         
-    async def run(self, expected_csv_fieldnames: Optional[List[str]] = None) -> Tuple[int, int, List[Dict[str, Any]]]:
+    async def run(self, expected_csv_fieldnames: Optional[List[str]] = None, write_to_hubspot: bool = True) -> Tuple[int, int, List[Dict[str, Any]]]:
         """
         Run the pipeline with current configuration
         
@@ -149,6 +149,7 @@ class PipelineAdapter:
                 serper_api_key=self.api_keys.get("serper"), # Берем из self.api_keys
                 expected_csv_fieldnames=final_expected_csv_fieldnames, # <--- Передаем актуальный список
                 broadcast_update=None, # В базовом адаптере broadcast_update не используется напрямую
+                write_to_hubspot=write_to_hubspot # <--- Передаем флаг записи в HubSpot
                 # main_batch_size, run_standard_pipeline, run_llm_deep_search_pipeline - специфичны для HubSpotPipelineAdapter.run_pipeline_for_file
                 # или должны быть частью конфигурации, если применимо к базовому адаптеру.
             )
@@ -275,7 +276,8 @@ class PipelineAdapter:
                                sb_client: Optional[CustomScrapingBeeClient], openai_client: AsyncOpenAI, serper_api_key: str,
                                expected_csv_fieldnames: list[str], broadcast_update: Optional[Callable] = None,
                                main_batch_size: int = DEFAULT_BATCH_SIZE,
-                               run_llm_deep_search_pipeline: bool = True) -> tuple[int, int, list[dict]]:
+                               run_llm_deep_search_pipeline: bool = True,
+                               write_to_hubspot: bool = True) -> tuple[int, int, list[dict]]:
         """
         Run the pipeline for a specific input file
         
@@ -296,6 +298,7 @@ class PipelineAdapter:
             main_batch_size: Batch size for parallel processing
 
             run_llm_deep_search_pipeline: Whether to run the LLM deep search pipeline
+            write_to_hubspot: Whether to write results to HubSpot (default: True)
             
         Returns:
             (success_count, failure_count, results) tuple
@@ -401,7 +404,8 @@ class PipelineAdapter:
             expected_csv_fieldnames=expected_csv_fieldnames,
             use_raw_llm_data_as_description=self.use_raw_llm_data_as_description,
             csv_append_mode=False,
-            json_append_mode=False
+            json_append_mode=False,
+            write_to_hubspot=write_to_hubspot
         )
         
         # 4. Подсчет успехов/ошибок

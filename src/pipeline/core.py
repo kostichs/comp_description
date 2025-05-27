@@ -62,7 +62,8 @@ async def _process_single_company_async(
     broadcast_update: Optional[Callable] = None,
     second_column_data: Optional[Dict[str, str]] = None,
     hubspot_client: Optional[Any] = None,
-    use_raw_llm_data_as_description: bool = False
+    use_raw_llm_data_as_description: bool = False,
+    write_to_hubspot: bool = True
 ) -> Dict[str, Any]:
     """
     Process a single company asynchronously
@@ -513,8 +514,8 @@ async def _process_single_company_async(
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error saving structured data: {e}", exc_info=True)
         
-        # 8. Сохранение в HubSpot, если клиент доступен
-        if hubspot_client and found_homepage_url and description_text:
+        # 8. Сохранение в HubSpot, если клиент доступен и запись разрешена
+        if hubspot_client and found_homepage_url and description_text and write_to_hubspot:
             try:
                 logger.info(f"{run_stage_log} - Attempting to upload data to HubSpot")
                 # Используем правильный метод save_company_description который возвращает (success, company_id)
@@ -556,7 +557,9 @@ async def _process_single_company_async(
                 }
                 result_data["HubSpot_Company_ID"] = ""
         else:
-            # Если HubSpot клиент недоступен, добавляем пустое поле
+            # Если HubSpot клиент недоступен или запись отключена, добавляем пустое поле
+            if hubspot_client and not write_to_hubspot:
+                logger.info(f"{run_stage_log} - HubSpot write is disabled, skipping upload")
             result_data["HubSpot_Company_ID"] = ""
         
         # logger.info(f"{run_stage_log} - Processing completed successfully") # Закомментировано
@@ -590,7 +593,8 @@ async def process_companies(
     use_raw_llm_data_as_description: bool = False,
     csv_append_mode: bool = False,
     json_append_mode: bool = False,
-    already_saved_count: int = 0  # Количество уже сохраненных результатов
+    already_saved_count: int = 0,  # Количество уже сохраненных результатов
+    write_to_hubspot: bool = True  # Флаг записи в HubSpot
 ) -> List[Dict[str, Any]]:
     """
     Process multiple companies in parallel batches
@@ -619,6 +623,7 @@ async def process_companies(
         csv_append_mode: Whether to append to CSV file instead of overwriting
         json_append_mode: Whether to append to JSON file instead of overwriting
         already_saved_count: Number of already saved results
+        write_to_hubspot: Whether to write results to HubSpot (default: True)
         
     Returns:
         List[Dict[str, Any]]: List of results
@@ -738,7 +743,8 @@ async def process_companies(
                     broadcast_update=broadcast_update,
                     second_column_data=local_second_column_data,
                     hubspot_client=hubspot_client,
-                    use_raw_llm_data_as_description=use_raw_llm_data_as_description
+                    use_raw_llm_data_as_description=use_raw_llm_data_as_description,
+                    write_to_hubspot=write_to_hubspot
                 )
                 
                 logger.info(f"[{company_index+1}/{total_companies}] Successfully processed company: {company_name}")

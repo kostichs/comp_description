@@ -37,7 +37,8 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             return
 
         run_llm_deep_search_pipeline = session_data.get("run_llm_deep_search_pipeline", True)
-        session_logger.info(f"[BG Task {session_id}] LLM Deep Search pipeline: {run_llm_deep_search_pipeline}")
+        write_to_hubspot = session_data.get("write_to_hubspot", True)
+        session_logger.info(f"[BG Task {session_id}] LLM Deep Search pipeline: {run_llm_deep_search_pipeline}, Write to HubSpot: {write_to_hubspot}")
 
     except Exception as e:
         session_logger.error(f"[BG Task {session_id}] Error loading session metadata: {e}. Aborting.")
@@ -203,7 +204,8 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
                     # broadcast_update=broadcast_update # callback
                     # main_batch_size # из параметров функции run_session_pipeline
                     # context_text # из session_data
-                    expected_csv_fieldnames = expected_cols # <--- Передаем наш список полей
+                    expected_csv_fieldnames = expected_cols, # <--- Передаем наш список полей
+                    write_to_hubspot = write_to_hubspot # <--- Передаем флаг записи в HubSpot
                     # aiohttp_session, sb_client, openai_client - уже установлены как атрибуты
                     # llm_config, api_keys - уже установлены как атрибуты
                 )

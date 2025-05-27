@@ -307,7 +307,8 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                                    serper_api_key: str, # Оставляем, т.к. используется в process_companies
                                    expected_csv_fieldnames: list[str], broadcast_update: Optional[Callable] = None,
                                    main_batch_size: int = 5,
-                                   run_llm_deep_search_pipeline: bool = True) -> tuple[int, int, list[dict]]:
+                                   run_llm_deep_search_pipeline: bool = True,
+                                   write_to_hubspot: bool = True) -> tuple[int, int, list[dict]]:
         """
         Run the pipeline for a specific input file with HubSpot integration
         """
@@ -562,7 +563,8 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 use_raw_llm_data_as_description=self.llm_config.get('use_raw_llm_data_as_description', True), # Берем из llm_config
                 csv_append_mode=should_append_csv, # Используем флаг для CSV
                 json_append_mode=should_append_json, # Используем флаг для JSON
-                already_saved_count=len(all_results)  # Передаем количество уже сохраненных результатов
+                already_saved_count=len(all_results),  # Передаем количество уже сохраненных результатов
+                write_to_hubspot=write_to_hubspot # Передаем флаг записи в HubSpot
             )
             
             # process_companies возвращает только список результатов.

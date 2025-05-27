@@ -244,7 +244,8 @@ async def get_sessions():
 async def create_new_session(
     file: UploadFile = File(...), 
     context_text: Optional[str] = Form(None), 
-    run_llm_deep_search_pipeline: bool = Form(True)
+    run_llm_deep_search_pipeline: bool = Form(True),
+    write_to_hubspot: bool = Form(True)
 ):
     """
     Creates a new processing session by uploading an input file (CSV/XLSX) 
@@ -341,7 +342,8 @@ async def create_new_session(
             "deduplication_info": None, # Явно инициализируем
             "processing_messages": [],   # Явно инициализируем
             "error_message": None if context_saved_successfully else "Failed to save context file",
-            "run_llm_deep_search_pipeline": run_llm_deep_search_pipeline
+            "run_llm_deep_search_pipeline": run_llm_deep_search_pipeline,
+            "write_to_hubspot": write_to_hubspot
         }
         
         metadata.append(new_session_data)

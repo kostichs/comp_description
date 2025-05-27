@@ -119,6 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // LLM Deep Search pipeline всегда включен
             formData.append('run_llm_deep_search_pipeline', true);
+            
+            // Добавляем состояние HubSpot toggle
+            const writeToHubspotCheckbox = document.getElementById('writeToHubspot');
+            if (writeToHubspotCheckbox) {
+                formData.append('write_to_hubspot', writeToHubspotCheckbox.checked);
+            }
 
             try {
                 const response = await fetch('/api/sessions', {
