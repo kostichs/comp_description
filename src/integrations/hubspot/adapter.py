@@ -361,10 +361,6 @@ class HubSpotPipelineAdapter(PipelineAdapter):
         structured_data_dir = session_dir_path / "json"
         structured_data_dir.mkdir(exist_ok=True)
         structured_data_json_path = structured_data_dir / f"{self.session_id or 'results'}.json"
-        
-        # Создаем директорию для результатов Markdown
-        raw_markdown_output_dir = session_dir_path / "markdown"
-        raw_markdown_output_dir.mkdir(exist_ok=True)
 
         # Загрузка данных о компаниях остается прежней
         company_data_list = load_and_prepare_company_names(input_file_path, company_col_index)
@@ -529,14 +525,14 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 else:
                     company_names_for_core_processing.append(name)
 
-            # Пути для raw markdown и JSON output в process_companies
+            # Пути для raw data и JSON output в process_companies
             # (они могут быть перезаписаны или не использоваться в зависимости от конфигурации process_companies)
-            raw_markdown_reports_path = session_dir_path / "raw_markdown_reports"
-            raw_markdown_reports_path.mkdir(exist_ok=True) # Убедимся, что директория существует
+            raw_data_path = session_dir_path / "raw_data"
+            raw_data_path.mkdir(exist_ok=True) # Убедимся, что директория существует
             
-            # Имя JSON файла можно сделать аналогичным CSV
-            output_json_filename = output_csv_path.stem.replace("_results", "") + "_structured_results.json"
-            output_json_path_for_core = session_dir_path / output_json_filename
+            # JSON файл сохраняем в папку json
+            output_json_filename = f"{self.session_id or 'results'}_structured_results.json"
+            output_json_path_for_core = structured_data_dir / output_json_filename
 
             # Вызываем process_companies из src.pipeline.core
             # Убедимся, что передаем все необходимые и корректные аргументы
@@ -547,7 +543,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 sb_client=sb_client,
                 serper_api_key=self.api_keys.get("serper"), # Берем из self.api_keys
                 llm_config=llm_config,
-                raw_markdown_output_path=raw_markdown_reports_path,
+                raw_markdown_output_path=raw_data_path,
                 batch_size=main_batch_size, # Используем main_batch_size
                 context_text=context_text,
                 run_llm_deep_search_pipeline_cfg=run_llm_deep_search_pipeline, # Передаем флаг

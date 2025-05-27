@@ -311,13 +311,13 @@ class PipelineAdapter:
         # Создание директорий для результатов
         session_dir_path.mkdir(parents=True, exist_ok=True)
         
-        # Создание директорий для JSON и Markdown
+        # Создание директорий для JSON и raw data
         structured_data_dir = session_dir_path / "json"
         structured_data_dir.mkdir(exist_ok=True)
         structured_data_json_path = structured_data_dir / f"{self.session_id or 'results'}.json"
         
-        raw_markdown_output_dir = session_dir_path / "markdown"
-        raw_markdown_output_dir.mkdir(exist_ok=True)
+        raw_data_output_dir = session_dir_path / "raw_data"
+        raw_data_output_dir.mkdir(exist_ok=True)
         
         # 1.5. Нормализация URL и удаление дубликатов во входном файле
         # ВАЖНО: Эта логика теперь перенесена в HubSpotPipelineAdapter
@@ -392,7 +392,7 @@ class PipelineAdapter:
             sb_client=sb_client,
             serper_api_key=serper_api_key,
             llm_config=llm_config,
-            raw_markdown_output_path=raw_markdown_output_dir,
+            raw_markdown_output_path=raw_data_output_dir,
             batch_size=main_batch_size,
             context_text=context_text,
             run_llm_deep_search_pipeline_cfg=run_llm_deep_search_cfg,
