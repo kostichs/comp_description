@@ -93,6 +93,17 @@
             box-shadow: 0 2px 8px rgba(255,122,89,0.3);
         }
         
+        /* Disabled state for HubSpot toggle */
+        .hubspot-toggle input[type="checkbox"]:disabled + .toggle-icon {
+            cursor: not-allowed !important;
+            opacity: 0.6 !important;
+        }
+        
+        .hubspot-toggle input[type="checkbox"]:disabled + .toggle-icon:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
         /* Run Button Styles */
         .run-button {
             padding: 12px 24px;

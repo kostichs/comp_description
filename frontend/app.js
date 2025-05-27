@@ -60,6 +60,36 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loadingIndicator) loadingIndicator.style.display = 'none';
     }
 
+    // --- HubSpot Toggle Management Functions ---
+    function enableHubSpotToggle() {
+        const writeToHubspotCheckbox = document.getElementById('writeToHubspot');
+        const toggleLabel = document.querySelector('label[for="writeToHubspot"]');
+        if (writeToHubspotCheckbox) {
+            writeToHubspotCheckbox.disabled = false;
+            writeToHubspotCheckbox.style.opacity = '1';
+        }
+        if (toggleLabel) {
+            toggleLabel.style.opacity = '1';
+            toggleLabel.style.cursor = 'pointer';
+            toggleLabel.title = 'Enable/disable writing results to HubSpot CRM';
+        }
+    }
+
+    function disableHubSpotToggle() {
+        const writeToHubspotCheckbox = document.getElementById('writeToHubspot');
+        const toggleLabel = document.querySelector('label[for="writeToHubspot"]');
+        if (writeToHubspotCheckbox) {
+            writeToHubspotCheckbox.disabled = true;
+            writeToHubspotCheckbox.style.opacity = '0.6';
+        }
+        if (toggleLabel) {
+            toggleLabel.style.opacity = '0.6';
+            toggleLabel.style.cursor = 'not-allowed';
+            const isEnabled = writeToHubspotCheckbox.checked;
+            toggleLabel.title = `HubSpot writing is ${isEnabled ? 'ENABLED' : 'DISABLED'} for this session (cannot be changed during processing)`;
+        }
+    }
+
     // --- UI State Functions ---
     async function showNewSessionUI() {
         console.log('Showing new session UI'); // Отладочная информация
@@ -112,11 +142,12 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('fileNameDisplay').textContent = '';
         }
         
-        // Сбрасываем состояние HubSpot toggle на включенное
+        // Сбрасываем состояние HubSpot toggle на включенное и активируем его
         const writeToHubspotCheckbox = document.getElementById('writeToHubspot');
         if (writeToHubspotCheckbox) {
             writeToHubspotCheckbox.checked = true;
         }
+        enableHubSpotToggle();
         
         // Останавливаем polling если он активен
         if (pollingInterval) {
@@ -215,6 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (runBtn) {
                     runBtn.style.display = 'inline-block';
                 }
+                // Активируем HubSpot toggle обратно при ошибке создания сессии
+                enableHubSpotToggle();
             } finally {
                 hideLoading();
             }
@@ -283,6 +316,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sessionData.deduplication_info) {
                 window.deduplicationInfo = sessionData.deduplication_info;
                 console.log('Deduplication info in fetchSessionData:', sessionData.deduplication_info);
+            }
+            
+            // Управляем состоянием HubSpot toggle в зависимости от статуса сессии
+            if (sessionData.status === 'running' || sessionData.status === 'queued') {
+                disableHubSpotToggle(); // Деактивируем для активных сессий
+            } else {
+                enableHubSpotToggle(); // Активируем для завершенных/ошибочных сессий
             }
             
             if (sessionData.status === 'completed' || sessionData.status === 'error') {
@@ -447,6 +487,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (sessionData.status === 'completed' || sessionData.status === 'error') {
                     stopPollingStatus();
+                    // Активируем HubSpot toggle когда сессия завершена
+                    enableHubSpotToggle();
                     if (sessionData.status === 'completed'){
                         let finalCount = (sessionData.deduplication_info && sessionData.deduplication_info.final_count) 
                                          ? sessionData.deduplication_info.final_count 
@@ -485,6 +527,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function startProcessingImmediately(sessionId) {
         showLoading();
+        // Деактивируем HubSpot toggle когда начинается обработка
+        disableHubSpotToggle();
         if (progressStatus) {
             progressStatus.style.display = 'block';
             progressStatus.textContent = 'Processing...';
@@ -516,6 +560,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (runBtn) {
                 runBtn.style.display = 'inline-block';
             }
+            // Активируем HubSpot toggle обратно при ошибке
+            enableHubSpotToggle();
         } finally {
             hideLoading();
         }
