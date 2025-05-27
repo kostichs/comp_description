@@ -117,16 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 formData.append('context_text', contextTextarea.value.trim());
             }
 
-            // Добавляем состояния чекбоксов
-            const standardPipelineCheckbox = document.getElementById('standardPipeline');
-            const llmDeepSearchPipelineCheckbox = document.getElementById('llmDeepSearchPipeline');
-
-            if (standardPipelineCheckbox) {
-                formData.append('run_standard_pipeline', standardPipelineCheckbox.checked);
-            }
-            if (llmDeepSearchPipelineCheckbox) {
-                formData.append('run_llm_deep_search_pipeline', llmDeepSearchPipelineCheckbox.checked);
-            }
+            // LLM Deep Search pipeline всегда включен
+            formData.append('run_llm_deep_search_pipeline', true);
 
             try {
                 const response = await fetch('/api/sessions', {

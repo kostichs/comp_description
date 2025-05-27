@@ -244,12 +244,11 @@ async def get_sessions():
 async def create_new_session(
     file: UploadFile = File(...), 
     context_text: Optional[str] = Form(None), 
-    run_standard_pipeline: bool = Form(True),
     run_llm_deep_search_pipeline: bool = Form(True)
 ):
     """
     Creates a new processing session by uploading an input file (CSV/XLSX) 
-    and optional context text. Both standard and LLM deep search pipelines will run by default.
+    and optional context text. Only files with two columns (Company Name and Website URL) are accepted.
     """
     # Basic validation for filename/extension
     if not file.filename:
@@ -311,7 +310,16 @@ async def create_new_session(
                 df = pd.read_csv(input_file_path)
             else:
                 df = pd.read_excel(input_file_path)
+            
+            # Валидация: файл должен содержать минимум две колонки
+            if df.shape[1] < 2:
+                try: shutil.rmtree(session_dir); logging.info(f"Cleaned up session dir due to validation error: {session_dir}")
+                except Exception as e_clean: logging.error(f"Failed to cleanup session dir {session_dir}: {e_clean}")
+                raise HTTPException(status_code=400, detail="File must contain exactly two columns: Company Name and Website URL")
+            
             initial_upload_count = len(df)
+        except HTTPException:
+            raise  # Re-raise HTTP exceptions
         except Exception:
             initial_upload_count = 0 # Или None, если предпочитаете, но 0 безопаснее для UI
         
@@ -333,7 +341,6 @@ async def create_new_session(
             "deduplication_info": None, # Явно инициализируем
             "processing_messages": [],   # Явно инициализируем
             "error_message": None if context_saved_successfully else "Failed to save context file",
-            "run_standard_pipeline": run_standard_pipeline,
             "run_llm_deep_search_pipeline": run_llm_deep_search_pipeline
         }
         

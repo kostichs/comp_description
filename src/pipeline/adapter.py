@@ -22,7 +22,7 @@ from description_generator import DescriptionGenerator
 from finders.base import Finder
 from finders.llm_deep_search_finder.finder import LLMDeepSearchFinder
 from finders.linkedin_finder import LinkedInFinder
-from finders.homepage_finder.finder import HomepageFinder
+
 from finders.domain_check_finder import DomainCheckFinder
 from finders.login_detection_finder import LoginDetectionFinder
 from src.data_io import load_and_prepare_company_names, save_results_csv, save_results_json, load_session_metadata, save_session_metadata
@@ -274,7 +274,7 @@ class PipelineAdapter:
                                context_text: str | None, company_col_index: int, aiohttp_session: aiohttp.ClientSession,
                                sb_client: Optional[CustomScrapingBeeClient], openai_client: AsyncOpenAI, serper_api_key: str,
                                expected_csv_fieldnames: list[str], broadcast_update: Optional[Callable] = None,
-                               main_batch_size: int = DEFAULT_BATCH_SIZE, run_standard_pipeline: bool = True,
+                               main_batch_size: int = DEFAULT_BATCH_SIZE,
                                run_llm_deep_search_pipeline: bool = True) -> tuple[int, int, list[dict]]:
         """
         Run the pipeline for a specific input file
@@ -294,7 +294,7 @@ class PipelineAdapter:
             expected_csv_fieldnames: Expected CSV field names for the output
             broadcast_update: Optional callback for broadcasting updates
             main_batch_size: Batch size for parallel processing
-            run_standard_pipeline: Whether to run the standard pipeline
+
             run_llm_deep_search_pipeline: Whether to run the LLM deep search pipeline
             
         Returns:
@@ -374,9 +374,9 @@ class PipelineAdapter:
         logger.info(f"Loaded {len(company_names)} company names from {input_file_path}")
         
         # Конфигурация выполнения различных частей пайплайна
-        run_standard_cfg = run_standard_pipeline 
+        run_standard_cfg = False  # Standard pipeline отключен
         run_llm_deep_search_cfg = run_llm_deep_search_pipeline
-        run_domain_check_cfg = run_standard_pipeline or run_llm_deep_search_pipeline  # Нужен обоим пайплайнам
+        run_domain_check_cfg = run_llm_deep_search_pipeline  # Нужен только LLM deep search pipeline
         
         # 3. Обработка компаний
         from src.pipeline.core import process_companies  # Импортируем здесь для избежания циклических импортов

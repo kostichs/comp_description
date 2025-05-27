@@ -22,7 +22,7 @@ from normalize_urls import get_url_status_and_final_location_async
 from finders.base import Finder
 from finders.llm_deep_search_finder.finder import LLMDeepSearchFinder
 from finders.linkedin_finder import LinkedInFinder
-from finders.homepage_finder.finder import HomepageFinder
+
 from finders.domain_check_finder import DomainCheckFinder, check_url_liveness
 from finders.login_detection_finder import LoginDetectionFinder
 
@@ -134,28 +134,9 @@ async def _process_single_company_async(
             run_standard_homepage_finders = False  # Отключаем поиск, так как URL уже есть
             run_domain_check_finder = False  # Также отключаем проверку домена
         
-        # Если нет данных второго столбца и включен стандартный пайплайн, ищем официальный сайт
-        if run_standard_homepage_finders:
-            # 1. Поиск официального сайта компании с помощью homepage_finder
-            logger.info(f"{run_stage_log} - Running homepage finder")
-            try:
-                if "homepage_finder" in finder_instances:
-                    homepage_finder = finder_instances["homepage_finder"]
-                    # Передаем aiohttp_session напрямую в context
-                    homepage_result = await homepage_finder.find(
-                        company_name,
-                        session=aiohttp_session,
-                        serper_api_key=serper_api_key
-                    )
-                    if homepage_result and "url" in homepage_result:
-                        found_homepage_url = homepage_result["url"]
-                        logger.info(f"{run_stage_log} - Homepage finder found URL: {found_homepage_url}")
-                    else:
-                        logger.warning(f"{run_stage_log} - Homepage finder did not return a URL")
-                else:
-                    logger.warning(f"{run_stage_log} - Homepage finder not available")
-            except Exception as e:
-                logger.error(f"{run_stage_log} - Error running homepage finder: {e}", exc_info=True)
+        # Официальный сайт должен быть предоставлен во второй колонке
+        if not found_homepage_url:
+            logger.warning(f"{run_stage_log} - No homepage URL provided in input data")
         
         # 2. Проверка доступности URL (если включена и найден URL)
         if found_homepage_url and run_domain_check_finder:
@@ -219,54 +200,29 @@ async def _process_single_company_async(
                     if llm_deep_search_config_override:
                         llm_deep_search_finder.update_config(llm_deep_search_config_override)
                     
-                    # Если URL не найден и это одноколоночный вариант, сначала используем режим url_only_mode
-                    if not found_homepage_url and not second_column_data and not homepage_url_from_tuple:
-                        # Шаг 1: Сначала находим только URL в url_only_mode
-                        logger.info(f"{run_stage_log} - First step: Using URL-only mode to find homepage URL")
-                        url_only_result = await llm_deep_search_finder.find(
-                            company_name,
-                            url_only_mode=True
-                        )
-                        
-                        if url_only_result and isinstance(url_only_result, dict) and url_only_result.get("extracted_homepage_url"):
-                            potential_url = url_only_result["extracted_homepage_url"]
-                            logger.info(f"{run_stage_log} - URL-only mode found homepage URL, validating: {potential_url}")
+                    # Проверяем URL в HubSpot, если клиент есть и URL предоставлен
+                    skip_deep_search = False
+                    if found_homepage_url and hubspot_client:
+                        try:
+                            logger.info(f"{run_stage_log} - Checking URL {found_homepage_url} in HubSpot before deep search")
+                            hubspot_company = await hubspot_client.get_company_by_domain(found_homepage_url)
                             
-                            # Проверяем живость URL
-                            is_live, final_url = await _validate_and_get_final_url(
-                                potential_url, aiohttp_session, sb_client, company_name
-                            )
-                            
-                            if is_live and final_url:
-                                found_homepage_url = final_url
-                                logger.info(f"{run_stage_log} - Using validated URL from URL-only mode: {found_homepage_url}")
-                            else:
-                                logger.warning(f"{run_stage_log} - URL from URL-only mode is not live: {potential_url}")
-                                # found_homepage_url остается None, чтобы другие методы могли попробовать найти URL
-                        
-                        # Проверяем URL в HubSpot, если клиент есть
-                        skip_deep_search = False
-                        if found_homepage_url and hubspot_client:
-                            try:
-                                logger.info(f"{run_stage_log} - Checking URL {found_homepage_url} in HubSpot before deep search")
-                                hubspot_company = await hubspot_client.get_company_by_domain(found_homepage_url)
-                                
-                                if hubspot_company and hubspot_client.has_fresh_description(hubspot_company):
-                                    logger.info(f"{run_stage_log} - Company with domain {found_homepage_url} found in HubSpot with fresh description")
-                                    description_text = hubspot_company.get("description", "")
-                                    if description_text:
-                                        logger.info(f"{run_stage_log} - Using existing description from HubSpot")
-                                        skip_deep_search = True
-                                        # Добавляем базовую информацию для использования в других местах
-                                        structured_data = {
-                                            "homepage": found_homepage_url,
-                                            "extracted_homepage_url": found_homepage_url,
-                                            "hubspot_id": hubspot_company.get("id"),
-                                            "hubspot_source": True
-                                        }
-                                        llm_deep_search_raw_result = description_text
-                            except Exception as e:
-                                logger.error(f"{run_stage_log} - Error checking HubSpot: {e}", exc_info=True)
+                            if hubspot_company and hubspot_client.has_fresh_description(hubspot_company):
+                                logger.info(f"{run_stage_log} - Company with domain {found_homepage_url} found in HubSpot with fresh description")
+                                description_text = hubspot_company.get("description", "")
+                                if description_text:
+                                    logger.info(f"{run_stage_log} - Using existing description from HubSpot")
+                                    skip_deep_search = True
+                                    # Добавляем базовую информацию для использования в других местах
+                                    structured_data = {
+                                        "homepage": found_homepage_url,
+                                        "extracted_homepage_url": found_homepage_url,
+                                        "hubspot_id": hubspot_company.get("id"),
+                                        "hubspot_source": True
+                                    }
+                                    llm_deep_search_raw_result = description_text
+                        except Exception as e:
+                            logger.error(f"{run_stage_log} - Error checking HubSpot: {e}", exc_info=True)
                     
                     # Шаг 2: Если первый шаг не пропускаем и нужно выполнить полный поиск
                     if not skip_deep_search:
@@ -622,7 +578,7 @@ async def process_companies(
     batch_size: int, 
     context_text: Optional[str] = None,
     run_llm_deep_search_pipeline_cfg: bool = True,
-    run_standard_pipeline_cfg: bool = True,
+
     run_domain_check_finder_cfg: bool = True,
     broadcast_update: Optional[Callable] = None,
     output_csv_path: Optional[str] = None,
@@ -650,7 +606,7 @@ async def process_companies(
         batch_size: Number of companies to process in parallel
         context_text: Optional context text
         run_llm_deep_search_pipeline_cfg: Whether to run LLM deep search
-        run_standard_pipeline_cfg: Whether to run standard homepage finders
+
         run_domain_check_finder_cfg: Whether to run domain check finder
         broadcast_update: Callback for broadcasting updates
         output_csv_path: Path to save CSV output
@@ -685,14 +641,8 @@ async def process_companies(
     # Создаем экземпляры finder'ов для поиска информации
     finder_instances = {}
     
-    # Стандартные finders
-    if run_standard_pipeline_cfg:
-        # HomepageFinder для поиска официального сайта
-        finder_instances["homepage_finder"] = HomepageFinder(
-            serper_api_key=serper_api_key,
-            openai_api_key=openai_client.api_key if openai_client else None
-        )
-        
+    # LinkedIn finder (единственный оставшийся стандартный finder)
+    if True:  # Всегда включен
         # LinkedInFinder для поиска LinkedIn URL
         finder_instances["linkedin_finder"] = LinkedInFinder(
             serper_api_key=serper_api_key,
@@ -782,7 +732,7 @@ async def process_companies(
                     total_companies=total_companies,
                     context_text=context_text,
                     run_llm_deep_search_pipeline=run_llm_deep_search_pipeline_cfg,
-                    run_standard_homepage_finders=run_standard_pipeline_cfg,
+                    run_standard_homepage_finders=False,
                     run_domain_check_finder=run_domain_check_finder_cfg,
                     llm_deep_search_config_override=llm_deep_search_config_override,
                     broadcast_update=broadcast_update,

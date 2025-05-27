@@ -17,7 +17,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 
 def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) -> Optional[List[Dict[str, Optional[str]]]]:
     """
-    Loads company data from Excel/CSV.
+    Loads company data from Excel/CSV. Requires exactly two columns: Company Name and Website URL.
     
     Args:
         file_path: Path to the input file
@@ -25,9 +25,7 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
     
     Returns:
         List of dictionaries, where each dictionary has 'name', 'url', and optionally 'status' keys.
-        'url' can be None if not present in the input file.
-        'status' indicates processing status (VALID, DUPLICATE, DEAD_URL).
-        Returns None if file could not be loaded or is empty.
+        Returns None if file could not be loaded, is empty, or doesn't have required two columns.
     """
     file_path_str = str(file_path)
     df_loaded = None
@@ -59,9 +57,9 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
             # Используем первые два столбца
             df_loaded = reader(file_path_str, usecols=[0, 1], header=0)
         else:
-            # Если только один столбец, используем только первый
-            logging.info(f"Detected only one column in {file_path_str}")
-            df_loaded = reader(file_path_str, usecols=[col_index], header=0)
+            # Отклоняем файлы с одной колонкой
+            logging.error(f"File {file_path_str} has only one column. Two columns required: Company Name and Website URL")
+            return None
             
     except (ValueError, ImportError, FileNotFoundError) as ve:
         logging.warning(f"Initial read failed for {file_path_str}, trying header=None: {ve}")
@@ -77,8 +75,8 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
                 logging.info(f"Detected two or more columns in {file_path_str} (without header), using first two columns")
                 df_loaded = reader(file_path_str, usecols=[0, 1], header=None)
             else:
-                logging.info(f"Detected only one column in {file_path_str} (without header)")
-                df_loaded = reader(file_path_str, usecols=[col_index], header=None)
+                logging.error(f"File {file_path_str} has only one column (without header). Two columns required: Company Name and Website URL")
+                return None
                 
         except Exception as read_err_no_header:
             logging.error(f"Error reading {file_path_str} even with header=None: {read_err_no_header}")
@@ -161,20 +159,9 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
                 logging.warning(f"No valid company names in the first column of {file_path_str} (when checking two columns).")
                 return None
         else:
-            # Если только один столбец
-            company_names_series = df_loaded.iloc[:, 0].astype(str).str.strip()
-            result_list_of_dicts = []
-            for name in company_names_series:
-                if name and name.lower() not in ['nan', '']:
-                    # URL отсутствует
-                    result_list_of_dicts.append({'name': name, 'url': None})
-
-            if result_list_of_dicts:
-                logging.info(f"Loaded {len(result_list_of_dicts)} companies (name only) from {file_path_str}")
-                return result_list_of_dicts
-            else:
-                logging.warning(f"No valid company names in the first column of {file_path_str} (when checking one column).")
-                return None
+            # Файл не содержит достаточно колонок
+            logging.error(f"File {file_path_str} does not have the required two columns (Company Name and Website URL)")
+            return None
     else:
         logging.warning(f"Could not load data from {file_path_str} or the file is empty.")
         return None

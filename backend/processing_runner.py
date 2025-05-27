@@ -36,9 +36,8 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             session_logger.error(f"[BG Task {session_id}] Session metadata not found. Aborting.")
             return
 
-        run_standard_pipeline = session_data.get("run_standard_pipeline", True)
         run_llm_deep_search_pipeline = session_data.get("run_llm_deep_search_pipeline", True)
-        session_logger.info(f"[BG Task {session_id}] Standard pipeline: {run_standard_pipeline}, LLM Deep Search: {run_llm_deep_search_pipeline}")
+        session_logger.info(f"[BG Task {session_id}] LLM Deep Search pipeline: {run_llm_deep_search_pipeline}")
 
     except Exception as e:
         session_logger.error(f"[BG Task {session_id}] Error loading session metadata: {e}. Aborting.")

@@ -306,7 +306,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                                    sb_client: CustomScrapingBeeClient, openai_client: AsyncOpenAI,
                                    serper_api_key: str, # Оставляем, т.к. используется в process_companies
                                    expected_csv_fieldnames: list[str], broadcast_update: Optional[Callable] = None,
-                                   main_batch_size: int = 5, run_standard_pipeline: bool = True,
+                                   main_batch_size: int = 5,
                                    run_llm_deep_search_pipeline: bool = True) -> tuple[int, int, list[dict]]:
         """
         Run the pipeline for a specific input file with HubSpot integration
@@ -550,7 +550,7 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 batch_size=main_batch_size, # Используем main_batch_size
                 context_text=context_text,
                 run_llm_deep_search_pipeline_cfg=run_llm_deep_search_pipeline, # Передаем флаг
-                run_standard_pipeline_cfg=run_standard_pipeline, # Передаем флаг
+                run_standard_pipeline_cfg=False, # Standard pipeline отключен
                 # run_domain_check_finder_cfg остается по умолчанию True в process_companies, если нужен другой контроль - добавить
                 broadcast_update=broadcast_update,
                 output_csv_path=str(output_csv_path), # Передаем путь к CSV для инкрементальной записи
