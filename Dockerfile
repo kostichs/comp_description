@@ -24,9 +24,8 @@ COPY ./description_generator /app/description_generator
 COPY ./finders /app/finders
 COPY llm_config.yaml /app/llm_config.yaml
 COPY llm_deep_search_config.yaml /app/llm_deep_search_config.yaml
-COPY utils.py /app/utils.py
-COPY main.py /app/main.py
-COPY company_search.py /app/company_search.py
+COPY normalize_urls.py /app/normalize_urls.py
+
 # Создаем необходимые директории
 RUN mkdir -p /app/output /app/input
 

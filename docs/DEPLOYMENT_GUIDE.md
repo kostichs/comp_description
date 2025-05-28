@@ -148,17 +148,17 @@ docker login
 Введите ваш Docker ID и пароль (или Personal Access Token, если у вас включена 2FA).
 
 ### 3.3. Тегируйте локальный образ
-Присвойте вашему локальному образу тег в формате `ВАШ_DOCKERHUB_USERNAME/ИМЯ_РЕПОЗИТОРИЯ:ТЕГ`.
+Присвойте вашему локальному образу тег в формате `ВАШ_DOCKERHUB_USERNAME/ИМЯ_РЕПОЗИТОРИЯ:ВЕРСИЯ`.
 ```bash
-docker tag company-canvas-app ВАШ_DOCKERHUB_USERNAME/company-canvas-app:latest
+docker tag company-canvas-app ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06
 ```
 - Замените `ВАШ_DOCKERHUB_USERNAME` на ваше имя пользователя.
 - `company-canvas-app` после слеша — это имя репозитория, которое будет создано на Docker Hub.
-- `latest` — стандартный тег для последней версии.
+- **ВАЖНО**: Всегда используйте версионные теги (v01, v02, v03...), никогда не используйте `latest` для продакшена.
 
 ### 3.4. Загрузите образ на Docker Hub
 ```bash
-docker push ВАШ_DOCKERHUB_USERNAME/company-canvas-app:latest
+docker push ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06
 ```
 Дождитесь завершения загрузки.
 
@@ -195,7 +195,7 @@ docker push ВАШ_DOCKERHUB_USERNAME/company-canvas-app:latest
 
 ### 4.2. Скачайте образ с Docker Hub на VM
 ```bash
-docker pull ВАШ_DOCKERHUB_USERNAME/company-canvas-app:latest
+docker pull ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06
 ```
 - Замените `ВАШ_DOCKERHUB_USERNAME` на ваше имя пользователя.
 
@@ -229,7 +229,7 @@ docker run -d --restart unless-stopped -p 80:8000 \
   -e SERPER_API_KEY="ВАШ_РЕАЛЬНЫЙ_SERPER_КЛЮЧ" \
   --name company-canvas-prod \
   -v /srv/company-canvas/output:/app/output \
-  ВАШ_DOCKERHUB_USERNAME/company-canvas-app:latest
+  ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06
 ```
 - **Замените плейсхолдеры** для API ключей на ваши реальные значения.
 - `-d`: запуск в фоновом (detached) режиме.
@@ -262,10 +262,10 @@ docker run -d --restart unless-stopped -p 80:8000 \
 Если вы внесли изменения в код и хотите обновить приложение на сервере:
 1. Внесите изменения в код локально.
 2. Пересоберите Docker-образ локально: `docker build -t company-canvas-app .`
-3. Тегируйте новый образ: `docker tag company-canvas-app ВАШ_DOCKERHUB_USERNAME/company-canvas-app:latest` (или с новым тегом версии, например, `...:1.0.1`)
-4. Загрузите новый образ на Docker Hub: `docker push ВАШ_DOCKERHUB_USERNAME/company-canvas-app:latest` (или с новым тегом).
+3. Тегируйте новый образ: `docker tag company-canvas-app ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06` (или с новым тегом версии, например, `...:1.0.1`)
+4. Загрузите новый образ на Docker Hub: `docker push ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06` (или с новым тегом).
 5. **На сервере Ubuntu VM:**
-   a. Скачайте обновленный образ: `docker pull ВАШ_DOCKERHUB_USERNAME/company-canvas-app:latest`
+   a. Скачайте обновленный образ: `docker pull ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06`
    b. Остановите старый контейнер: `docker stop company-canvas-prod`
    c. Удалите старый контейнер: `docker rm company-canvas-prod`
    d. Запустите новый контейнер с теми же параметрами `docker run ...`, используя обновленный образ. (См. пункт 4.5). Данные в смонтированном томе (`-v`) останутся нетронутыми.
@@ -274,7 +274,7 @@ docker run -d --restart unless-stopped -p 80:8000 \
 
 Это руководство должно помочь вам в будущем самостоятельно развертывать проект! 
 
-# Краткая инструкция по развертыванию (версия 5)
+# Краткая инструкция по развертыванию (версия 6)
 
 Это краткое пошаговое руководство для быстрого развертывания приложения без лишних деталей.
 
@@ -285,31 +285,40 @@ docker run -d --restart unless-stopped -p 80:8000 \
 docker login
 
 # Соберите локальный образ
-docker build -t company-description-app .
+docker build -t company-canvas-app .
 
 # Тегируйте образ с правильным именем репозитория и версией
-docker tag company-description-app sergeykostichev/company-canvas-app:v05
+docker tag company-canvas-app sergeykostichev/company-canvas-app:v06
 
 # Отправьте образ в Docker Hub
-docker push sergeykostichev/company-canvas-app:v05
+docker push sergeykostichev/company-canvas-app:v06
 ```
 
 ## 2. Развертывание на виртуальной машине
 
 ```bash
 # Удалите предыдущий контейнер (если есть)
-docker rm -f company-canvas-prod
+docker stop company-canvas-prod
+docker rm company-canvas-prod
 
 # Скачайте новый образ
-docker pull sergeykostichev/company-canvas-app:v05
+docker pull sergeykostichev/company-canvas-app:v06
 
-# Запустите новый контейнер
-docker run -d -p 80:8000 --restart unless-stopped --name company-canvas-prod \
-  -e OPENAI_API_KEY=ваш_ключ \
-  -e SCRAPINGBEE_API_KEY=ваш_ключ \
-  -e SERPER_API_KEY=ваш_ключ \
+# Создайте директорию для данных (если еще не создана)
+sudo mkdir -p /srv/company-canvas/output
+sudo chown -R $USER:$USER /srv/company-canvas/output
+
+# Запустите новый контейнер с ПОЛНЫМ именем образа
+docker run -d --restart unless-stopped -p 80:8000 \
+  -e OPENAI_API_KEY="ваш_openai_ключ" \
+  -e SERPER_API_KEY="ваш_serper_ключ" \
+  -e SCRAPINGBEE_API_KEY="ваш_scrapingbee_ключ" \
+  -e HUBSPOT_API_KEY="ваш_hubspot_ключ" \
+  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/ваш_portal_id/record/0-2/" \
+  -e DEBUG="false" \
+  --name company-canvas-prod \
   -v /srv/company-canvas/output:/app/output \
-  sergeykostichev/company-canvas-app:v05
+  sergeykostichev/company-canvas-app:v06
 ```
 
 ## 3. Проверка работы
@@ -320,11 +329,22 @@ docker ps
 
 # Проверьте логи контейнера
 docker logs company-canvas-prod
+
+# Следите за логами в реальном времени
+docker logs -f company-canvas-prod
 ```
 
 Теперь приложение должно быть доступно по IP-адресу виртуальной машины на порту 80.
 
-## 4. Информация о веб-интерфейсе
+## 4. Важные моменты
+
+**ВНИМАНИЕ**: 
+- Всегда используйте ПОЛНОЕ имя образа: `sergeykostichev/company-canvas-app:v06`
+- НЕ используйте сокращенные имена типа `company-canvas-app` - это приведет к ошибке
+- При обновлении версии меняйте номер тега: v06 → v07 → v08 и т.д.
+- Для продакшена ВСЕГДА используйте `-d` (фоновый режим) и порт 80
+
+## 5. Информация о веб-интерфейсе
 
 - Веб-интерфейс автоматически обновляет таблицу результатов каждые 2 секунды
 - Параметр обновления находится в файле `frontend/app.js` (строка 326, значение 2000 ms)

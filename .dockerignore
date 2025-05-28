@@ -22,10 +22,18 @@ pyproject.toml
 # IDE
 .vscode/
 .idea/
+.cursor/
 
 # Local data / logs
 output/
 *.log
+
+# Tests
+tests/
+.pytest_cache/
+
+# Session metadata file
+sessions_metadata.json
 
 # OS specific
 .DS_Store
