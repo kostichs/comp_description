@@ -1,5 +1,8 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks, WebSocket, WebSocketDisconnect, status, Body
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.requests import Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 import uvicorn
 import os
 import sys
@@ -38,6 +41,7 @@ from .processing_runner import run_session_pipeline
 
 # --- Import routers ---
 from .routers import sessions  # Импортируем роутер сессий
+from .routers import clay  # Импортируем Clay роутер
 
 # Configure basic logging if not already configured elsewhere
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -48,6 +52,28 @@ app = FastAPI(
     description="API for finding company information and generating descriptions.",
     version="0.1.0"
 )
+
+# Debug middleware для multipart запросов
+@app.middleware("http")
+async def debug_multipart_middleware(request: Request, call_next):
+    if request.method == "POST" and "/api/sessions" in str(request.url):
+        content_type = request.headers.get("content-type", "")
+        logger.info(f"Debug: POST request to {request.url}")
+        logger.info(f"Debug: Content-Type header: {content_type}")
+        logger.info(f"Debug: All headers: {dict(request.headers)}")
+    
+    response = await call_next(request)
+    return response
+
+# Exception handler для multipart ошибок
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    logger.error(f"Validation error on {request.url}: {exc}")
+    logger.error(f"Request headers: {dict(request.headers)}")
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": f"Validation error: {exc}"},
+    )
 
 # --- CORS Middleware --- 
 # Allow requests from the typical local development frontend origin
@@ -68,18 +94,19 @@ app.add_middleware(
     allow_headers=["*"],    # Allow all headers
 )
 
-# --- Регистрируем роутеры ---
+# --- Register routers ---
 app.include_router(sessions.router, prefix="/api")
+app.include_router(clay.router)  # Регистрируем Clay роутер
 
-# Монтируем статические файлы
+# Mount static files
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 # Store active WebSocket connections
 active_connections: list[WebSocket] = []
 
-# --- Начало изменений: Управление фоновыми задачами ---
-# Словарь для хранения активных задач обработки
-# Ключ: session_id (str), Значение: asyncio.Task
+# --- Background Task Management ---
+# Dictionary to store active processing tasks
+# Key: session_id (str), Value: asyncio.Task
 active_processing_tasks: Dict[str, asyncio.Task] = {}
 
 # Гипотетическая функция, запускающая ваш пайплайн. 
@@ -161,7 +188,7 @@ async def execute_pipeline_for_session_async(
             if hasattr(pipeline_adapter, "scoring_log_path"):
                 pipeline_adapter.scoring_log_path = Path(str(scoring_log_path))
             
-            # Инициализируем клиентов напрямую
+            # Initialize clients directly
             pipeline_adapter.openai_client = openai_async_client
             pipeline_adapter.sb_client = sb_client
             pipeline_adapter.aiohttp_session = aiohttp_session
@@ -172,7 +199,7 @@ async def execute_pipeline_for_session_async(
                 "scrapingbee": scrapingbee_api_key
             }
             
-            # Запускаем пайплайн
+            # Run the pipeline
             await pipeline_adapter.run()
             
             logger.info(f"[EXECUTE_PIPELINE] Pipeline execution for session_id: {session_id} completed.")
@@ -183,16 +210,16 @@ async def execute_pipeline_for_session_async(
             logger.error(f"[EXECUTE_PIPELINE] Error during pipeline execution for session_id {session_id}: {e}", exc_info=True)
     logger.info(f"[EXECUTE_PIPELINE] Finished for session_id: {session_id}")
 
-# Callback-функция для задач
+# Callback function for tasks
 def _processing_task_done_callback(task: asyncio.Task, session_id: str):
     try:
-        task.result()  # Проверяем, не было ли исключений в задаче
+        task.result()  # Check if there were any exceptions in the task
         logger.info(f"Processing task for session {session_id} finished successfully (via callback).")
-        # Обновляем метаданные: статус = "completed"
+        # Update metadata: status = "completed"
         try:
             all_metadata = load_session_metadata()
             session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
-            if session_data and session_data.get('status') != 'cancelled':  # Не перезаписываем статус cancelled
+            if session_data and session_data.get('status') != 'cancelled':  # Don't overwrite cancelled status
                 session_data['status'] = 'completed'
                 save_session_metadata(all_metadata)
                 logger.info(f"Updated session {session_id} status to 'completed' in metadata")
@@ -200,7 +227,7 @@ def _processing_task_done_callback(task: asyncio.Task, session_id: str):
             logger.error(f"Failed to update session {session_id} metadata to completed: {e}")
     except asyncio.CancelledError:
         logger.info(f"Processing task for session {session_id} was cancelled (via callback).")
-        # Обновляем метаданные: статус = "cancelled"
+        # Update metadata: status = "cancelled"
         try:
             all_metadata = load_session_metadata()
             session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
@@ -213,7 +240,7 @@ def _processing_task_done_callback(task: asyncio.Task, session_id: str):
             logger.error(f"Failed to update session {session_id} metadata to cancelled: {e}")
     except Exception as e:
         logger.error(f"Processing task for session {session_id} failed with error (via callback): {e}", exc_info=True)
-        # Обновляем метаданные: статус = "error"
+        # Update metadata: status = "error"
         try:
             all_metadata = load_session_metadata()
             session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
@@ -229,7 +256,7 @@ def _processing_task_done_callback(task: asyncio.Task, session_id: str):
             del active_processing_tasks[session_id]
             logger.info(f"Removed task for session {session_id} from active_processing_tasks.")
 
-# --- Конец изменений: Управление фоновыми задачами ---
+# --- End of changes: Background Task Management ---
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -251,12 +278,22 @@ async def broadcast_update(data: dict):
             # Remove dead connections
             active_connections.remove(connection)
 
-# Маршрут для главной страницы
+# Route for the main page
 @app.get("/")
 async def read_root():
     return FileResponse("frontend/index.html")
 
-# --- Session Management Endpoints --- 
+# Тестовый endpoint для проверки multipart
+@app.post("/api/test-multipart")
+async def test_multipart(
+    file: Optional[UploadFile] = File(None),
+    test_text: Optional[str] = Form(None)
+):
+    logger.info(f"Test multipart - File: {file.filename if file else 'None'}")
+    logger.info(f"Test multipart - Text: {test_text}")
+    return {"file": file.filename if file else None, "text": test_text}
+
+# --- Session Management Endpoints ---
 
 @app.get("/api/sessions", tags=["Sessions"], summary="List all processing sessions")
 async def get_sessions():
@@ -268,7 +305,7 @@ async def get_sessions():
 
 @app.post("/api/sessions", tags=["Sessions"], summary="Create a new processing session")
 async def create_new_session(
-    file: UploadFile = File(...), 
+    file: Optional[UploadFile] = File(None), 
     context_text: Optional[str] = Form(None), 
     run_llm_deep_search_pipeline: bool = Form(True),
     write_to_hubspot: bool = Form(True)
@@ -277,9 +314,15 @@ async def create_new_session(
     Creates a new processing session by uploading an input file (CSV/XLSX) 
     and optional context text. Only files with two columns (Company Name and Website URL) are accepted.
     """
+    # Debug logging for multipart issue
+    logger.info(f"Received multipart request with file: {file.filename if file else 'None'}")
+    logger.info(f"Context text provided: {bool(context_text)}")
+    logger.info(f"Run LLM deep search: {run_llm_deep_search_pipeline}")
+    logger.info(f"Write to HubSpot: {write_to_hubspot}")
+    
     # Basic validation for filename/extension
-    if not file.filename:
-        raise HTTPException(status_code=400, detail="No filename provided.")
+    if not file or not file.filename:
+        raise HTTPException(status_code=400, detail="No file provided or filename missing.")
     allowed_extensions = (".csv", ".xlsx", ".xls")
     if not file.filename.lower().endswith(allowed_extensions):
         raise HTTPException(status_code=400, detail=f"Invalid file type. Allowed: {allowed_extensions}")
@@ -363,10 +406,10 @@ async def create_new_session(
             "scoring_log_path": None,
             "last_processed_count": 0,
             "initial_upload_count": initial_upload_count, # Новое поле
-            "total_companies": 0, # Инициализируем нулем
-            "companies_count": 0, # Инициализируем нулем
-            "deduplication_info": None, # Явно инициализируем
-            "processing_messages": [],   # Явно инициализируем
+            "total_companies": 0, # Initialize with zero
+            "companies_count": 0, # Initialize with zero
+            "deduplication_info": None, # Explicitly initialize
+            "processing_messages": [],   # Explicitly initialize
             "error_message": None if context_saved_successfully else "Failed to save context file",
             "run_llm_deep_search_pipeline": run_llm_deep_search_pipeline,
             "write_to_hubspot": write_to_hubspot
@@ -650,12 +693,12 @@ async def download_file(session_dir: str, filename: str):
 async def read_css():
     return FileResponse("frontend/style.css")
 
-# Пример существующего эндпоинта для запуска сессии (адаптируйте под ваш)
+# Example existing endpoint for starting a session (adapt to your needs)
 @app.post("/api/sessions/{session_id}/cancel", tags=["Sessions"], summary="Cancel processing for a session")
 async def cancel_processing_session(session_id: str):
     logger.info(f"Request to cancel processing for session_id: {session_id}")
     
-    # Обновляем статус в метаданных
+    # Update status in metadata
     try:
         all_metadata = load_session_metadata()
         session_data = next((s for s in all_metadata if s.get('session_id') == session_id), None)
@@ -672,21 +715,21 @@ async def cancel_processing_session(session_id: str):
         if not task.done():
             task.cancel()
             logger.info(f"Cancellation request sent to task for session {session_id}.")
-            # Удаление из active_processing_tasks произойдет в _processing_task_done_callback
+            # Removal from active_processing_tasks will happen in _processing_task_done_callback
             return {"status": "cancellation_requested", "session_id": session_id}
         else:
             logger.info(f"Task for session {session_id} is already done. Nothing to cancel.")
-            # Можно удалить из словаря, если колбэк по какой-то причине не сработал
+            # Can remove from dictionary if callback didn't trigger for some reason
             if session_id in active_processing_tasks: del active_processing_tasks[session_id]
             return {"status": "task_already_done", "session_id": session_id}
     else:
         logger.warning(f"No active task found for session {session_id} to cancel.")
         return {"status": "no_active_task", "session_id": session_id, "message": "No active processing task found for this session."}
 
-# Пример эндпоинта для получения статуса (нужно адаптировать)
+# Example endpoint for getting status (needs to be adapted)
 @app.get("/api/sessions/{session_id}/status", tags=["Sessions"], summary="Get session status")
 async def get_session_status(session_id: str):
-    # Здесь должна быть логика чтения метаданных сессии (например, из JSON файла)
+    # Here should be logic for reading session metadata (e.g., from JSON file)
     # sessions_metadata = load_session_metadata()
     # session_meta = next((s for s in sessions_metadata if s["id"] == session_id), None)
     # if not session_meta:
@@ -699,22 +742,22 @@ async def get_session_status(session_id: str):
         status = "processing"
         message = "Processing is ongoing."
     
-    # Дополнительно: можно добавить информацию о прогрессе, если ваш пайплайн ее как-то обновляет
-    # progress = get_session_progress(session_id) # Ваша функция для получения прогресса
+    # Additionally: can add progress information if your pipeline somehow updates it
+    # progress = get_session_progress(session_id) # Your function for getting progress
 
     return {"session_id": session_id, "status": status, "message": message} #, "progress": progress}
 
-# Важно: При завершении работы сервера FastAPI (graceful shutdown),
-# нужно попытаться отменить все активные задачи.
+# Important: When shutting down FastAPI server (graceful shutdown),
+# need to try to cancel all active tasks.
 @app.on_event("shutdown")
 async def app_shutdown():
     logger.info("Application shutdown initiated. Cancelling all active processing tasks...")
-    for session_id, task in list(active_processing_tasks.items()): # list() для копии, т.к. словарь может меняться
+    for session_id, task in list(active_processing_tasks.items()): # list() for copy, as dict might change
         if not task.done():
             logger.info(f"Cancelling task for session {session_id} during app shutdown.")
             task.cancel()
             try:
-                # Даем немного времени на обработку отмены
+                # Give some time for cancellation processing
                 await asyncio.wait_for(task, timeout=10.0) 
             except asyncio.CancelledError:
                 logger.info(f"Task for session {session_id} successfully cancelled during shutdown.")
@@ -722,11 +765,175 @@ async def app_shutdown():
                 logger.error(f"Timeout waiting for task {session_id} to cancel during shutdown. It might not have fully cleaned up.")
             except Exception as e:
                 logger.error(f"Error during task cancellation for session {session_id} on shutdown: {e}")
-        if session_id in active_processing_tasks: # Проверяем снова, т.к. колбэк мог уже удалить
+        if session_id in active_processing_tasks: # Check again, as callback might have already removed
             del active_processing_tasks[session_id]
     logger.info("All active tasks processed for cancellation during shutdown.")
 
-# --- Конец примера изменений ---
+# --- End of example changes ---
+
+# --- Simple API for external integrations ---
+
+@app.post("/api/process-companies", tags=["Processing"], summary="Process companies directly")
+async def process_companies_direct(
+    request_data: Dict[str, Any] = Body(...)
+):
+    """
+    Process companies directly without creating a session.
+    
+    Request body example:
+    {
+        "companies": [
+            {"name": "Company 1", "url": "company1.com"},
+            {"name": "Company 2", "url": "company2.com"}
+        ],
+        "context_text": "Find information about tech companies",
+        "run_llm_deep_search": true,
+        "write_to_hubspot": false
+    }
+    
+    Returns processed results immediately.
+    """
+    companies = request_data.get("companies", [])
+    context_text = request_data.get("context_text")
+    run_llm_deep_search = request_data.get("run_llm_deep_search", True)
+    write_to_hubspot = request_data.get("write_to_hubspot", False)
+    
+    if not companies or len(companies) == 0:
+        raise HTTPException(status_code=400, detail="No companies provided")
+    
+    # Validate company data
+    for i, company in enumerate(companies):
+        if not company.get("name"):
+            raise HTTPException(status_code=400, detail=f"Company {i} missing 'name' field")
+        # URL is optional
+    
+    try:
+        logger.info(f"Processing {len(companies)} companies directly via API")
+        
+        # Load environment variables
+        env_vars = load_env_vars()
+        scrapingbee_api_key = env_vars[0]
+        openai_api_key = env_vars[1] 
+        serper_api_key = env_vars[2]
+        
+        # Load LLM config
+        llm_config = load_llm_config("llm_config.yaml")
+        
+        # Initialize clients
+        async with aiohttp.ClientSession() as aiohttp_session:
+            sb_client = CustomScrapingBeeClient(api_key=scrapingbee_api_key)
+            openai_client = AsyncOpenAI(api_key=openai_api_key)
+            
+            # Convert companies to format expected by process_companies
+            company_names_for_processing = []
+            for company in companies:
+                name = company["name"]
+                url = company.get("url")
+                if url:
+                    company_names_for_processing.append((name, url))
+                else:
+                    company_names_for_processing.append(name)
+            
+            # Initialize HubSpot adapter if needed
+            hubspot_adapter = None
+            if write_to_hubspot:
+                try:
+                    hubspot_api_key = os.getenv("HUBSPOT_API_KEY")
+                    if hubspot_api_key:
+                        from src.integrations.hubspot.adapter import HubSpotAdapter
+                        hubspot_adapter = HubSpotAdapter(api_key=hubspot_api_key)
+                        logger.info("HubSpot adapter initialized for direct processing")
+                    else:
+                        logger.warning("HubSpot requested but API key not found")
+                except Exception as e:
+                    logger.error(f"Failed to initialize HubSpot adapter: {e}")
+            
+            # Process companies
+            results = await process_companies(
+                company_names=company_names_for_processing,
+                openai_client=openai_client,
+                aiohttp_session=aiohttp_session,
+                sb_client=sb_client,
+                serper_api_key=serper_api_key,
+                llm_config=llm_config,
+                raw_markdown_output_path=None,  # No file output for API
+                batch_size=5,
+                context_text=context_text,
+                run_llm_deep_search_pipeline_cfg=run_llm_deep_search,
+                broadcast_update=None,  # No real-time updates for API
+                output_csv_path=None,   # No CSV output for API
+                output_json_path=None,  # No JSON output for API
+                expected_csv_fieldnames=["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"],
+                hubspot_client=hubspot_adapter,
+                use_raw_llm_data_as_description=True,
+                csv_append_mode=False,
+                json_append_mode=False,
+                already_saved_count=0,
+                write_to_hubspot=write_to_hubspot
+            )
+            
+            logger.info(f"Completed processing {len(companies)} companies via API, got {len(results)} results")
+            return {
+                "status": "completed",
+                "total_companies": len(companies),
+                "processed_companies": len(results),
+                "results": results
+            }
+            
+    except Exception as e:
+        logger.error(f"Error in direct processing API: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Processing failed: {str(e)}")
+
+@app.post("/api/process-single-company", tags=["Processing"], summary="Process single company")
+async def process_single_company(
+    request_data: Dict[str, Any] = Body(...)
+):
+    """
+    Process a single company.
+    
+    Request body example:
+    {
+        "name": "OpenAI",
+        "url": "openai.com",
+        "context_text": "Find information about AI companies",
+        "run_llm_deep_search": true,
+        "write_to_hubspot": false
+    }
+    """
+    name = request_data.get("name")
+    url = request_data.get("url")
+    context_text = request_data.get("context_text")
+    run_llm_deep_search = request_data.get("run_llm_deep_search", True)
+    write_to_hubspot = request_data.get("write_to_hubspot", False)
+    
+    if not name:
+        raise HTTPException(status_code=400, detail="Company name is required")
+    
+    companies = [{"name": name}]
+    if url:
+        companies[0]["url"] = url
+    
+    # Call the main function with request_data format
+    main_request_data = {
+        "companies": companies,
+        "context_text": context_text,
+        "run_llm_deep_search": run_llm_deep_search,
+        "write_to_hubspot": write_to_hubspot
+    }
+    
+    result = await process_companies_direct(request_data=main_request_data)
+    
+    # Return just the first result for single company
+    if result["results"]:
+        return {
+            "status": "completed",
+            "company": result["results"][0]
+        }
+    else:
+        return {
+            "status": "failed", 
+            "error": "No results generated"
+        }
 
 if __name__ == "__main__":
     # This is for local development testing

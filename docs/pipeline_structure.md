@@ -1,64 +1,64 @@
-# Структура разбиения pipeline_adapter.py
+# Structure of pipeline_adapter.py Division
 
-## 1. Основные модули
+## 1. Main Modules
 
 ### `src/pipeline/`
-Основная директория для всех файлов конвейера
+Main directory for all pipeline files
 
 ### `src/pipeline/__init__.py`
-Экспортирует основные публичные функции:
+Exports main public functions:
 - `run_pipeline`
 - `run_pipeline_for_file`
 
 ### `src/pipeline/adapter.py`
-Содержит основной класс `PipelineAdapter`, который заменит большую часть pipeline_adapter.py и более удобно управляет состоянием
+Contains the main `PipelineAdapter` class, which will replace most of pipeline_adapter.py and more conveniently manages state
 
 ### `src/pipeline/core.py`
-Содержит основные функции процесса:
+Contains core process functions:
 - `process_companies`
 - `_process_single_company_async`
 
 ### `src/pipeline/utils/`
-Директория для вспомогательных функций
+Directory for utility functions
 
 ### `src/pipeline/utils/markdown.py`
-Содержит функции для форматирования и сохранения отчетов:
+Contains functions for formatting and saving reports:
 - `_generate_and_save_raw_markdown_report_async`
 
 ### `src/pipeline/utils/logging.py`
-Содержит функции настройки логирования:
+Contains logging setup functions:
 - `setup_session_logging`
 
-## 2. Интеграции с внешними сервисами
+## 2. External Service Integrations
 
 ### `src/integrations/`
-Корневая директория для разных внешних интеграций
+Root directory for different external integrations
 
 ### `src/integrations/hubspot/`
-Директория для всех компонентов интеграции с HubSpot
+Directory for all HubSpot integration components
 
 ### `src/integrations/hubspot/client.py`
-Содержит класс `HubSpotClient`
+Contains the `HubSpotClient` class
 
 ### `src/integrations/hubspot/adapter.py`
-Содержит расширение основного пайплайна:
-- Класс `HubSpotPipelineAdapter` (наследует `PipelineAdapter`)
+Contains extension of the main pipeline:
+- `HubSpotPipelineAdapter` class (inherits `PipelineAdapter`)
 
 ### `src/integrations/hubspot/service.py`
-Содержит логику интеграции:
-- Класс `HubSpotIntegrationService`
+Contains integration logic:
+- `HubSpotIntegrationService` class
 
-## 3. Архитектура и взаимодействие
+## 3. Architecture and Interaction
 
-1. `src/pipeline/adapter.py` содержит основной функционал пайплайна
-2. `src/integrations/hubspot/adapter.py` наследует и расширяет класс `PipelineAdapter`
-3. Точка входа `run_pipeline` в `src/pipeline/__init__.py` выбирает правильную реализацию в зависимости от конфигурации
+1. `src/pipeline/adapter.py` contains the main pipeline functionality
+2. `src/integrations/hubspot/adapter.py` inherits and extends the `PipelineAdapter` class
+3. Entry point `run_pipeline` in `src/pipeline/__init__.py` selects the correct implementation based on configuration
 
-## 4. Алгоритм миграции
+## 4. Migration Algorithm
 
-1. Создать необходимую структуру директорий
-2. Перенести базовый функционал в `src/pipeline/core.py` и `src/pipeline/utils/*.py`
-3. Создать класс `PipelineAdapter` в `src/pipeline/adapter.py`
-4. Перенести интеграцию HubSpot в `src/integrations/hubspot/`
-5. Создать новую точку входа в `src/pipeline/__init__.py`
-6. Обновить импорты в существующем коде 
+1. Create necessary directory structure
+2. Move basic functionality to `src/pipeline/core.py` and `src/pipeline/utils/*.py`
+3. Create `PipelineAdapter` class in `src/pipeline/adapter.py`
+4. Move HubSpot integration to `src/integrations/hubspot/`
+5. Create new entry point in `src/pipeline/__init__.py`
+6. Update imports in existing code 

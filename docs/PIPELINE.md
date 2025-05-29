@@ -1,125 +1,125 @@
-# Документация по пайплайну поиска информации о компаниях
+# Company Information Search Pipeline Documentation
 
-## Обзор системы
+## System Overview
 
-Пайплайн представляет собой модульную систему для поиска информации о компаниях и генерации структурированных описаний. Система разработана с учетом расширяемости и легкой интеграции новых источников данных и методов обработки информации.
+The pipeline is a modular system for searching company information and generating structured descriptions. The system is designed with extensibility and easy integration of new data sources and information processing methods in mind.
 
-## Два режима работы пайплайна
+## Two Pipeline Operating Modes
 
-Система поддерживает два режима работы в зависимости от формата входного файла:
+The system supports two operating modes depending on the input file format:
 
-### Режим 1: Входной файл с одним столбцом (только названия компаний)
+### Mode 1: Input file with one column (company names only)
 
-В этом режиме система работает по полному пайплайну:
-1. **LLMDeepSearchFinder** - используется для поиска текстовой информации и URL официального сайта
-2. **HomepageFinder** - ищет URL официального сайта, если он не найден через LLMDeepSearch
-3. **LinkedInFinder** - ищет URL LinkedIn-страницы компании
-4. **DomainCheckFinder** - пытается найти URL сайта компании, если он не был найден предыдущими методами
-5. **Генератор описаний** - создает структурированные описания на основе собранных данных
+In this mode, the system works through the full pipeline:
+1. **LLMDeepSearchFinder** - used for searching text information and official website URL
+2. **HomepageFinder** - searches for official website URL if not found through LLMDeepSearch
+3. **LinkedInFinder** - searches for company's LinkedIn page URL
+4. **DomainCheckFinder** - attempts to find company website URL if not found by previous methods
+5. **Description Generator** - creates structured descriptions based on collected data
 
-### Режим 2: Входной файл с двумя столбцами (названия компаний и URL официальных сайтов)
+### Mode 2: Input file with two columns (company names and official website URLs)
 
-В этом режиме система автоматически отключает компоненты поиска официального сайта:
-1. **LLMDeepSearchFinder** - используется только для поиска текстовой информации (найденные URL игнорируются)
-2. **LinkedInFinder** - ищет URL LinkedIn-страницы компании
-3. **Генератор описаний** - создает структурированные описания на основе собранных данных
+In this mode, the system automatically disables official website search components:
+1. **LLMDeepSearchFinder** - used only for searching text information (found URLs are ignored)
+2. **LinkedInFinder** - searches for company's LinkedIn page URL
+3. **Description Generator** - creates structured descriptions based on collected data
 
-Система автоматически определяет наличие второго столбца во входном файле и выбирает соответствующий режим работы.
+The system automatically detects the presence of a second column in the input file and selects the appropriate operating mode.
 
-## Архитектура
+## Architecture
 
-Пайплайн состоит из нескольких ключевых компонентов:
+The pipeline consists of several key components:
 
-1. **Финдеры (Finders)** - модули, ответственные за поиск конкретных типов информации о компаниях
-2. **Генератор описаний (Description Generator)** - модуль для создания структурированных описаний на основе собранных данных
-3. **Процессор результатов (Result Processor)** - обрабатывает и сохраняет результаты поиска
-4. **Оркестратор (Orchestrator)** - координирует работу всех компонентов пайплайна
+1. **Finders** - modules responsible for searching specific types of company information
+2. **Description Generator** - module for creating structured descriptions based on collected data
+3. **Result Processor** - processes and saves search results
+4. **Orchestrator** - coordinates the work of all pipeline components
 
-### Компоненты пайплайна
+### Pipeline Components
 
-#### Финдеры (Finders)
+#### Finders
 
-Финдеры - это модули, наследуемые от базового класса `Finder` (finders/base.py), которые реализуют асинхронный метод `find()`. Каждый финдер специализируется на поиске определенного типа информации:
+Finders are modules inherited from the base `Finder` class (finders/base.py) that implement an asynchronous `find()` method. Each finder specializes in searching for a specific type of information:
 
-- **HomepageFinder**: поиск официального сайта компании
-- **LinkedInFinder**: поиск LinkedIn-страницы компании
-- **LLMDeepSearchFinder**: использует GPT-4o-mini-search-preview для глубокого поиска информации в интернете
+- **HomepageFinder**: searches for company's official website
+- **LinkedInFinder**: searches for company's LinkedIn page
+- **LLMDeepSearchFinder**: uses GPT-4o-mini-search-preview for deep internet information search
 
-Все финдеры следуют единому интерфейсу и возвращают результаты в стандартизированном формате:
+All finders follow a unified interface and return results in a standardized format:
 
 ```python
 {
-    "source": "название_финдера",
-    "result": "найденные_данные",
-    "error": "информация_об_ошибке" # опционально
+    "source": "finder_name",
+    "result": "found_data",
+    "error": "error_information" # optional
 }
 ```
 
-#### Генератор описаний (Description Generator)
+#### Description Generator
 
-Генератор описаний принимает данные, собранные финдерами, и создает структурированные трехабзацные описания компаний на английском языке. Основные компоненты:
+The description generator takes data collected by finders and creates structured three-paragraph company descriptions in English. Main components:
 
-- **generator.py**: содержит логику обработки данных и взаимодействия с API OpenAI
-- **config.py**: содержит конфигурацию модели и промпты
+- **generator.py**: contains data processing logic and OpenAI API interaction
+- **config.py**: contains model configuration and prompts
 
-Генератор приоритизирует информацию от LLMDeepSearchFinder, который предоставляет наиболее полные и актуальные данные о компании.
+The generator prioritizes information from LLMDeepSearchFinder, which provides the most complete and current company data.
 
-#### Процессор результатов (Result Processor)
+#### Result Processor
 
-Процессор результатов отвечает за:
-- Агрегацию данных от всех финдеров
-- Форматирование результатов
-- Сохранение в JSON и Excel-форматах
-- Логирование процесса поиска
+The result processor is responsible for:
+- Aggregating data from all finders
+- Formatting results
+- Saving in JSON and Excel formats
+- Logging the search process
 
-#### Оркестратор (Orchestrator)
+#### Orchestrator
 
-Оркестратор координирует работу всех компонентов пайплайна:
-- Инициализирует финдеры и генератор описаний
-- Запускает поиск информации асинхронно для каждой компании
-- Собирает результаты от всех финдеров
-- Передает данные генератору описаний
-- Отправляет финальные результаты процессору для сохранения
+The orchestrator coordinates the work of all pipeline components:
+- Initializes finders and description generator
+- Launches information search asynchronously for each company
+- Collects results from all finders
+- Passes data to the description generator
+- Sends final results to the processor for saving
 
-## Принцип работы пайплайна
+## Pipeline Operation Principle
 
-1. **Загрузка данных**:
-   - Пайплайн читает список компаний из входного файла
-   - Определяет наличие второго столбца с URL-адресами официальных сайтов
-   - Выбирает соответствующий режим работы
-   - Создает директории для сохранения результатов и логов
+1. **Data Loading**:
+   - Pipeline reads company list from input file
+   - Determines presence of second column with official website URLs
+   - Selects appropriate operating mode
+   - Creates directories for saving results and logs
 
-2. **Инициализация компонентов**:
-   - Создаются экземпляры необходимых финдеров и генератора описаний с учетом режима работы
-   - Загружаются API-ключи и конфигурации
+2. **Component Initialization**:
+   - Creates instances of necessary finders and description generator considering operating mode
+   - Loads API keys and configurations
 
-3. **Поиск информации**:
-   - Для каждой компании асинхронно запускаются все активные финдеры
-   - Результаты от каждого финдера агрегируются
+3. **Information Search**:
+   - For each company, all active finders are launched asynchronously
+   - Results from each finder are aggregated
 
-4. **Генерация описаний**:
-   - Полученные данные передаются генератору описаний
-   - Генератор создает структурированное описание компании на английском языке
-   - Описание добавляется к результатам поиска
+4. **Description Generation**:
+   - Obtained data is passed to the description generator
+   - Generator creates a structured company description in English
+   - Description is added to search results
 
-5. **Сохранение результатов**:
-   - Результаты сохраняются в JSON и Excel-форматах
-   - Генерируются подробные логи процесса
+5. **Result Saving**:
+   - Results are saved in JSON and Excel formats
+   - Detailed process logs are generated
 
-## Технический стек
+## Technology Stack
 
-- **Python 3.10+**: основной язык разработки
-- **Asyncio**: для асинхронного выполнения запросов
-- **OpenAI API**: для выполнения LLM-запросов (GPT-3.5-turbo, GPT-4o-mini-search-preview)
-- **aiohttp**: для асинхронных HTTP-запросов
-- **BeautifulSoup4**: для парсинга HTML-контента
-- **Pandas**: для обработки и экспорта данных
+- **Python 3.10+**: main development language
+- **Asyncio**: for asynchronous request execution
+- **OpenAI API**: for LLM requests (GPT-3.5-turbo, GPT-4o-mini-search-preview)
+- **aiohttp**: for asynchronous HTTP requests
+- **BeautifulSoup4**: for HTML content parsing
+- **Pandas**: for data processing and export
 
-## Как добавить новый финдер
+## How to Add a New Finder
 
-Чтобы интегрировать новый источник данных, нужно создать новый финдер, следуя этим шагам:
+To integrate a new data source, create a new finder by following these steps:
 
-1. **Создайте новый класс**, наследующийся от базового класса `Finder`:
+1. **Create a new class** inheriting from the base `Finder` class:
 
 ```python
 from finders.base import Finder
@@ -130,10 +130,10 @@ class NewSourceFinder(Finder):
         self.verbose = verbose
         
     async def find(self, company_name: str, **context) -> dict:
-        # Реализация поиска
+        # Search implementation
         try:
-            # Логика поиска информации
-            result = "найденная информация"
+            # Information search logic
+            result = "found_information"
             return {
                 "source": "new_source_finder",
                 "result": result
@@ -146,45 +146,45 @@ class NewSourceFinder(Finder):
             }
 ```
 
-2. **Добавьте финдер в оркестратор** (orchestrator.py), импортировав его и добавив в список активных финдеров:
+2. **Add the finder to the orchestrator** (orchestrator.py), importing it and adding to the list of active finders:
 
 ```python
 from finders.new_source_finder import NewSourceFinder
 
-# В методе инициализации оркестратора
+# In orchestrator initialization method
 self.finders = [
-    # Существующие финдеры
+    # Existing finders
     HomepageFinder(...),
     LinkedInFinder(...),
     LLMDeepSearchFinder(...),
-    # Новый финдер
+    # New finder
     NewSourceFinder(api_key=config.get("new_source_api_key"))
 ]
 ```
 
-3. **Обновите обработку результатов** в генераторе описаний, если это необходимо.
+3. **Update result processing** in the description generator if necessary.
 
-## Настройка генератора описаний
+## Description Generator Configuration
 
-Генератор описаний настраивается через файл `description_generator/config.py`:
+The description generator is configured through the `description_generator/config.py` file:
 
-- **DEFAULT_MODEL_CONFIG**: настройки модели OpenAI (модель, температура и т.д.)
-- **SYSTEM_PROMPT**: системный промпт для LLM
-- **USER_PROMPT_TEMPLATE**: шаблон пользовательского промпта
+- **DEFAULT_MODEL_CONFIG**: OpenAI model settings (model, temperature, etc.)
+- **SYSTEM_PROMPT**: system prompt for LLM
+- **USER_PROMPT_TEMPLATE**: user prompt template
 
-Чтобы изменить формат или язык генерируемых описаний, обновите соответствующие промпты в config.py.
+To change the format or language of generated descriptions, update the corresponding prompts in config.py.
 
-## Запуск пайплайна
+## Running the Pipeline
 
-Пайплайн запускается через main.py, который вызывает функцию `run_pipeline()` из src/pipeline.py. Конфигурация загружается из .env файла и YAML-конфигураций.
+The pipeline is launched through main.py, which calls the `run_pipeline()` function from src/pipeline.py. Configuration is loaded from .env file and YAML configurations.
 
 ```bash
 python main.py
 ```
 
-## Входные файлы
+## Input Files
 
-### Формат файла с одним столбцом
+### Single column file format
 ```
 Company Name
 Microsoft
@@ -192,7 +192,7 @@ Google
 Apple
 ```
 
-### Формат файла с двумя столбцами
+### Two column file format
 ```
 Company Name,Official Website
 Microsoft,https://microsoft.com
@@ -200,32 +200,32 @@ Google,https://google.com
 Apple,https://apple.com
 ```
 
-## Расширение функциональности
+## Functionality Extension
 
-### Добавление нового способа генерации описаний
+### Adding a New Description Generation Method
 
-Чтобы добавить новый способ генерации описаний:
+To add a new description generation method:
 
-1. Создайте новый модуль в директории description_generator или расширьте существующий
-2. Обновите config.py, добавив новые настройки и промпты
-3. Модифицируйте метод _generate_summary_from_text() в generator.py или создайте новый метод
+1. Create a new module in the description_generator directory or extend existing one
+2. Update config.py by adding new settings and prompts
+3. Modify the _generate_summary_from_text() method in generator.py or create a new method
 
-### Интеграция с другими сервисами
+### Integration with Other Services
 
-Для интеграции с новыми API-сервисами:
+For integration with new API services:
 
-1. Добавьте конфигурацию нового сервиса в llm_config.yaml
-2. Создайте новый клиент для API в src/external_apis/
-3. Разработайте финдер, использующий этот API
+1. Add new service configuration to llm_config.yaml
+2. Create a new API client in src/external_apis/
+3. Develop a finder that uses this API
 
-## Лучшие практики
+## Best Practices
 
-1. **Соблюдайте асинхронность**: все финдеры должны быть асинхронными для оптимальной производительности
-2. **Обрабатывайте ошибки**: правильно обрабатывайте и логируйте ошибки, возвращая структурированные ответы
-3. **Следуйте стандартам кода**: придерживайтесь PEP 8 и документируйте код
-4. **Тестируйте новые компоненты**: создавайте тестовые скрипты для проверки работоспособности
-5. **Отделяйте конфигурацию от кода**: выносите все настройки в отдельные конфигурационные файлы
+1. **Maintain asynchronicity**: all finders should be asynchronous for optimal performance
+2. **Handle errors**: properly handle and log errors, returning structured responses
+3. **Follow code standards**: adhere to PEP 8 and document code
+4. **Test new components**: create test scripts to verify functionality
+5. **Separate configuration from code**: move all settings to separate configuration files
 
-## Заключение
+## Conclusion
 
-Пайплайн поиска информации о компаниях представляет собой гибкую, расширяемую систему, способную интегрировать различные источники данных и методы обработки информации. Модульная архитектура позволяет легко добавлять новые компоненты и улучшать существующие функции без необходимости переработки всей системы. 
+The company information search pipeline is a flexible, extensible system capable of integrating various data sources and information processing methods. The modular architecture allows easy addition of new components and improvement of existing functions without the need to rework the entire system. 

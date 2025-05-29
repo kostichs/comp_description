@@ -20,24 +20,24 @@ logger = logging.getLogger(__name__)
 
 class LinkedInFinder(Finder):
     """
-    Находит LinkedIn страницу компании, используя поиск через Google Serper API и LLM для выбора лучшей ссылки.
+    Finds LinkedIn company page using Google Serper API search and LLM for choosing the best link.
     
-    Алгоритм:
-    1. Выполняет поиск через Google с запросом "{company_name} official website linkedin company profile"
-    2. Фильтрует результаты, оставляя только ссылки на LinkedIn
-    3. Если есть API ключ OpenAI, использует LLM для выбора лучшей ссылки
-    4. Если нет API ключа OpenAI или LLM не смог выбрать, берет первую подходящую ссылку
-    5. Нормализует URL LinkedIn для единообразия с помощью функции из utils.
+    Algorithm:
+    1. Performs Google search with query "{company_name} official website linkedin company profile"
+    2. Filters results, keeping only LinkedIn links
+    3. If there's an OpenAI API key, uses LLM to choose the best link
+    4. If there's no OpenAI API key or LLM couldn't choose, takes the first suitable link
+    5. Normalizes LinkedIn URL for consistency using function from utils.
     """
     
     def __init__(self, serper_api_key: str, openai_api_key: str = None, verbose: bool = False):
         """
-        Инициализирует финдер с необходимыми API ключами.
+        Initialize the finder with necessary API keys.
         
         Args:
-            serper_api_key: API ключ для Google Serper
-            openai_api_key: API ключ для OpenAI (опционально)
-            verbose: Выводить подробные логи поиска (по умолчанию False)
+            serper_api_key: Google Serper API key
+            openai_api_key: OpenAI API key (optional)
+            verbose: Output detailed search logs (default False)
         """
         self.serper_api_key = serper_api_key
         self.openai_api_key = openai_api_key
@@ -45,26 +45,26 @@ class LinkedInFinder(Finder):
     
     async def find(self, company_name: str, **context) -> dict:
         """
-        Ищет LinkedIn профиль компании через Google (Serper API) и LLM.
+        Search for company LinkedIn profile via Google (Serper API) and LLM.
         
         Args:
-            company_name: Название компании
-            context: Словарь с контекстом, должен содержать 'session' с aiohttp.ClientSession
-                     и 'serper_api_key' с API ключом для Google Serper
+            company_name: Company name
+            context: Dictionary with context, should contain 'session' with aiohttp.ClientSession
+                     and 'serper_api_key' with Google Serper API key
             
         Returns:
-            dict: Результат поиска {"source": "linkedin_finder", "result": url или None, "snippet": текст}
+            dict: Search result {"source": "linkedin_finder", "result": url or None, "snippet": text}
         """
-        # Получаем сессию и API ключи из контекста
+        # Get session and API keys from context
         session = context.get('session')
         if not session:
-            raise ValueError("LinkedInFinder требует aiohttp.ClientSession в context['session']")
+            raise ValueError("LinkedInFinder requires aiohttp.ClientSession in context['session']")
             
         serper_api_key = context.get('serper_api_key', self.serper_api_key)
         if not serper_api_key:
-            raise ValueError("LinkedInFinder требует serper_api_key в context['serper_api_key']")
+            raise ValueError("LinkedInFinder requires serper_api_key in context['serper_api_key']")
         
-        # Получаем OpenAI API ключ из контекста или из инициализации класса
+        # Get OpenAI API key from context or from class initialization
         openai_api_key = context.get('openai_api_key', self.openai_api_key)
         # Получаем OpenAI клиент из контекста, если есть
         openai_client = context.get('openai_client')

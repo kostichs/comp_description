@@ -58,9 +58,9 @@ class PipelineAdapter:
         """
         self.config_path = config_path
         self.input_file = input_file or "test_companies.csv"
-        self.company_col_index = 0  # По умолчанию названия компаний в первом столбце
-        self.session_id = session_id  # Сохраняем session_id, если он передан
-        self.use_raw_llm_data_as_description = use_raw_llm_data_as_description  # Сохраняем флаг
+        self.company_col_index = 0  # By default, company names are in the first column
+        self.session_id = session_id  # Save session_id if passed
+        self.use_raw_llm_data_as_description = use_raw_llm_data_as_description  # Save flag
         
         self.llm_config = {}
         self.api_keys = {
@@ -144,8 +144,8 @@ class PipelineAdapter:
                 context_text=None, # В базовом адаптере контекст не передается так
                 company_col_index=self.company_col_index,
                 aiohttp_session=session, # Используем созданную сессию
-                sb_client=self.sb_client, # Должен быть инициализирован в setup
-                openai_client=self.openai_client, # Должен быть инициализирован в setup
+                sb_client=self.sb_client, # Should be initialized in setup
+                openai_client=self.openai_client, # Should be initialized in setup
                 serper_api_key=self.api_keys.get("serper"), # Берем из self.api_keys
                 expected_csv_fieldnames=final_expected_csv_fieldnames, # <--- Передаем актуальный список
                 broadcast_update=None, # В базовом адаптере broadcast_update не используется напрямую

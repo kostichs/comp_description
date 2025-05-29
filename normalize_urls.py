@@ -685,9 +685,9 @@ if __name__ == "__main__":
     if args.scrapingbee_api_key:
         try:
             sb_client = CustomScrapingBeeClient(api_key=args.scrapingbee_api_key)
-            logger.info("ScrapingBee клиент инициализирован для CLI.")
+            logger.info("ScrapingBee client initialized for CLI.")
         except Exception as e_sb_init:
-            logger.error(f"Не удалось инициализировать ScrapingBee клиент: {e_sb_init}")
+            logger.error(f"Failed to initialize ScrapingBee client: {e_sb_init}")
 
     loop = asyncio.get_event_loop()
     try:

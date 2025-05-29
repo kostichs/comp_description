@@ -1,86 +1,86 @@
-# Новая структура проекта Company Description Generator
+# New Structure of Company Description Generator Project
 
-## Обзор
-Этот проект был реструктуризирован для улучшения поддерживаемости кода, устранения проблем с форматированием в больших файлах и упрощения добавления новых интеграций и фич.
+## Overview
+This project has been restructured to improve code maintainability, fix formatting issues in large files, and simplify adding new integrations and features.
 
-## Структура директорий
+## Directory Structure
 
 ```
 company-description/
 │
-├── src/                        # Основной код проекта
-│   ├── pipeline/               # Основной модуль пайплайна
-│   │   ├── __init__.py         # Экспортирует публичное API
-│   │   ├── adapter.py          # Основной класс PipelineAdapter
-│   │   ├── core.py             # Основные функции процесса
-│   │   └── utils/              # Вспомогательные функции
+├── src/                        # Main project code
+│   ├── pipeline/               # Main pipeline module
+│   │   ├── __init__.py         # Exports public API
+│   │   ├── adapter.py          # Main PipelineAdapter class
+│   │   ├── core.py             # Core process functions
+│   │   └── utils/              # Utility functions
 │   │       ├── __init__.py     
-│   │       ├── logging.py      # Настройка логирования
-│   │       └── markdown.py     # Функции для отчетов
+│   │       ├── logging.py      # Logging configuration
+│   │       └── markdown.py     # Report functions
 │   │
-│   ├── integrations/           # Внешние интеграции
+│   ├── integrations/           # External integrations
 │   │   ├── __init__.py
-│   │   └── hubspot/            # HubSpot интеграция
+│   │   └── hubspot/            # HubSpot integration
 │   │       ├── __init__.py
 │   │       ├── adapter.py      # HubSpotPipelineAdapter
-│   │       ├── client.py       # HubSpotClient для API
+│   │       ├── client.py       # HubSpotClient for API
 │   │       └── service.py      # HubSpotIntegrationService
 │   │
-│   ├── config.py               # Конфигурация проекта
-│   └── data_io.py              # Функции ввода/вывода данных
+│   ├── config.py               # Project configuration
+│   └── data_io.py              # Data input/output functions
 │
-├── run_pipeline.py             # Точка входа для запуска пайплайна
-├── llm_config.yaml             # Конфигурация LLM
-└── .env                        # API ключи и переменные окружения
+├── run_pipeline.py             # Entry point for running pipeline
+├── llm_config.yaml             # LLM configuration
+└── .env                        # API keys and environment variables
 ```
 
-## Основные изменения
+## Major Changes
 
-### 1. Модульная структура
-- Большой файл `pipeline_adapter.py` разбит на несколько меньших модулей
-- Код сгруппирован по функциональности (pipeline, integrations)
-- Точка входа вынесена в отдельный файл `run_pipeline.py`
+### 1. Modular Structure
+- Large file `pipeline_adapter.py` split into several smaller modules
+- Code grouped by functionality (pipeline, integrations)
+- Entry point extracted to separate file `run_pipeline.py`
 
-### 2. Объектно-ориентированный подход
-- Основной код переписан в виде классов
-- `PipelineAdapter` - базовый класс для работы с пайплайном
-- `HubSpotPipelineAdapter` - расширение с поддержкой HubSpot
+### 2. Object-Oriented Approach
+- Main code rewritten as classes
+- `PipelineAdapter` - base class for pipeline operations
+- `HubSpotPipelineAdapter` - extension with HubSpot support
 
-### 3. Интеграции
-- Внешние интеграции выделены в отдельную директорию
-- HubSpot интеграция полностью инкапсулирована
+### 3. Integrations
+- External integrations separated into dedicated directory
+- HubSpot integration fully encapsulated
 
-## Использование
+## Usage
 
-### Запуск пайплайна
+### Running Pipeline
 ```bash
 python run_pipeline.py --input companies.csv --config llm_config.yaml
 ```
 
-### Опции командной строки
-- `--input` / `-i`: Путь к входному CSV файлу (по умолчанию: test_companies.csv)
-- `--config` / `-c`: Путь к файлу конфигурации (по умолчанию: llm_config.yaml)
-- `--use-hubspot`: Включить интеграцию с HubSpot
-- `--disable-hubspot`: Отключить интеграцию с HubSpot
+### Command Line Options
+- `--input` / `-i`: Path to input CSV file (default: test_companies.csv)
+- `--config` / `-c`: Path to configuration file (default: llm_config.yaml)
+- `--use-hubspot`: Enable HubSpot integration
+- `--disable-hubspot`: Disable HubSpot integration
 
-### HubSpot интеграция
-Для работы интеграции HubSpot необходимо:
-1. Добавить API ключ в файл `.env`: `HUBSPOT_API_KEY=your_api_key_here`
-2. Включить интеграцию в `llm_config.yaml`:
+### HubSpot Integration
+For HubSpot integration to work:
+1. Add API key to `.env` file: `HUBSPOT_API_KEY=your_api_key_here`
+2. Enable integration in `llm_config.yaml`:
 ```yaml
 use_hubspot_integration: true
 hubspot_description_max_age_months: 6
 ```
 
-## Разработка
+## Development
 
-### Добавление новых интеграций
-1. Создайте новую директорию в `src/integrations/`
-2. Создайте клиент для API в `client.py`
-3. Реализуйте бизнес-логику в `service.py`
-4. Создайте расширение пайплайна в `adapter.py`
-5. Обновите фабрику в `src/pipeline/__init__.py`
+### Adding New Integrations
+1. Create new directory in `src/integrations/`
+2. Create API client in `client.py`
+3. Implement business logic in `service.py`
+4. Create pipeline extension in `adapter.py`
+5. Update factory in `src/pipeline/__init__.py`
 
-### Добавление новых Finder'ов
-1. Реализуйте новый Finder в `finders/`
-2. Добавьте его в `PipelineAdapter` 
+### Adding New Finders
+1. Implement new Finder in `finders/`
+2. Add it to `PipelineAdapter` 

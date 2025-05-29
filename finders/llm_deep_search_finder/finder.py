@@ -293,26 +293,26 @@ async def _extract_homepage_from_report_text_async(
 
 class LLMDeepSearchFinder(Finder):
     """
-    Финдер, использующий LLM с возможностью поиска в интернете для получения 
-    подробной информации о компании.
+    Finder that uses LLM with internet search capabilities to get 
+    detailed company information.
     
-    Использует модель GPT-4o-mini-search-preview, которая может
-    искать актуальную информацию в интернете и составлять структурированный отчет,
-    соответствующий JSON-схеме для последующей обработки.
+    Uses GPT-4o-mini-search-preview model that can
+    search for current information on the internet and compile structured reports
+    that conform to JSON schema for further processing.
     """
     
     def __init__(self, openai_api_key: str, verbose: bool = False):
         """
-        Инициализирует финдер с API ключом для OpenAI.
+        Initialize the finder with OpenAI API key.
         
         Args:
-            openai_api_key: API ключ для OpenAI
-            verbose: Выводить подробные логи поиска (по умолчанию False)
+            openai_api_key: OpenAI API key
+            verbose: Output detailed search logs (default False)
         """
         self.openai_api_key = openai_api_key
         self.client = AsyncOpenAI(api_key=openai_api_key)
         self.verbose = verbose
-        self.model = "gpt-4o-search-preview"  # Модель с поддержкой поиска
+        self.model = "gpt-4o-search-preview"  # Model with search support
         
     async def find(self, company_name: str, **context) -> dict:
         """
@@ -540,11 +540,11 @@ class LLMDeepSearchFinder(Finder):
     
     def _get_default_aspects(self) -> List[str]:
         """
-        Возвращает список аспектов для исследования по умолчанию.
-        Аспекты выбраны таким образом, чтобы соответствовать полям JSON-схемы.
+        Returns a list of default research aspects.
+        Aspects are chosen to correspond to JSON schema fields.
         
         Returns:
-            List[str]: Список аспектов
+            List[str]: List of aspects
         """
         return [
             "precise founding year of the company (exact date if available)",
@@ -571,15 +571,15 @@ class LLMDeepSearchFinder(Finder):
     
     def _escape_string_for_prompt(self, text: str) -> str:
         """
-        Экранирует специальные символы в строке для безопасного вставления в промпт.
+        Escapes special characters in string for safe insertion into prompt.
         
         Args:
-            text: Исходная строка
+            text: Source string
             
         Returns:
-            str: Экранированная строка
+            str: Escaped string
         """
-        return json.dumps(text)[1:-1]  # Используем json.dumps и удаляем внешние кавычки
+        return json.dumps(text)[1:-1]  # Use json.dumps and remove outer quotes
     
     async def _query_llm_for_deep_info(
         self,
@@ -589,27 +589,27 @@ class LLMDeepSearchFinder(Finder):
         context: Dict[str, Any] = {}
     ) -> Dict[str, Any]:
         """
-        Запрашивает у LLM с поиском подробную информацию о компании.
-        Промпт структурирован в соответствии с JSON-схемой для лучшей обработки.
+        Queries LLM with search for detailed company information.
+        Prompt is structured according to JSON schema for better processing.
         
         Args:
-            company_name: Название компании
-            specific_aspects_to_cover: Список аспектов, которые нужно исследовать
-            user_context_text: Дополнительный контекст от пользователя
-            context: Словарь с контекстом
+            company_name: Company name
+            specific_aspects_to_cover: List of aspects to research
+            user_context_text: Additional context from user
+            context: Context dictionary
             
         Returns:
-            Dict[str, Any]: Словарь с отчетом и источниками или с ошибкой
+            Dict[str, Any]: Dictionary with report and sources or error
         """
         safe_company_name = self._escape_string_for_prompt(company_name)
         
-        # Формируем части промпта на основе переданных аспектов
+        # Form prompt parts based on passed aspects
         additional_aspects_str = ""
         if specific_aspects_to_cover:
             escaped_aspects = [self._escape_string_for_prompt(aspect) for aspect in specific_aspects_to_cover]
             additional_aspects_str = "\n\nAdditionally, ensure these specific aspects are thoroughly investigated and included within the relevant sections of your report:\n- " + "\n- ".join(escaped_aspects)
         
-        # Добавляем пользовательский контекст, если он есть
+        # Add user context if available
         context_injection_str = ""
         if user_context_text:
             safe_user_context = self._escape_string_for_prompt(user_context_text)
@@ -684,11 +684,11 @@ Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or 
         )
         
         if self.verbose:
-            logger.info(f"Отправка запроса к {self.model} для компании '{company_name}'")
+            logger.info(f"Sending request to {self.model} for company '{company_name}'")
         
         extracted_homepage_url_from_report = None
         try:
-            # Делаем запрос к модели с правильными параметрами
+            # Make request to model with correct parameters
             completion = await self.client.chat.completions.create(
                 model=self.model,
                 messages=[
@@ -705,18 +705,18 @@ Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or 
                 if message.content:
                     answer_content = message.content.strip()
                     
-                    # Проверяем, был ли URL уже предоставлен во входных данных
+                    # Check if URL was already provided in input data
                     if context and 'company_homepage_url' in context and context.get('company_homepage_url'):
-                        # Используем уже предоставленный URL без вызова модели
+                        # Use already provided URL without calling model
                         extracted_homepage_url_from_report = context.get('company_homepage_url')
                         logger.info(f"Using provided URL from input data for '{company_name}': {extracted_homepage_url_from_report}")
                     else:
-                        # Если URL не был предоставлен, пытаемся извлечь его из отчета
+                        # If URL was not provided, try to extract it from report
                         extracted_homepage_url_from_report = await _extract_homepage_from_report_text_async(
                         company_name, answer_content, self.client
                     )
                 
-                # Извлекаем источники из аннотаций, если они есть
+                # Extract sources from annotations if available
                 if hasattr(message, 'annotations') and message.annotations:
                     for ann in message.annotations:
                         if ann.type == "url_citation" and hasattr(ann, 'url_citation'):
@@ -725,24 +725,24 @@ Provide COMPLETE and THOROUGH information in each section. Do not abbreviate or 
                                 cited_url = getattr(ann.url_citation, 'url', "N/A") or "N/A"
                                 extracted_sources.append({"title": cited_title, "url": cited_url})
                             except Exception as e_ann:
-                                logger.warning(f"Ошибка при извлечении URL-цитаты из аннотации: {e_ann}")
+                                logger.warning(f"Error extracting URL citation from annotation: {e_ann}")
             
             return {"report_text": answer_content, "sources": extracted_sources, "extracted_homepage_url": extracted_homepage_url_from_report}
             
         except APITimeoutError as e:
-            error_msg = f"OpenAI Timeout error для '{company_name}': {str(e)}"
+            error_msg = f"OpenAI Timeout error for '{company_name}': {str(e)}"
             logger.error(error_msg)
             return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}
         except RateLimitError as e:
-            error_msg = f"OpenAI Rate Limit error для '{company_name}': {str(e)}"
+            error_msg = f"OpenAI Rate Limit error for '{company_name}': {str(e)}"
             logger.error(error_msg)
-            return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}  
+            return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}
         except APIError as e:
-            error_msg = f"OpenAI API error для '{company_name}': {str(e)}"
+            error_msg = f"OpenAI API error for '{company_name}': {str(e)}"
             logger.error(error_msg)
             return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}
         except Exception as e:
-            error_msg = f"Unexpected error для '{company_name}': {str(e)}"
+            error_msg = f"Unexpected error for '{company_name}': {str(e)}"
             logger.error(error_msg)
             logger.error(traceback.format_exc())
             return {"error": error_msg, "report_text": None, "sources": [], "extracted_homepage_url": None}
@@ -754,27 +754,27 @@ if __name__ == "__main__":
     from dotenv import load_dotenv
     
     async def test_finder():
-        # Настройка логирования
+        # Configure logging
         logging.basicConfig(level=logging.INFO, 
                            format='%(asctime)s - %(levelname)s - %(message)s')
         
-        # Загрузка переменных окружения
+        # Load environment variables
         load_dotenv()
         
-        # Получение API ключа
+        # Get API key
         openai_api_key = os.getenv("OPENAI_API_KEY")
         
         if not openai_api_key:
-            print("Ошибка: OPENAI_API_KEY не найден в .env файле")
+            print("Error: OPENAI_API_KEY not found in .env file")
             return
         
-        # Создаем финдер
+        # Create finder
         finder = LLMDeepSearchFinder(openai_api_key, verbose=True)
         
-        # Тестовые компании
+        # Test companies
         test_companies = ["Microsoft"]
         
-        # Специфические аспекты для исследования
+        # Specific aspects for research
         specific_aspects = [
             "latest annual revenue",
             "key products",
@@ -782,7 +782,7 @@ if __name__ == "__main__":
         ]
         
         for company in test_companies:
-            print(f"\nТестовый поиск для компании: {company}")
+            print(f"\nTest search for company: {company}")
             result = await finder.find(
                 company, 
                 specific_aspects=specific_aspects,
@@ -790,17 +790,17 @@ if __name__ == "__main__":
             )
             
             if result["result"]:
-                print(f"Получен отчет ({len(result['result'])} символов)")
-                print(f"Первые 200 символов: {result['result'][:200]}...")
+                print(f"Received report ({len(result['result'])} characters)")
+                print(f"First 200 characters: {result['result'][:200]}...")
                 
                 if result["sources"]:
-                    print(f"\nИсточники ({len(result['sources'])}):")
+                    print(f"\nSources ({len(result['sources'])}):")
                     for i, source in enumerate(result['sources'][:3], 1):
                         print(f"{i}. {source['title']}: {source['url']}")
                     if len(result['sources']) > 3:
-                        print(f"...и еще {len(result['sources']) - 3} источников")
+                        print(f"...and {len(result['sources']) - 3} more sources")
             else:
-                print(f"Ошибка: {result.get('error', 'Неизвестная ошибка')}")
+                print(f"Error: {result.get('error', 'Unknown error')}")
     
-    # Запускаем тестовую функцию
+    # Run test function
     asyncio.run(test_finder()) 

@@ -16,29 +16,29 @@ import aiohttp
 import asyncio
 from dotenv import load_dotenv
 
-# Настройка логирования
+# Configure logging
 logger = logging.getLogger(__name__)
 
 class HubSpotClient:
     """
-    Клиент для работы с HubSpot API.
+    Client for working with HubSpot API.
     
-    Обеспечивает функциональность:
-    - Поиск компаний по домену
-    - Получение свойств компании
-    - Обновление свойств компании
+    Provides functionality:
+    - Search companies by domain
+    - Get company properties
+    - Update company properties
     """
     
     def __init__(self, api_key: Optional[str] = None, base_url: str = "https://api.hubapi.com"):
         """
-        Инициализация клиента HubSpot API.
+        Initialize HubSpot API client.
         
         Args:
-            api_key (str, optional): API ключ для доступа к HubSpot. 
-                                     Если не указан, будет взят из переменной окружения HUBSPOT_API_KEY.
-            base_url (str): Базовый URL для API HubSpot.
+            api_key (str, optional): API key for HubSpot access. 
+                                     If not specified, will be taken from HUBSPOT_API_KEY environment variable.
+            base_url (str): Base URL for HubSpot API.
         """
-        # Загружаем переменные окружения, если api_key не передан
+        # Load environment variables if api_key is not provided
         if api_key is None:
             load_dotenv()
             api_key = os.getenv("HUBSPOT_API_KEY")
@@ -53,7 +53,7 @@ class HubSpotClient:
             "Content-Type": "application/json"
         }
         
-        # Кэш для избежания повторных запросов
+        # Cache to avoid repeated requests
         self._cache = {}
     
     async def search_company_by_domain(self, domain: str) -> Optional[Dict[str, Any]]:

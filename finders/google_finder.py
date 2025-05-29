@@ -7,14 +7,14 @@ from openai import AsyncOpenAI
 import os
 
 class GoogleFinder(Finder):
-    def __init__(self, serper_api_key: str):
+    def __init__(self, api_key: str):
         """
-        Инициализирует финдер с API ключом для Google Serper.
+        Initialize the finder with Google Serper API key.
         
         Args:
-            serper_api_key: API ключ для Google Serper
+            api_key: Google Serper API key
         """
-        self.api_key = serper_api_key
+        self.api_key = api_key
         
     async def find(self, company_name: str, **context) -> dict:
         """
