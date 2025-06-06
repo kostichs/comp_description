@@ -112,8 +112,8 @@ async def execute_pipeline_for_session_async(
         logger.error(f"[EXECUTE_PIPELINE] Failed to load env_vars: {e_env}", exc_info=True)
         return
 
-    # --- Определение полей CSV --- 
-    base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
+    # Определяем базовые поля для CSV
+    base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "validation_status", "validation_warning"]
     # logger.info(f"[EXECUTE_PIPELINE] Defined base_ordered_fields: {base_ordered_fields}") # Можно оставить для отладки
     
     additional_llm_fields = []

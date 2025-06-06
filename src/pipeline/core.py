@@ -34,6 +34,8 @@ from src.pipeline.utils import generate_and_save_raw_markdown_report_async
 # Импортируем функции валидации
 # from src.input_validators import normalize_domain #, CompanyInfo
 
+from src.validators.result_validator import validate_company_result
+
 logger = logging.getLogger(__name__)
 
 # Constants
@@ -424,6 +426,52 @@ async def _process_single_company_async(
         result_data["LinkedIn_URL"] = linkedin_url or ""
         result_data["Description"] = description_text or f"Error generating description for {company_name}"
         result_data["structured_data"] = structured_data
+        
+        # 8. Валидация результатов
+        if description_text and not description_text.startswith("Error"):
+            try:
+                logger.info(f"{run_stage_log} - Validating company result")
+                
+                # Подготавливаем данные для валидации
+                company_data_for_validation = {
+                    "company_name": structured_data.get("company_name", "") or company_name,
+                    "description": description_text,
+                    "official_website": found_homepage_url or "",
+                    "linkedin_url": linkedin_url or ""
+                }
+                
+                # Выполняем валидацию
+                validated_result = await validate_company_result(
+                    openai_client=openai_client,
+                    original_query=company_name,
+                    company_data=company_data_for_validation
+                )
+                
+                # Добавляем информацию о валидации в результат
+                result_data["validation"] = validated_result.get("validation", {})
+                
+                # Если валидация не прошла, отмечаем результат как неудачный
+                if not validated_result.get("validation", {}).get("is_valid", True):
+                    validation_reason = validated_result.get("validation", {}).get("validation_reason", "Unknown validation error")
+                    logger.warning(f"{run_stage_log} - Validation failed: {validation_reason}")
+                    
+                    # Не заменяем description, но добавляем предупреждение
+                    result_data["validation_warning"] = f"Validation failed: {validation_reason}"
+                    result_data["validation_status"] = "failed"
+                else:
+                    logger.info(f"{run_stage_log} - Validation passed successfully")
+                    result_data["validation_status"] = "passed"
+                    
+            except Exception as e:
+                logger.error(f"{run_stage_log} - Error during validation: {e}", exc_info=True)
+                result_data["validation"] = {
+                    "validation_performed": False,
+                    "validation_error": str(e)
+                }
+                result_data["validation_status"] = "error"
+        else:
+            logger.info(f"{run_stage_log} - Skipping validation due to empty or error description")
+            result_data["validation_status"] = "skipped"
         
         # Если задан output_csv_path, сохраняем результат текущей компании в CSV
         # ---- НАЧАЛО БЛОКА ДЛЯ КОММЕНТИРОВАНИЯ ----

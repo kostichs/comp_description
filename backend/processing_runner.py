@@ -127,8 +127,9 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             pipeline_error = f"API Client initialization failed: {e_client}"
             raise 
         
-        base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID"]
-        # additional_llm_fields больше не актуальны в таком виде, если CSV стандартизирован
+        # Формируем список полей для CSV
+        base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID", "validation_status", "validation_warning"]
+        # Добавляем поля валидации в базовый список
         expected_cols = list(base_ordered_fields) 
         session_logger.info(f"[BG Task {session_id}] Determined expected_csv_fieldnames: {expected_cols}")
         
@@ -136,11 +137,15 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
 
         session_logger.info("Starting core pipeline execution...")
         try:
-            # Создаем SSL контекст, который не проверяет сертификаты
-            ssl_context_no_verify = ssl.create_default_context()
-            ssl_context_no_verify.check_hostname = False
-            ssl_context_no_verify.verify_mode = ssl.CERT_NONE
-            connector = aiohttp.TCPConnector(ssl=ssl_context_no_verify)
+            # Создаем коннектор с обычными ограничениями для основного pipeline
+            connector = aiohttp.TCPConnector(
+                limit=50,  # Обычное количество соединений для основного pipeline
+                limit_per_host=10,  # Обычное количество соединений на хост
+                ttl_dns_cache=300,
+                use_dns_cache=True,
+                keepalive_timeout=30,
+                enable_cleanup_closed=True
+            )
             
             async with aiohttp.ClientSession(connector=connector) as aio_session:
                 # Используем get_pipeline_adapter для получения нужного адаптера

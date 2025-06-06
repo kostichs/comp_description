@@ -521,13 +521,28 @@ async def normalize_and_remove_duplicates(
     redirected_urls_updated_count = 0
     processing_messages = [] # Локальный список сообщений для этой операции
 
-    conn = aiohttp.TCPConnector(ssl=False) # Отключаем проверку SSL глобально для этой сессии aiohttp
+    # Создаем коннектор с ограничением соединений для валидации
+    conn = aiohttp.TCPConnector(
+        ssl=False,  # Отключаем проверку SSL глобально для этой сессии aiohttp
+        limit=10,   # Максимум 10 соединений всего
+        limit_per_host=2  # Максимум 2 соединения на хост
+    )
+    
+    # Семафор для ограничения одновременных проверок URL
+    max_concurrent_validations = 5  # Максимум 5 одновременных валидаций
+    semaphore = asyncio.Semaphore(max_concurrent_validations)
+    
+    async def validate_url_with_semaphore(original_url, session, scrapingbee_client):
+        """Валидация URL с семафором для ограничения одновременных соединений"""
+        async with semaphore:
+            return await get_url_status_and_final_location_async(original_url, session, scrapingbee_client=scrapingbee_client)
+    
     async with aiohttp.ClientSession(connector=conn) as session:
         tasks = []
         for index, row in df.iterrows():
             company_name = str(row[company_name_col])
             original_url = str(row[website_col])
-            tasks.append(get_url_status_and_final_location_async(original_url, session, scrapingbee_client=scrapingbee_client))
+            tasks.append(validate_url_with_semaphore(original_url, session, scrapingbee_client))
         
         results = await asyncio.gather(*tasks, return_exceptions=True)
 

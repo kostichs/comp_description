@@ -36,7 +36,7 @@ from src.pipeline.utils.logging import setup_session_logging
 logger = logging.getLogger(__name__)
 
 # Constants
-DEFAULT_BATCH_SIZE = 5
+DEFAULT_BATCH_SIZE = 2
 
 class PipelineAdapter:
     """
@@ -117,21 +117,22 @@ class PipelineAdapter:
         """
         await self.setup()
         
-        # Create SSL context that doesn't verify certificates
-        ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = False
-        ssl_context.verify_mode = ssl.CERT_NONE
-        
-        # Create connector with SSL context
-        connector = aiohttp.TCPConnector(ssl=ssl_context)
-        
+        # Создаем коннектор с обычными ограничениями для основного pipeline
+        connector = aiohttp.TCPConnector(
+            limit=50,  # Обычное количество соединений для основного pipeline
+            limit_per_host=10,  # Обычное количество соединений на хост
+            ttl_dns_cache=300,
+            use_dns_cache=True,
+            keepalive_timeout=30,
+            enable_cleanup_closed=True
+        )
         async with aiohttp.ClientSession(connector=connector) as session:
             self.aiohttp_session = session
             
             # Expected CSV field names
             # Используем переданный список или значение по умолчанию
             final_expected_csv_fieldnames = expected_csv_fieldnames or [
-                "Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID"
+                "Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID", "validation_status", "validation_warning"
             ]
             
             # Run pipeline for input file
