@@ -86,7 +86,7 @@ class CriteriaAnalysis {
         const loadAllCheckbox = document.getElementById('load-all-companies');
         
         if (!fileInput.files[0]) {
-            alert('Пожалуйста, выберите файл');
+            alert('Please select a file');
             return;
         }
 
@@ -94,7 +94,7 @@ class CriteriaAnalysis {
         formData.append('load_all_companies', loadAllCheckbox.checked);
 
         try {
-            this.showStatus('Загрузка файла...');
+            this.showStatus('Uploading file...');
             
             const response = await fetch('/api/criteria/analyze', {
                 method: 'POST',
@@ -104,18 +104,18 @@ class CriteriaAnalysis {
             const result = await response.json();
             
             if (!response.ok) {
-                throw new Error(result.detail || 'Ошибка загрузки');
+                throw new Error(result.detail || 'Upload error');
             }
 
             this.currentSessionId = result.session_id;
             document.getElementById('criteria-session-id').textContent = this.currentSessionId;
             
-            this.showStatus('Анализ запущен...');
+            this.showStatus('Analysis started...');
             this.startStatusChecking();
             
         } catch (error) {
             console.error('Upload error:', error);
-            this.showStatus(`Ошибка: ${error.message}`, 'error');
+            this.showStatus(`Error: ${error.message}`, 'error');
         }
     }
 
@@ -159,7 +159,7 @@ class CriteriaAnalysis {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.detail || 'Ошибка получения статуса');
+                throw new Error(result.detail || 'Status check error');
             }
 
             const status = result.status;
@@ -179,11 +179,11 @@ class CriteriaAnalysis {
 
     getStatusMessage(status) {
         const messages = {
-            'created': 'Сессия создана',
-            'processing': 'Выполняется анализ...',
-            'completed': 'Анализ завершен успешно',
-            'failed': 'Анализ завершился с ошибкой',
-            'cancelled': 'Анализ отменен'
+            'created': 'Session created',
+            'processing': 'Analysis in progress...',
+            'completed': 'Analysis completed successfully',
+            'failed': 'Analysis failed',
+            'cancelled': 'Analysis cancelled'
         };
         return messages[status] || status;
     }
@@ -203,14 +203,14 @@ class CriteriaAnalysis {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.detail || 'Ошибка загрузки результатов');
+                throw new Error(result.detail || 'Results loading error');
             }
 
             this.displayResults(result);
 
         } catch (error) {
             console.error('Results loading error:', error);
-            this.showStatus(`Ошибка загрузки результатов: ${error.message}`, 'error');
+            this.showStatus(`Results loading error: ${error.message}`, 'error');
         }
     }
 
@@ -292,15 +292,15 @@ class CriteriaAnalysis {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.detail || 'Ошибка отмены');
+                throw new Error(result.detail || 'Cancellation error');
             }
 
             this.stopStatusChecking();
-            this.showStatus('Анализ отменен', 'info');
+            this.showStatus('Analysis cancelled', 'info');
 
         } catch (error) {
             console.error('Cancel error:', error);
-            this.showStatus(`Ошибка отмены: ${error.message}`, 'error');
+            this.showStatus(`Cancellation error: ${error.message}`, 'error');
         }
     }
 
@@ -312,7 +312,7 @@ class CriteriaAnalysis {
 
             if (!response.ok) {
                 const error = await response.json();
-                throw new Error(error.detail || 'Ошибка скачивания');
+                throw new Error(error.detail || 'Download error');
             }
 
             const blob = await response.blob();
@@ -327,7 +327,7 @@ class CriteriaAnalysis {
 
         } catch (error) {
             console.error('Download error:', error);
-            alert(`Ошибка скачивания: ${error.message}`);
+            alert(`Download error: ${error.message}`);
         }
     }
 
@@ -337,7 +337,7 @@ class CriteriaAnalysis {
             const sessions = await response.json();
 
             if (!response.ok) {
-                throw new Error('Ошибка загрузки сессий');
+                throw new Error('Sessions loading error');
             }
 
             this.displaySessions(sessions);
