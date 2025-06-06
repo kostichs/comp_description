@@ -1,0 +1,2716 @@
+[
+  {
+    "Company_Name": "Electronic Arts (EA)",
+    "Official_Website": "ea.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/electronic-arts",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Electronic Arts Inc.\n- **Founding Year:** May 27, 1982\n\n- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States\n- **Founders:** Trip Hawkins\n\n- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.\n- **Official Homepage URL:** https://www.ea.com\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n  - **EA SPORTS FC**\n  - **Battlefield**\n  - **Apex Legends**\n  - **The Sims**\n  - **Madden NFL**\n  - **Need for Speed**\n  - **Titanfall**\n  - **F1**\n\n- **Underlying Technologies:** Electronic Arts utilizes various proprietary and third-party technologies to develop its games, including the Frostbite engine for game development.\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games directly to individual consumers.\n- **Industries Served:** Electronic Arts operates within the video game industry, serving sectors such as entertainment and digital interactive media.\n\n- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n  - **Fiscal Year 2024:**\n    - Total Revenue: $7.562 billion\n  - **Fiscal Year 2023:**\n    - Total Revenue: $7.426 billion\n  - **Fiscal Year 2022:**\n    - Total Revenue: $6.991 billion\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n  - In June 2023, Electronic Arts announced an internal reorganization into two organizations: EA Sports and EA Entertainment.\n  - In February 2024, Electronic Arts announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees.\n\n- **Key Competitors:** Main competitors in the video game industry include Activision Blizzard, Take-Two Interactive, and Ubisoft.\n- **Overall Summary:** Electronic Arts is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, the company continues to focus on its core franchises and strategic initiatives to maintain its position in the industry.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary working language at Electronic Arts is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, which requires user accounts for access to games and services.\n- **Compliance Standards:** No specific data found on compliance standards.\n\n**Sources:**\n\n- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))\n- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))\n\n- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))\n- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))\n\n- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "Yes",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [
+        "Data-First Innovators"
+      ],
+      "detailed_results": {
+        "Data-First Innovators": {
+          "audience": "Data-First Innovators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "CD Projekt",
+    "Official_Website": "cdprojektred.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/cd-projekt-red",
+    "Description": "1. **Basic Company Information:**\n   * **Company Name:** CD Projekt S.A.\n   * **Founding Year:** May 1994\n   * **Headquarters Location:** Warsaw, Poland\n   * **Founders:** Marcin Iwiński, Michał Kiciński\n   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Official Homepage URL:** https://www.cdprojekt.com/en/\n\n2. **Products and Technology:**\n   * **Core Products & Services:**\n     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, \"The Witcher,\" was released in 2007, followed by \"The Witcher 2: Assassins of Kings\" in 2011, and \"The Witcher 3: Wild Hunt\" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))\n     - **GOG.com:** A digital distribution platform offering DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Underlying Technologies:**\n     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in \"The Witcher 2: Assassins of Kings,\" \"The Witcher 3: Wild Hunt,\" and \"Cyberpunk 2077.\" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n\n3. **Market and Customer Information:**\n   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.\n   * **Industries Served:** Video game development and digital distribution.\n   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.\n\n4. **Financial and HR Details:**\n   * **Revenue History:**\n     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Funding Rounds:** No specific data found on funding rounds.\n   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n\n5. **Strategic Information:**\n   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n   * **Strategic Initiatives:**\n     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for \"The Flame in the Flood,\" to work on one of its existing intellectual properties. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))\n     - In March 2022, CD Projekt announced a partnership with Epic Games to use Unreal Engine 5 for future projects, moving away from their proprietary REDengine. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Bethesda Softworks.\n   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher known for its critically acclaimed titles like \"The Witcher\" series and \"Cyberpunk 2077.\" The company has a strong global presence and continues to expand its portfolio through strategic acquisitions and technological advancements.\n\n6. **Additional Business Information:**\n   * **Professional Open Positions:** No specific data found on current professional open positions.\n   * **Working Languages:** The company operates primarily in English and Polish.\n\n7. **Technical and Compliance Information:**\n   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user portal where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "Yes",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [
+        "Data-First Innovators"
+      ],
+      "detailed_results": {
+        "Data-First Innovators": {
+          "audience": "Data-First Innovators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Activision Blizzard",
+    "Official_Website": "activisionblizzard.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/activision-blizzard",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Activision Blizzard, Inc.\n- **Founding Year:** Activision Blizzard was formed on July 9, 2008, through the merger of Activision, Inc. and Vivendi Games. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Headquarters Location:** 2701 Olympic Boulevard, Building B, Santa Monica, California, 90404, United States. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Founders:** The merger was orchestrated by key executives from both companies, notably Bobby Kotick from Activision and René Penisson from Vivendi. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company listed on NASDAQ under the ticker symbol ATVI. On October 13, 2023, Microsoft Corporation completed its acquisition of Activision Blizzard for approximately $75.4 billion, making it a subsidiary of Microsoft Gaming. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n- **Official Homepage URL:** https://www.activisionblizzard.com/\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n\n  - **Call of Duty Series:** A first-person shooter franchise launched in 2003, known for its immersive gameplay and historical settings.\n\n  - **World of Warcraft:** A massively multiplayer online role-playing game (MMORPG) released in 2004, set in the fantasy universe of Azeroth.\n\n  - **Diablo Series:** An action role-playing game series that began in 1996, featuring dark fantasy themes and hack-and-slash gameplay.\n\n  - **Overwatch:** A team-based first-person shooter introduced in 2016, emphasizing cooperative gameplay and diverse character abilities.\n\n  - **Candy Crush Saga:** A match-three puzzle game launched in 2012 by King, known for its addictive gameplay and widespread popularity on mobile platforms.\n\n- **Underlying Technologies:** Activision Blizzard utilizes proprietary game engines and platforms tailored for each franchise. For instance, the Call of Duty series employs the IW engine, while Blizzard's games often run on custom engines designed for their specific gameplay mechanics. Additionally, the company operates Battle.net, a proprietary online gaming service facilitating digital distribution, online social connectivity, and user-generated content. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers across various platforms.\n- **Industries Served:** Interactive entertainment and esports.\n\n- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in the Americas, Europe, the Middle East, Africa, and the Asia Pacific. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n\n  - **Fiscal Year 2022:** $7.54 billion in revenue. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** Approximately 13,000 employees as of the most recent report. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n\n  - **Acquisition by Microsoft:** Completed on October 13, 2023, for approximately $75.4 billion, integrating Activision Blizzard into Microsoft's gaming division. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n\n  - **Esports Ventures:** Establishment of professional gaming leagues such as the Overwatch League and Call of Duty League, enhancing the company's presence in competitive gaming. ([activisionblizzard.com](https://www.activisionblizzard.com/about-us/?utm_source=openai))\n\n- **Key Competitors:** Major competitors include Electronic Arts, Ubisoft, and Take-Two Interactive, all prominent entities in the video game industry.\n- **Overall Summary:** Activision Blizzard stands as a leading developer and publisher in the gaming industry, boasting a diverse portfolio of successful franchises. The recent acquisition by Microsoft positions the company for further growth and integration within a broader technological ecosystem.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary language for business communications and documentation is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Activision Blizzard operates Battle.net, a proprietary online gaming service that facilitates digital distribution, online social connectivity, and the creation of user-generated content. This platform requires users to create accounts to access various services, including game purchases, multiplayer gaming, and community features. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "Yes",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [
+        "Data-First Innovators"
+      ],
+      "detailed_results": {
+        "Data-First Innovators": {
+          "audience": "Data-First Innovators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Software ISVs & System Integrators",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 8,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0
+          },
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Software ISVs & System Integrators",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 8,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0
+          },
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Software ISVs & System Integrators",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 8,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0
+          },
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Software ISVs & System Integrators",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 8,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0
+          },
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Software ISVs & System Integrators",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 8,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0
+          },
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Software ISVs & System Integrators",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 8,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0
+          },
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Electronic Arts (EA)",
+    "Official_Website": "ea.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/electronic-arts",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Electronic Arts Inc.\n- **Founding Year:** May 27, 1982\n\n- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States\n- **Founders:** Trip Hawkins\n\n- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.\n- **Official Homepage URL:** https://www.ea.com\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n  - **EA SPORTS FC**\n  - **Battlefield**\n  - **Apex Legends**\n  - **The Sims**\n  - **Madden NFL**\n  - **Need for Speed**\n  - **Titanfall**\n  - **F1**\n\n- **Underlying Technologies:** Electronic Arts utilizes various proprietary and third-party technologies to develop its games, including the Frostbite engine for game development.\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games directly to individual consumers.\n- **Industries Served:** Electronic Arts operates within the video game industry, serving sectors such as entertainment and digital interactive media.\n\n- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n  - **Fiscal Year 2024:**\n    - Total Revenue: $7.562 billion\n  - **Fiscal Year 2023:**\n    - Total Revenue: $7.426 billion\n  - **Fiscal Year 2022:**\n    - Total Revenue: $6.991 billion\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n  - In June 2023, Electronic Arts announced an internal reorganization into two organizations: EA Sports and EA Entertainment.\n  - In February 2024, Electronic Arts announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees.\n\n- **Key Competitors:** Main competitors in the video game industry include Activision Blizzard, Take-Two Interactive, and Ubisoft.\n- **Overall Summary:** Electronic Arts is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, the company continues to focus on its core franchises and strategic initiatives to maintain its position in the industry.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary working language at Electronic Arts is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, which requires user accounts for access to games and services.\n- **Compliance Standards:** No specific data found on compliance standards.\n\n**Sources:**\n\n- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))\n- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))\n\n- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))\n- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))\n\n- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "Yes",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Gaming"
+      ],
+      "detailed_results": {
+        "Gaming": {
+          "audience": "Gaming",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "CD Projekt",
+    "Official_Website": "cdprojektred.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/cd-projekt-red",
+    "Description": "1. **Basic Company Information:**\n   * **Company Name:** CD Projekt S.A.\n   * **Founding Year:** May 1994\n   * **Headquarters Location:** Warsaw, Poland\n   * **Founders:** Marcin Iwiński, Michał Kiciński\n   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Official Homepage URL:** https://www.cdprojekt.com/en/\n\n2. **Products and Technology:**\n   * **Core Products & Services:**\n     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, \"The Witcher,\" was released in 2007, followed by \"The Witcher 2: Assassins of Kings\" in 2011, and \"The Witcher 3: Wild Hunt\" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))\n     - **GOG.com:** A digital distribution platform offering DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Underlying Technologies:**\n     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in \"The Witcher 2: Assassins of Kings,\" \"The Witcher 3: Wild Hunt,\" and \"Cyberpunk 2077.\" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n\n3. **Market and Customer Information:**\n   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.\n   * **Industries Served:** Video game development and digital distribution.\n   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.\n\n4. **Financial and HR Details:**\n   * **Revenue History:**\n     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Funding Rounds:** No specific data found on funding rounds.\n   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n\n5. **Strategic Information:**\n   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n   * **Strategic Initiatives:**\n     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for \"The Flame in the Flood,\" to work on one of its existing intellectual properties. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))\n     - In March 2022, CD Projekt announced a partnership with Epic Games to use Unreal Engine 5 for future projects, moving away from their proprietary REDengine. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Bethesda Softworks.\n   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher known for its critically acclaimed titles like \"The Witcher\" series and \"Cyberpunk 2077.\" The company has a strong global presence and continues to expand its portfolio through strategic acquisitions and technological advancements.\n\n6. **Additional Business Information:**\n   * **Professional Open Positions:** No specific data found on current professional open positions.\n   * **Working Languages:** The company operates primarily in English and Polish.\n\n7. **Technical and Compliance Information:**\n   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user portal where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "Yes",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Gaming"
+      ],
+      "detailed_results": {
+        "Gaming": {
+          "audience": "Gaming",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.25,
+            "total_criteria": 4,
+            "passed_criteria": 1,
+            "nd_criteria": 2,
+            "pass_rate": 0.25
+          },
+          "final_status": "Qualified"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Gaming\nNTH Score: 0.250\nTotal NTH Criteria: 4\nPassed: 1\nND (No Data): 2\nNTH Results:\n• Publisher has more than 100 employees: Passed\n• Publishes updates: ND\n• Operates a dedicated game launcher/platform: Not Passed\n• Mentions DDoS protection or past attacks mitigation: ND"
+  },
+  {
+    "Company_Name": "Activision Blizzard",
+    "Official_Website": "activisionblizzard.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/activision-blizzard",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Activision Blizzard, Inc.\n- **Founding Year:** Activision Blizzard was formed on July 9, 2008, through the merger of Activision, Inc. and Vivendi Games. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Headquarters Location:** 2701 Olympic Boulevard, Building B, Santa Monica, California, 90404, United States. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Founders:** The merger was orchestrated by key executives from both companies, notably Bobby Kotick from Activision and René Penisson from Vivendi. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company listed on NASDAQ under the ticker symbol ATVI. On October 13, 2023, Microsoft Corporation completed its acquisition of Activision Blizzard for approximately $75.4 billion, making it a subsidiary of Microsoft Gaming. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n- **Official Homepage URL:** https://www.activisionblizzard.com/\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n\n  - **Call of Duty Series:** A first-person shooter franchise launched in 2003, known for its immersive gameplay and historical settings.\n\n  - **World of Warcraft:** A massively multiplayer online role-playing game (MMORPG) released in 2004, set in the fantasy universe of Azeroth.\n\n  - **Diablo Series:** An action role-playing game series that began in 1996, featuring dark fantasy themes and hack-and-slash gameplay.\n\n  - **Overwatch:** A team-based first-person shooter introduced in 2016, emphasizing cooperative gameplay and diverse character abilities.\n\n  - **Candy Crush Saga:** A match-three puzzle game launched in 2012 by King, known for its addictive gameplay and widespread popularity on mobile platforms.\n\n- **Underlying Technologies:** Activision Blizzard utilizes proprietary game engines and platforms tailored for each franchise. For instance, the Call of Duty series employs the IW engine, while Blizzard's games often run on custom engines designed for their specific gameplay mechanics. Additionally, the company operates Battle.net, a proprietary online gaming service facilitating digital distribution, online social connectivity, and user-generated content. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers across various platforms.\n- **Industries Served:** Interactive entertainment and esports.\n\n- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in the Americas, Europe, the Middle East, Africa, and the Asia Pacific. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n\n  - **Fiscal Year 2022:** $7.54 billion in revenue. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** Approximately 13,000 employees as of the most recent report. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n\n  - **Acquisition by Microsoft:** Completed on October 13, 2023, for approximately $75.4 billion, integrating Activision Blizzard into Microsoft's gaming division. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n\n  - **Esports Ventures:** Establishment of professional gaming leagues such as the Overwatch League and Call of Duty League, enhancing the company's presence in competitive gaming. ([activisionblizzard.com](https://www.activisionblizzard.com/about-us/?utm_source=openai))\n\n- **Key Competitors:** Major competitors include Electronic Arts, Ubisoft, and Take-Two Interactive, all prominent entities in the video game industry.\n- **Overall Summary:** Activision Blizzard stands as a leading developer and publisher in the gaming industry, boasting a diverse portfolio of successful franchises. The recent acquisition by Microsoft positions the company for further growth and integration within a broader technological ecosystem.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary language for business communications and documentation is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Activision Blizzard operates Battle.net, a proprietary online gaming service that facilitates digital distribution, online social connectivity, and the creation of user-generated content. This platform requires users to create accounts to access various services, including game purchases, multiplayer gaming, and community features. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "Yes",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Gaming"
+      ],
+      "detailed_results": {
+        "Gaming": {
+          "audience": "Gaming",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.25,
+            "total_criteria": 4,
+            "passed_criteria": 1,
+            "nd_criteria": 2,
+            "pass_rate": 0.25
+          },
+          "final_status": "Qualified"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Gaming\nNTH Score: 0.250\nTotal NTH Criteria: 4\nPassed: 1\nND (No Data): 2\nNTH Results:\n• Publisher has more than 100 employees: Passed\n• Publishes updates: ND\n• Operates a dedicated game launcher/platform: Not Passed\n• Mentions DDoS protection or past attacks mitigation: ND"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Electronic Arts (EA)",
+    "Official_Website": "ea.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/electronic-arts",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Electronic Arts Inc.\n- **Founding Year:** May 27, 1982\n\n- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States\n- **Founders:** Trip Hawkins\n\n- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.\n- **Official Homepage URL:** https://www.ea.com\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n  - **EA SPORTS FC**\n  - **Battlefield**\n  - **Apex Legends**\n  - **The Sims**\n  - **Madden NFL**\n  - **Need for Speed**\n  - **Titanfall**\n  - **F1**\n\n- **Underlying Technologies:** Electronic Arts utilizes various proprietary and third-party technologies to develop its games, including the Frostbite engine for game development.\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games directly to individual consumers.\n- **Industries Served:** Electronic Arts operates within the video game industry, serving sectors such as entertainment and digital interactive media.\n\n- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n  - **Fiscal Year 2024:**\n    - Total Revenue: $7.562 billion\n  - **Fiscal Year 2023:**\n    - Total Revenue: $7.426 billion\n  - **Fiscal Year 2022:**\n    - Total Revenue: $6.991 billion\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n  - In June 2023, Electronic Arts announced an internal reorganization into two organizations: EA Sports and EA Entertainment.\n  - In February 2024, Electronic Arts announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees.\n\n- **Key Competitors:** Main competitors in the video game industry include Activision Blizzard, Take-Two Interactive, and Ubisoft.\n- **Overall Summary:** Electronic Arts is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, the company continues to focus on its core franchises and strategic initiatives to maintain its position in the industry.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary working language at Electronic Arts is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, which requires user accounts for access to games and services.\n- **Compliance Standards:** No specific data found on compliance standards.\n\n**Sources:**\n\n- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))\n- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))\n\n- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))\n- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))\n\n- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "Yes",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [
+        "Gaming & Game Development"
+      ],
+      "detailed_results": {
+        "Gaming & Game Development": {
+          "audience": "Gaming & Game Development",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "CD Projekt",
+    "Official_Website": "cdprojektred.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/cd-projekt-red",
+    "Description": "1. **Basic Company Information:**\n   * **Company Name:** CD Projekt S.A.\n   * **Founding Year:** May 1994\n   * **Headquarters Location:** Warsaw, Poland\n   * **Founders:** Marcin Iwiński, Michał Kiciński\n   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Official Homepage URL:** https://www.cdprojekt.com/en/\n\n2. **Products and Technology:**\n   * **Core Products & Services:**\n     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, \"The Witcher,\" was released in 2007, followed by \"The Witcher 2: Assassins of Kings\" in 2011, and \"The Witcher 3: Wild Hunt\" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))\n     - **GOG.com:** A digital distribution platform offering DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Underlying Technologies:**\n     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in \"The Witcher 2: Assassins of Kings,\" \"The Witcher 3: Wild Hunt,\" and \"Cyberpunk 2077.\" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n\n3. **Market and Customer Information:**\n   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.\n   * **Industries Served:** Video game development and digital distribution.\n   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.\n\n4. **Financial and HR Details:**\n   * **Revenue History:**\n     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Funding Rounds:** No specific data found on funding rounds.\n   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n\n5. **Strategic Information:**\n   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n   * **Strategic Initiatives:**\n     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for \"The Flame in the Flood,\" to work on one of its existing intellectual properties. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))\n     - In March 2022, CD Projekt announced a partnership with Epic Games to use Unreal Engine 5 for future projects, moving away from their proprietary REDengine. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Bethesda Softworks.\n   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher known for its critically acclaimed titles like \"The Witcher\" series and \"Cyberpunk 2077.\" The company has a strong global presence and continues to expand its portfolio through strategic acquisitions and technological advancements.\n\n6. **Additional Business Information:**\n   * **Professional Open Positions:** No specific data found on current professional open positions.\n   * **Working Languages:** The company operates primarily in English and Polish.\n\n7. **Technical and Compliance Information:**\n   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user portal where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "Yes",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [
+        "Gaming & Game Development"
+      ],
+      "detailed_results": {
+        "Gaming & Game Development": {
+          "audience": "Gaming & Game Development",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Activision Blizzard",
+    "Official_Website": "activisionblizzard.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/activision-blizzard",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Activision Blizzard, Inc.\n- **Founding Year:** Activision Blizzard was formed on July 9, 2008, through the merger of Activision, Inc. and Vivendi Games. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Headquarters Location:** 2701 Olympic Boulevard, Building B, Santa Monica, California, 90404, United States. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Founders:** The merger was orchestrated by key executives from both companies, notably Bobby Kotick from Activision and René Penisson from Vivendi. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company listed on NASDAQ under the ticker symbol ATVI. On October 13, 2023, Microsoft Corporation completed its acquisition of Activision Blizzard for approximately $75.4 billion, making it a subsidiary of Microsoft Gaming. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n- **Official Homepage URL:** https://www.activisionblizzard.com/\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n\n  - **Call of Duty Series:** A first-person shooter franchise launched in 2003, known for its immersive gameplay and historical settings.\n\n  - **World of Warcraft:** A massively multiplayer online role-playing game (MMORPG) released in 2004, set in the fantasy universe of Azeroth.\n\n  - **Diablo Series:** An action role-playing game series that began in 1996, featuring dark fantasy themes and hack-and-slash gameplay.\n\n  - **Overwatch:** A team-based first-person shooter introduced in 2016, emphasizing cooperative gameplay and diverse character abilities.\n\n  - **Candy Crush Saga:** A match-three puzzle game launched in 2012 by King, known for its addictive gameplay and widespread popularity on mobile platforms.\n\n- **Underlying Technologies:** Activision Blizzard utilizes proprietary game engines and platforms tailored for each franchise. For instance, the Call of Duty series employs the IW engine, while Blizzard's games often run on custom engines designed for their specific gameplay mechanics. Additionally, the company operates Battle.net, a proprietary online gaming service facilitating digital distribution, online social connectivity, and user-generated content. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers across various platforms.\n- **Industries Served:** Interactive entertainment and esports.\n\n- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in the Americas, Europe, the Middle East, Africa, and the Asia Pacific. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n\n  - **Fiscal Year 2022:** $7.54 billion in revenue. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** Approximately 13,000 employees as of the most recent report. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n\n  - **Acquisition by Microsoft:** Completed on October 13, 2023, for approximately $75.4 billion, integrating Activision Blizzard into Microsoft's gaming division. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n\n  - **Esports Ventures:** Establishment of professional gaming leagues such as the Overwatch League and Call of Duty League, enhancing the company's presence in competitive gaming. ([activisionblizzard.com](https://www.activisionblizzard.com/about-us/?utm_source=openai))\n\n- **Key Competitors:** Major competitors include Electronic Arts, Ubisoft, and Take-Two Interactive, all prominent entities in the video game industry.\n- **Overall Summary:** Activision Blizzard stands as a leading developer and publisher in the gaming industry, boasting a diverse portfolio of successful franchises. The recent acquisition by Microsoft positions the company for further growth and integration within a broader technological ecosystem.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary language for business communications and documentation is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Activision Blizzard operates Battle.net, a proprietary online gaming service that facilitates digital distribution, online social connectivity, and the creation of user-generated content. This platform requires users to create accounts to access various services, including game purchases, multiplayer gaming, and community features. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "Yes",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [
+        "Gaming & Game Development"
+      ],
+      "detailed_results": {
+        "Gaming & Game Development": {
+          "audience": "Gaming & Game Development",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "qualification_results": {
+        "Gaming & Game Development": "No",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "No",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Electronic Arts (EA)",
+    "Official_Website": "ea.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/electronic-arts",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Electronic Arts Inc.\n- **Founding Year:** May 27, 1982\n\n- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States\n- **Founders:** Trip Hawkins\n\n- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.\n- **Official Homepage URL:** https://www.ea.com\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n  - **EA SPORTS FC**\n  - **Battlefield**\n  - **Apex Legends**\n  - **The Sims**\n  - **Madden NFL**\n  - **Need for Speed**\n  - **Titanfall**\n  - **F1**\n\n- **Underlying Technologies:** Electronic Arts utilizes various proprietary and third-party technologies to develop its games, including the Frostbite engine for game development.\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games directly to individual consumers.\n- **Industries Served:** Electronic Arts operates within the video game industry, serving sectors such as entertainment and digital interactive media.\n\n- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n  - **Fiscal Year 2024:**\n    - Total Revenue: $7.562 billion\n  - **Fiscal Year 2023:**\n    - Total Revenue: $7.426 billion\n  - **Fiscal Year 2022:**\n    - Total Revenue: $6.991 billion\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n  - In June 2023, Electronic Arts announced an internal reorganization into two organizations: EA Sports and EA Entertainment.\n  - In February 2024, Electronic Arts announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees.\n\n- **Key Competitors:** Main competitors in the video game industry include Activision Blizzard, Take-Two Interactive, and Ubisoft.\n- **Overall Summary:** Electronic Arts is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, the company continues to focus on its core franchises and strategic initiatives to maintain its position in the industry.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary working language at Electronic Arts is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, which requires user accounts for access to games and services.\n- **Compliance Standards:** No specific data found on compliance standards.\n\n**Sources:**\n\n- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))\n- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))\n\n- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))\n- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))\n\n- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "Yes",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [
+        "Online Gaming"
+      ],
+      "detailed_results": {
+        "Online Gaming": {
+          "audience": "Online Gaming",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "CD Projekt",
+    "Official_Website": "cdprojektred.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/cd-projekt-red",
+    "Description": "1. **Basic Company Information:**\n   * **Company Name:** CD Projekt S.A.\n   * **Founding Year:** May 1994\n   * **Headquarters Location:** Warsaw, Poland\n   * **Founders:** Marcin Iwiński, Michał Kiciński\n   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Official Homepage URL:** https://www.cdprojekt.com/en/\n\n2. **Products and Technology:**\n   * **Core Products & Services:**\n     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, \"The Witcher,\" was released in 2007, followed by \"The Witcher 2: Assassins of Kings\" in 2011, and \"The Witcher 3: Wild Hunt\" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))\n     - **GOG.com:** A digital distribution platform offering DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Underlying Technologies:**\n     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in \"The Witcher 2: Assassins of Kings,\" \"The Witcher 3: Wild Hunt,\" and \"Cyberpunk 2077.\" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n\n3. **Market and Customer Information:**\n   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.\n   * **Industries Served:** Video game development and digital distribution.\n   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.\n\n4. **Financial and HR Details:**\n   * **Revenue History:**\n     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Funding Rounds:** No specific data found on funding rounds.\n   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n\n5. **Strategic Information:**\n   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n   * **Strategic Initiatives:**\n     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for \"The Flame in the Flood,\" to work on one of its existing intellectual properties. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))\n     - In March 2022, CD Projekt announced a partnership with Epic Games to use Unreal Engine 5 for future projects, moving away from their proprietary REDengine. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Bethesda Softworks.\n   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher known for its critically acclaimed titles like \"The Witcher\" series and \"Cyberpunk 2077.\" The company has a strong global presence and continues to expand its portfolio through strategic acquisitions and technological advancements.\n\n6. **Additional Business Information:**\n   * **Professional Open Positions:** No specific data found on current professional open positions.\n   * **Working Languages:** The company operates primarily in English and Polish.\n\n7. **Technical and Compliance Information:**\n   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user portal where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "Yes",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [
+        "Online Gaming"
+      ],
+      "detailed_results": {
+        "Online Gaming": {
+          "audience": "Online Gaming",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 3,
+            "passed_criteria": 0,
+            "nd_criteria": 2,
+            "pass_rate": 0.0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Activision Blizzard",
+    "Official_Website": "activisionblizzard.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/activision-blizzard",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Activision Blizzard, Inc.\n- **Founding Year:** Activision Blizzard was formed on July 9, 2008, through the merger of Activision, Inc. and Vivendi Games. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Headquarters Location:** 2701 Olympic Boulevard, Building B, Santa Monica, California, 90404, United States. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Founders:** The merger was orchestrated by key executives from both companies, notably Bobby Kotick from Activision and René Penisson from Vivendi. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company listed on NASDAQ under the ticker symbol ATVI. On October 13, 2023, Microsoft Corporation completed its acquisition of Activision Blizzard for approximately $75.4 billion, making it a subsidiary of Microsoft Gaming. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n- **Official Homepage URL:** https://www.activisionblizzard.com/\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n\n  - **Call of Duty Series:** A first-person shooter franchise launched in 2003, known for its immersive gameplay and historical settings.\n\n  - **World of Warcraft:** A massively multiplayer online role-playing game (MMORPG) released in 2004, set in the fantasy universe of Azeroth.\n\n  - **Diablo Series:** An action role-playing game series that began in 1996, featuring dark fantasy themes and hack-and-slash gameplay.\n\n  - **Overwatch:** A team-based first-person shooter introduced in 2016, emphasizing cooperative gameplay and diverse character abilities.\n\n  - **Candy Crush Saga:** A match-three puzzle game launched in 2012 by King, known for its addictive gameplay and widespread popularity on mobile platforms.\n\n- **Underlying Technologies:** Activision Blizzard utilizes proprietary game engines and platforms tailored for each franchise. For instance, the Call of Duty series employs the IW engine, while Blizzard's games often run on custom engines designed for their specific gameplay mechanics. Additionally, the company operates Battle.net, a proprietary online gaming service facilitating digital distribution, online social connectivity, and user-generated content. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers across various platforms.\n- **Industries Served:** Interactive entertainment and esports.\n\n- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in the Americas, Europe, the Middle East, Africa, and the Asia Pacific. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n\n  - **Fiscal Year 2022:** $7.54 billion in revenue. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** Approximately 13,000 employees as of the most recent report. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n\n  - **Acquisition by Microsoft:** Completed on October 13, 2023, for approximately $75.4 billion, integrating Activision Blizzard into Microsoft's gaming division. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n\n  - **Esports Ventures:** Establishment of professional gaming leagues such as the Overwatch League and Call of Duty League, enhancing the company's presence in competitive gaming. ([activisionblizzard.com](https://www.activisionblizzard.com/about-us/?utm_source=openai))\n\n- **Key Competitors:** Major competitors include Electronic Arts, Ubisoft, and Take-Two Interactive, all prominent entities in the video game industry.\n- **Overall Summary:** Activision Blizzard stands as a leading developer and publisher in the gaming industry, boasting a diverse portfolio of successful franchises. The recent acquisition by Microsoft positions the company for further growth and integration within a broader technological ecosystem.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary language for business communications and documentation is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Activision Blizzard operates Battle.net, a proprietary online gaming service that facilitates digital distribution, online social connectivity, and the creation of user-generated content. This platform requires users to create accounts to access various services, including game purchases, multiplayer gaming, and community features. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "Yes",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [
+        "Online Gaming"
+      ],
+      "detailed_results": {
+        "Online Gaming": {
+          "audience": "Online Gaming",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 3,
+            "passed_criteria": 0,
+            "nd_criteria": 2,
+            "pass_rate": 0.0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "qualification_results": {
+        "Online Gaming": "No",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Electronic Arts (EA)",
+    "Official_Website": "ea.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/electronic-arts",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Electronic Arts Inc.\n- **Founding Year:** May 27, 1982\n\n- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States\n- **Founders:** Trip Hawkins\n\n- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.\n- **Official Homepage URL:** https://www.ea.com\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n  - **EA SPORTS FC**\n  - **Battlefield**\n  - **Apex Legends**\n  - **The Sims**\n  - **Madden NFL**\n  - **Need for Speed**\n  - **Titanfall**\n  - **F1**\n\n- **Underlying Technologies:** Electronic Arts utilizes various proprietary and third-party technologies to develop its games, including the Frostbite engine for game development.\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games directly to individual consumers.\n- **Industries Served:** Electronic Arts operates within the video game industry, serving sectors such as entertainment and digital interactive media.\n\n- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n  - **Fiscal Year 2024:**\n    - Total Revenue: $7.562 billion\n  - **Fiscal Year 2023:**\n    - Total Revenue: $7.426 billion\n  - **Fiscal Year 2022:**\n    - Total Revenue: $6.991 billion\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n  - In June 2023, Electronic Arts announced an internal reorganization into two organizations: EA Sports and EA Entertainment.\n  - In February 2024, Electronic Arts announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees.\n\n- **Key Competitors:** Main competitors in the video game industry include Activision Blizzard, Take-Two Interactive, and Ubisoft.\n- **Overall Summary:** Electronic Arts is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, the company continues to focus on its core franchises and strategic initiatives to maintain its position in the industry.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary working language at Electronic Arts is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, which requires user accounts for access to games and services.\n- **Compliance Standards:** No specific data found on compliance standards.\n\n**Sources:**\n\n- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))\n- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))\n\n- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))\n- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))\n\n- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "CD Projekt",
+    "Official_Website": "cdprojektred.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/cd-projekt-red",
+    "Description": "1. **Basic Company Information:**\n   * **Company Name:** CD Projekt S.A.\n   * **Founding Year:** May 1994\n   * **Headquarters Location:** Warsaw, Poland\n   * **Founders:** Marcin Iwiński, Michał Kiciński\n   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Official Homepage URL:** https://www.cdprojekt.com/en/\n\n2. **Products and Technology:**\n   * **Core Products & Services:**\n     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, \"The Witcher,\" was released in 2007, followed by \"The Witcher 2: Assassins of Kings\" in 2011, and \"The Witcher 3: Wild Hunt\" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))\n     - **GOG.com:** A digital distribution platform offering DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Underlying Technologies:**\n     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in \"The Witcher 2: Assassins of Kings,\" \"The Witcher 3: Wild Hunt,\" and \"Cyberpunk 2077.\" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n\n3. **Market and Customer Information:**\n   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.\n   * **Industries Served:** Video game development and digital distribution.\n   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.\n\n4. **Financial and HR Details:**\n   * **Revenue History:**\n     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n   * **Funding Rounds:** No specific data found on funding rounds.\n   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))\n\n5. **Strategic Information:**\n   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n   * **Strategic Initiatives:**\n     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for \"The Flame in the Flood,\" to work on one of its existing intellectual properties. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))\n     - In March 2022, CD Projekt announced a partnership with Epic Games to use Unreal Engine 5 for future projects, moving away from their proprietary REDengine. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))\n   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Bethesda Softworks.\n   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher known for its critically acclaimed titles like \"The Witcher\" series and \"Cyberpunk 2077.\" The company has a strong global presence and continues to expand its portfolio through strategic acquisitions and technological advancements.\n\n6. **Additional Business Information:**\n   * **Professional Open Positions:** No specific data found on current professional open positions.\n   * **Working Languages:** The company operates primarily in English and Polish.\n\n7. **Technical and Compliance Information:**\n   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user portal where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))\n   * **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Activision Blizzard",
+    "Official_Website": "activisionblizzard.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/activision-blizzard",
+    "Description": "**1. Basic Company Information:**\n\n- **Company Name:** Activision Blizzard, Inc.\n- **Founding Year:** Activision Blizzard was formed on July 9, 2008, through the merger of Activision, Inc. and Vivendi Games. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Headquarters Location:** 2701 Olympic Boulevard, Building B, Santa Monica, California, 90404, United States. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Founders:** The merger was orchestrated by key executives from both companies, notably Bobby Kotick from Activision and René Penisson from Vivendi. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company listed on NASDAQ under the ticker symbol ATVI. On October 13, 2023, Microsoft Corporation completed its acquisition of Activision Blizzard for approximately $75.4 billion, making it a subsidiary of Microsoft Gaming. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n- **Official Homepage URL:** https://www.activisionblizzard.com/\n\n**2. Products and Technology:**\n\n- **Core Products & Services:**\n\n  - **Call of Duty Series:** A first-person shooter franchise launched in 2003, known for its immersive gameplay and historical settings.\n\n  - **World of Warcraft:** A massively multiplayer online role-playing game (MMORPG) released in 2004, set in the fantasy universe of Azeroth.\n\n  - **Diablo Series:** An action role-playing game series that began in 1996, featuring dark fantasy themes and hack-and-slash gameplay.\n\n  - **Overwatch:** A team-based first-person shooter introduced in 2016, emphasizing cooperative gameplay and diverse character abilities.\n\n  - **Candy Crush Saga:** A match-three puzzle game launched in 2012 by King, known for its addictive gameplay and widespread popularity on mobile platforms.\n\n- **Underlying Technologies:** Activision Blizzard utilizes proprietary game engines and platforms tailored for each franchise. For instance, the Call of Duty series employs the IW engine, while Blizzard's games often run on custom engines designed for their specific gameplay mechanics. Additionally, the company operates Battle.net, a proprietary online gaming service facilitating digital distribution, online social connectivity, and user-generated content. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**3. Market and Customer Information:**\n\n- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers across various platforms.\n- **Industries Served:** Interactive entertainment and esports.\n\n- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in the Americas, Europe, the Middle East, Africa, and the Asia Pacific. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**4. Financial and HR Details:**\n\n- **Revenue History:**\n\n  - **Fiscal Year 2022:** $7.54 billion in revenue. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))\n\n- **Funding Rounds:** No specific data found on funding rounds.\n- **Employee Count:** Approximately 13,000 employees as of the most recent report. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n\n**5. Strategic Information:**\n\n- **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n- **Strategic Initiatives:**\n\n  - **Acquisition by Microsoft:** Completed on October 13, 2023, for approximately $75.4 billion, integrating Activision Blizzard into Microsoft's gaming division. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n\n  - **Esports Ventures:** Establishment of professional gaming leagues such as the Overwatch League and Call of Duty League, enhancing the company's presence in competitive gaming. ([activisionblizzard.com](https://www.activisionblizzard.com/about-us/?utm_source=openai))\n\n- **Key Competitors:** Major competitors include Electronic Arts, Ubisoft, and Take-Two Interactive, all prominent entities in the video game industry.\n- **Overall Summary:** Activision Blizzard stands as a leading developer and publisher in the gaming industry, boasting a diverse portfolio of successful franchises. The recent acquisition by Microsoft positions the company for further growth and integration within a broader technological ecosystem.\n\n**6. Additional Business Information:**\n\n- **Professional Open Positions:** No specific data found on current professional open positions.\n- **Working Languages:** The primary language for business communications and documentation is English.\n\n**7. Technical and Compliance Information:**\n\n- **User Portal/Login System:** Activision Blizzard operates Battle.net, a proprietary online gaming service that facilitates digital distribution, online social connectivity, and the creation of user-generated content. This platform requires users to create accounts to access various services, including game purchases, multiplayer gaming, and community features. ([stockanalysis.com](https://stockanalysis.com/stocks/atvi/company/?utm_source=openai))\n- **Compliance Standards:** No specific data found on compliance standards.",
+    "Timestamp": "6/6/2025 10:15",
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "qualification_results": {
+        "IT Service Providers": "No",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  }
+]

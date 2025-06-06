@@ -1,0 +1,57 @@
+<div class="criteria-analysis-container">
+    <h2>🔍 Criteria Analysis</h2>
+    
+    <div class="upload-section">
+        <h3>Upload File</h3>
+        <form id="criteria-upload-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="criteria-file">Select CSV/Excel file with company descriptions:</label>
+                <input type="file" id="criteria-file" name="file" accept=".csv,.xlsx,.xls" required>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="load-all-companies" name="load_all_companies">
+                    Load all files from data folder
+                </label>
+            </div>
+            
+            <button type="submit">Start Analysis</button>
+        </form>
+    </div>
+
+    <div id="criteria-status" class="status-section" style="display: none;">
+        <h3>Analysis Status</h3>
+        <div class="status-info">
+            <p><strong>Session:</strong> <span id="criteria-session-id"></span></p>
+            <p><strong>Status:</strong> <span id="criteria-status-text"></span></p>
+            <div id="criteria-progress" class="progress-bar" style="display: none;">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="cancel-criteria-btn" style="display: none;">Cancel Analysis</button>
+            <button id="refresh-criteria-btn">Refresh Status</button>
+        </div>
+    </div>
+
+    <div id="criteria-results" class="results-section" style="display: none;">
+        <h3>Analysis Results</h3>
+        <div class="results-summary">
+            <p><strong>Companies Processed:</strong> <span id="results-count"></span></p>
+            <button id="download-results-btn">Download Results</button>
+        </div>
+        
+        <div class="results-table-container">
+            <h4>Results Preview:</h4>
+            <div id="results-table"></div>
+        </div>
+    </div>
+
+    <div id="criteria-sessions-list" class="sessions-section">
+        <h3>Session History</h3>
+        <button id="load-sessions-btn">Load History</button>
+        <div id="sessions-container"></div>
+    </div>
+</div> 

@@ -38,6 +38,7 @@ from .processing_runner import run_session_pipeline
 
 # --- Import routers ---
 from .routers import sessions  # Импортируем роутер сессий
+from .routers import criteria  # Импортируем роутер критериев
 
 # Configure basic logging if not already configured elsewhere
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -70,6 +71,7 @@ app.add_middleware(
 
 # --- Регистрируем роутеры ---
 app.include_router(sessions.router, prefix="/api")
+app.include_router(criteria.router, prefix="/api")
 
 # Монтируем статические файлы
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
