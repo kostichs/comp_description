@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Сбрасываем состояние HubSpot toggle на включенное и активируем его
         const writeToHubspotCheckbox = document.getElementById('writeToHubspot');
         if (writeToHubspotCheckbox) {
-            writeToHubspotCheckbox.checked = true;
+            writeToHubspotCheckbox.checked = false;
         }
         enableHubSpotToggle();
         
