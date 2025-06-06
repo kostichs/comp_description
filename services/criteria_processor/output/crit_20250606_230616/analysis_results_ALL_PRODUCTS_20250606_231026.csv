@@ -92,19 +92,19 @@
       ""qualification_status"": ""Passed"",
       ""mandatory_status"": ""Passed"",
       ""nth_results"": {
-        ""score"": 0.25,
+        ""score"": 0.5,
         ""total_criteria"": 8,
-        ""passed_criteria"": 2,
+        ""passed_criteria"": 4,
         ""nd_criteria"": 0,
-        ""pass_rate"": 0.25
+        ""pass_rate"": 0.5
       },
       ""final_status"": ""Qualified""
     }
   }
 }","QUALIFIED: Data-First Innovators
-NTH Score: 0.250
+NTH Score: 0.500
 Total NTH Criteria: 8
-Passed: 2
+Passed: 4
 ND (No Data): 0
 NTH Results:
 • Mentions fast iteration, innovation, or scaling of digital services: Not Passed
@@ -168,12 +168,25 @@ NTH Results:
     ""Data-First Innovators"": {
       ""audience"": ""Data-First Innovators"",
       ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.375,
+        ""total_criteria"": 8,
+        ""passed_criteria"": 3,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0.375
+      },
+      ""final_status"": ""Qualified""
     }
   }
-}","NOT QUALIFIED"
+}","QUALIFIED: Data-First Innovators
+NTH Score: 0.375
+Total NTH Criteria: 8
+Passed: 3
+ND (No Data): 0
+NTH Results:
+• Mentions fast iteration, innovation, or scaling of digital services: Not Passed
+• References using customer behavior or data insights to enhance services: Passed"
 "Activision Blizzard","activisionblizzard.com","https://www.linkedin.com/company/activision-blizzard","**1. Basic Company Information:**
 
 - **Company Name:** Activision Blizzard, Inc.
@@ -257,77 +270,41 @@ NTH Results:
       ""qualification_status"": ""Passed"",
       ""mandatory_status"": ""Passed"",
       ""nth_results"": {
-        ""score"": 0.5,
+        ""score"": 0.125,
         ""total_criteria"": 8,
-        ""passed_criteria"": 4,
+        ""passed_criteria"": 1,
         ""nd_criteria"": 0,
-        ""pass_rate"": 0.5
+        ""pass_rate"": 0.125
       },
       ""final_status"": ""Qualified""
     }
   }
 }","QUALIFIED: Data-First Innovators
-NTH Score: 0.500
+NTH Score: 0.125
 Total NTH Criteria: 8
-Passed: 4
+Passed: 1
 ND (No Data): 0
 NTH Results:
 • Mentions fast iteration, innovation, or scaling of digital services: Not Passed
-• References using customer behavior or data insights to enhance services: Passed"
-"nan","nan","nan","nan","nan","nan","AI","{
-  ""product"": ""AI"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Enterprise Digital Transformers"": ""No"",
-    ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""No"",
-    ""AI-Native Startups"": ""No"",
-    ""Public Sector Agencies"": ""No"",
-    ""Enterprise Digital Transformers2"": ""No""
-  },
-  ""qualified_audiences"": [],
-  ""detailed_results"": {}
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","AI","{
-  ""product"": ""AI"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Enterprise Digital Transformers"": ""No"",
-    ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""No"",
-    ""AI-Native Startups"": ""No"",
-    ""Public Sector Agencies"": ""No"",
-    ""Enterprise Digital Transformers2"": ""No""
-  },
-  ""qualified_audiences"": [],
-  ""detailed_results"": {}
-}","NOT QUALIFIED"
+• References using customer behavior or data insights to enhance services: Not Passed"
 "nan","nan","nan","nan","nan","nan","AI","{
   ""product"": ""AI"",
   ""general_status"": true,
   ""qualification_results"": {
     ""Enterprise Digital Transformers"": ""Yes"",
     ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""Yes"",
+    ""Software ISVs & System Integrators"": ""No"",
     ""AI-Native Startups"": ""No"",
     ""Public Sector Agencies"": ""No"",
     ""Enterprise Digital Transformers2"": ""Yes""
   },
   ""qualified_audiences"": [
     ""Enterprise Digital Transformers"",
-    ""Software ISVs & System Integrators"",
     ""Enterprise Digital Transformers2""
   ],
   ""detailed_results"": {
     ""Enterprise Digital Transformers"": {
       ""audience"": ""Enterprise Digital Transformers"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    },
-    ""Software ISVs & System Integrators"": {
-      ""audience"": ""Software ISVs & System Integrators"",
       ""qualification_status"": ""Passed"",
       ""mandatory_status"": ""Failed"",
       ""nth_results"": {},
@@ -347,166 +324,6 @@ NTH Results:
       ""final_status"": ""Failed""
     }
   }
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","AI","{
-  ""product"": ""AI"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Enterprise Digital Transformers"": ""No"",
-    ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""No"",
-    ""AI-Native Startups"": ""No"",
-    ""Public Sector Agencies"": ""No"",
-    ""Enterprise Digital Transformers2"": ""No""
-  },
-  ""qualified_audiences"": [],
-  ""detailed_results"": {}
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","AI","{
-  ""product"": ""AI"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Enterprise Digital Transformers"": ""No"",
-    ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""No"",
-    ""AI-Native Startups"": ""No"",
-    ""Public Sector Agencies"": ""No"",
-    ""Enterprise Digital Transformers2"": ""No""
-  },
-  ""qualified_audiences"": [],
-  ""detailed_results"": {}
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","AI","{
-  ""product"": ""AI"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Enterprise Digital Transformers"": ""Yes"",
-    ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""Yes"",
-    ""AI-Native Startups"": ""No"",
-    ""Public Sector Agencies"": ""No"",
-    ""Enterprise Digital Transformers2"": ""Yes""
-  },
-  ""qualified_audiences"": [
-    ""Enterprise Digital Transformers"",
-    ""Software ISVs & System Integrators"",
-    ""Enterprise Digital Transformers2""
-  ],
-  ""detailed_results"": {
-    ""Enterprise Digital Transformers"": {
-      ""audience"": ""Enterprise Digital Transformers"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    },
-    ""Software ISVs & System Integrators"": {
-      ""audience"": ""Software ISVs & System Integrators"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Passed"",
-      ""nth_results"": {
-        ""score"": 0.0,
-        ""total_criteria"": 8,
-        ""passed_criteria"": 0,
-        ""nd_criteria"": 0,
-        ""pass_rate"": 0.0
-      },
-      ""final_status"": ""Failed""
-    },
-    ""Enterprise Digital Transformers2"": {
-      ""audience"": ""Enterprise Digital Transformers2"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Passed"",
-      ""nth_results"": {
-        ""score"": 0,
-        ""total_criteria"": 0,
-        ""passed_criteria"": 0,
-        ""nd_criteria"": 0,
-        ""pass_rate"": 0
-      },
-      ""final_status"": ""Failed""
-    }
-  }
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","AI","{
-  ""product"": ""AI"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Enterprise Digital Transformers"": ""Yes"",
-    ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""Yes"",
-    ""AI-Native Startups"": ""No"",
-    ""Public Sector Agencies"": ""No"",
-    ""Enterprise Digital Transformers2"": ""Yes""
-  },
-  ""qualified_audiences"": [
-    ""Enterprise Digital Transformers"",
-    ""Software ISVs & System Integrators"",
-    ""Enterprise Digital Transformers2""
-  ],
-  ""detailed_results"": {
-    ""Enterprise Digital Transformers"": {
-      ""audience"": ""Enterprise Digital Transformers"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    },
-    ""Software ISVs & System Integrators"": {
-      ""audience"": ""Software ISVs & System Integrators"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Passed"",
-      ""nth_results"": {
-        ""score"": 0.0,
-        ""total_criteria"": 8,
-        ""passed_criteria"": 0,
-        ""nd_criteria"": 0,
-        ""pass_rate"": 0.0
-      },
-      ""final_status"": ""Failed""
-    },
-    ""Enterprise Digital Transformers2"": {
-      ""audience"": ""Enterprise Digital Transformers2"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Passed"",
-      ""nth_results"": {
-        ""score"": 0,
-        ""total_criteria"": 0,
-        ""passed_criteria"": 0,
-        ""nd_criteria"": 0,
-        ""pass_rate"": 0
-      },
-      ""final_status"": ""Failed""
-    }
-  }
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","AI","{
-  ""product"": ""AI"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Enterprise Digital Transformers"": ""No"",
-    ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""No"",
-    ""AI-Native Startups"": ""No"",
-    ""Public Sector Agencies"": ""No"",
-    ""Enterprise Digital Transformers2"": ""No""
-  },
-  ""qualified_audiences"": [],
-  ""detailed_results"": {}
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","AI","{
-  ""product"": ""AI"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Enterprise Digital Transformers"": ""No"",
-    ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""No"",
-    ""AI-Native Startups"": ""No"",
-    ""Public Sector Agencies"": ""No"",
-    ""Enterprise Digital Transformers2"": ""No""
-  },
-  ""qualified_audiences"": [],
-  ""detailed_results"": {}
 }","NOT QUALIFIED"
 "nan","nan","nan","nan","nan","nan","AI","{
   ""product"": ""AI"",
@@ -566,14 +383,13 @@ NTH Results:
   ""qualification_results"": {
     ""Enterprise Digital Transformers"": ""Yes"",
     ""Data-First Innovators"": ""No"",
-    ""Software ISVs & System Integrators"": ""Yes"",
+    ""Software ISVs & System Integrators"": ""No"",
     ""AI-Native Startups"": ""No"",
     ""Public Sector Agencies"": ""No"",
     ""Enterprise Digital Transformers2"": ""Yes""
   },
   ""qualified_audiences"": [
     ""Enterprise Digital Transformers"",
-    ""Software ISVs & System Integrators"",
     ""Enterprise Digital Transformers2""
   ],
   ""detailed_results"": {
@@ -582,19 +398,6 @@ NTH Results:
       ""qualification_status"": ""Passed"",
       ""mandatory_status"": ""Failed"",
       ""nth_results"": {},
-      ""final_status"": ""Failed""
-    },
-    ""Software ISVs & System Integrators"": {
-      ""audience"": ""Software ISVs & System Integrators"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Passed"",
-      ""nth_results"": {
-        ""score"": 0.0,
-        ""total_criteria"": 8,
-        ""passed_criteria"": 0,
-        ""nd_criteria"": 0,
-        ""pass_rate"": 0.0
-      },
       ""final_status"": ""Failed""
     },
     ""Enterprise Digital Transformers2"": {
@@ -706,6 +509,20 @@ NTH Results:
   ""product"": ""AI"",
   ""general_status"": true,
   ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""No"",
+    ""Data-First Innovators"": ""No"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
     ""Enterprise Digital Transformers"": ""Yes"",
     ""Data-First Innovators"": ""No"",
     ""Software ISVs & System Integrators"": ""No"",
@@ -753,6 +570,238 @@ NTH Results:
   },
   ""qualified_audiences"": [],
   ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""No"",
+    ""Data-First Innovators"": ""No"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""No"",
+    ""Data-First Innovators"": ""No"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""Yes"",
+    ""Data-First Innovators"": ""No"",
+    ""Software ISVs & System Integrators"": ""Yes"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""Yes""
+  },
+  ""qualified_audiences"": [
+    ""Enterprise Digital Transformers"",
+    ""Software ISVs & System Integrators"",
+    ""Enterprise Digital Transformers2""
+  ],
+  ""detailed_results"": {
+    ""Enterprise Digital Transformers"": {
+      ""audience"": ""Enterprise Digital Transformers"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Software ISVs & System Integrators"": {
+      ""audience"": ""Software ISVs & System Integrators"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.0,
+        ""total_criteria"": 8,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0.0
+      },
+      ""final_status"": ""Failed""
+    },
+    ""Enterprise Digital Transformers2"": {
+      ""audience"": ""Enterprise Digital Transformers2"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""Yes"",
+    ""Data-First Innovators"": ""No"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""Yes""
+  },
+  ""qualified_audiences"": [
+    ""Enterprise Digital Transformers"",
+    ""Enterprise Digital Transformers2""
+  ],
+  ""detailed_results"": {
+    ""Enterprise Digital Transformers"": {
+      ""audience"": ""Enterprise Digital Transformers"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Enterprise Digital Transformers2"": {
+      ""audience"": ""Enterprise Digital Transformers2"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""Yes"",
+    ""Data-First Innovators"": ""No"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""Yes""
+  },
+  ""qualified_audiences"": [
+    ""Enterprise Digital Transformers"",
+    ""Enterprise Digital Transformers2""
+  ],
+  ""detailed_results"": {
+    ""Enterprise Digital Transformers"": {
+      ""audience"": ""Enterprise Digital Transformers"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Enterprise Digital Transformers2"": {
+      ""audience"": ""Enterprise Digital Transformers2"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""Yes"",
+    ""Data-First Innovators"": ""No"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""Yes""
+  },
+  ""qualified_audiences"": [
+    ""Enterprise Digital Transformers"",
+    ""Enterprise Digital Transformers2""
+  ],
+  ""detailed_results"": {
+    ""Enterprise Digital Transformers"": {
+      ""audience"": ""Enterprise Digital Transformers"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Enterprise Digital Transformers2"": {
+      ""audience"": ""Enterprise Digital Transformers2"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""Yes"",
+    ""Data-First Innovators"": ""No"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""Yes""
+  },
+  ""qualified_audiences"": [
+    ""Enterprise Digital Transformers"",
+    ""Enterprise Digital Transformers2""
+  ],
+  ""detailed_results"": {
+    ""Enterprise Digital Transformers"": {
+      ""audience"": ""Enterprise Digital Transformers"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Enterprise Digital Transformers2"": {
+      ""audience"": ""Enterprise Digital Transformers2"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
 }","NOT QUALIFIED"
 "Electronic Arts (EA)","ea.com","https://www.linkedin.com/company/electronic-arts","**1. Basic Company Information:**
 
@@ -843,27 +892,12 @@ NTH Results:
     ""Gaming"": {
       ""audience"": ""Gaming"",
       ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Passed"",
-      ""nth_results"": {
-        ""score"": 0.25,
-        ""total_criteria"": 4,
-        ""passed_criteria"": 1,
-        ""nd_criteria"": 2,
-        ""pass_rate"": 0.25
-      },
-      ""final_status"": ""Qualified""
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
     }
   }
-}","QUALIFIED: Gaming
-NTH Score: 0.250
-Total NTH Criteria: 4
-Passed: 1
-ND (No Data): 2
-NTH Results:
-• Publisher has more than 100 employees: Passed
-• Publishes updates: ND
-• Operates a dedicated game launcher/platform: ND
-• Mentions DDoS protection or past attacks mitigation: Not Passed"
+}","NOT QUALIFIED"
 "CD Projekt","cdprojektred.com","https://www.linkedin.com/company/cd-projekt-red","1. **Basic Company Information:**
    * **Company Name:** CD Projekt S.A.
    * **Founding Year:** May 1994
@@ -921,12 +955,27 @@ NTH Results:
     ""Gaming"": {
       ""audience"": ""Gaming"",
       ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.25,
+        ""total_criteria"": 4,
+        ""passed_criteria"": 1,
+        ""nd_criteria"": 2,
+        ""pass_rate"": 0.25
+      },
+      ""final_status"": ""Qualified""
     }
   }
-}","NOT QUALIFIED"
+}","QUALIFIED: Gaming
+NTH Score: 0.250
+Total NTH Criteria: 4
+Passed: 1
+ND (No Data): 2
+NTH Results:
+• Publisher has more than 100 employees: Passed
+• Publishes updates: ND
+• Operates a dedicated game launcher/platform: Not Passed
+• Mentions DDoS protection or past attacks mitigation: ND"
 "Activision Blizzard","activisionblizzard.com","https://www.linkedin.com/company/activision-blizzard","**1. Basic Company Information:**
 
 - **Company Name:** Activision Blizzard, Inc.
@@ -1067,28 +1116,6 @@ NTH Results:
   ""product"": ""CDN"",
   ""general_status"": true,
   ""qualification_results"": {
-    ""Software/SaaS"": ""Yes"",
-    ""Media & Entertainment"": ""No"",
-    ""Gaming"": ""No"",
-    ""Finance"": ""No""
-  },
-  ""qualified_audiences"": [
-    ""Software/SaaS""
-  ],
-  ""detailed_results"": {
-    ""Software/SaaS"": {
-      ""audience"": ""Software/SaaS"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    }
-  }
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","CDN","{
-  ""product"": ""CDN"",
-  ""general_status"": true,
-  ""qualification_results"": {
     ""Software/SaaS"": ""No"",
     ""Media & Entertainment"": ""No"",
     ""Gaming"": ""No"",
@@ -1101,89 +1128,13 @@ NTH Results:
   ""product"": ""CDN"",
   ""general_status"": true,
   ""qualification_results"": {
-    ""Software/SaaS"": ""Yes"",
+    ""Software/SaaS"": ""No"",
     ""Media & Entertainment"": ""No"",
     ""Gaming"": ""No"",
     ""Finance"": ""No""
   },
-  ""qualified_audiences"": [
-    ""Software/SaaS""
-  ],
-  ""detailed_results"": {
-    ""Software/SaaS"": {
-      ""audience"": ""Software/SaaS"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    }
-  }
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","CDN","{
-  ""product"": ""CDN"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Software/SaaS"": ""Yes"",
-    ""Media & Entertainment"": ""No"",
-    ""Gaming"": ""No"",
-    ""Finance"": ""No""
-  },
-  ""qualified_audiences"": [
-    ""Software/SaaS""
-  ],
-  ""detailed_results"": {
-    ""Software/SaaS"": {
-      ""audience"": ""Software/SaaS"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    }
-  }
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","CDN","{
-  ""product"": ""CDN"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Software/SaaS"": ""Yes"",
-    ""Media & Entertainment"": ""No"",
-    ""Gaming"": ""No"",
-    ""Finance"": ""No""
-  },
-  ""qualified_audiences"": [
-    ""Software/SaaS""
-  ],
-  ""detailed_results"": {
-    ""Software/SaaS"": {
-      ""audience"": ""Software/SaaS"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    }
-  }
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","CDN","{
-  ""product"": ""CDN"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Software/SaaS"": ""Yes"",
-    ""Media & Entertainment"": ""No"",
-    ""Gaming"": ""No"",
-    ""Finance"": ""No""
-  },
-  ""qualified_audiences"": [
-    ""Software/SaaS""
-  ],
-  ""detailed_results"": {
-    ""Software/SaaS"": {
-      ""audience"": ""Software/SaaS"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    }
-  }
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
 }","NOT QUALIFIED"
 "nan","nan","nan","nan","nan","nan","CDN","{
   ""product"": ""CDN"",
@@ -1213,45 +1164,13 @@ NTH Results:
   ""product"": ""CDN"",
   ""general_status"": true,
   ""qualification_results"": {
-    ""Software/SaaS"": ""Yes"",
+    ""Software/SaaS"": ""No"",
     ""Media & Entertainment"": ""No"",
     ""Gaming"": ""No"",
     ""Finance"": ""No""
   },
-  ""qualified_audiences"": [
-    ""Software/SaaS""
-  ],
-  ""detailed_results"": {
-    ""Software/SaaS"": {
-      ""audience"": ""Software/SaaS"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    }
-  }
-}","NOT QUALIFIED"
-"nan","nan","nan","nan","nan","nan","CDN","{
-  ""product"": ""CDN"",
-  ""general_status"": true,
-  ""qualification_results"": {
-    ""Software/SaaS"": ""Yes"",
-    ""Media & Entertainment"": ""No"",
-    ""Gaming"": ""No"",
-    ""Finance"": ""No""
-  },
-  ""qualified_audiences"": [
-    ""Software/SaaS""
-  ],
-  ""detailed_results"": {
-    ""Software/SaaS"": {
-      ""audience"": ""Software/SaaS"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    }
-  }
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
 }","NOT QUALIFIED"
 "nan","nan","nan","nan","nan","nan","CDN","{
   ""product"": ""CDN"",
@@ -1269,23 +1188,73 @@ NTH Results:
   ""product"": ""CDN"",
   ""general_status"": true,
   ""qualification_results"": {
-    ""Software/SaaS"": ""Yes"",
+    ""Software/SaaS"": ""No"",
     ""Media & Entertainment"": ""No"",
     ""Gaming"": ""No"",
     ""Finance"": ""No""
   },
-  ""qualified_audiences"": [
-    ""Software/SaaS""
-  ],
-  ""detailed_results"": {
-    ""Software/SaaS"": {
-      ""audience"": ""Software/SaaS"",
-      ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
-      ""final_status"": ""Failed""
-    }
-  }
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","CDN","{
+  ""product"": ""CDN"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Software/SaaS"": ""No"",
+    ""Media & Entertainment"": ""No"",
+    ""Gaming"": ""No"",
+    ""Finance"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","CDN","{
+  ""product"": ""CDN"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Software/SaaS"": ""No"",
+    ""Media & Entertainment"": ""No"",
+    ""Gaming"": ""No"",
+    ""Finance"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","CDN","{
+  ""product"": ""CDN"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Software/SaaS"": ""No"",
+    ""Media & Entertainment"": ""No"",
+    ""Gaming"": ""No"",
+    ""Finance"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","CDN","{
+  ""product"": ""CDN"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Software/SaaS"": ""No"",
+    ""Media & Entertainment"": ""No"",
+    ""Gaming"": ""No"",
+    ""Finance"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"nan","nan","nan","nan","nan","nan","CDN","{
+  ""product"": ""CDN"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Software/SaaS"": ""No"",
+    ""Media & Entertainment"": ""No"",
+    ""Gaming"": ""No"",
+    ""Finance"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
 }","NOT QUALIFIED"
 "nan","nan","nan","nan","nan","nan","CDN","{
   ""product"": ""CDN"",
@@ -1548,8 +1517,14 @@ NTH Results:
     ""Gaming & Game Development"": {
       ""audience"": ""Gaming & Game Development"",
       ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Failed"",
-      ""nth_results"": {},
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
       ""final_status"": ""Failed""
     }
   }
@@ -1866,14 +1841,8 @@ NTH Results:
     ""Online Gaming"": {
       ""audience"": ""Online Gaming"",
       ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Passed"",
-      ""nth_results"": {
-        ""score"": 0.0,
-        ""total_criteria"": 3,
-        ""passed_criteria"": 0,
-        ""nd_criteria"": 2,
-        ""pass_rate"": 0.0
-      },
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
       ""final_status"": ""Failed""
     }
   }
@@ -2024,14 +1993,8 @@ NTH Results:
     ""Online Gaming"": {
       ""audience"": ""Online Gaming"",
       ""qualification_status"": ""Passed"",
-      ""mandatory_status"": ""Passed"",
-      ""nth_results"": {
-        ""score"": 0.0,
-        ""total_criteria"": 3,
-        ""passed_criteria"": 0,
-        ""nd_criteria"": 2,
-        ""pass_rate"": 0.0
-      },
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
       ""final_status"": ""Failed""
     }
   }

@@ -31,7 +31,7 @@ if str(CRITERIA_SRC_PATH) not in sys.path:
 if str(CRITERIA_PROCESSOR_PATH) not in sys.path:
     sys.path.insert(0, str(CRITERIA_PROCESSOR_PATH))
 
-def run_criteria_processor(input_file_path: str, load_all_companies: bool = False):
+def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None):
     """Запускаем criteria_processor как отдельный процесс"""
     import subprocess
     import shutil
@@ -44,13 +44,21 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
                 str(CRITERIA_PROCESSOR_PATH / "main.py"),
                 "--all-files"
             ]
+            if session_id:
+                cmd.extend(["--session-id", session_id])
         else:
-            # Копируем файл в data папку criteria_processor
-            source_path = Path(input_file_path)
-            target_path = CRITERIA_PROCESSOR_PATH / "data" / source_path.name
+            # Очищаем папку data от старых файлов перед копированием нового
+            data_dir = CRITERIA_PROCESSOR_PATH / "data"
+            data_dir.mkdir(exist_ok=True)
             
-            # Создаем data папку если не существует
-            target_path.parent.mkdir(exist_ok=True)
+            # Удаляем все CSV файлы из data папки
+            for old_file in data_dir.glob("*.csv"):
+                old_file.unlink()
+                logger.info(f"Removed old file: {old_file}")
+            
+            # Копируем новый файл в data папку criteria_processor
+            source_path = Path(input_file_path)
+            target_path = data_dir / source_path.name
             
             # Логируем пути
             logger.info(f"Copying file: {source_path} -> {target_path}")
@@ -68,7 +76,8 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
             cmd = [
                 "python", 
                 str(CRITERIA_PROCESSOR_PATH / "main.py"),
-                "--file", f"data/{target_path.name}"  # Путь относительно criteria_processor
+                "--file", f"data/{target_path.name}",  # Путь относительно criteria_processor
+                "--session-id", session_id  # Передаем session_id для создания отдельной папки
             ]
         
         # Меняем рабочую директорию на criteria_processor
@@ -163,7 +172,8 @@ async def run_criteria_analysis_task(
             None,
             run_criteria_processor,
             str(input_file_path),
-            load_all_companies
+            load_all_companies,
+            session_id
         )
         
         # Проверяем результат выполнения процесса
@@ -304,17 +314,27 @@ async def get_criteria_session_results(session_id: str):
             detail=f"Analysis not completed. Current status: {session_data['status']}"
         )
     
-    # Ищем файлы результатов в output папке criteria_processor
-    results_dir = CRITERIA_PROCESSOR_PATH / "output"
+    # Ищем файлы результатов в папке сессии
+    session_results_dir = CRITERIA_PROCESSOR_PATH / "output" / session_id
+    
+    if not session_results_dir.exists():
+        return {
+            "session_id": session_id, 
+            "status": "completed",
+            "results_count": 0,
+            "results": [],
+            "message": f"Session results directory not found: {session_results_dir}"
+        }
+    
     result_files = []
     
-    # Поиск CSV и JSON файлов с результатами
+    # Поиск CSV и JSON файлов с результатами в папке сессии
     for pattern in ["*.csv", "*.json"]:
-        result_files.extend(results_dir.glob(f"**/{pattern}"))
+        result_files.extend(session_results_dir.glob(pattern))
     
-    # Возвращаем последние созданные файлы (предполагаем что это наши результаты)
+    # Возвращаем последние созданные файлы из папки сессии
     if result_files:
-        # Берем самый свежий файл
+        # Берем самый свежий файл из папки сессии
         latest_file = max(result_files, key=os.path.getctime)
         
         try:
@@ -384,12 +404,16 @@ async def download_criteria_results(session_id: str):
             detail=f"Analysis not completed. Current status: {session_data['status']}"
         )
     
-    # Ищем файлы результатов в папке criteria_processor/output
-    results_dir = CRITERIA_PROCESSOR_PATH / "output"
-    result_files = list(results_dir.glob("**/*.csv"))
+    # Ищем файлы результатов в папке сессии
+    session_results_dir = CRITERIA_PROCESSOR_PATH / "output" / session_id
+    
+    if not session_results_dir.exists():
+        raise HTTPException(status_code=404, detail=f"Session results directory not found: {session_id}")
+    
+    result_files = list(session_results_dir.glob("*.csv"))
     
     if result_files:
-        # Берем самый свежий CSV файл
+        # Берем самый свежий CSV файл из папки сессии
         latest_file = max(result_files, key=os.path.getctime)
         
         return FileResponse(
@@ -437,23 +461,19 @@ async def get_criteria_files():
         if ".backup_" in file_path.name or ".deleted_" in file_path.name:
             continue
         try:
-            # Читаем первые несколько строк для получения метаданных
-            df = pd.read_csv(file_path, nrows=5)
+            # Читаем весь файл для правильного подсчета строк
+            df = pd.read_csv(file_path)
             
-            # Безопасно подсчитываем строки в полном файле
-            try:
-                full_df = pd.read_csv(file_path)
-                total_rows = len(full_df)
-            except:
-                total_rows = len(df)
+            # Количество строк данных (без header)
+            total_rows = len(df)
             
             files.append({
                 "filename": file_path.name,
                 "full_path": str(file_path),
                 "size": file_path.stat().st_size,
                 "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
-                "rows_preview": len(df),
-                "total_rows": total_rows,
+                "rows_preview": min(5, total_rows),  # Показываем до 5 строк для preview
+                "total_rows": total_rows,  # Реальное количество строк данных
                 "columns": list(df.columns) if not df.empty else []
             })
         except Exception as e:

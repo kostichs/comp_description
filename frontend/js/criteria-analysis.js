@@ -110,9 +110,10 @@ class CriteriaAnalysis {
             this.currentSessionId = result.session_id;
             document.getElementById('criteria-session-id').textContent = this.currentSessionId;
             
-            this.showStatus('Analysis started...');
+                        this.showStatus('Analysis started...');
+            this.resetResultsPanel();
             this.startStatusChecking();
-            
+
         } catch (error) {
             console.error('Upload error:', error);
             this.showStatus(`Error: ${error.message}`, 'error');
@@ -218,20 +219,24 @@ class CriteriaAnalysis {
         const resultsSection = document.getElementById('criteria-results');
         const resultsCount = document.getElementById('results-count');
         const resultsTable = document.getElementById('results-table');
+        const placeholder = document.getElementById('no-results-placeholder');
 
-        resultsSection.style.display = 'block';
+        // Hide placeholder and show results panel
+        if (placeholder) placeholder.style.display = 'none';
+        resultsSection.style.display = 'flex';
+        
         resultsCount.textContent = result.results_count || 0;
 
         if (result.results && result.results.length > 0) {
             this.createResultsTable(result.results, resultsTable);
         } else {
-            resultsTable.innerHTML = '<p>Нет данных для отображения</p>';
+            resultsTable.innerHTML = '<p>No data to display</p>';
         }
     }
 
     createResultsTable(data, container) {
         if (!data || data.length === 0) {
-            container.innerHTML = '<p>Нет данных для отображения</p>';
+            container.innerHTML = '<p>No data to display</p>';
             return;
         }
 
@@ -275,7 +280,7 @@ class CriteriaAnalysis {
 
         if (data.length > 10) {
             const note = document.createElement('p');
-            note.textContent = `Показано первые 10 из ${data.length} записей`;
+            note.textContent = `Showing first 10 of ${data.length} records`;
             note.className = 'table-note';
             container.appendChild(note);
         }
@@ -331,6 +336,15 @@ class CriteriaAnalysis {
         }
     }
 
+    resetResultsPanel() {
+        const resultsSection = document.getElementById('criteria-results');
+        const placeholder = document.getElementById('no-results-placeholder');
+        
+        // Hide results and show placeholder
+        resultsSection.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'flex';
+    }
+
     async loadSessions() {
         try {
             const response = await fetch('/api/criteria/sessions');
@@ -357,7 +371,7 @@ class CriteriaAnalysis {
         }
         
         if (!sessions || sessions.length === 0) {
-            container.innerHTML = '<p>Нет доступных сессий</p>';
+            container.innerHTML = '<p>No available sessions</p>';
             return;
         }
 
@@ -375,7 +389,7 @@ class CriteriaAnalysis {
                 </div>
                 <button onclick="criteriaAnalysis.loadSession('${session.session_id}')" 
                         ${session.status !== 'completed' ? 'disabled' : ''}>
-                    Загрузить
+                    Load
                 </button>
             `;
             sessionsList.appendChild(sessionDiv);

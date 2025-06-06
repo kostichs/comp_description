@@ -9,20 +9,28 @@ from datetime import datetime
 from src.utils.config import OUTPUT_DIR
 from src.utils.logging import log_info
 
-def save_results(results, product, timestamp=None):
-    """Save results to both JSON and CSV files"""
+def save_results(results, product, timestamp=None, session_id=None):
+    """Save results to both JSON and CSV files in session-specific directory"""
     if not timestamp:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    # Create session-specific output directory
+    if session_id:
+        session_output_dir = os.path.join(OUTPUT_DIR, session_id)
+        log_info(f"📁 Создаем папку сессии: {session_output_dir}")
+    else:
+        session_output_dir = OUTPUT_DIR
+        log_info(f"📁 Используем общую папку: {session_output_dir}")
+    
+    # Ensure session output directory exists
+    os.makedirs(session_output_dir, exist_ok=True)
     
     # Create output filenames
     json_filename = f"analysis_results_{product}_{timestamp}.json"
     csv_filename = f"analysis_results_{product}_{timestamp}.csv"
     
-    json_path = os.path.join(OUTPUT_DIR, json_filename)
-    csv_path = os.path.join(OUTPUT_DIR, csv_filename)
-    
-    # Ensure output directory exists
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    json_path = os.path.join(session_output_dir, json_filename)
+    csv_path = os.path.join(session_output_dir, csv_filename)
     
     # Save to JSON with pretty formatting
     with open(json_path, 'w', encoding='utf-8') as f:

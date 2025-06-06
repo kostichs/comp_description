@@ -31,6 +31,12 @@ def parse_arguments():
         help='Загрузить ВСЕ CSV/Excel файлы из папки data/'
     )
     
+    parser.add_argument(
+        '--session-id', '-s',
+        type=str,
+        help='ID сессии для создания отдельной папки результатов'
+    )
+    
     return parser.parse_args()
 
 def main():
@@ -61,7 +67,8 @@ def main():
         log_info("Начинаем анализ...")
         results = run_analysis(
             companies_file=args.file,
-            load_all_companies=args.all_files
+            load_all_companies=args.all_files,
+            session_id=args.session_id
         )
         
         log_info(f"Анализ завершен успешно! Обработано компаний: {len(results)}")

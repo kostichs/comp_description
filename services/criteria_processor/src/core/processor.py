@@ -19,7 +19,7 @@ from src.data.savers import save_results
 from src.utils.logging import log_info, log_error
 from src.utils.config import PROCESSING_CONFIG
 
-def run_analysis(companies_file=None, load_all_companies=False):
+def run_analysis(companies_file=None, load_all_companies=False, session_id=None):
     """Run analysis: separate record for each company-product combination"""
     try:
         # Load all data
@@ -213,7 +213,7 @@ def run_analysis(companies_file=None, load_all_companies=False):
         
         # Save results
         log_info("Сохраняем результаты...")
-        json_path, csv_path = save_results(all_results, "ALL_PRODUCTS")
+        json_path, csv_path = save_results(all_results, "ALL_PRODUCTS", session_id=session_id)
         
         log_info(f"""
 Обработка завершена:

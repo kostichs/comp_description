@@ -167,7 +167,7 @@ def run_analysis(companies_file=None, load_all_companies=False):
                             f"NTH Score: {nth_score:.3f}",
                             f"Total NTH Criteria: {nth_total}",
                             f"Passed: {nth_passed}",
-                            f"ND (No Data): {nth_nd}",
+                            f"ND: {nth_nd}",
                             "NTH Results:"
                         ]
                         

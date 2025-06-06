@@ -25,13 +25,19 @@
         "Data-First Innovators": {
           "audience": "Data-First Innovators",
           "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.25,
+            "total_criteria": 8,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 0.25
+          },
+          "final_status": "Qualified"
         }
       }
     },
-    "Qualified_Products": "NOT QUALIFIED"
+    "Qualified_Products": "QUALIFIED: Data-First Innovators\nNTH Score: 0.250\nTotal NTH Criteria: 8\nPassed: 2\nND (No Data): 0\nNTH Results:\n• Mentions fast iteration, innovation, or scaling of digital services: Not Passed\n• References using customer behavior or data insights to enhance services: Passed"
   },
   {
     "Company_Name": "CD Projekt",
@@ -119,154 +125,6 @@
       "product": "AI",
       "general_status": true,
       "qualification_results": {
-        "Enterprise Digital Transformers": "Yes",
-        "Data-First Innovators": "No",
-        "Software ISVs & System Integrators": "Yes",
-        "AI-Native Startups": "No",
-        "Public Sector Agencies": "No",
-        "Enterprise Digital Transformers2": "Yes"
-      },
-      "qualified_audiences": [
-        "Enterprise Digital Transformers",
-        "Software ISVs & System Integrators",
-        "Enterprise Digital Transformers2"
-      ],
-      "detailed_results": {
-        "Enterprise Digital Transformers": {
-          "audience": "Enterprise Digital Transformers",
-          "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
-        },
-        "Software ISVs & System Integrators": {
-          "audience": "Software ISVs & System Integrators",
-          "qualification_status": "Passed",
-          "mandatory_status": "Passed",
-          "nth_results": {
-            "score": 0.0,
-            "total_criteria": 8,
-            "passed_criteria": 0,
-            "nd_criteria": 0,
-            "pass_rate": 0.0
-          },
-          "final_status": "Failed"
-        },
-        "Enterprise Digital Transformers2": {
-          "audience": "Enterprise Digital Transformers2",
-          "qualification_status": "Passed",
-          "mandatory_status": "Passed",
-          "nth_results": {
-            "score": 0,
-            "total_criteria": 0,
-            "passed_criteria": 0,
-            "nd_criteria": 0,
-            "pass_rate": 0
-          },
-          "final_status": "Failed"
-        }
-      }
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "AI",
-    "All_Results": {
-      "product": "AI",
-      "general_status": true,
-      "qualification_results": {
-        "Enterprise Digital Transformers": "Yes",
-        "Data-First Innovators": "No",
-        "Software ISVs & System Integrators": "Yes",
-        "AI-Native Startups": "No",
-        "Public Sector Agencies": "No",
-        "Enterprise Digital Transformers2": "Yes"
-      },
-      "qualified_audiences": [
-        "Enterprise Digital Transformers",
-        "Software ISVs & System Integrators",
-        "Enterprise Digital Transformers2"
-      ],
-      "detailed_results": {
-        "Enterprise Digital Transformers": {
-          "audience": "Enterprise Digital Transformers",
-          "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
-        },
-        "Software ISVs & System Integrators": {
-          "audience": "Software ISVs & System Integrators",
-          "qualification_status": "Passed",
-          "mandatory_status": "Passed",
-          "nth_results": {
-            "score": 0.0,
-            "total_criteria": 8,
-            "passed_criteria": 0,
-            "nd_criteria": 0,
-            "pass_rate": 0.0
-          },
-          "final_status": "Failed"
-        },
-        "Enterprise Digital Transformers2": {
-          "audience": "Enterprise Digital Transformers2",
-          "qualification_status": "Passed",
-          "mandatory_status": "Passed",
-          "nth_results": {
-            "score": 0,
-            "total_criteria": 0,
-            "passed_criteria": 0,
-            "nd_criteria": 0,
-            "pass_rate": 0
-          },
-          "final_status": "Failed"
-        }
-      }
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "AI",
-    "All_Results": {
-      "product": "AI",
-      "general_status": true,
-      "qualification_results": {
-        "Enterprise Digital Transformers": "No",
-        "Data-First Innovators": "No",
-        "Software ISVs & System Integrators": "No",
-        "AI-Native Startups": "No",
-        "Public Sector Agencies": "No",
-        "Enterprise Digital Transformers2": "No"
-      },
-      "qualified_audiences": [],
-      "detailed_results": {}
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "AI",
-    "All_Results": {
-      "product": "AI",
-      "general_status": true,
-      "qualification_results": {
         "Enterprise Digital Transformers": "No",
         "Data-First Innovators": "No",
         "Software ISVs & System Integrators": "No",
@@ -339,53 +197,15 @@
       "product": "AI",
       "general_status": true,
       "qualification_results": {
-        "Enterprise Digital Transformers": "Yes",
+        "Enterprise Digital Transformers": "No",
         "Data-First Innovators": "No",
-        "Software ISVs & System Integrators": "Yes",
+        "Software ISVs & System Integrators": "No",
         "AI-Native Startups": "No",
         "Public Sector Agencies": "No",
-        "Enterprise Digital Transformers2": "Yes"
+        "Enterprise Digital Transformers2": "No"
       },
-      "qualified_audiences": [
-        "Enterprise Digital Transformers",
-        "Software ISVs & System Integrators",
-        "Enterprise Digital Transformers2"
-      ],
-      "detailed_results": {
-        "Enterprise Digital Transformers": {
-          "audience": "Enterprise Digital Transformers",
-          "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
-        },
-        "Software ISVs & System Integrators": {
-          "audience": "Software ISVs & System Integrators",
-          "qualification_status": "Passed",
-          "mandatory_status": "Passed",
-          "nth_results": {
-            "score": 0.0,
-            "total_criteria": 8,
-            "passed_criteria": 0,
-            "nd_criteria": 0,
-            "pass_rate": 0.0
-          },
-          "final_status": "Failed"
-        },
-        "Enterprise Digital Transformers2": {
-          "audience": "Enterprise Digital Transformers2",
-          "qualification_status": "Passed",
-          "mandatory_status": "Passed",
-          "nth_results": {
-            "score": 0,
-            "total_criteria": 0,
-            "passed_criteria": 0,
-            "nd_criteria": 0,
-            "pass_rate": 0
-          },
-          "final_status": "Failed"
-        }
-      }
+      "qualified_audiences": [],
+      "detailed_results": {}
     },
     "Qualified_Products": "NOT QUALIFIED"
   },
@@ -523,14 +343,13 @@
       "qualification_results": {
         "Enterprise Digital Transformers": "Yes",
         "Data-First Innovators": "No",
-        "Software ISVs & System Integrators": "Yes",
+        "Software ISVs & System Integrators": "No",
         "AI-Native Startups": "No",
         "Public Sector Agencies": "No",
         "Enterprise Digital Transformers2": "Yes"
       },
       "qualified_audiences": [
         "Enterprise Digital Transformers",
-        "Software ISVs & System Integrators",
         "Enterprise Digital Transformers2"
       ],
       "detailed_results": {
@@ -539,19 +358,6 @@
           "qualification_status": "Passed",
           "mandatory_status": "Failed",
           "nth_results": {},
-          "final_status": "Failed"
-        },
-        "Software ISVs & System Integrators": {
-          "audience": "Software ISVs & System Integrators",
-          "qualification_status": "Passed",
-          "mandatory_status": "Passed",
-          "nth_results": {
-            "score": 0.0,
-            "total_criteria": 8,
-            "passed_criteria": 0,
-            "nd_criteria": 0,
-            "pass_rate": 0.0
-          },
           "final_status": "Failed"
         },
         "Enterprise Digital Transformers2": {
@@ -568,54 +374,6 @@
           "final_status": "Failed"
         }
       }
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "AI",
-    "All_Results": {
-      "product": "AI",
-      "general_status": true,
-      "qualification_results": {
-        "Enterprise Digital Transformers": "No",
-        "Data-First Innovators": "No",
-        "Software ISVs & System Integrators": "No",
-        "AI-Native Startups": "No",
-        "Public Sector Agencies": "No",
-        "Enterprise Digital Transformers2": "No"
-      },
-      "qualified_audiences": [],
-      "detailed_results": {}
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "AI",
-    "All_Results": {
-      "product": "AI",
-      "general_status": true,
-      "qualification_results": {
-        "Enterprise Digital Transformers": "No",
-        "Data-First Innovators": "No",
-        "Software ISVs & System Integrators": "No",
-        "AI-Native Startups": "No",
-        "Public Sector Agencies": "No",
-        "Enterprise Digital Transformers2": "No"
-      },
-      "qualified_audiences": [],
-      "detailed_results": {}
     },
     "Qualified_Products": "NOT QUALIFIED"
   },
@@ -760,6 +518,150 @@
           "final_status": "Failed"
         }
       }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "Yes"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Enterprise Digital Transformers2"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "mandatory_status": "Failed",
+          "nth_results": {},
+          "final_status": "Failed"
+        },
+        "Enterprise Digital Transformers2": {
+          "audience": "Enterprise Digital Transformers2",
+          "qualification_status": "Passed",
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
+          "final_status": "Failed"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "qualification_results": {
+        "Enterprise Digital Transformers": "No",
+        "Data-First Innovators": "No",
+        "Software ISVs & System Integrators": "No",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No",
+        "Enterprise Digital Transformers2": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
     },
     "Qualified_Products": "NOT QUALIFIED"
   },
@@ -883,38 +785,6 @@
       "product": "CDN",
       "general_status": true,
       "qualification_results": {
-        "Software/SaaS": "Yes",
-        "Media & Entertainment": "No",
-        "Gaming": "No",
-        "Finance": "No"
-      },
-      "qualified_audiences": [
-        "Software/SaaS"
-      ],
-      "detailed_results": {
-        "Software/SaaS": {
-          "audience": "Software/SaaS",
-          "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
-        }
-      }
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "CDN",
-    "All_Results": {
-      "product": "CDN",
-      "general_status": true,
-      "qualification_results": {
         "Software/SaaS": "No",
         "Media & Entertainment": "No",
         "Gaming": "No",
@@ -959,38 +829,6 @@
       "product": "CDN",
       "general_status": true,
       "qualification_results": {
-        "Software/SaaS": "Yes",
-        "Media & Entertainment": "No",
-        "Gaming": "No",
-        "Finance": "No"
-      },
-      "qualified_audiences": [
-        "Software/SaaS"
-      ],
-      "detailed_results": {
-        "Software/SaaS": {
-          "audience": "Software/SaaS",
-          "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
-        }
-      }
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "CDN",
-    "All_Results": {
-      "product": "CDN",
-      "general_status": true,
-      "qualification_results": {
         "Software/SaaS": "No",
         "Media & Entertainment": "No",
         "Gaming": "No",
@@ -998,70 +836,6 @@
       },
       "qualified_audiences": [],
       "detailed_results": {}
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "CDN",
-    "All_Results": {
-      "product": "CDN",
-      "general_status": true,
-      "qualification_results": {
-        "Software/SaaS": "Yes",
-        "Media & Entertainment": "No",
-        "Gaming": "No",
-        "Finance": "No"
-      },
-      "qualified_audiences": [
-        "Software/SaaS"
-      ],
-      "detailed_results": {
-        "Software/SaaS": {
-          "audience": "Software/SaaS",
-          "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
-        }
-      }
-    },
-    "Qualified_Products": "NOT QUALIFIED"
-  },
-  {
-    "Company_Name": NaN,
-    "Official_Website": NaN,
-    "LinkedIn_URL": NaN,
-    "Description": NaN,
-    "Timestamp": NaN,
-    "HubSpot_Company_ID": NaN,
-    "Product": "CDN",
-    "All_Results": {
-      "product": "CDN",
-      "general_status": true,
-      "qualification_results": {
-        "Software/SaaS": "Yes",
-        "Media & Entertainment": "No",
-        "Gaming": "No",
-        "Finance": "No"
-      },
-      "qualified_audiences": [
-        "Software/SaaS"
-      ],
-      "detailed_results": {
-        "Software/SaaS": {
-          "audience": "Software/SaaS",
-          "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
-        }
-      }
     },
     "Qualified_Products": "NOT QUALIFIED"
   },
@@ -1143,23 +917,101 @@
       "product": "CDN",
       "general_status": true,
       "qualification_results": {
-        "Software/SaaS": "Yes",
+        "Software/SaaS": "No",
         "Media & Entertainment": "No",
         "Gaming": "No",
         "Finance": "No"
       },
-      "qualified_audiences": [
-        "Software/SaaS"
-      ],
-      "detailed_results": {
-        "Software/SaaS": {
-          "audience": "Software/SaaS",
-          "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
-          "final_status": "Failed"
-        }
-      }
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": NaN,
+    "Official_Website": NaN,
+    "LinkedIn_URL": NaN,
+    "Description": NaN,
+    "Timestamp": NaN,
+    "HubSpot_Company_ID": NaN,
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "qualification_results": {
+        "Software/SaaS": "No",
+        "Media & Entertainment": "No",
+        "Gaming": "No",
+        "Finance": "No"
+      },
+      "qualified_audiences": [],
+      "detailed_results": {}
     },
     "Qualified_Products": "NOT QUALIFIED"
   },
@@ -1379,8 +1231,14 @@
         "Gaming & Game Development": {
           "audience": "Gaming & Game Development",
           "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0
+          },
           "final_status": "Failed"
         }
       }
@@ -1794,8 +1652,14 @@
         "Online Gaming": {
           "audience": "Online Gaming",
           "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 3,
+            "passed_criteria": 0,
+            "nd_criteria": 2,
+            "pass_rate": 0.0
+          },
           "final_status": "Failed"
         }
       }
@@ -1856,8 +1720,14 @@
         "Online Gaming": {
           "audience": "Online Gaming",
           "qualification_status": "Passed",
-          "mandatory_status": "Failed",
-          "nth_results": {},
+          "mandatory_status": "Passed",
+          "nth_results": {
+            "score": 0.0,
+            "total_criteria": 3,
+            "passed_criteria": 0,
+            "nd_criteria": 1,
+            "pass_rate": 0.0
+          },
           "final_status": "Failed"
         }
       }

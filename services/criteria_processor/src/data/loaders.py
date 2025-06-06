@@ -17,10 +17,43 @@ def load_file_smart(file_path):
         if file_ext in ['.csv']:
             log_debug(f"📋 Загружаем CSV файл: {os.path.basename(file_path)}")
             # Используем правильные параметры для CSV с многострочными полями
-            return pd.read_csv(file_path, quoting=1, encoding='utf-8', on_bad_lines='skip')
+            df = pd.read_csv(file_path, quoting=1, encoding='utf-8', on_bad_lines='skip')
+            
+            # ФИЛЬТРАЦИЯ ПУСТЫХ СТРОК: удаляем строки где все основные колонки пустые
+            main_columns = ['Company_Name', 'Description']  # Основные колонки для проверки
+            existing_columns = [col for col in main_columns if col in df.columns]
+            
+            if existing_columns:
+                # Удаляем строки где ВСЕ основные колонки пустые (NaN, None, пустая строка)
+                df_before = len(df)
+                df = df.dropna(subset=existing_columns, how='all')  # Удаляем строки где ВСЕ колонки NaN
+                df = df[df[existing_columns].ne('').any(axis=1)]   # Удаляем строки где ВСЕ колонки пустые строки
+                df_after = len(df)
+                
+                filtered_count = df_before - df_after
+                if filtered_count > 0:
+                    log_info(f"🧹 Отфильтровано пустых строк: {filtered_count} из {df_before}")
+                
+            return df
         elif file_ext in ['.xlsx', '.xls']:
             log_debug(f"📊 Загружаем Excel файл: {os.path.basename(file_path)}")
-            return pd.read_excel(file_path)
+            df = pd.read_excel(file_path)
+            
+            # Аналогичная фильтрация для Excel
+            main_columns = ['Company_Name', 'Description']
+            existing_columns = [col for col in main_columns if col in df.columns]
+            
+            if existing_columns:
+                df_before = len(df)
+                df = df.dropna(subset=existing_columns, how='all')
+                df = df[df[existing_columns].ne('').any(axis=1)]
+                df_after = len(df)
+                
+                filtered_count = df_before - df_after
+                if filtered_count > 0:
+                    log_info(f"🧹 Отфильтровано пустых строк: {filtered_count} из {df_before}")
+            
+            return df
         else:
             raise ValueError(f"Неподдерживаемый формат файла: {file_ext}")
     except Exception as e:
