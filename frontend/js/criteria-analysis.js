@@ -38,8 +38,23 @@ class CriteriaAnalysis {
         }
 
         const downloadBtn = document.getElementById('download-results-btn');
-        if (downloadBtn) {
+        if (downloadBtn && !downloadBtn.hasAttribute('data-bound')) {
             downloadBtn.addEventListener('click', () => this.downloadResults());
+            downloadBtn.setAttribute('data-bound', 'true');
+        }
+
+        // Также добавляем обработчик для кнопки в main page
+        const downloadBtnMain = document.getElementById('download-results-btn-main');
+        if (downloadBtnMain && !downloadBtnMain.hasAttribute('data-bound')) {
+            downloadBtnMain.addEventListener('click', () => this.downloadResults());
+            downloadBtnMain.setAttribute('data-bound', 'true');
+        }
+
+        // И для router page
+        const downloadBtnRouter = document.getElementById('download-results-btn-router');
+        if (downloadBtnRouter && !downloadBtnRouter.hasAttribute('data-bound')) {
+            downloadBtnRouter.addEventListener('click', () => this.downloadResults());
+            downloadBtnRouter.setAttribute('data-bound', 'true');
         }
 
         const loadSessionsBtn = document.getElementById('load-sessions-btn');
@@ -844,8 +859,9 @@ window.CriteriaAnalysis = CriteriaAnalysis;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Only initialize if we're on the criteria analysis page
-    if (document.getElementById('criteria-upload-form')) {
+    // Only initialize if we're on the criteria analysis page AND not already initialized
+    if (document.getElementById('criteria-upload-form') && !window.criteriaAnalysis) {
+        console.log('Initializing CriteriaAnalysis...');
         window.criteriaAnalysis = new CriteriaAnalysis();
     }
 }); 

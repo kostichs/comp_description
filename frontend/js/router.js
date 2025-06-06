@@ -139,7 +139,7 @@ class Router {
                     <h3>📊 Analysis Results</h3>
                     <div class="results-summary">
                         <p><strong>Companies Analyzed:</strong> <span id="results-count"></span></p>
-                        <button id="download-results-btn" class="download-btn">💾 Download Full Results</button>
+                        <button id="download-results-btn-router" class="download-btn">💾 Download Full Results</button>
                     </div>
                     
                     <div class="results-table-container">
