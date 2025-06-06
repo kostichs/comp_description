@@ -140,6 +140,8 @@ class CriteriaAnalysis {
         const statusText = document.getElementById('criteria-status-text');
         const progressBar = document.getElementById('criteria-progress');
         const cancelBtn = document.getElementById('cancel-criteria-btn');
+        const downloadBtn = document.getElementById('download-results-btn-main') || 
+                           document.getElementById('download-results-btn-router');
 
         statusSection.style.display = 'block';
         statusText.textContent = message;
@@ -148,9 +150,15 @@ class CriteriaAnalysis {
         if (type === 'processing') {
             progressBar.style.display = 'block';
             cancelBtn.style.display = 'inline-block';
+            if (downloadBtn) downloadBtn.style.display = 'none';
+        } else if (type === 'completed' || message.includes('завершен') || message.includes('completed')) {
+            progressBar.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            if (downloadBtn) downloadBtn.style.display = 'inline-block';
         } else {
             progressBar.style.display = 'none';
             cancelBtn.style.display = 'none';
+            if (downloadBtn) downloadBtn.style.display = 'none';
         }
     }
 
@@ -232,15 +240,12 @@ class CriteriaAnalysis {
 
     displayResults(result) {
         const resultsSection = document.getElementById('criteria-results');
-        const resultsCount = document.getElementById('results-count');
         const resultsTable = document.getElementById('results-table');
         const placeholder = document.getElementById('no-results-placeholder');
 
         // Hide placeholder and show results panel
         if (placeholder) placeholder.style.display = 'none';
         resultsSection.style.display = 'flex';
-        
-        resultsCount.textContent = result.results_count || 0;
 
         if (result.results && result.results.length > 0) {
             this.createResultsTable(result.results, resultsTable);

@@ -132,18 +132,12 @@ class Router {
                     <div class="action-buttons">
                         <button id="cancel-criteria-btn" style="display: none;">❌ Cancel</button>
                         <button id="refresh-criteria-btn">🔄 Refresh</button>
+                        <button id="download-results-btn-router" class="download-btn" style="display: none;">💾 Download Full Results</button>
                     </div>
                 </div>
 
                 <div id="criteria-results" class="results-section" style="display: none;">
-                    <h3>📊 Analysis Results</h3>
-                    <div class="results-summary">
-                        <p><strong>Companies Analyzed:</strong> <span id="results-count"></span></p>
-                        <button id="download-results-btn-router" class="download-btn">💾 Download Full Results</button>
-                    </div>
-                    
                     <div class="results-table-container">
-                        <h4>🔍 Results Preview (first 10 rows):</h4>
                         <div id="results-table"></div>
                     </div>
                 </div>
