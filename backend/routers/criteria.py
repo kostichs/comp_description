@@ -126,29 +126,7 @@ def generate_criteria_session_id() -> str:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"crit_{timestamp}"
 
-def cleanup_old_backups(original_file_path: Path, max_backups: int = 5):
-    """Очищает старые бэкап файлы, оставляя только последние max_backups штук"""
-    try:
-        criteria_dir = original_file_path.parent
-        base_name = original_file_path.stem  # Имя без расширения
-        
-        # Находим все бэкап файлы для данного файла
-        backup_files = []
-        for backup_file in criteria_dir.glob(f"{base_name}.backup_*.csv"):
-            backup_files.append(backup_file)
-        
-        # Сортируем по времени модификации (новые в конце)
-        backup_files.sort(key=lambda x: x.stat().st_mtime)
-        
-        # Удаляем старые, оставляем только последние max_backups
-        if len(backup_files) > max_backups:
-            files_to_delete = backup_files[:-max_backups]
-            for old_backup in files_to_delete:
-                old_backup.unlink()
-                logger.info(f"Deleted old backup: {old_backup}")
-                
-    except Exception as e:
-        logger.error(f"Error cleaning up backups for {original_file_path}: {e}")
+# Функция cleanup_old_backups удалена - backup файлы больше не создаются
 
 async def run_criteria_analysis_task(
     session_id: str,
@@ -457,23 +435,34 @@ async def get_criteria_files():
     
     files = []
     for file_path in criteria_dir.glob("*.csv"):
-        # Исключаем backup файлы из отображения
+        # Исключаем backup файлы из отображения (на случай если они остались от старых версий)
         if ".backup_" in file_path.name or ".deleted_" in file_path.name:
             continue
         try:
             # Читаем весь файл для правильного подсчета строк
             df = pd.read_csv(file_path)
             
-            # Количество строк данных (без header)
-            total_rows = len(df)
+            # ФИЛЬТРАЦИЯ ПУСТЫХ СТРОК для правильного подсчета
+            # Основные колонки для критериев
+            main_columns = ['Product', 'Criteria', 'Target Audience']
+            existing_columns = [col for col in main_columns if col in df.columns]
+            
+            if existing_columns:
+                # Удаляем строки где ВСЕ основные колонки пустые
+                df_filtered = df.dropna(subset=existing_columns, how='all')
+                df_filtered = df_filtered[df_filtered[existing_columns].ne('').any(axis=1)]
+                actual_rows = len(df_filtered)
+            else:
+                # Если нет основных колонок, считаем все непустые строки
+                actual_rows = len(df.dropna(how='all'))
             
             files.append({
                 "filename": file_path.name,
                 "full_path": str(file_path),
                 "size": file_path.stat().st_size,
                 "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
-                "rows_preview": min(5, total_rows),  # Показываем до 5 строк для preview
-                "total_rows": total_rows,  # Реальное количество строк данных
+                "rows_preview": min(5, actual_rows),  # Показываем до 5 строк для preview
+                "total_rows": actual_rows,  # РЕАЛЬНОЕ количество строк с данными
                 "columns": list(df.columns) if not df.empty else []
             })
         except Exception as e:
@@ -538,14 +527,7 @@ async def update_criteria_file(filename: str, file_data: dict):
         # Создаем DataFrame из переданных данных
         df = pd.DataFrame(file_data["data"], columns=file_data["columns"])
         
-        # Создаем бэкап если файл существует
-        if file_path.exists():
-            backup_path = file_path.with_suffix(f'.backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv')
-            shutil.copy2(file_path, backup_path)
-            logger.info(f"Created backup: {backup_path}")
-            
-            # Очищаем старые бэкапы - оставляем только последние 5
-            cleanup_old_backups(file_path)
+        # НЕ создаем backup файлы - пользователи их все равно не смогут достать
         
         # Сохраняем новый файл
         df.to_csv(file_path, index=False)
@@ -623,19 +605,14 @@ async def delete_criteria_file(filename: str):
         raise HTTPException(status_code=404, detail="Criteria file not found")
     
     try:
-        # Создаем бэкап перед удалением
-        backup_path = file_path.with_suffix(f'.deleted_{datetime.now().strftime("%Y%m%d_%H%M%S")}.csv')
-        shutil.copy2(file_path, backup_path)
-        
-        # Удаляем файл
+        # Удаляем файл БЕЗ создания backup
         file_path.unlink()
         
-        logger.info(f"Deleted criteria file: {filename} (backup: {backup_path})")
+        logger.info(f"Deleted criteria file: {filename}")
         
         return {
             "message": "File deleted successfully",
             "filename": filename,
-            "backup_location": str(backup_path),
             "timestamp": datetime.now().isoformat()
         }
         
@@ -643,36 +620,7 @@ async def delete_criteria_file(filename: str):
         logger.error(f"Error deleting criteria file {filename}: {e}")
         raise HTTPException(status_code=500, detail=f"Error deleting file: {str(e)}")
 
-@router.post("/cleanup-backups")
-async def cleanup_all_backups():
-    """Очистить все старые бэкап файлы критериев"""
-    try:
-        criteria_dir = CRITERIA_PROCESSOR_PATH / "criteria"
-        
-        if not criteria_dir.exists():
-            return {"message": "Criteria directory not found", "cleaned": 0}
-        
-        cleaned_count = 0
-        
-        # Находим все основные CSV файлы (исключая бэкапы)
-        for file_path in criteria_dir.glob("*.csv"):
-            if ".backup_" not in file_path.name and ".deleted_" not in file_path.name:
-                old_count = len(list(criteria_dir.glob(f"{file_path.stem}.backup_*.csv")))
-                cleanup_old_backups(file_path, max_backups=3)  # Оставляем только 3 последних
-                new_count = len(list(criteria_dir.glob(f"{file_path.stem}.backup_*.csv")))
-                cleaned_count += (old_count - new_count)
-        
-        logger.info(f"Cleaned up {cleaned_count} old backup files")
-        
-        return {
-            "message": "Backup cleanup completed",
-            "cleaned_files": cleaned_count,
-            "timestamp": datetime.now().isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"Error during backup cleanup: {e}")
-        raise HTTPException(status_code=500, detail=f"Error cleaning backups: {str(e)}")
+# Эндпоинт cleanup-backups удален - backup файлы больше не создаются
 
 @router.get("/health")
 async def criteria_service_health():

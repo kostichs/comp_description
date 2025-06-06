@@ -475,8 +475,8 @@ class CriteriaAnalysis {
                            onchange="criteriaAnalysis.toggleCriteriaSelection('${file.filename}', this.checked)">
                     <div>
                         <strong>${file.filename}</strong>
-                        <br><small style="color: #6c757d;">
-                            ${file.rows_preview || 0} rows | Modified: ${new Date(file.modified).toLocaleDateString()}
+                        <br>                        <small style="color: #6c757d;">
+                            ${file.total_rows || 0} rows | Modified: ${new Date(file.modified).toLocaleDateString()}
                         </small>
                         ${file.error ? `<br><small style="color: #dc3545;">Error: ${file.error}</small>` : ''}
                     </div>
