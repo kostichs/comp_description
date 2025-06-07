@@ -340,12 +340,12 @@ class CriteriaAnalysis {
             return;
         }
 
-        const table = document.createElement('table');
-        table.className = 'results-table';
-        table.style.width = '100%';
-        table.style.borderCollapse = 'collapse';
+        // Параметры пагинации
+        const itemsPerPage = 20;
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+        let currentPage = 1;
 
-        // Define which columns to display
+        // Колонки для отображения
         const columnsToShow = [
             { key: 'Company_Name', label: 'Company' },
             { key: 'Description', label: 'Description' },
@@ -354,154 +354,237 @@ class CriteriaAnalysis {
             { key: 'Qualified_Products', label: 'Qualified Products' }
         ];
 
-        // Create header
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        
-        columnsToShow.forEach(column => {
-            const th = document.createElement('th');
-            th.textContent = column.label;
-            th.style.padding = '12px';
-            th.style.textAlign = 'left';
-            th.style.borderBottom = '1px solid #ddd';
-            th.style.backgroundColor = '#f8f9fa';
-            th.style.fontWeight = 'bold';
-            th.style.verticalAlign = 'top';
-            headerRow.appendChild(th);
-        });
-        
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
+        // Функция для создания таблицы
+        const renderTable = (pageNumber) => {
+            const startIndex = (pageNumber - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, data.length);
+            const pageData = data.slice(startIndex, endIndex);
 
-        // Create body
-        const tbody = document.createElement('tbody');
-        data.slice(0, 10).forEach(row => { // Show only first 10 rows
-            const tr = document.createElement('tr');
-            tr.style.borderBottom = '1px solid #ddd';
+            // Очищаем контейнер
+            const tableContainer = document.createElement('div');
+            tableContainer.className = 'table-container';
+
+            const table = document.createElement('table');
+            table.className = 'results-table';
+            table.style.width = '100%';
+            table.style.borderCollapse = 'collapse';
+
+            // Создаем заголовок
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
             
             columnsToShow.forEach(column => {
-                const td = document.createElement('td');
-                td.style.padding = '12px';
-                td.style.verticalAlign = 'top';
-                td.style.borderBottom = '1px solid #ddd';
-                
-                if (column.key === 'Company_Name') {
-                    // Combine company name with website and LinkedIn
-                    const companyName = row['Company_Name'] || '';
-                    const website = row['Official_Website'] || '';
-                    const linkedin = row['LinkedIn_URL'] || '';
-                    
-                    // Create company name as bold
-                    const nameDiv = document.createElement('div');
-                    nameDiv.style.fontWeight = 'bold';
-                    nameDiv.style.marginBottom = '4px';
-                    nameDiv.textContent = companyName;
-                    td.appendChild(nameDiv);
-                    
-                    // Add website if available
-                    if (website) {
-                        const websiteDiv = document.createElement('div');
-                        websiteDiv.style.fontSize = '12px';
-                        websiteDiv.style.marginBottom = '2px';
-                        
-                        const websiteLink = document.createElement('a');
-                        websiteLink.href = website.startsWith('http') ? website : `https://${website}`;
-                        websiteLink.target = '_blank';
-                        websiteLink.rel = 'noopener noreferrer';
-                        websiteLink.style.color = '#007bff';
-                        websiteLink.style.textDecoration = 'none';
-                        websiteLink.style.fontSize = '12px';
-                        websiteLink.textContent = '🌐 Website';
-                        
-                        websiteLink.addEventListener('mouseover', () => {
-                            websiteLink.style.textDecoration = 'underline';
-                        });
-                        websiteLink.addEventListener('mouseout', () => {
-                            websiteLink.style.textDecoration = 'none';
-                        });
-                        
-                        websiteDiv.appendChild(websiteLink);
-                        td.appendChild(websiteDiv);
-                    }
-                    
-                    // Add LinkedIn if available
-                    if (linkedin) {
-                        const linkedinDiv = document.createElement('div');
-                        linkedinDiv.style.fontSize = '12px';
-                        
-                        const linkedinLink = document.createElement('a');
-                        linkedinLink.href = linkedin;
-                        linkedinLink.target = '_blank';
-                        linkedinLink.rel = 'noopener noreferrer';
-                        linkedinLink.style.color = '#0077b5';
-                        linkedinLink.style.textDecoration = 'none';
-                        linkedinLink.style.fontSize = '12px';
-                        linkedinLink.textContent = '🔗 LinkedIn';
-                        
-                        linkedinLink.addEventListener('mouseover', () => {
-                            linkedinLink.style.textDecoration = 'underline';
-                        });
-                        linkedinLink.addEventListener('mouseout', () => {
-                            linkedinLink.style.textDecoration = 'none';
-                        });
-                        
-                        linkedinDiv.appendChild(linkedinLink);
-                        td.appendChild(linkedinDiv);
-                    }
-                } else {
-                    // Handle other columns
-                    const value = row[column.key];
-                    
-                    if (column.key === 'All_Results' && typeof value === 'object') {
-                        // Format JSON with line breaks - no fancy styling
-                        td.textContent = JSON.stringify(value, null, 2);
-                        td.style.fontFamily = 'monospace';
-                        td.style.fontSize = '12px';
-                        td.style.whiteSpace = 'pre-wrap';
-                    } else if (column.key === 'Qualified_Products' && value) {
-                        // Format text with line breaks - no colors
-                        const content = value.toString().replace(/\\n/g, '\n');
-                        td.textContent = content;
-                        td.style.whiteSpace = 'pre-wrap';
-                        td.style.fontSize = '13px';
-                    } else if (typeof value === 'object') {
-                        // Other JSON objects
-                        td.textContent = JSON.stringify(value, null, 2);
-                        td.style.fontFamily = 'monospace';
-                        td.style.fontSize = '12px';
-                        td.style.whiteSpace = 'pre-wrap';
-                    } else {
-                        td.textContent = value || '';
-                        if (column.key === 'Description') {
-                            td.style.maxWidth = '400px';
-                            td.style.whiteSpace = 'pre-wrap';
-                            td.style.wordWrap = 'break-word';
-                        }
-                    }
-                }
-                
-                // Make company name column bold
-                if (column.key === 'Company_Name') {
-                    td.style.fontWeight = 'bold';
-                }
-                
-                tr.appendChild(td);
+                const th = document.createElement('th');
+                th.textContent = column.label;
+                th.style.padding = '12px';
+                th.style.textAlign = 'left';
+                th.style.borderBottom = '1px solid #ddd';
+                th.style.backgroundColor = '#f8f9fa';
+                th.style.fontWeight = 'bold';
+                th.style.verticalAlign = 'top';
+                headerRow.appendChild(th);
             });
-            tbody.appendChild(tr);
-        });
-        
-        table.appendChild(tbody);
-        container.innerHTML = '';
-        container.appendChild(table);
+            
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
 
-        if (data.length > 10) {
-            const note = document.createElement('p');
-            note.textContent = `Showing first 10 of ${data.length} records`;
-            note.className = 'table-note';
-            note.style.marginTop = '10px';
-            note.style.fontStyle = 'italic';
-            note.style.color = '#666';
-            container.appendChild(note);
+            // Создаем тело таблицы
+            const tbody = document.createElement('tbody');
+            pageData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #ddd';
+                
+                columnsToShow.forEach(column => {
+                    const td = document.createElement('td');
+                    td.style.padding = '12px';
+                    td.style.verticalAlign = 'top';
+                    td.style.borderBottom = '1px solid #ddd';
+                    
+                    if (column.key === 'Company_Name') {
+                        this.renderCompanyCell(td, row);
+                    } else {
+                        this.renderDataCell(td, row[column.key], column.key);
+                    }
+                    
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            
+            table.appendChild(tbody);
+            tableContainer.appendChild(table);
+
+            // Добавляем информацию о пагинации
+            const paginationInfo = document.createElement('div');
+            paginationInfo.style.display = 'flex';
+            paginationInfo.style.justifyContent = 'space-between';
+            paginationInfo.style.alignItems = 'center';
+            paginationInfo.style.marginTop = '15px';
+            paginationInfo.style.padding = '10px 0';
+
+            const info = document.createElement('span');
+            info.textContent = `Showing ${startIndex + 1}-${endIndex} of ${data.length} records`;
+            info.style.color = '#666';
+            info.style.fontSize = '14px';
+
+            const paginationControls = document.createElement('div');
+            paginationControls.style.display = 'flex';
+            paginationControls.style.gap = '5px';
+
+            // Кнопка "Предыдущая"
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '← Previous';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.style.padding = '5px 10px';
+            prevBtn.style.fontSize = '12px';
+            prevBtn.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable(currentPage);
+                }
+            };
+
+            // Номера страниц (показываем только некоторые)
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = i;
+                pageBtn.style.padding = '5px 8px';
+                pageBtn.style.fontSize = '12px';
+                if (i === currentPage) {
+                    pageBtn.style.backgroundColor = '#007bff';
+                    pageBtn.style.color = 'white';
+                    pageBtn.disabled = true;
+                }
+                pageBtn.onclick = () => {
+                    currentPage = i;
+                    renderTable(currentPage);
+                };
+                paginationControls.appendChild(pageBtn);
+            }
+
+            // Кнопка "Следующая"
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next →';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.style.padding = '5px 10px';
+            nextBtn.style.fontSize = '12px';
+            nextBtn.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTable(currentPage);
+                }
+            };
+
+            paginationControls.appendChild(prevBtn);
+            paginationControls.appendChild(nextBtn);
+
+            paginationInfo.appendChild(info);
+            paginationInfo.appendChild(paginationControls);
+
+            tableContainer.appendChild(paginationInfo);
+
+            // Заменяем содержимое контейнера
+            container.innerHTML = '';
+            container.appendChild(tableContainer);
+        };
+
+        // Рендерим первую страницу
+        renderTable(1);
+    }
+
+    renderCompanyCell(td, row) {
+        const companyName = row['Company_Name'] || '';
+        const website = row['Official_Website'] || '';
+        const linkedin = row['LinkedIn_URL'] || '';
+        
+        // Создаем название компании жирным
+        const nameDiv = document.createElement('div');
+        nameDiv.style.fontWeight = 'bold';
+        nameDiv.style.marginBottom = '4px';
+        nameDiv.textContent = companyName;
+        td.appendChild(nameDiv);
+        
+        // Добавляем ссылку на сайт
+        if (website) {
+            const websiteDiv = document.createElement('div');
+            websiteDiv.style.fontSize = '12px';
+            websiteDiv.style.marginBottom = '2px';
+            
+            const websiteLink = document.createElement('a');
+            websiteLink.href = website.startsWith('http') ? website : `https://${website}`;
+            websiteLink.target = '_blank';
+            websiteLink.rel = 'noopener noreferrer';
+            websiteLink.style.color = '#007bff';
+            websiteLink.style.textDecoration = 'none';
+            websiteLink.style.fontSize = '12px';
+            websiteLink.textContent = '🌐 Website';
+            
+            websiteLink.addEventListener('mouseover', () => {
+                websiteLink.style.textDecoration = 'underline';
+            });
+            websiteLink.addEventListener('mouseout', () => {
+                websiteLink.style.textDecoration = 'none';
+            });
+            
+            websiteDiv.appendChild(websiteLink);
+            td.appendChild(websiteDiv);
+        }
+        
+        // Добавляем ссылку на LinkedIn
+        if (linkedin) {
+            const linkedinDiv = document.createElement('div');
+            linkedinDiv.style.fontSize = '12px';
+            
+            const linkedinLink = document.createElement('a');
+            linkedinLink.href = linkedin;
+            linkedinLink.target = '_blank';
+            linkedinLink.rel = 'noopener noreferrer';
+            linkedinLink.style.color = '#0077b5';
+            linkedinLink.style.textDecoration = 'none';
+            linkedinLink.style.fontSize = '12px';
+            linkedinLink.textContent = '🔗 LinkedIn';
+            
+            linkedinLink.addEventListener('mouseover', () => {
+                linkedinLink.style.textDecoration = 'underline';
+            });
+            linkedinLink.addEventListener('mouseout', () => {
+                linkedinLink.style.textDecoration = 'none';
+            });
+            
+            linkedinDiv.appendChild(linkedinLink);
+            td.appendChild(linkedinDiv);
+        }
+    }
+
+    renderDataCell(td, value, columnKey) {
+        if (columnKey === 'All_Results' && typeof value === 'object') {
+            // Форматируем JSON с переносами строк
+            td.textContent = JSON.stringify(value, null, 2);
+            td.style.fontFamily = 'monospace';
+            td.style.fontSize = '12px';
+            td.style.whiteSpace = 'pre-wrap';
+        } else if (columnKey === 'Qualified_Products' && value) {
+            // Форматируем текст с переносами строк
+            const content = value.toString().replace(/\\n/g, '\n');
+            td.textContent = content;
+            td.style.whiteSpace = 'pre-wrap';
+            td.style.fontSize = '13px';
+        } else if (typeof value === 'object') {
+            // Другие JSON объекты
+            td.textContent = JSON.stringify(value, null, 2);
+            td.style.fontFamily = 'monospace';
+            td.style.fontSize = '12px';
+            td.style.whiteSpace = 'pre-wrap';
+        } else {
+            td.textContent = value || '';
+            if (columnKey === 'Description') {
+                td.style.maxWidth = '400px';
+                td.style.whiteSpace = 'pre-wrap';
+                td.style.wordWrap = 'break-word';
+            }
         }
     }
 
