@@ -423,7 +423,7 @@
                          
                              <b>Required format:</b> Two columns - Company names and website URLs.<br><br>
                          
-                             <b>Note:</b> The first row (header) will be ignored. Both columns are required for processing.
+                             <b>Note:</b> The first row (header) will be ignored.
                          </p>
                         <button type="button" id="customChooseFileButton">Choose File</button>
                         <p id="fileNameDisplay"></p>
@@ -516,7 +516,7 @@
                          
                              <b>Required columns:</b> Company_Name, Official_Website and Description.<br><br>
                          
-                             <b>Note:</b> The first row (header) will be ignored. Both columns are required for processing.
+                             <b>Note:</b> The first row (header) will be ignored. 
                          </p>
                         <button type="button" id="criteria-customChooseFileButton">Choose File</button>
                         <p id="criteria-fileNameDisplay"></p>
@@ -547,14 +547,20 @@
                     </div>
                 </div>
 
-                <div id="criteria-results" style="display: none; background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-                    <div>
-                        <div id="results-table"></div>
-                    </div>
+                </div> <!-- End Main Content Area -->
+            </div> <!-- End Sidebar Layout -->
+            
+            <!-- Full Width Results Section -->
+            <div id="criteria-results" style="display: none; margin-top: 20px;">
+                <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                    <h2>Analysis Results</h2>
+                    <div id="results-table"></div>
                 </div>
-                
-                <!-- Criteria Editor (moved from sidebar) -->
-                <div id="criteria-editor" style="display: none; background: white; border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-top: 15px;">
+            </div>
+            
+            <!-- Full Width Criteria Editor -->
+            <div id="criteria-editor" style="display: none; margin-top: 20px;">
+                <div style="background: white; border: 1px solid #ddd; border-radius: 6px; padding: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h4 id="editor-title" style="margin: 0;">Edit Criteria File</h4>
                         <div>
@@ -570,9 +576,7 @@
                         <button id="delete-row-btn" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">🗑️ Delete Selected</button>
                     </div>
                 </div>
-                
-                </div> <!-- End Main Content Area -->
-            </div> <!-- End Sidebar Layout -->
+            </div>
         </div>
     </div>
 

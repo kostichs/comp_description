@@ -324,6 +324,21 @@ async def get_criteria_session_results(session_id: str):
                 df = df.replace([float('inf'), float('-inf'), np.inf, -np.inf], None)
                 df = df.where(pd.notnull(df), None)
                 
+                # Парсим JSON в колонке All_Results
+                if 'All_Results' in df.columns:
+                    import json
+                    def parse_json_column(value):
+                        if pd.isna(value) or value is None:
+                            return None
+                        try:
+                            if isinstance(value, str):
+                                return json.loads(value)
+                            return value
+                        except (json.JSONDecodeError, TypeError):
+                            return value
+                    
+                    df['All_Results'] = df['All_Results'].apply(parse_json_column)
+                
                 # Конвертируем в records и дополнительно очищаем
                 records = df.to_dict('records')
                 

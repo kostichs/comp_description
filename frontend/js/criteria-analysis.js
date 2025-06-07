@@ -342,15 +342,31 @@ class CriteriaAnalysis {
 
         const table = document.createElement('table');
         table.className = 'results-table';
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
+
+        // Define which columns to display
+        const columnsToShow = [
+            { key: 'Company_Name', label: 'Company' },
+            { key: 'Description', label: 'Description' },
+            { key: 'Product', label: 'Product' },
+            { key: 'All_Results', label: 'All Results' },
+            { key: 'Qualified_Products', label: 'Qualified Products' }
+        ];
 
         // Create header
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
         
-        const headers = Object.keys(data[0]);
-        headers.forEach(header => {
+        columnsToShow.forEach(column => {
             const th = document.createElement('th');
-            th.textContent = header;
+            th.textContent = column.label;
+            th.style.padding = '12px';
+            th.style.textAlign = 'left';
+            th.style.borderBottom = '1px solid #ddd';
+            th.style.backgroundColor = '#f8f9fa';
+            th.style.fontWeight = 'bold';
+            th.style.verticalAlign = 'top';
             headerRow.appendChild(th);
         });
         
@@ -361,14 +377,114 @@ class CriteriaAnalysis {
         const tbody = document.createElement('tbody');
         data.slice(0, 10).forEach(row => { // Show only first 10 rows
             const tr = document.createElement('tr');
-            headers.forEach(header => {
+            tr.style.borderBottom = '1px solid #ddd';
+            
+            columnsToShow.forEach(column => {
                 const td = document.createElement('td');
-                const value = row[header];
-                if (typeof value === 'object') {
-                    td.textContent = JSON.stringify(value);
+                td.style.padding = '12px';
+                td.style.verticalAlign = 'top';
+                td.style.borderBottom = '1px solid #ddd';
+                
+                if (column.key === 'Company_Name') {
+                    // Combine company name with website and LinkedIn
+                    const companyName = row['Company_Name'] || '';
+                    const website = row['Official_Website'] || '';
+                    const linkedin = row['LinkedIn_URL'] || '';
+                    
+                    // Create company name as bold
+                    const nameDiv = document.createElement('div');
+                    nameDiv.style.fontWeight = 'bold';
+                    nameDiv.style.marginBottom = '4px';
+                    nameDiv.textContent = companyName;
+                    td.appendChild(nameDiv);
+                    
+                    // Add website if available
+                    if (website) {
+                        const websiteDiv = document.createElement('div');
+                        websiteDiv.style.fontSize = '12px';
+                        websiteDiv.style.marginBottom = '2px';
+                        
+                        const websiteLink = document.createElement('a');
+                        websiteLink.href = website.startsWith('http') ? website : `https://${website}`;
+                        websiteLink.target = '_blank';
+                        websiteLink.rel = 'noopener noreferrer';
+                        websiteLink.style.color = '#007bff';
+                        websiteLink.style.textDecoration = 'none';
+                        websiteLink.style.fontSize = '12px';
+                        websiteLink.textContent = '🌐 Website';
+                        
+                        websiteLink.addEventListener('mouseover', () => {
+                            websiteLink.style.textDecoration = 'underline';
+                        });
+                        websiteLink.addEventListener('mouseout', () => {
+                            websiteLink.style.textDecoration = 'none';
+                        });
+                        
+                        websiteDiv.appendChild(websiteLink);
+                        td.appendChild(websiteDiv);
+                    }
+                    
+                    // Add LinkedIn if available
+                    if (linkedin) {
+                        const linkedinDiv = document.createElement('div');
+                        linkedinDiv.style.fontSize = '12px';
+                        
+                        const linkedinLink = document.createElement('a');
+                        linkedinLink.href = linkedin;
+                        linkedinLink.target = '_blank';
+                        linkedinLink.rel = 'noopener noreferrer';
+                        linkedinLink.style.color = '#0077b5';
+                        linkedinLink.style.textDecoration = 'none';
+                        linkedinLink.style.fontSize = '12px';
+                        linkedinLink.textContent = '🔗 LinkedIn';
+                        
+                        linkedinLink.addEventListener('mouseover', () => {
+                            linkedinLink.style.textDecoration = 'underline';
+                        });
+                        linkedinLink.addEventListener('mouseout', () => {
+                            linkedinLink.style.textDecoration = 'none';
+                        });
+                        
+                        linkedinDiv.appendChild(linkedinLink);
+                        td.appendChild(linkedinDiv);
+                    }
                 } else {
-                    td.textContent = value || '';
+                    // Handle other columns
+                    const value = row[column.key];
+                    
+                    if (column.key === 'All_Results' && typeof value === 'object') {
+                        // Format JSON with line breaks - no fancy styling
+                        td.textContent = JSON.stringify(value, null, 2);
+                        td.style.fontFamily = 'monospace';
+                        td.style.fontSize = '12px';
+                        td.style.whiteSpace = 'pre-wrap';
+                    } else if (column.key === 'Qualified_Products' && value) {
+                        // Format text with line breaks - no colors
+                        const content = value.toString().replace(/\\n/g, '\n');
+                        td.textContent = content;
+                        td.style.whiteSpace = 'pre-wrap';
+                        td.style.fontSize = '13px';
+                    } else if (typeof value === 'object') {
+                        // Other JSON objects
+                        td.textContent = JSON.stringify(value, null, 2);
+                        td.style.fontFamily = 'monospace';
+                        td.style.fontSize = '12px';
+                        td.style.whiteSpace = 'pre-wrap';
+                    } else {
+                        td.textContent = value || '';
+                        if (column.key === 'Description') {
+                            td.style.maxWidth = '400px';
+                            td.style.whiteSpace = 'pre-wrap';
+                            td.style.wordWrap = 'break-word';
+                        }
+                    }
                 }
+                
+                // Make company name column bold
+                if (column.key === 'Company_Name') {
+                    td.style.fontWeight = 'bold';
+                }
+                
                 tr.appendChild(td);
             });
             tbody.appendChild(tr);
@@ -382,6 +498,9 @@ class CriteriaAnalysis {
             const note = document.createElement('p');
             note.textContent = `Showing first 10 of ${data.length} records`;
             note.className = 'table-note';
+            note.style.marginTop = '10px';
+            note.style.fontStyle = 'italic';
+            note.style.color = '#666';
             container.appendChild(note);
         }
     }
