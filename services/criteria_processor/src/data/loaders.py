@@ -19,6 +19,17 @@ def load_file_smart(file_path):
             # Используем правильные параметры для CSV с многострочными полями
             df = pd.read_csv(file_path, quoting=1, encoding='utf-8', on_bad_lines='skip')
             
+            # УДАЛЕНИЕ НЕЖЕЛАТЕЛЬНЫХ КОЛОНОК: убираем validation колонки
+            columns_to_remove = ['validation_status', 'validation_warning']
+            columns_removed = []
+            for col in columns_to_remove:
+                if col in df.columns:
+                    df = df.drop(columns=[col])
+                    columns_removed.append(col)
+            
+            if columns_removed:
+                log_info(f"🗑️  Удалены колонки: {', '.join(columns_removed)}")
+            
             # ФИЛЬТРАЦИЯ ПУСТЫХ СТРОК: удаляем строки где все основные колонки пустые
             main_columns = ['Company_Name', 'Description']  # Основные колонки для проверки
             existing_columns = [col for col in main_columns if col in df.columns]
@@ -38,6 +49,17 @@ def load_file_smart(file_path):
         elif file_ext in ['.xlsx', '.xls']:
             log_debug(f"📊 Загружаем Excel файл: {os.path.basename(file_path)}")
             df = pd.read_excel(file_path)
+            
+            # УДАЛЕНИЕ НЕЖЕЛАТЕЛЬНЫХ КОЛОНОК: убираем validation колонки
+            columns_to_remove = ['validation_status', 'validation_warning']
+            columns_removed = []
+            for col in columns_to_remove:
+                if col in df.columns:
+                    df = df.drop(columns=[col])
+                    columns_removed.append(col)
+            
+            if columns_removed:
+                log_info(f"🗑️  Удалены колонки: {', '.join(columns_removed)}")
             
             # Аналогичная фильтрация для Excel
             main_columns = ['Company_Name', 'Description']

@@ -455,12 +455,10 @@ async def _process_single_company_async(
                     validation_reason = validated_result.get("validation", {}).get("validation_reason", "Unknown validation error")
                     logger.warning(f"{run_stage_log} - Validation failed: {validation_reason}")
                     
-                    # Не заменяем description, но добавляем предупреждение
-                    result_data["validation_warning"] = f"Validation failed: {validation_reason}"
-                    result_data["validation_status"] = "failed"
+                    # Validation failed but we don't add it to output
+                    logger.warning(f"{run_stage_log} - Validation failed: {validation_reason}")
                 else:
                     logger.info(f"{run_stage_log} - Validation passed successfully")
-                    result_data["validation_status"] = "passed"
                     
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error during validation: {e}", exc_info=True)
@@ -468,10 +466,8 @@ async def _process_single_company_async(
                     "validation_performed": False,
                     "validation_error": str(e)
                 }
-                result_data["validation_status"] = "error"
         else:
             logger.info(f"{run_stage_log} - Skipping validation due to empty or error description")
-            result_data["validation_status"] = "skipped"
         
         # Если задан output_csv_path, сохраняем результат текущей компании в CSV
         # ---- НАЧАЛО БЛОКА ДЛЯ КОММЕНТИРОВАНИЯ ----

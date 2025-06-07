@@ -128,7 +128,7 @@ async def run_session_pipeline(session_id: str, broadcast_update=None):
             raise 
         
         # Формируем список полей для CSV
-        base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID", "validation_status", "validation_warning"]
+        base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID"]
         # Добавляем поля валидации в базовый список
         expected_cols = list(base_ordered_fields) 
         session_logger.info(f"[BG Task {session_id}] Determined expected_csv_fieldnames: {expected_cols}")

@@ -1,0 +1,1445 @@
+﻿"Company_Name","Official_Website","LinkedIn_URL","Description","Timestamp","HubSpot_Company_ID","validation_status","validation_warning","Product","All_Results","Qualified_Products"
+"Electronic Arts (EA)","ea.com","https://www.linkedin.com/company/electronic-arts","**1. Basic Company Information:**
+
+- **Company Name:** Electronic Arts Inc.
+- **Founding Year:** May 27, 1982
+
+- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States
+- **Founders:** Trip Hawkins
+
+- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.
+- **Official Homepage URL:** https://www.ea.com/
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - **EA SPORTS FC**
+  - **Battlefield**
+  - **Apex Legends**
+  - **The Sims**
+  - **Madden NFL**
+  - **Need for Speed**
+  - **Titanfall**
+  - **F1**
+
+- **Underlying Technologies:** EA develops and publishes games across various platforms, including gaming consoles (Microsoft Xbox, Sony PlayStation, Nintendo WiiU), PCs, mobile devices, and tablets. The company utilizes proprietary game engines and technologies tailored for each platform to deliver immersive gaming experiences.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games and services directly to individual consumers.
+- **Industries Served:** Electronic Gaming & Multimedia
+
+- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - **Fiscal Year 2024:**
+    - Total Revenue: $7.562 billion
+  - **Fiscal Year 2023:**
+    - Total Revenue: $7.426 billion
+  - **Fiscal Year 2022:**
+    - Total Revenue: $6.991 billion
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - In June 2023, EA announced an internal reorganization into two organizations: EA Sports and EA Entertainment, both reporting directly to CEO Andrew Wilson.
+  - In February 2024, EA announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees, as part of a restructuring plan.
+
+- **Key Competitors:** Main competitors include Activision Blizzard, Take-Two Interactive, and Ubisoft.
+- **Overall Summary:** Electronic Arts Inc. is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, EA continues to focus on its core franchises and strategic initiatives to maintain its position in the gaming industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** The primary working language is English.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, and various game-specific portals that require user accounts for access to personalized content, multiplayer features, and online services.
+- **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))
+- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))
+
+- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))
+- ([globaldata.com](https://www.globaldata.com/company-profile/electronic-arts-inc/?utm_source=openai))
+
+- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))
+- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""Yes"",
+    ""Data-First Innovators"": ""Yes"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""Yes""
+  },
+  ""qualified_audiences"": [
+    ""Enterprise Digital Transformers"",
+    ""Data-First Innovators"",
+    ""Enterprise Digital Transformers2""
+  ],
+  ""detailed_results"": {
+    ""Enterprise Digital Transformers"": {
+      ""audience"": ""Enterprise Digital Transformers"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Data-First Innovators"": {
+      ""audience"": ""Data-First Innovators"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Enterprise Digital Transformers2"": {
+      ""audience"": ""Enterprise Digital Transformers2"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"Activision Blizzard","activisionblizzard.com","https://www.linkedin.com/company/activision-blizzard","**1. Basic Company Information:**
+
+- **Company Name:** Activision Blizzard, Inc.
+- **Founding Year:** July 9, 2008
+
+- **Headquarters Location:** Santa Monica, California, USA
+- **Founders:** The company was formed through the merger of Activision, Inc. and Vivendi Games.
+
+- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company. In October 2023, Microsoft completed its acquisition of Activision Blizzard for $68.7 billion, making it a subsidiary of Microsoft Gaming. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+- **Official Homepage URL:** [https://www.activisionblizzard.com/](https://www.activisionblizzard.com/)
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - *Call of Duty* series
+  - *Crash Bandicoot* series
+  - *Guitar Hero* series
+  - *Skylanders* series
+  - *Spyro the Dragon* series
+  - *Tony Hawk's* series
+  - *Diablo* series
+  - *Hearthstone*
+  - *Heroes of the Storm*
+  - *Overwatch* series
+  - *StarCraft* series
+  - *Warcraft* series
+  - *Candy Crush Saga*
+
+- **Underlying Technologies:** Activision Blizzard utilizes various proprietary game engines and platforms tailored to each franchise. For instance, the *Call of Duty* series has employed engines like IW Engine and Treyarch's Black Ops engine. Blizzard Entertainment's games often run on custom engines developed in-house to support their unique gameplay mechanics and graphics requirements.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+- **Industries Served:** Entertainment and interactive media.
+
+- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in North America, Europe, and Asia-Pacific.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - 2022: $7.53 billion ([statista.com](https://www.statista.com/topics/8033/activision-blizzard/?utm_source=openai))
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** Approximately 17,000 employees as of 2023. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - Acquisition by Microsoft in October 2023 for $68.7 billion. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+  - Formation of Activision Blizzard Studios in 2015 to produce films and television series based on its franchises.
+
+- **Key Competitors:** Electronic Arts, Ubisoft, Take-Two Interactive, and other major video game publishers.
+- **Overall Summary:** Activision Blizzard is a leading global developer and publisher of interactive entertainment content, known for its diverse portfolio of popular game franchises. The company's acquisition by Microsoft positions it to leverage synergies in gaming and technology, potentially expanding its reach and capabilities in the industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** English is the primary language used for business communications and documentation.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Activision Blizzard offers several user-facing platforms, including Battle.net, which serves as a central hub for Blizzard games, providing services such as game downloads, updates, and social features. Additionally, games like *Call of Duty* have dedicated online services for multiplayer gaming and community engagement.
+- **Compliance Standards:** While specific compliance certifications (e.g., PCI DSS, ISO 27001) are not publicly detailed, Activision Blizzard emphasizes data protection and secure transactions across its platforms. The company adheres to applicable data protection laws and regulations, including GDPR, to ensure user data privacy and security.
+
+**Sources:**
+
+- [Activision Blizzard Official Website](https://www.activisionblizzard.com/)
+- [Activision Blizzard - Wikipedia](https://en.wikipedia.org/wiki/Activision_Blizzard)
+
+- [Statista - Activision Blizzard Statistics & Facts](https://www.statista.com/topics/8033/activision-blizzard/)
+- [Microsoft to Acquire Activision Blizzard - Press Release](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community)","2025-06-07 12:53:31","nan","passed","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""Yes"",
+    ""Data-First Innovators"": ""Yes"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""Yes""
+  },
+  ""qualified_audiences"": [
+    ""Enterprise Digital Transformers"",
+    ""Data-First Innovators"",
+    ""Enterprise Digital Transformers2""
+  ],
+  ""detailed_results"": {
+    ""Enterprise Digital Transformers"": {
+      ""audience"": ""Enterprise Digital Transformers"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Data-First Innovators"": {
+      ""audience"": ""Data-First Innovators"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.4,
+        ""total_criteria"": 10,
+        ""passed_criteria"": 4,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0.4
+      },
+      ""final_status"": ""Qualified""
+    },
+    ""Enterprise Digital Transformers2"": {
+      ""audience"": ""Enterprise Digital Transformers2"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","QUALIFIED: Data-First Innovators
+NTH Score: 0.400
+Total NTH Criteria: 10
+Passed: 4
+ND (No Data): 0
+NTH Results:
+• Mentions fast iteration, innovation, or scaling of digital services: Not Passed
+• References using customer behavior or data insights to enhance services: Passed"
+"CD Projekt","cdprojektred.com","https://www.linkedin.com/company/cd-projekt-red","1. **Basic Company Information:**
+   * **Company Name:** CD Projekt S.A.
+   * **Founding Year:** May 1994
+   * **Headquarters Location:** Warsaw, Poland
+   * **Founders:** Marcin Iwiński, Michał Kiciński
+   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 13, 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Official Homepage URL:** https://www.cdprojekt.com/en/
+
+2. **Products and Technology:**
+   * **Core Products & Services:**
+     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, ""The Witcher,"" was released in 2007, followed by ""The Witcher 2: Assassins of Kings"" in 2011, and ""The Witcher 3: Wild Hunt"" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+     - **GOG.com:** A digital distribution platform for DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Underlying Technologies:**
+     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in ""The Witcher 2,"" ""The Witcher 3,"" and ""Cyberpunk 2077."" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+
+3. **Market and Customer Information:**
+   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+   * **Industries Served:** Video game development and digital distribution.
+   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.
+
+4. **Financial and HR Details:**
+   * **Revenue History:**
+     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **2023:** Specific revenue figures for 2023 are not provided in the available sources.
+   * **Funding Rounds:** No specific data found on funding rounds.
+   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+
+5. **Strategic Information:**
+   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+   * **Strategic Initiatives:**
+     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for ""The Flame in the Flood,"" to work on one of its existing IPs. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+     - In March 2021, CD Projekt acquired Vancouver-based Digital Scapes Studios, rebranding it as CD Projekt Red Vancouver. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Rockstar Games.
+   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher, renowned for its critically acclaimed titles like ""The Witcher"" series and ""Cyberpunk 2077."" The company has expanded its global presence through strategic acquisitions and continues to focus on delivering high-quality, story-driven role-playing games.
+
+6. **Additional Business Information:**
+   * **Professional Open Positions:** No specific data found on current professional open positions.
+   * **Working Languages:** The company operates primarily in English and Polish.
+
+7. **Technical and Compliance Information:**
+   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user-facing platform where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+- ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+- ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","AI","{
+  ""product"": ""AI"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Enterprise Digital Transformers"": ""Yes"",
+    ""Data-First Innovators"": ""Yes"",
+    ""Software ISVs & System Integrators"": ""No"",
+    ""AI-Native Startups"": ""No"",
+    ""Public Sector Agencies"": ""No"",
+    ""Enterprise Digital Transformers2"": ""Yes""
+  },
+  ""qualified_audiences"": [
+    ""Enterprise Digital Transformers"",
+    ""Data-First Innovators"",
+    ""Enterprise Digital Transformers2""
+  ],
+  ""detailed_results"": {
+    ""Enterprise Digital Transformers"": {
+      ""audience"": ""Enterprise Digital Transformers"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Failed"",
+      ""nth_results"": {},
+      ""final_status"": ""Failed""
+    },
+    ""Data-First Innovators"": {
+      ""audience"": ""Data-First Innovators"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.3,
+        ""total_criteria"": 10,
+        ""passed_criteria"": 3,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0.3
+      },
+      ""final_status"": ""Qualified""
+    },
+    ""Enterprise Digital Transformers2"": {
+      ""audience"": ""Enterprise Digital Transformers2"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","QUALIFIED: Data-First Innovators
+NTH Score: 0.300
+Total NTH Criteria: 10
+Passed: 3
+ND (No Data): 0
+NTH Results:
+• Mentions fast iteration, innovation, or scaling of digital services: Not Passed
+• References using customer behavior or data insights to enhance services: Not Passed"
+"Electronic Arts (EA)","ea.com","https://www.linkedin.com/company/electronic-arts","**1. Basic Company Information:**
+
+- **Company Name:** Electronic Arts Inc.
+- **Founding Year:** May 27, 1982
+
+- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States
+- **Founders:** Trip Hawkins
+
+- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.
+- **Official Homepage URL:** https://www.ea.com/
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - **EA SPORTS FC**
+  - **Battlefield**
+  - **Apex Legends**
+  - **The Sims**
+  - **Madden NFL**
+  - **Need for Speed**
+  - **Titanfall**
+  - **F1**
+
+- **Underlying Technologies:** EA develops and publishes games across various platforms, including gaming consoles (Microsoft Xbox, Sony PlayStation, Nintendo WiiU), PCs, mobile devices, and tablets. The company utilizes proprietary game engines and technologies tailored for each platform to deliver immersive gaming experiences.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games and services directly to individual consumers.
+- **Industries Served:** Electronic Gaming & Multimedia
+
+- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - **Fiscal Year 2024:**
+    - Total Revenue: $7.562 billion
+  - **Fiscal Year 2023:**
+    - Total Revenue: $7.426 billion
+  - **Fiscal Year 2022:**
+    - Total Revenue: $6.991 billion
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - In June 2023, EA announced an internal reorganization into two organizations: EA Sports and EA Entertainment, both reporting directly to CEO Andrew Wilson.
+  - In February 2024, EA announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees, as part of a restructuring plan.
+
+- **Key Competitors:** Main competitors include Activision Blizzard, Take-Two Interactive, and Ubisoft.
+- **Overall Summary:** Electronic Arts Inc. is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, EA continues to focus on its core franchises and strategic initiatives to maintain its position in the gaming industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** The primary working language is English.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, and various game-specific portals that require user accounts for access to personalized content, multiplayer features, and online services.
+- **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))
+- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))
+
+- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))
+- ([globaldata.com](https://www.globaldata.com/company-profile/electronic-arts-inc/?utm_source=openai))
+
+- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))
+- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","CDN","{
+  ""product"": ""CDN"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Software/SaaS"": ""No"",
+    ""Media & Entertainment"": ""No"",
+    ""Gaming"": ""Yes"",
+    ""Finance"": ""No""
+  },
+  ""qualified_audiences"": [
+    ""Gaming""
+  ],
+  ""detailed_results"": {
+    ""Gaming"": {
+      ""audience"": ""Gaming"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.25,
+        ""total_criteria"": 4,
+        ""passed_criteria"": 1,
+        ""nd_criteria"": 2,
+        ""pass_rate"": 0.25
+      },
+      ""final_status"": ""Qualified""
+    }
+  }
+}","QUALIFIED: Gaming
+NTH Score: 0.250
+Total NTH Criteria: 4
+Passed: 1
+ND (No Data): 2
+NTH Results:
+• Publisher has more than 100 employees: Passed
+• Publishes updates: ND
+• Operates a dedicated game launcher/platform: Not Passed
+• Mentions DDoS protection or past attacks mitigation: ND"
+"Activision Blizzard","activisionblizzard.com","https://www.linkedin.com/company/activision-blizzard","**1. Basic Company Information:**
+
+- **Company Name:** Activision Blizzard, Inc.
+- **Founding Year:** July 9, 2008
+
+- **Headquarters Location:** Santa Monica, California, USA
+- **Founders:** The company was formed through the merger of Activision, Inc. and Vivendi Games.
+
+- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company. In October 2023, Microsoft completed its acquisition of Activision Blizzard for $68.7 billion, making it a subsidiary of Microsoft Gaming. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+- **Official Homepage URL:** [https://www.activisionblizzard.com/](https://www.activisionblizzard.com/)
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - *Call of Duty* series
+  - *Crash Bandicoot* series
+  - *Guitar Hero* series
+  - *Skylanders* series
+  - *Spyro the Dragon* series
+  - *Tony Hawk's* series
+  - *Diablo* series
+  - *Hearthstone*
+  - *Heroes of the Storm*
+  - *Overwatch* series
+  - *StarCraft* series
+  - *Warcraft* series
+  - *Candy Crush Saga*
+
+- **Underlying Technologies:** Activision Blizzard utilizes various proprietary game engines and platforms tailored to each franchise. For instance, the *Call of Duty* series has employed engines like IW Engine and Treyarch's Black Ops engine. Blizzard Entertainment's games often run on custom engines developed in-house to support their unique gameplay mechanics and graphics requirements.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+- **Industries Served:** Entertainment and interactive media.
+
+- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in North America, Europe, and Asia-Pacific.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - 2022: $7.53 billion ([statista.com](https://www.statista.com/topics/8033/activision-blizzard/?utm_source=openai))
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** Approximately 17,000 employees as of 2023. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - Acquisition by Microsoft in October 2023 for $68.7 billion. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+  - Formation of Activision Blizzard Studios in 2015 to produce films and television series based on its franchises.
+
+- **Key Competitors:** Electronic Arts, Ubisoft, Take-Two Interactive, and other major video game publishers.
+- **Overall Summary:** Activision Blizzard is a leading global developer and publisher of interactive entertainment content, known for its diverse portfolio of popular game franchises. The company's acquisition by Microsoft positions it to leverage synergies in gaming and technology, potentially expanding its reach and capabilities in the industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** English is the primary language used for business communications and documentation.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Activision Blizzard offers several user-facing platforms, including Battle.net, which serves as a central hub for Blizzard games, providing services such as game downloads, updates, and social features. Additionally, games like *Call of Duty* have dedicated online services for multiplayer gaming and community engagement.
+- **Compliance Standards:** While specific compliance certifications (e.g., PCI DSS, ISO 27001) are not publicly detailed, Activision Blizzard emphasizes data protection and secure transactions across its platforms. The company adheres to applicable data protection laws and regulations, including GDPR, to ensure user data privacy and security.
+
+**Sources:**
+
+- [Activision Blizzard Official Website](https://www.activisionblizzard.com/)
+- [Activision Blizzard - Wikipedia](https://en.wikipedia.org/wiki/Activision_Blizzard)
+
+- [Statista - Activision Blizzard Statistics & Facts](https://www.statista.com/topics/8033/activision-blizzard/)
+- [Microsoft to Acquire Activision Blizzard - Press Release](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community)","2025-06-07 12:53:31","nan","passed","nan","CDN","{
+  ""product"": ""CDN"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Software/SaaS"": ""No"",
+    ""Media & Entertainment"": ""No"",
+    ""Gaming"": ""Yes"",
+    ""Finance"": ""No""
+  },
+  ""qualified_audiences"": [
+    ""Gaming""
+  ],
+  ""detailed_results"": {
+    ""Gaming"": {
+      ""audience"": ""Gaming"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.25,
+        ""total_criteria"": 4,
+        ""passed_criteria"": 1,
+        ""nd_criteria"": 1,
+        ""pass_rate"": 0.25
+      },
+      ""final_status"": ""Qualified""
+    }
+  }
+}","QUALIFIED: Gaming
+NTH Score: 0.250
+Total NTH Criteria: 4
+Passed: 1
+ND (No Data): 1
+NTH Results:
+• Publisher has more than 100 employees: Passed
+• Publishes updates: ND
+• Operates a dedicated game launcher/platform: Not Passed
+• Mentions DDoS protection or past attacks mitigation: Not Passed"
+"CD Projekt","cdprojektred.com","https://www.linkedin.com/company/cd-projekt-red","1. **Basic Company Information:**
+   * **Company Name:** CD Projekt S.A.
+   * **Founding Year:** May 1994
+   * **Headquarters Location:** Warsaw, Poland
+   * **Founders:** Marcin Iwiński, Michał Kiciński
+   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 13, 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Official Homepage URL:** https://www.cdprojekt.com/en/
+
+2. **Products and Technology:**
+   * **Core Products & Services:**
+     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, ""The Witcher,"" was released in 2007, followed by ""The Witcher 2: Assassins of Kings"" in 2011, and ""The Witcher 3: Wild Hunt"" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+     - **GOG.com:** A digital distribution platform for DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Underlying Technologies:**
+     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in ""The Witcher 2,"" ""The Witcher 3,"" and ""Cyberpunk 2077."" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+
+3. **Market and Customer Information:**
+   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+   * **Industries Served:** Video game development and digital distribution.
+   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.
+
+4. **Financial and HR Details:**
+   * **Revenue History:**
+     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **2023:** Specific revenue figures for 2023 are not provided in the available sources.
+   * **Funding Rounds:** No specific data found on funding rounds.
+   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+
+5. **Strategic Information:**
+   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+   * **Strategic Initiatives:**
+     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for ""The Flame in the Flood,"" to work on one of its existing IPs. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+     - In March 2021, CD Projekt acquired Vancouver-based Digital Scapes Studios, rebranding it as CD Projekt Red Vancouver. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Rockstar Games.
+   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher, renowned for its critically acclaimed titles like ""The Witcher"" series and ""Cyberpunk 2077."" The company has expanded its global presence through strategic acquisitions and continues to focus on delivering high-quality, story-driven role-playing games.
+
+6. **Additional Business Information:**
+   * **Professional Open Positions:** No specific data found on current professional open positions.
+   * **Working Languages:** The company operates primarily in English and Polish.
+
+7. **Technical and Compliance Information:**
+   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user-facing platform where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+- ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+- ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","CDN","{
+  ""product"": ""CDN"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Software/SaaS"": ""No"",
+    ""Media & Entertainment"": ""No"",
+    ""Gaming"": ""Yes"",
+    ""Finance"": ""No""
+  },
+  ""qualified_audiences"": [
+    ""Gaming""
+  ],
+  ""detailed_results"": {
+    ""Gaming"": {
+      ""audience"": ""Gaming"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.25,
+        ""total_criteria"": 4,
+        ""passed_criteria"": 1,
+        ""nd_criteria"": 3,
+        ""pass_rate"": 0.25
+      },
+      ""final_status"": ""Qualified""
+    }
+  }
+}","QUALIFIED: Gaming
+NTH Score: 0.250
+Total NTH Criteria: 4
+Passed: 1
+ND (No Data): 3
+NTH Results:
+• Publisher has more than 100 employees: Passed
+• Publishes updates: ND
+• Operates a dedicated game launcher/platform: ND
+• Mentions DDoS protection or past attacks mitigation: ND"
+"Electronic Arts (EA)","ea.com","https://www.linkedin.com/company/electronic-arts","**1. Basic Company Information:**
+
+- **Company Name:** Electronic Arts Inc.
+- **Founding Year:** May 27, 1982
+
+- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States
+- **Founders:** Trip Hawkins
+
+- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.
+- **Official Homepage URL:** https://www.ea.com/
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - **EA SPORTS FC**
+  - **Battlefield**
+  - **Apex Legends**
+  - **The Sims**
+  - **Madden NFL**
+  - **Need for Speed**
+  - **Titanfall**
+  - **F1**
+
+- **Underlying Technologies:** EA develops and publishes games across various platforms, including gaming consoles (Microsoft Xbox, Sony PlayStation, Nintendo WiiU), PCs, mobile devices, and tablets. The company utilizes proprietary game engines and technologies tailored for each platform to deliver immersive gaming experiences.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games and services directly to individual consumers.
+- **Industries Served:** Electronic Gaming & Multimedia
+
+- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - **Fiscal Year 2024:**
+    - Total Revenue: $7.562 billion
+  - **Fiscal Year 2023:**
+    - Total Revenue: $7.426 billion
+  - **Fiscal Year 2022:**
+    - Total Revenue: $6.991 billion
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - In June 2023, EA announced an internal reorganization into two organizations: EA Sports and EA Entertainment, both reporting directly to CEO Andrew Wilson.
+  - In February 2024, EA announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees, as part of a restructuring plan.
+
+- **Key Competitors:** Main competitors include Activision Blizzard, Take-Two Interactive, and Ubisoft.
+- **Overall Summary:** Electronic Arts Inc. is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, EA continues to focus on its core franchises and strategic initiatives to maintain its position in the gaming industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** The primary working language is English.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, and various game-specific portals that require user accounts for access to personalized content, multiplayer features, and online services.
+- **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))
+- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))
+
+- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))
+- ([globaldata.com](https://www.globaldata.com/company-profile/electronic-arts-inc/?utm_source=openai))
+
+- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))
+- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","DDOS","{
+  ""product"": ""DDOS"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Gaming & Game Development"": ""Yes"",
+    ""Financial Services & Fintech"": ""No"",
+    ""SaaS, IaaS & IT Service Providers"": ""No"",
+    ""Media, Entertainment & Streaming"": ""No"",
+    ""E-commerce & Retail Tech"": ""No"",
+    ""Government & Public Sector"": ""No""
+  },
+  ""qualified_audiences"": [
+    ""Gaming & Game Development""
+  ],
+  ""detailed_results"": {
+    ""Gaming & Game Development"": {
+      ""audience"": ""Gaming & Game Development"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"Activision Blizzard","activisionblizzard.com","https://www.linkedin.com/company/activision-blizzard","**1. Basic Company Information:**
+
+- **Company Name:** Activision Blizzard, Inc.
+- **Founding Year:** July 9, 2008
+
+- **Headquarters Location:** Santa Monica, California, USA
+- **Founders:** The company was formed through the merger of Activision, Inc. and Vivendi Games.
+
+- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company. In October 2023, Microsoft completed its acquisition of Activision Blizzard for $68.7 billion, making it a subsidiary of Microsoft Gaming. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+- **Official Homepage URL:** [https://www.activisionblizzard.com/](https://www.activisionblizzard.com/)
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - *Call of Duty* series
+  - *Crash Bandicoot* series
+  - *Guitar Hero* series
+  - *Skylanders* series
+  - *Spyro the Dragon* series
+  - *Tony Hawk's* series
+  - *Diablo* series
+  - *Hearthstone*
+  - *Heroes of the Storm*
+  - *Overwatch* series
+  - *StarCraft* series
+  - *Warcraft* series
+  - *Candy Crush Saga*
+
+- **Underlying Technologies:** Activision Blizzard utilizes various proprietary game engines and platforms tailored to each franchise. For instance, the *Call of Duty* series has employed engines like IW Engine and Treyarch's Black Ops engine. Blizzard Entertainment's games often run on custom engines developed in-house to support their unique gameplay mechanics and graphics requirements.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+- **Industries Served:** Entertainment and interactive media.
+
+- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in North America, Europe, and Asia-Pacific.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - 2022: $7.53 billion ([statista.com](https://www.statista.com/topics/8033/activision-blizzard/?utm_source=openai))
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** Approximately 17,000 employees as of 2023. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - Acquisition by Microsoft in October 2023 for $68.7 billion. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+  - Formation of Activision Blizzard Studios in 2015 to produce films and television series based on its franchises.
+
+- **Key Competitors:** Electronic Arts, Ubisoft, Take-Two Interactive, and other major video game publishers.
+- **Overall Summary:** Activision Blizzard is a leading global developer and publisher of interactive entertainment content, known for its diverse portfolio of popular game franchises. The company's acquisition by Microsoft positions it to leverage synergies in gaming and technology, potentially expanding its reach and capabilities in the industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** English is the primary language used for business communications and documentation.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Activision Blizzard offers several user-facing platforms, including Battle.net, which serves as a central hub for Blizzard games, providing services such as game downloads, updates, and social features. Additionally, games like *Call of Duty* have dedicated online services for multiplayer gaming and community engagement.
+- **Compliance Standards:** While specific compliance certifications (e.g., PCI DSS, ISO 27001) are not publicly detailed, Activision Blizzard emphasizes data protection and secure transactions across its platforms. The company adheres to applicable data protection laws and regulations, including GDPR, to ensure user data privacy and security.
+
+**Sources:**
+
+- [Activision Blizzard Official Website](https://www.activisionblizzard.com/)
+- [Activision Blizzard - Wikipedia](https://en.wikipedia.org/wiki/Activision_Blizzard)
+
+- [Statista - Activision Blizzard Statistics & Facts](https://www.statista.com/topics/8033/activision-blizzard/)
+- [Microsoft to Acquire Activision Blizzard - Press Release](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community)","2025-06-07 12:53:31","nan","passed","nan","DDOS","{
+  ""product"": ""DDOS"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Gaming & Game Development"": ""Yes"",
+    ""Financial Services & Fintech"": ""No"",
+    ""SaaS, IaaS & IT Service Providers"": ""No"",
+    ""Media, Entertainment & Streaming"": ""No"",
+    ""E-commerce & Retail Tech"": ""No"",
+    ""Government & Public Sector"": ""No""
+  },
+  ""qualified_audiences"": [
+    ""Gaming & Game Development""
+  ],
+  ""detailed_results"": {
+    ""Gaming & Game Development"": {
+      ""audience"": ""Gaming & Game Development"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"CD Projekt","cdprojektred.com","https://www.linkedin.com/company/cd-projekt-red","1. **Basic Company Information:**
+   * **Company Name:** CD Projekt S.A.
+   * **Founding Year:** May 1994
+   * **Headquarters Location:** Warsaw, Poland
+   * **Founders:** Marcin Iwiński, Michał Kiciński
+   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 13, 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Official Homepage URL:** https://www.cdprojekt.com/en/
+
+2. **Products and Technology:**
+   * **Core Products & Services:**
+     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, ""The Witcher,"" was released in 2007, followed by ""The Witcher 2: Assassins of Kings"" in 2011, and ""The Witcher 3: Wild Hunt"" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+     - **GOG.com:** A digital distribution platform for DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Underlying Technologies:**
+     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in ""The Witcher 2,"" ""The Witcher 3,"" and ""Cyberpunk 2077."" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+
+3. **Market and Customer Information:**
+   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+   * **Industries Served:** Video game development and digital distribution.
+   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.
+
+4. **Financial and HR Details:**
+   * **Revenue History:**
+     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **2023:** Specific revenue figures for 2023 are not provided in the available sources.
+   * **Funding Rounds:** No specific data found on funding rounds.
+   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+
+5. **Strategic Information:**
+   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+   * **Strategic Initiatives:**
+     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for ""The Flame in the Flood,"" to work on one of its existing IPs. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+     - In March 2021, CD Projekt acquired Vancouver-based Digital Scapes Studios, rebranding it as CD Projekt Red Vancouver. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Rockstar Games.
+   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher, renowned for its critically acclaimed titles like ""The Witcher"" series and ""Cyberpunk 2077."" The company has expanded its global presence through strategic acquisitions and continues to focus on delivering high-quality, story-driven role-playing games.
+
+6. **Additional Business Information:**
+   * **Professional Open Positions:** No specific data found on current professional open positions.
+   * **Working Languages:** The company operates primarily in English and Polish.
+
+7. **Technical and Compliance Information:**
+   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user-facing platform where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+- ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+- ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","DDOS","{
+  ""product"": ""DDOS"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Gaming & Game Development"": ""Yes"",
+    ""Financial Services & Fintech"": ""No"",
+    ""SaaS, IaaS & IT Service Providers"": ""No"",
+    ""Media, Entertainment & Streaming"": ""No"",
+    ""E-commerce & Retail Tech"": ""No"",
+    ""Government & Public Sector"": ""No""
+  },
+  ""qualified_audiences"": [
+    ""Gaming & Game Development""
+  ],
+  ""detailed_results"": {
+    ""Gaming & Game Development"": {
+      ""audience"": ""Gaming & Game Development"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0,
+        ""total_criteria"": 0,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 0,
+        ""pass_rate"": 0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"Electronic Arts (EA)","ea.com","https://www.linkedin.com/company/electronic-arts","**1. Basic Company Information:**
+
+- **Company Name:** Electronic Arts Inc.
+- **Founding Year:** May 27, 1982
+
+- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States
+- **Founders:** Trip Hawkins
+
+- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.
+- **Official Homepage URL:** https://www.ea.com/
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - **EA SPORTS FC**
+  - **Battlefield**
+  - **Apex Legends**
+  - **The Sims**
+  - **Madden NFL**
+  - **Need for Speed**
+  - **Titanfall**
+  - **F1**
+
+- **Underlying Technologies:** EA develops and publishes games across various platforms, including gaming consoles (Microsoft Xbox, Sony PlayStation, Nintendo WiiU), PCs, mobile devices, and tablets. The company utilizes proprietary game engines and technologies tailored for each platform to deliver immersive gaming experiences.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games and services directly to individual consumers.
+- **Industries Served:** Electronic Gaming & Multimedia
+
+- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - **Fiscal Year 2024:**
+    - Total Revenue: $7.562 billion
+  - **Fiscal Year 2023:**
+    - Total Revenue: $7.426 billion
+  - **Fiscal Year 2022:**
+    - Total Revenue: $6.991 billion
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - In June 2023, EA announced an internal reorganization into two organizations: EA Sports and EA Entertainment, both reporting directly to CEO Andrew Wilson.
+  - In February 2024, EA announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees, as part of a restructuring plan.
+
+- **Key Competitors:** Main competitors include Activision Blizzard, Take-Two Interactive, and Ubisoft.
+- **Overall Summary:** Electronic Arts Inc. is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, EA continues to focus on its core franchises and strategic initiatives to maintain its position in the gaming industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** The primary working language is English.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, and various game-specific portals that require user accounts for access to personalized content, multiplayer features, and online services.
+- **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))
+- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))
+
+- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))
+- ([globaldata.com](https://www.globaldata.com/company-profile/electronic-arts-inc/?utm_source=openai))
+
+- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))
+- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","VM","{
+  ""product"": ""VM"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Online Gaming"": ""Yes"",
+    ""Gambling"": ""No"",
+    ""Fintech/Trading"": ""No""
+  },
+  ""qualified_audiences"": [
+    ""Online Gaming""
+  ],
+  ""detailed_results"": {
+    ""Online Gaming"": {
+      ""audience"": ""Online Gaming"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.0,
+        ""total_criteria"": 3,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 1,
+        ""pass_rate"": 0.0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"Activision Blizzard","activisionblizzard.com","https://www.linkedin.com/company/activision-blizzard","**1. Basic Company Information:**
+
+- **Company Name:** Activision Blizzard, Inc.
+- **Founding Year:** July 9, 2008
+
+- **Headquarters Location:** Santa Monica, California, USA
+- **Founders:** The company was formed through the merger of Activision, Inc. and Vivendi Games.
+
+- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company. In October 2023, Microsoft completed its acquisition of Activision Blizzard for $68.7 billion, making it a subsidiary of Microsoft Gaming. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+- **Official Homepage URL:** [https://www.activisionblizzard.com/](https://www.activisionblizzard.com/)
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - *Call of Duty* series
+  - *Crash Bandicoot* series
+  - *Guitar Hero* series
+  - *Skylanders* series
+  - *Spyro the Dragon* series
+  - *Tony Hawk's* series
+  - *Diablo* series
+  - *Hearthstone*
+  - *Heroes of the Storm*
+  - *Overwatch* series
+  - *StarCraft* series
+  - *Warcraft* series
+  - *Candy Crush Saga*
+
+- **Underlying Technologies:** Activision Blizzard utilizes various proprietary game engines and platforms tailored to each franchise. For instance, the *Call of Duty* series has employed engines like IW Engine and Treyarch's Black Ops engine. Blizzard Entertainment's games often run on custom engines developed in-house to support their unique gameplay mechanics and graphics requirements.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+- **Industries Served:** Entertainment and interactive media.
+
+- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in North America, Europe, and Asia-Pacific.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - 2022: $7.53 billion ([statista.com](https://www.statista.com/topics/8033/activision-blizzard/?utm_source=openai))
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** Approximately 17,000 employees as of 2023. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - Acquisition by Microsoft in October 2023 for $68.7 billion. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+  - Formation of Activision Blizzard Studios in 2015 to produce films and television series based on its franchises.
+
+- **Key Competitors:** Electronic Arts, Ubisoft, Take-Two Interactive, and other major video game publishers.
+- **Overall Summary:** Activision Blizzard is a leading global developer and publisher of interactive entertainment content, known for its diverse portfolio of popular game franchises. The company's acquisition by Microsoft positions it to leverage synergies in gaming and technology, potentially expanding its reach and capabilities in the industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** English is the primary language used for business communications and documentation.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Activision Blizzard offers several user-facing platforms, including Battle.net, which serves as a central hub for Blizzard games, providing services such as game downloads, updates, and social features. Additionally, games like *Call of Duty* have dedicated online services for multiplayer gaming and community engagement.
+- **Compliance Standards:** While specific compliance certifications (e.g., PCI DSS, ISO 27001) are not publicly detailed, Activision Blizzard emphasizes data protection and secure transactions across its platforms. The company adheres to applicable data protection laws and regulations, including GDPR, to ensure user data privacy and security.
+
+**Sources:**
+
+- [Activision Blizzard Official Website](https://www.activisionblizzard.com/)
+- [Activision Blizzard - Wikipedia](https://en.wikipedia.org/wiki/Activision_Blizzard)
+
+- [Statista - Activision Blizzard Statistics & Facts](https://www.statista.com/topics/8033/activision-blizzard/)
+- [Microsoft to Acquire Activision Blizzard - Press Release](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community)","2025-06-07 12:53:31","nan","passed","nan","VM","{
+  ""product"": ""VM"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Online Gaming"": ""Yes"",
+    ""Gambling"": ""No"",
+    ""Fintech/Trading"": ""No""
+  },
+  ""qualified_audiences"": [
+    ""Online Gaming""
+  ],
+  ""detailed_results"": {
+    ""Online Gaming"": {
+      ""audience"": ""Online Gaming"",
+      ""qualification_status"": ""Passed"",
+      ""mandatory_status"": ""Passed"",
+      ""nth_results"": {
+        ""score"": 0.0,
+        ""total_criteria"": 3,
+        ""passed_criteria"": 0,
+        ""nd_criteria"": 2,
+        ""pass_rate"": 0.0
+      },
+      ""final_status"": ""Failed""
+    }
+  }
+}","NOT QUALIFIED"
+"CD Projekt","cdprojektred.com","https://www.linkedin.com/company/cd-projekt-red","1. **Basic Company Information:**
+   * **Company Name:** CD Projekt S.A.
+   * **Founding Year:** May 1994
+   * **Headquarters Location:** Warsaw, Poland
+   * **Founders:** Marcin Iwiński, Michał Kiciński
+   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 13, 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Official Homepage URL:** https://www.cdprojekt.com/en/
+
+2. **Products and Technology:**
+   * **Core Products & Services:**
+     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, ""The Witcher,"" was released in 2007, followed by ""The Witcher 2: Assassins of Kings"" in 2011, and ""The Witcher 3: Wild Hunt"" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+     - **GOG.com:** A digital distribution platform for DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Underlying Technologies:**
+     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in ""The Witcher 2,"" ""The Witcher 3,"" and ""Cyberpunk 2077."" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+
+3. **Market and Customer Information:**
+   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+   * **Industries Served:** Video game development and digital distribution.
+   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.
+
+4. **Financial and HR Details:**
+   * **Revenue History:**
+     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **2023:** Specific revenue figures for 2023 are not provided in the available sources.
+   * **Funding Rounds:** No specific data found on funding rounds.
+   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+
+5. **Strategic Information:**
+   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+   * **Strategic Initiatives:**
+     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for ""The Flame in the Flood,"" to work on one of its existing IPs. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+     - In March 2021, CD Projekt acquired Vancouver-based Digital Scapes Studios, rebranding it as CD Projekt Red Vancouver. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Rockstar Games.
+   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher, renowned for its critically acclaimed titles like ""The Witcher"" series and ""Cyberpunk 2077."" The company has expanded its global presence through strategic acquisitions and continues to focus on delivering high-quality, story-driven role-playing games.
+
+6. **Additional Business Information:**
+   * **Professional Open Positions:** No specific data found on current professional open positions.
+   * **Working Languages:** The company operates primarily in English and Polish.
+
+7. **Technical and Compliance Information:**
+   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user-facing platform where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+- ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+- ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","VM","{
+  ""product"": ""VM"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""Online Gaming"": ""No"",
+    ""Gambling"": ""No"",
+    ""Fintech/Trading"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"Electronic Arts (EA)","ea.com","https://www.linkedin.com/company/electronic-arts","**1. Basic Company Information:**
+
+- **Company Name:** Electronic Arts Inc.
+- **Founding Year:** May 27, 1982
+
+- **Headquarters Location:** 209 Redwood Shores Parkway, Redwood City, California, 94065-1175, United States
+- **Founders:** Trip Hawkins
+
+- **Ownership Background:** Electronic Arts Inc. is a publicly traded company listed on the NASDAQ stock exchange under the ticker symbol EA.
+- **Official Homepage URL:** https://www.ea.com/
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - **EA SPORTS FC**
+  - **Battlefield**
+  - **Apex Legends**
+  - **The Sims**
+  - **Madden NFL**
+  - **Need for Speed**
+  - **Titanfall**
+  - **F1**
+
+- **Underlying Technologies:** EA develops and publishes games across various platforms, including gaming consoles (Microsoft Xbox, Sony PlayStation, Nintendo WiiU), PCs, mobile devices, and tablets. The company utilizes proprietary game engines and technologies tailored for each platform to deliver immersive gaming experiences.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), offering games and services directly to individual consumers.
+- **Industries Served:** Electronic Gaming & Multimedia
+
+- **Geographic Markets:** Electronic Arts operates globally, with a presence in North America, Europe, and Asia.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - **Fiscal Year 2024:**
+    - Total Revenue: $7.562 billion
+  - **Fiscal Year 2023:**
+    - Total Revenue: $7.426 billion
+  - **Fiscal Year 2022:**
+    - Total Revenue: $6.991 billion
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** As of 2024, Electronic Arts employed approximately 13,700 full-time employees.
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - In June 2023, EA announced an internal reorganization into two organizations: EA Sports and EA Entertainment, both reporting directly to CEO Andrew Wilson.
+  - In February 2024, EA announced layoffs affecting approximately 5% of its workforce, equating to around 670 employees, as part of a restructuring plan.
+
+- **Key Competitors:** Main competitors include Activision Blizzard, Take-Two Interactive, and Ubisoft.
+- **Overall Summary:** Electronic Arts Inc. is a leading global interactive entertainment company known for its diverse portfolio of games and services. Despite facing challenges such as game cancellations and workforce reductions, EA continues to focus on its core franchises and strategic initiatives to maintain its position in the gaming industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** The primary working language is English.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Electronic Arts offers user-facing platforms such as the EA App, an online gaming digital distribution platform for PCs, and various game-specific portals that require user accounts for access to personalized content, multiplayer features, and online services.
+- **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Electronic_Arts?utm_source=openai))
+- ([finance.yahoo.com](https://finance.yahoo.com/quote/EA/profile/?utm_source=openai))
+
+- ([macrotrends.net](https://www.macrotrends.net/stocks/charts/EA/electronic-arts/revenue?utm_source=openai))
+- ([globaldata.com](https://www.globaldata.com/company-profile/electronic-arts-inc/?utm_source=openai))
+
+- ([apnews.com](https://apnews.com/article/8725a896ccbd19c324b48f8c69981677?utm_source=openai))
+- ([windowscentral.com](https://www.windowscentral.com/gaming/ea-has-canceled-yet-another-game-shuttered-its-developer-and-started-more-layoffs?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","WAAP","{
+  ""product"": ""WAAP"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""IT Service Providers"": ""No"",
+    ""Financial Services Enterprises"": ""No"",
+    ""Telecommunications Providers"": ""No"",
+    ""Adult and Dating Platforms (Large)"": ""No"",
+    ""Betting Platforms"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"Activision Blizzard","activisionblizzard.com","https://www.linkedin.com/company/activision-blizzard","**1. Basic Company Information:**
+
+- **Company Name:** Activision Blizzard, Inc.
+- **Founding Year:** July 9, 2008
+
+- **Headquarters Location:** Santa Monica, California, USA
+- **Founders:** The company was formed through the merger of Activision, Inc. and Vivendi Games.
+
+- **Ownership Background:** Initially, Activision Blizzard was a publicly traded company. In October 2023, Microsoft completed its acquisition of Activision Blizzard for $68.7 billion, making it a subsidiary of Microsoft Gaming. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+- **Official Homepage URL:** [https://www.activisionblizzard.com/](https://www.activisionblizzard.com/)
+
+**2. Products and Technology:**
+
+- **Core Products & Services:**
+  - *Call of Duty* series
+  - *Crash Bandicoot* series
+  - *Guitar Hero* series
+  - *Skylanders* series
+  - *Spyro the Dragon* series
+  - *Tony Hawk's* series
+  - *Diablo* series
+  - *Hearthstone*
+  - *Heroes of the Storm*
+  - *Overwatch* series
+  - *StarCraft* series
+  - *Warcraft* series
+  - *Candy Crush Saga*
+
+- **Underlying Technologies:** Activision Blizzard utilizes various proprietary game engines and platforms tailored to each franchise. For instance, the *Call of Duty* series has employed engines like IW Engine and Treyarch's Black Ops engine. Blizzard Entertainment's games often run on custom engines developed in-house to support their unique gameplay mechanics and graphics requirements.
+
+**3. Market and Customer Information:**
+
+- **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+- **Industries Served:** Entertainment and interactive media.
+
+- **Geographic Markets:** Activision Blizzard operates globally, with significant markets in North America, Europe, and Asia-Pacific.
+
+**4. Financial and HR Details:**
+
+- **Revenue History:**
+  - 2022: $7.53 billion ([statista.com](https://www.statista.com/topics/8033/activision-blizzard/?utm_source=openai))
+
+- **Funding Rounds:** No specific data found on funding rounds.
+- **Employee Count:** Approximately 17,000 employees as of 2023. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Activision_Blizzard?utm_source=openai))
+
+**5. Strategic Information:**
+
+- **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+- **Strategic Initiatives:**
+  - Acquisition by Microsoft in October 2023 for $68.7 billion. ([investor.activision.com](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community?utm_source=openai))
+  - Formation of Activision Blizzard Studios in 2015 to produce films and television series based on its franchises.
+
+- **Key Competitors:** Electronic Arts, Ubisoft, Take-Two Interactive, and other major video game publishers.
+- **Overall Summary:** Activision Blizzard is a leading global developer and publisher of interactive entertainment content, known for its diverse portfolio of popular game franchises. The company's acquisition by Microsoft positions it to leverage synergies in gaming and technology, potentially expanding its reach and capabilities in the industry.
+
+**6. Additional Business Information:**
+
+- **Professional Open Positions:** No specific data found on current professional open positions.
+- **Working Languages:** English is the primary language used for business communications and documentation.
+
+**7. Technical and Compliance Information:**
+
+- **User Portal/Login System:** Activision Blizzard offers several user-facing platforms, including Battle.net, which serves as a central hub for Blizzard games, providing services such as game downloads, updates, and social features. Additionally, games like *Call of Duty* have dedicated online services for multiplayer gaming and community engagement.
+- **Compliance Standards:** While specific compliance certifications (e.g., PCI DSS, ISO 27001) are not publicly detailed, Activision Blizzard emphasizes data protection and secure transactions across its platforms. The company adheres to applicable data protection laws and regulations, including GDPR, to ensure user data privacy and security.
+
+**Sources:**
+
+- [Activision Blizzard Official Website](https://www.activisionblizzard.com/)
+- [Activision Blizzard - Wikipedia](https://en.wikipedia.org/wiki/Activision_Blizzard)
+
+- [Statista - Activision Blizzard Statistics & Facts](https://www.statista.com/topics/8033/activision-blizzard/)
+- [Microsoft to Acquire Activision Blizzard - Press Release](https://investor.activision.com/news-releases/news-release-details/microsoft-acquire-activision-blizzard-bring-joy-and-community)","2025-06-07 12:53:31","nan","passed","nan","WAAP","{
+  ""product"": ""WAAP"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""IT Service Providers"": ""No"",
+    ""Financial Services Enterprises"": ""No"",
+    ""Telecommunications Providers"": ""No"",
+    ""Adult and Dating Platforms (Large)"": ""No"",
+    ""Betting Platforms"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"
+"CD Projekt","cdprojektred.com","https://www.linkedin.com/company/cd-projekt-red","1. **Basic Company Information:**
+   * **Company Name:** CD Projekt S.A.
+   * **Founding Year:** May 1994
+   * **Headquarters Location:** Warsaw, Poland
+   * **Founders:** Marcin Iwiński, Michał Kiciński
+   * **Ownership Background:** CD Projekt S.A. is a publicly traded company listed on the Warsaw Stock Exchange under the ticker symbol CDR. As of November 13, 2023, major shareholders include Marcin Iwiński (12.89%), Michał Kiciński (9.99%), Piotr Nielubowicz (6.87%), and Adam Kiciński (4.05%). ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Official Homepage URL:** https://www.cdprojekt.com/en/
+
+2. **Products and Technology:**
+   * **Core Products & Services:**
+     - **The Witcher Series:** A series of role-playing games based on the novels by Andrzej Sapkowski. The first game, ""The Witcher,"" was released in 2007, followed by ""The Witcher 2: Assassins of Kings"" in 2011, and ""The Witcher 3: Wild Hunt"" in 2015. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **Cyberpunk 2077:** An open-world role-playing game set in a dystopian future, released on December 10, 2020. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+     - **GOG.com:** A digital distribution platform for DRM-free video games and films, launched in 2008. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Underlying Technologies:**
+     - **REDengine:** A proprietary game engine developed by CD Projekt Red, used in ""The Witcher 2,"" ""The Witcher 3,"" and ""Cyberpunk 2077."" The company transitioned to Unreal Engine 5 for future projects, including the next installment in The Witcher series. ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+
+3. **Market and Customer Information:**
+   * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.
+   * **Industries Served:** Video game development and digital distribution.
+   * **Geographic Markets:** Operates worldwide, with a significant presence in Europe and North America.
+
+4. **Financial and HR Details:**
+   * **Revenue History:**
+     - **2019:** 2.139 billion PLN (approximately 471.82 million EUR). ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+     - **2023:** Specific revenue figures for 2023 are not provided in the available sources.
+   * **Funding Rounds:** No specific data found on funding rounds.
+   * **Employee Count:** As of June 2023, CD Projekt employed 1,292 people. ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+
+5. **Strategic Information:**
+   * **Major Clients or Case Studies:** No specific data found on major clients or case studies.
+   * **Strategic Initiatives:**
+     - In October 2021, CD Projekt acquired The Molasses Flood, a Boston-based independent studio known for ""The Flame in the Flood,"" to work on one of its existing IPs. ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+     - In March 2021, CD Projekt acquired Vancouver-based Digital Scapes Studios, rebranding it as CD Projekt Red Vancouver. ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+   * **Key Competitors:** Major competitors include other AAA game developers and publishers such as Ubisoft, Electronic Arts, and Rockstar Games.
+   * **Overall Summary:** CD Projekt S.A. is a leading Polish video game developer and publisher, renowned for its critically acclaimed titles like ""The Witcher"" series and ""Cyberpunk 2077."" The company has expanded its global presence through strategic acquisitions and continues to focus on delivering high-quality, story-driven role-playing games.
+
+6. **Additional Business Information:**
+   * **Professional Open Positions:** No specific data found on current professional open positions.
+   * **Working Languages:** The company operates primarily in English and Polish.
+
+7. **Technical and Compliance Information:**
+   * **User Portal/Login System:** GOG.com, operated by CD Projekt, offers a user-facing platform where customers can purchase and download games. Users are required to create an account to access their library and make transactions. ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+   * **Compliance Standards:** No specific data found on compliance standards.
+
+**Sources:**
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/CD_Projekt?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Cyberpunk_2077?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/GOG.com?utm_source=openai))
+- ([en.wikipedia.org](https://en.wikipedia.org/wiki/The_Witcher_IV?utm_source=openai))
+- ([as.com](https://as.com/meristation/2021/10/23/noticias/1634972195_831910.html?utm_source=openai))
+- ([de.wikipedia.org](https://de.wikipedia.org/wiki/CD_Projekt?utm_source=openai))","2025-06-07 12:53:31","nan","passed","nan","WAAP","{
+  ""product"": ""WAAP"",
+  ""general_status"": true,
+  ""qualification_results"": {
+    ""IT Service Providers"": ""No"",
+    ""Financial Services Enterprises"": ""No"",
+    ""Telecommunications Providers"": ""No"",
+    ""Adult and Dating Platforms (Large)"": ""No"",
+    ""Betting Platforms"": ""No""
+  },
+  ""qualified_audiences"": [],
+  ""detailed_results"": {}
+}","NOT QUALIFIED"

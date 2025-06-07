@@ -156,7 +156,14 @@ class CriteriaAnalysis {
         }
 
         formData.append('file', fileInput.files[0]);
-        formData.append('load_all_companies', loadAllCheckbox.checked);
+        formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
+
+        // Disable analyze button during processing
+        const analyzeBtn = document.getElementById('criteria-analyze-btn');
+        if (analyzeBtn) {
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = '⏳ Analyzing...';
+        }
 
         try {
             this.showStatus('Uploading file...');
@@ -182,6 +189,13 @@ class CriteriaAnalysis {
         } catch (error) {
             console.error('Upload error:', error);
             this.showStatus(`Error: ${error.message}`, 'error');
+            
+            // Re-enable analyze button on error
+            const analyzeBtn = document.getElementById('criteria-analyze-btn');
+            if (analyzeBtn) {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = ' Analyze ';
+            }
         }
     }
 
@@ -192,6 +206,7 @@ class CriteriaAnalysis {
         const cancelBtn = document.getElementById('cancel-criteria-btn');
         const downloadBtn = document.getElementById('download-results-btn-main') || 
                            document.getElementById('download-results-btn-router');
+        const analyzeBtn = document.getElementById('criteria-analyze-btn');
 
         statusSection.style.display = 'block';
         statusText.textContent = message;
@@ -201,14 +216,29 @@ class CriteriaAnalysis {
             progressBar.style.display = 'block';
             cancelBtn.style.display = 'inline-block';
             if (downloadBtn) downloadBtn.style.display = 'none';
+            // Keep analyze button disabled during processing
+            if (analyzeBtn) {
+                analyzeBtn.disabled = true;
+                analyzeBtn.textContent = '⏳ Analyzing...';
+            }
         } else if (type === 'completed' || message.includes('завершен') || message.includes('completed')) {
             progressBar.style.display = 'none';
             cancelBtn.style.display = 'none';
             if (downloadBtn) downloadBtn.style.display = 'inline-block';
+            // Re-enable analyze button when completed
+            if (analyzeBtn) {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = ' Analyze ';
+            }
         } else {
             progressBar.style.display = 'none';
             cancelBtn.style.display = 'none';
             if (downloadBtn) downloadBtn.style.display = 'none';
+            // Re-enable analyze button on error or other states
+            if (analyzeBtn) {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = ' Analyze ';
+            }
         }
     }
 
