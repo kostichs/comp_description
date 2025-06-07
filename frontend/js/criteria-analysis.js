@@ -20,76 +20,126 @@ class CriteriaAnalysis {
     }
 
     bindEvents() {
-        // Form submission
-        const form = document.getElementById('criteria-upload-form');
-        if (form) {
-            form.addEventListener('submit', (e) => this.handleUpload(e));
+        // Ensure we're properly referencing the button on this page
+        const analyzeBtn = document.getElementById('criteria-analyze-btn');
+        const uploadForm = document.getElementById('criteria-upload-form');
+        const cancelBtn = document.getElementById('cancel-criteria-btn');
+        const refreshBtn = document.getElementById('refresh-criteria-btn');
+        
+        // Download buttons (there are multiple ones due to different pages/structures)
+        const downloadBtn = document.getElementById('download-results-btn');
+        const downloadBtnMain = document.getElementById('download-results-btn-main');
+        const downloadBtnRouter = document.getElementById('download-results-btn-router');
+        
+        console.log('Binding events for criteria analysis:', {
+            analyzeBtn: !!analyzeBtn,
+            uploadForm: !!uploadForm,
+            cancelBtn: !!cancelBtn,
+            refreshBtn: !!refreshBtn,
+            downloadBtn: !!downloadBtn,
+            downloadBtnMain: !!downloadBtnMain,
+            downloadBtnRouter: !!downloadBtnRouter
+        });
+
+        if (uploadForm) {
+            uploadForm.addEventListener('submit', (e) => this.handleUpload(e));
         }
 
-        // Button events
-        const cancelBtn = document.getElementById('cancel-criteria-btn');
         if (cancelBtn) {
             cancelBtn.addEventListener('click', () => this.cancelAnalysis());
         }
 
-        const refreshBtn = document.getElementById('refresh-criteria-btn');
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => this.checkStatus());
         }
 
-        const downloadBtn = document.getElementById('download-results-btn');
-        if (downloadBtn && !downloadBtn.hasAttribute('data-bound')) {
-            downloadBtn.addEventListener('click', () => this.downloadResults());
-            downloadBtn.setAttribute('data-bound', 'true');
-        }
+        // Add event listeners to all download buttons (to handle different page structures)
+        [downloadBtn, downloadBtnMain, downloadBtnRouter].forEach(btn => {
+            if (btn && !btn.dataset.bound) {
+                btn.addEventListener('click', () => this.downloadResults());
+                btn.dataset.bound = 'true'; // Prevent multiple bindings
+            }
+        });
 
-        // Также добавляем обработчик для кнопки в main page
-        const downloadBtnMain = document.getElementById('download-results-btn-main');
-        if (downloadBtnMain && !downloadBtnMain.hasAttribute('data-bound')) {
-            downloadBtnMain.addEventListener('click', () => this.downloadResults());
-            downloadBtnMain.setAttribute('data-bound', 'true');
-        }
-
-        // И для router page
-        const downloadBtnRouter = document.getElementById('download-results-btn-router');
-        if (downloadBtnRouter && !downloadBtnRouter.hasAttribute('data-bound')) {
-            downloadBtnRouter.addEventListener('click', () => this.downloadResults());
-            downloadBtnRouter.setAttribute('data-bound', 'true');
-        }
-
+        // Bind load sessions button
         const loadSessionsBtn = document.getElementById('load-sessions-btn');
         if (loadSessionsBtn) {
             loadSessionsBtn.addEventListener('click', () => this.loadSessions());
         }
 
-        // Criteria management events
-
-
-
-
+        // Bind criteria file management
         const refreshCriteriaBtn = document.getElementById('refresh-criteria-btn');
         if (refreshCriteriaBtn) {
             refreshCriteriaBtn.addEventListener('click', () => this.loadCriteriaFiles());
         }
 
+        // Bind criteria editor buttons
         const saveCriteriaBtn = document.getElementById('save-criteria-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const addRowBtn = document.getElementById('add-row-btn');
+        const deleteRowBtn = document.getElementById('delete-row-btn');
+
         if (saveCriteriaBtn) {
             saveCriteriaBtn.addEventListener('click', () => this.saveCriteriaFile());
         }
-
-        const cancelEditBtn = document.getElementById('cancel-edit-btn');
         if (cancelEditBtn) {
             cancelEditBtn.addEventListener('click', () => this.cancelEdit());
         }
-
-        const addRowBtn = document.getElementById('add-row-btn');
         if (addRowBtn) {
             addRowBtn.addEventListener('click', () => this.addTableRow());
         }
-
-        const deleteRowBtn = document.getElementById('delete-row-btn');
         if (deleteRowBtn) {
             deleteRowBtn.addEventListener('click', () => this.deleteSelectedRows());
+        }
+
+        // Setup drag & drop for company files
+        this.setupCompanyDragDrop();
+    }
+
+    setupCompanyDragDrop() {
+        const dropZoneContainer = document.getElementById('criteria-dropZoneContainer');
+        const inputFile = document.getElementById('criteria-file');
+        const customChooseFileButton = document.getElementById('criteria-customChooseFileButton');
+        const fileNameDisplay = document.getElementById('criteria-fileNameDisplay');
+
+        if (dropZoneContainer && inputFile && customChooseFileButton && fileNameDisplay) {
+            customChooseFileButton.addEventListener('click', () => {
+                inputFile.click();
+            });
+
+            dropZoneContainer.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                dropZoneContainer.classList.add('dragover');
+            });
+
+            dropZoneContainer.addEventListener('dragleave', (event) => {
+                dropZoneContainer.classList.remove('dragover');
+            });
+
+            dropZoneContainer.addEventListener('drop', (event) => {
+                event.preventDefault();
+                dropZoneContainer.classList.remove('dragover');
+
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    inputFile.files = files;
+                    const fileName = files[0].name;
+                    fileNameDisplay.textContent = `File selected: ${fileName}`;
+                    fileNameDisplay.style.color = '#28a745';
+                    console.log('Company file(s) dropped and assigned to input:', files);
+                } else {
+                    fileNameDisplay.textContent = '';
+                }
+            });
+
+            inputFile.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) {
+                    fileNameDisplay.textContent = `File selected: ${this.files[0].name}`;
+                    fileNameDisplay.style.color = '#28a745';
+                } else {
+                    fileNameDisplay.textContent = '';
+                }
+            });
         }
     }
 
@@ -736,8 +786,6 @@ class CriteriaAnalysis {
         this.currentEditingFile = null;
         this.criteriaData = null;
     }
-
-
 
     async deleteCriteriaFile(filename) {
         if (!confirm(`Are you sure you want to delete "${filename}"? This action cannot be undone.`)) {

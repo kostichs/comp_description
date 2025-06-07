@@ -75,8 +75,7 @@ class Router {
             // Inline HTML content for criteria analysis
             contentDiv.innerHTML = `
             <div class="criteria-analysis-container">
-                <h2>🔍 Company Criteria Analysis</h2>
-                <p class="description">Analyze companies against product criteria for AI, DDOS, WAAP, CDN, and VM products.</p>
+                <p class="description">Analyze companies against product criteria for AI, DDOS, WAAP and other products.</p>
                 
                 <div class="info-section">
                     <h3>📋 How it works:</h3>
