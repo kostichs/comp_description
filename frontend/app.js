@@ -438,26 +438,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = escapeHtml(row.Company_Name || '');
             console.log('Adding to table:', name); // <--- ДОБАВЛЕН ЭТОТ ЛОГ
         
-            // Description (с переводом переносов строк в <br>)
-            let descriptionHtml = escapeHtml(row.Description || '');
-            descriptionHtml = descriptionHtml.replace(/\n/g, '<br>');
-        
-            // Добавляем ссылку на официальный сайт
-            if (row.Official_Website && row.Official_Website !== 'Not found') {
-                const link = escapeHtml(row.Official_Website);
-                descriptionHtml += `<br><br>Homepage: <a href="${link}" target="_blank">${link}</a>`;
-            }
-        
-            // Добавляем ссылку на LinkedIn
-            if (row.LinkedIn_URL && row.LinkedIn_URL !== 'Not found') {
-                const link = escapeHtml(row.LinkedIn_URL);
-                descriptionHtml += `<br>LinkedIn: <a href="${link}" target="_blank">${link}</a>`;
-            }
-        
-            tr.innerHTML = `
-                <td>${name}</td>
-                <td>${descriptionHtml}</td>
-            `;
+                    // Description (с переводом переносов строк в <br>)
+        let descriptionHtml = escapeHtml(row.Description || '');
+        descriptionHtml = descriptionHtml.replace(/\n/g, '<br>');
+    
+        // Добавляем ссылку на официальный сайт
+        if (row.Official_Website && row.Official_Website !== 'Not found') {
+            const link = escapeHtml(row.Official_Website);
+            descriptionHtml += `<br><br>Homepage: <a href="${link}" target="_blank">${link}</a>`;
+        }
+    
+        // Добавляем ссылку на LinkedIn
+        if (row.LinkedIn_URL && row.LinkedIn_URL !== 'Not found') {
+            const link = escapeHtml(row.LinkedIn_URL);
+            descriptionHtml += `<br>LinkedIn: <a href="${link}" target="_blank">${link}</a>`;
+        }
+    
+        tr.innerHTML = `
+            <td>${name}</td>
+            <td>${descriptionHtml}</td>
+        `;
             resultsTableBody.appendChild(tr);
         });
     }

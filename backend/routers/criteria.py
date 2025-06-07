@@ -252,6 +252,99 @@ async def create_criteria_analysis(
         logger.error(f"Error creating criteria analysis session: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to create analysis session: {str(e)}")
 
+@router.post("/analyze_from_session")
+async def create_criteria_analysis_from_session(
+    background_tasks: BackgroundTasks,
+    session_id: str = Form(...),
+    load_all_companies: bool = Form(False)
+):
+    """
+    Создает новую сессию анализа критериев используя результаты из существующей сессии
+    
+    - **session_id**: ID сессии из которой взять результаты
+    - **load_all_companies**: Загружать ли все файлы из папки data
+    """
+    try:
+        # Получаем информацию о существующей сессии
+        from .sessions import load_session_metadata
+        metadata = load_session_metadata()
+        source_session = next((m for m in metadata if m.get("session_id") == session_id), None)
+        
+        if not source_session:
+            raise HTTPException(status_code=404, detail=f"Source session {session_id} not found")
+        
+        if source_session.get("status") != "completed":
+            raise HTTPException(status_code=400, detail=f"Source session {session_id} is not completed")
+        
+        # Ищем CSV файл с результатами в папке сессии
+        import os
+        import glob
+        session_dir = f"output/sessions/{session_id}"
+        
+        if not os.path.exists(session_dir):
+            raise HTTPException(status_code=404, detail=f"Session directory not found for session {session_id}")
+        
+        # Ищем CSV файлы с результатами
+        csv_files = glob.glob(f"{session_dir}/*results*.csv")
+        if not csv_files:
+            # Пытаемся найти любой CSV файл
+            csv_files = glob.glob(f"{session_dir}/*.csv")
+        
+        if not csv_files:
+            raise HTTPException(status_code=404, detail=f"No CSV results file found for session {session_id}")
+        
+        # Берем самый новый файл
+        source_file_path = max(csv_files, key=os.path.getctime)
+        
+        # Генерируем ID новой сессии анализа критериев
+        new_session_id = generate_criteria_session_id()
+        
+        # Создаем временную папку для новой сессии
+        session_dir = Path("temp") / "criteria_analysis" / new_session_id
+        session_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Копируем файл результатов в папку новой сессии
+        import shutil
+        input_file_path = session_dir / "source_results.csv"
+        shutil.copy2(source_file_path, input_file_path)
+        
+        # Создаем метаданные новой сессии
+        criteria_sessions[new_session_id] = {
+            "session_id": new_session_id,
+            "status": "created",
+            "created_time": datetime.now().isoformat(),
+            "filename": f"Results from session {session_id}",
+            "source_session_id": session_id,
+            "file_size": os.path.getsize(input_file_path),
+            "input_file_path": str(input_file_path),
+            "load_all_companies": load_all_companies
+        }
+        
+        # Запускаем анализ в фоновой задаче
+        task = asyncio.create_task(
+            run_criteria_analysis_task(
+                new_session_id, 
+                input_file_path, 
+                load_all_companies
+            )
+        )
+        criteria_tasks[new_session_id] = task
+        
+        logger.info(f"Created criteria analysis session from existing session: {new_session_id} (source: {session_id})")
+        
+        return {
+            "session_id": new_session_id,
+            "status": "created",
+            "source_session_id": session_id,
+            "message": f"Criteria analysis session created using results from session {session_id}"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating criteria analysis session from existing session: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to create analysis session: {str(e)}")
+
 @router.get("/sessions")
 async def get_criteria_sessions():
     """Получить список всех сессий анализа критериев"""

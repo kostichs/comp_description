@@ -121,14 +121,24 @@ async def get_url_status_and_final_location_async(
                     return True, final_url_after_redirect, None
                 elif response.status == 403: # Forbidden часто означает, что сайт жив, но блокирует HEAD
                      logger.warning(f"[URL_CHECK] HEAD для {current_url_to_try} вернул 403. Пробуем GET.")
+                     
+                     # Проверяем был ли редирект даже при 403
+                     if final_url_after_redirect != current_url_to_try:
+                         logger.info(f"[URL_CHECK] Обнаружен редирект при 403 с {current_url_to_try} на {final_url_after_redirect}. Считаем сайт живым.")
+                         return True, final_url_after_redirect, None
+                     
                      async with session.get(current_url_to_try, timeout=client_timeout, allow_redirects=True, headers=common_headers) as get_response:
                         final_get_url = str(get_response.url)
                         logger.info(f"[URL_CHECK] GET (после 403) для {current_url_to_try}: статус {get_response.status}, финальный URL: {final_get_url}")
+                        
                         if 200 <= get_response.status < 400:
+                            return True, final_get_url, None
+                        elif get_response.status == 403 and final_get_url != current_url_to_try:
+                            # Даже если GET тоже вернул 403, но произошел редирект - сайт живой
+                            logger.info(f"[URL_CHECK] GET вернул 403, но произошел редирект на {final_get_url}. Считаем сайт живым.")
                             return True, final_get_url, None
                         else:
                             if attempt_num == 0 and processed_url.startswith("https://"): continue
-                            # return False, None, f"Статус GET (после 403) {get_response.status} для {current_url_to_try}"
                             last_aiohttp_error_message = f"Статус GET (после 403) {get_response.status} для {current_url_to_try}"
                             continue # К следующей попытке aiohttp
                 else: # Другие ошибки (404, 5xx и т.д.)
@@ -209,6 +219,9 @@ async def get_url_status_and_final_location_async(
                     return True, final_url_base, None
                 elif response.status == 500 and final_url_base != base_domain_url:
                     logger.info(f"[URL_CHECK] Статус 500 для базового домена {base_domain_url}, но есть редирект на {final_url_base}. Считаем успешным.")
+                    return True, final_url_base, None
+                elif response.status == 403 and final_url_base != base_domain_url:
+                    logger.info(f"[URL_CHECK] Статус 403 для базового домена {base_domain_url}, но есть редирект на {final_url_base}. Считаем успешным.")
                     return True, final_url_base, None
         except Exception as e_base:
             logger.warning(f"[URL_CHECK] Ошибка при проверке базового домена {base_domain_url}: {e_base}")

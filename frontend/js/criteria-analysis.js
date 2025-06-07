@@ -17,6 +17,7 @@ class CriteriaAnalysis {
         this.bindEvents();
         // Автоматически загружаем список файлов критериев для боковой панели
         this.loadCriteriaFiles();
+        this.initLatestSessionCheckbox();
     }
 
     bindEvents() {
@@ -42,7 +43,7 @@ class CriteriaAnalysis {
         });
 
         if (uploadForm) {
-            uploadForm.addEventListener('submit', (e) => this.handleUpload(e));
+            uploadForm.addEventListener('submit', (e) => this.handleUploadWithSessionCheck(e));
         }
 
         if (cancelBtn) {
@@ -150,7 +151,9 @@ class CriteriaAnalysis {
         const fileInput = document.getElementById('criteria-file');
         const loadAllCheckbox = document.getElementById('load-all-companies');
         
-        if (!fileInput.files[0]) {
+        // Skip file validation if using latest session
+        const useLatestSession = document.getElementById('use-latest-session').checked;
+        if (!useLatestSession && !fileInput.files[0]) {
             alert('Please select a file');
             return;
         }
@@ -1122,6 +1125,146 @@ class CriteriaAnalysis {
             reader.onerror = reject;
             reader.readAsText(file);
         });
+    }
+
+    initLatestSessionCheckbox() {
+        const checkbox = document.getElementById('use-latest-session');
+        const dropZoneContainer = document.getElementById('criteria-dropZoneContainer');
+        const fileInput = document.getElementById('criteria-file');
+        
+        if (checkbox && dropZoneContainer && fileInput) {
+            checkbox.addEventListener('change', () => {
+                this.toggleLatestSessionMode(checkbox.checked);
+            });
+            
+            // Загружаем информацию о последней сессии
+            this.loadLatestSessionInfo();
+        }
+    }
+
+    async loadLatestSessionInfo() {
+        try {
+            const response = await fetch('/api/sessions');
+            const sessions = await response.json();
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch sessions');
+            }
+
+            // Найти последнюю завершенную сессию
+            const completedSessions = sessions.filter(s => s.status === 'completed');
+            
+            const latestSessionInfoEl = document.getElementById('latest-session-info');
+            const checkbox = document.getElementById('use-latest-session');
+            
+            if (completedSessions.length > 0) {
+                const latestSession = completedSessions[0]; // Уже отсортированы по времени создания
+                const sessionDate = new Date(latestSession.created_time).toLocaleString();
+                const companiesCount = latestSession.total_companies || 0;
+                
+                latestSessionInfoEl.textContent = `Latest session: ${latestSession.session_id} (${sessionDate}, ${companiesCount} companies)`;
+                latestSessionInfoEl.style.display = 'block';
+                checkbox.style.display = 'inline-block';
+                
+                this.latestSessionId = latestSession.session_id;
+            } else {
+                latestSessionInfoEl.textContent = 'No completed sessions found';
+                latestSessionInfoEl.style.display = 'block';
+                checkbox.disabled = true;
+                checkbox.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error loading latest session info:', error);
+            const latestSessionInfoEl = document.getElementById('latest-session-info');
+            latestSessionInfoEl.textContent = 'Error loading session information';
+            latestSessionInfoEl.style.display = 'block';
+        }
+    }
+
+    toggleLatestSessionMode(useLatestSession) {
+        const dropZoneContainer = document.getElementById('criteria-dropZoneContainer');
+        const fileInput = document.getElementById('criteria-file');
+        const fileNameDisplay = document.getElementById('criteria-fileNameDisplay');
+        
+        if (useLatestSession) {
+            // Отключаем drag-and-drop и файловый input
+            dropZoneContainer.style.opacity = '0.5';
+            dropZoneContainer.style.pointerEvents = 'none';
+            fileInput.disabled = true;
+            fileNameDisplay.textContent = 'Using results from latest session';
+            fileNameDisplay.style.color = '#007bff';
+        } else {
+            // Включаем drag-and-drop и файловый input обратно
+            dropZoneContainer.style.opacity = '1';
+            dropZoneContainer.style.pointerEvents = 'auto';
+            fileInput.disabled = false;
+            fileNameDisplay.textContent = '';
+        }
+    }
+
+    async handleUploadWithSessionCheck(event) {
+        event.preventDefault();
+        
+        const useLatestSession = document.getElementById('use-latest-session').checked;
+        
+        if (useLatestSession) {
+            return this.handleUploadFromSession();
+        } else {
+            return this.handleUpload(event);
+        }
+    }
+
+    async handleUploadFromSession() {
+        if (!this.latestSessionId) {
+            alert('No latest session available');
+            return;
+        }
+
+        const formData = new FormData();
+        const loadAllCheckbox = document.getElementById('load-all-companies');
+        
+        formData.append('session_id', this.latestSessionId);
+        formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
+
+        // Disable analyze button during processing
+        const analyzeBtn = document.getElementById('criteria-analyze-btn');
+        if (analyzeBtn) {
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = '⏳ Analyzing...';
+        }
+
+        try {
+            this.showStatus('Using results from latest session...');
+            
+            const response = await fetch('/api/criteria/analyze_from_session', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.detail || 'Analysis error');
+            }
+
+            this.currentSessionId = result.session_id;
+            document.getElementById('criteria-session-id').textContent = this.currentSessionId;
+            
+            this.showStatus('Analysis started...');
+            this.resetResultsPanel();
+            this.startStatusChecking();
+
+        } catch (error) {
+            console.error('Upload from session error:', error);
+            this.showStatus(`Error: ${error.message}`, 'error');
+            
+            // Re-enable analyze button on error
+            const analyzeBtn = document.getElementById('criteria-analyze-btn');
+            if (analyzeBtn) {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = ' Analyze ';
+            }
+        }
     }
 }
 
