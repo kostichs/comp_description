@@ -1,0 +1,70 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press Releases",
+            "link": "https://www.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. November 3, 2023 ... Please follow this link [https://www.activision.com/legal/ap-eula] in order to see these changes. ×. Privacy Policy Update.",
+            "position": 1
+        },
+        {
+            "title": "Newsroom",
+            "link": "https://www.activisionblizzard.com/newsroom.For",
+            "snippet": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We ...",
+            "position": 2
+        },
+        {
+            "title": "Press Releases - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. October 3, 2023. Joyful Chaos Wherever You Go! Warcraft Rumble™ Launches at BlizzCon on November 3. Additional Formats. PDF Version. September 29 ...",
+            "position": 3
+        },
+        {
+            "title": "Deadline extended: an update on the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the",
+            "snippet": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the ...",
+            "date": "Jul 19, 2023",
+            "position": 4
+        },
+        {
+            "title": "The latest step in the UK for the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/uk-cma-microsoft-activision-blizzard-preliminary",
+            "snippet": "I want to share an important update on our planned merger with Microsoft. Today the UK regulatory authority, the CMA, issued a preliminary ...",
+            "date": "Sep 21, 2023",
+            "position": 5
+        },
+        {
+            "title": "End-of-year Blizzard Update",
+            "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update",
+            "snippet": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update.",
+            "date": "Dec 22, 2022",
+            "position": 6
+        },
+        {
+            "title": "Activision Introduces Call of Duty, a New Brand of First-Person ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-introduces-call-duty-new-brand-first-person-action",
+            "snippet": "The title is slated for release later this year and has not yet been rated by the ESRB. \"The Call of Duty brand will deliver the most authentic, intense and ...",
+            "position": 7
+        },
+        {
+            "title": "Call of Duty: Black Ops III Salvation DLC Season Finale Set to ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-black-ops-iii-salvation-dlc-season-finale-set-arrive",
+            "snippet": "and · as of the date of this release, and neither · nor · assumes any obligation to update any such forward-looking statements. · or ...",
+            "position": 8
+        },
+        {
+            "title": "Get Ready for an N. Sane Brawl! Crash Team Rumble™ ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/get-ready-n-sane-brawl-crash-team-rumbletm-now-available",
+            "snippet": "... release, and neither Activision Publishing nor Activision Blizzard assumes any obligation to update any such forward-looking statements. ... View source version ...",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

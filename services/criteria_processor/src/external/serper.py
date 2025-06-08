@@ -227,7 +227,7 @@ def get_information_for_criterion(company_info, place, search_query=None, sessio
         if not search_results:
             log_debug(f"ℹ️ Search failed for {company_name}, using general description instead")
             return description, "General Description (search failed)"
-
+        
         # --- DEEP ANALYSIS LOGIC ---
         if use_deep_analysis:
             log_info(f"🐝 Starting deep analysis for '{formatted_query}'...")
@@ -236,21 +236,21 @@ def get_information_for_criterion(company_info, place, search_query=None, sessio
             links_to_scrape = [result['link'] for result in search_results.get('organic', [])[:SCRAPE_TOP_N_RESULTS]]
             
             for link in links_to_scrape:
-                scraped_content = scrape_website_text(link, session_id=session_id, company_name=company_name)
+                scraped_content = scrape_website_text(link, session_id=session_id, company_name=company_name, serper_query=formatted_query)
                 if scraped_content:
                     scraped_texts.append(f"--- CONTENT FROM {link} ---\n\n{scraped_content}")
 
             if scraped_texts:
                 scraped_info = "\n\n".join(scraped_texts)
-                combined_information = (
+        combined_information = (
                     f"SCRAPED CONTENT FOR: {formatted_query}\n\n"
                     f"{scraped_info}\n\n"
-                    f"GENERAL DESCRIPTION:\n{description}"
-                )
-                log_info(f"✅ Deep analysis complete. Total scraped length: {len(scraped_info)} chars")
-                return combined_information, f"Deep Analysis of top {len(scraped_texts)} search results"
-            else:
-                log_info(f"⚠️ Deep analysis did not return any content, using search snippets instead.")
+            f"GENERAL DESCRIPTION:\n{description}"
+        )
+        log_info(f"✅ Deep analysis complete. Total scraped length: {len(scraped_info)} chars")
+        return combined_information, f"Deep Analysis of top {len(scraped_texts)} search results"
+    else:
+        log_info(f"⚠️ Deep analysis did not return any content, using search snippets instead.")
         
         # --- SNIPPET ANALYSIS (FALLBACK) ---
         search_snippets = [result.get('snippet', '') for result in search_results.get('organic', [])]

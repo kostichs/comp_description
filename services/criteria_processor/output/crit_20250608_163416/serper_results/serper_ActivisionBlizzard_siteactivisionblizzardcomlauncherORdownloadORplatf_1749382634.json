@@ -1,0 +1,69 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Tidy up your digital life with these organizer apps",
+            "link": "https://newsroom.activisionblizzard.com/p/tidy-up-your-digital-life-with-these",
+            "snippet": "Stardock Software has a whole host of programs and apps that can alter your desktop and file organization but Fences stands out for us. Fences ...",
+            "date": "Aug 25, 2023",
+            "position": 1
+        },
+        {
+            "title": "Media Contacts",
+            "link": "https://www.activisionblizzard.com/media-contacts",
+            "snippet": "Media Downloads. File Name 10. Download Icon. Test · File Name 9. Download Icon. Download · File Name 8. Download Icon. Download · File Name 7. Download Icon.",
+            "position": 2
+        },
+        {
+            "title": "Activision Blizzard | Annual Reports",
+            "link": "https://www.activisionblizzard.com/annual-reports",
+            "snippet": "Download annual reports to learn more about Activision Blizzard's performance. 2022 Annual Report May 1, 2022 DOWNLOAD",
+            "position": 3
+        },
+        {
+            "title": "Activision Blizzard | About",
+            "link": "https://www.activisionblizzard.com/about-us",
+            "snippet": "Activision Blizzard Media is the gateway for brands to the #1 cross-platform gaming company in the western world, with hundreds of millions of players across ...",
+            "position": 4
+        },
+        {
+            "title": "Call of Duty®: Black Ops II Revolution Downloadable ...",
+            "link": "https://investor.activisionblizzard.com/static-files/dd6dcc3f-f712-429b-b4db-42bab50ce4b3",
+            "snippet": "DLC Season Pass and DLC Map Packs may not be available on all platforms or in all territories. Pricing and release dates may vary by platform.",
+            "date": "Jan 29, 2025",
+            "position": 5
+        },
+        {
+            "title": "Activision Announces Free Upgrade to Next-Gen for Call ...",
+            "link": "https://investor.activisionblizzard.com/static-files/a87d3146-cf4e-4387-ad90-92578ab062a9",
+            "snippet": "If Day Zero Edition not available at retailer, pre-order customer may receive a pre-order refund, or may purchase a launch unit and obtain a code to download ...",
+            "position": 6
+        },
+        {
+            "title": "Activision Announces Partnership with Metallica for First Ever ...",
+            "link": "https://investor.activisionblizzard.com/static-files/d7c8aea3-0c85-4a24-bd52-211885418ec9",
+            "snippet": "Music creators will also be able to share their recordings with their friends online through GHTunes™ where other gamers can download and play an endless supply ...",
+            "position": 7
+        },
+        {
+            "title": "FISCAL 2001 FOURTH QUARTER FINANCIAL RESULTS",
+            "link": "https://investor.activisionblizzard.com/static-files/7cd4a5d0-8987-464c-9e76-74a5587a0210",
+            "snippet": "\"As the #1 independent publisher for the Game Boy® Color platform, we are very enthusiastic about the June 11th U.S. release ... Download the Q4 2001 Financial ...",
+            "position": 8
+        },
+        {
+            "title": "job openings at Activision Blizzard - Design Studio",
+            "link": "https://careers.activisionblizzard.com/search-results?s=1",
+            "snippet": "Lead Analytics Engineer. Your Platform. We're headquartered in Santa Monica, California, housing multiple teams across many fields of ...",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

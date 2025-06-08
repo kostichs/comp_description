@@ -1130,13 +1130,20 @@ class CriteriaAnalysis {
                 return;
             }
 
-            // Parse CSV
-            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            // Parse CSV with proper handling of quoted fields
+            const parsedData = this.parseCSV(fileContent);
+            
+            if (parsedData.length < 2) {
+                alert('File must have at least header and one data row.');
+                return;
+            }
+
+            const headers = parsedData[0];
             const data = [];
             
-            for (let i = 1; i < lines.length; i++) {
-                const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
-                if (values.length === headers.length) {
+            for (let i = 1; i < parsedData.length; i++) {
+                const values = parsedData[i];
+                if (values.length > 0) {
                     const row = {};
                     headers.forEach((header, index) => {
                         row[header] = values[index] || '';
@@ -1165,13 +1172,54 @@ class CriteriaAnalysis {
                 throw new Error(result.detail || 'Failed to upload criteria file');
             }
 
-            alert(`Criteria file uploaded successfully: ${result.filename}`);
+            alert(`Criteria file uploaded successfully: ${result.filename} with ${data.length} rows`);
             this.loadCriteriaFiles(); // Refresh file list
 
         } catch (error) {
             console.error('Error uploading criteria file:', error);
             alert(`Error uploading file: ${error.message}`);
         }
+    }
+
+    parseCSV(text) {
+        const result = [];
+        const lines = text.split('\n');
+        
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+            
+            const row = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        // Handle escaped quotes
+                        current += '"';
+                        i++; // Skip next quote
+                    } else {
+                        // Toggle quote state
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === ',' && !inQuotes) {
+                    // Field separator
+                    row.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            // Add the last field
+            row.push(current.trim());
+            result.push(row);
+        }
+        
+        return result;
     }
 
     readFileAsText(file) {

@@ -13,7 +13,7 @@ def _sanitize_filename(name: str) -> str:
     # Remove invalid characters for Windows filenames
     return re.sub(r'[\\/*?:"<>|]', "_", name)
 
-def save_scrapingbee_result(session_id: str, company_name: str, url: str, result_data: dict):
+def save_scrapingbee_result(session_id: str, company_name: str, url: str, result_data: dict, serper_query: str):
     """Saves the ScrapingBee result to a single human-readable session log file."""
     if not session_id:
         return
@@ -23,19 +23,18 @@ def save_scrapingbee_result(session_id: str, company_name: str, url: str, result
         os.makedirs(log_dir, exist_ok=True)
         filepath = os.path.join(log_dir, "scrapingbee_session.log")
 
-        # Create a human-readable, multi-line string with proper newlines
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         status_code = result_data.get('status_code', 'N/A')
         error = result_data.get('error')
         
         log_entry = f"--- Request at {timestamp} ---\n"
         log_entry += f"Company: {company_name}\n"
+        log_entry += f"Serper Query: {serper_query}\n"
         log_entry += f"URL: {url}\n"
         log_entry += f"Status Code: {status_code}\n"
 
-        if error:
-            log_entry += f"Error: {error}\n"
-        else:
+        scraped_text = None
+        if not error:
             response_body = result_data.get('response_body', {})
             if isinstance(response_body, dict):
                 scraped_text = response_body.get('text')
@@ -48,8 +47,17 @@ def save_scrapingbee_result(session_id: str, company_name: str, url: str, result
                     log_entry += "Content: Empty or not found.\n"
             else: # raw text
                 log_entry += f"Raw Response Snippet: {str(response_body)[:200].strip()}...\n"
+        
+        if error:
+            log_entry += f"Error: {error}\n"
 
-        log_entry += "----------------------------------------\n\n"
+        if scraped_text:
+            log_entry += "-- Scraped Content (first 2000 chars) --\n"
+            log_entry += scraped_text[:2000].strip()
+            log_entry += "\n----------------------------------------\n\n"
+        else:
+            log_entry += "----------------------------------------\n\n"
+
 
         with open(filepath, 'a', encoding='utf-8') as f:
             f.write(log_entry)
@@ -57,15 +65,15 @@ def save_scrapingbee_result(session_id: str, company_name: str, url: str, result
     except Exception as e:
         log_error(f"Failed to save ScrapingBee log for {company_name}: {e}")
 
-def scrape_website_text(url: str, session_id: str, company_name: str) -> str | None:
+def scrape_website_text(url: str, session_id: str, company_name: str, serper_query: str) -> str | None:
     """
     Scrapes the text content of a given URL using the ScrapingBee API.
-
+    
     Args:
         url (str): The URL to scrape.
         session_id (str): The current session ID for logging.
         company_name (str): The company name for logging.
-
+        serper_query (str): The original Serper query for context.
 
     Returns:
         str | None: The extracted text content of the website, or None if scraping fails.
@@ -74,18 +82,22 @@ def scrape_website_text(url: str, session_id: str, company_name: str) -> str | N
         log_error("ScrapingBee API key is not configured.")
         save_scrapingbee_result(session_id, company_name, url, {
             "error": "ScrapingBee API key not configured."
-        })
+        }, serper_query)
         return None
 
     log_debug(f"🐝 Scraping URL: {url} for {company_name}")
     response = None
     try:
+        # The 'extract_rules' parameter must be a JSON-encoded string.
+        # Previously, passing a dict caused requests to serialize it incorrectly.
+        extract_rules_json = json.dumps({"text": "body"})
+
         response = requests.get(
             url="https://app.scrapingbee.com/api/v1/",
             params={
                 "api_key": SCRAPINGBEE_API_KEY,
                 "url": url,
-                "extract_rules": {"text": "body"},
+                "extract_rules": extract_rules_json,
             },
             timeout=120,
         )
@@ -98,7 +110,7 @@ def scrape_website_text(url: str, session_id: str, company_name: str) -> str | N
             "status_code": response.status_code,
             "headers": dict(response.headers),
             "response_body": data
-        })
+        }, serper_query)
 
         scraped_text = data.get('text')
 
@@ -118,7 +130,7 @@ def scrape_website_text(url: str, session_id: str, company_name: str) -> str | N
         save_scrapingbee_result(session_id, company_name, url, {
             "status_code": e.response.status_code if e.response is not None else "N/A",
             "error": f"RequestException: {str(e)}"
-        })
+        }, serper_query)
         return None
     except json.JSONDecodeError:
         log_error(f"❌ Failed to decode JSON response from ScrapingBee for {url}. Response: {response.text if response else 'No response'}")
@@ -126,5 +138,5 @@ def scrape_website_text(url: str, session_id: str, company_name: str) -> str | N
             "status_code": response.status_code if response is not None else 'N/A',
             "error": "JSONDecodeError",
             "response_body": response.text if response is not None else "N/A"
-        })
+        }, serper_query)
         return None 

@@ -1,0 +1,121 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "My Hero Ultra Rumble - Download",
+            "link": "https://en.bandainamcoent.eu/my-hero-academia/my-hero-ultra-rumble/download",
+            "snippet": "Latest game news. CYBERPUNK 2077: ULTIMATE EDITION Arrives On NINTENDO ... Register a game · Join the CLUB! Languages English. Languages. English · Français ...",
+            "position": 1
+        },
+        {
+            "title": "All Games",
+            "link": "https://en.bandainamcoent.eu/games",
+            "snippet": "11/10/2024. Search for a game. Submit. Category. Category, Action, Anime, RPG, Fighting, JRPG, Adventure, Horror, Kids game, Management, Music/Dance, Racing ...",
+            "position": 2
+        },
+        {
+            "title": "Register a Bandai Namco Game",
+            "link": "https://en.bandainamcoent.eu/register-bandai-namco-game",
+            "snippet": "Latest game news. MOBILE SUIT GUNDAM SEED BATTLE DESTINY REMASTERED Is Now Available Worldwide On Nintendo Switch And Pc · Dragon Ball DAIMA Pack is now ...",
+            "position": 3
+        },
+        {
+            "title": "ELDEN RING NIGHTREIGN | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign",
+            "snippet": "ELDEN RING NIGHTREIGN is a standalone adventure within the ELDEN RING universe, crafted to offer players a new gaming experience by reimagining the game's core",
+            "sitelinks": [
+                {
+                    "title": "Standalone adventure game...",
+                    "link": "https://en.bandainamcoent.eu/elden-ring/news/standalone-adventure-game-elden-ring-nightreign-launches-30th-may-preorders-now"
+                },
+                {
+                    "title": "Shop now",
+                    "link": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign/shop-now"
+                },
+                {
+                    "title": "Wiki | Bandai Namco Europe",
+                    "link": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign/wiki"
+                },
+                {
+                    "title": "Press kit",
+                    "link": "https://en.bandainamcoent.eu/press/9744"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "THE PATRICK STAR GAME | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/sponge-bob/the-patrick-star-game",
+            "snippet": "THE PATRICK STAR GAME ... Become the Star of the show, put your silliest ideas into action, and enjoy the physics-based chaos that unfolds all around you! Patrick ...",
+            "position": 5
+        },
+        {
+            "title": "ELDEN RING NIGHTREIGN – Patch Notes Version 1.01",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-nightreign-patch-notes-version-101",
+            "snippet": "This update aims to improve gameplay and stability. Please make sure to download and apply the latest update before launching the game. Patch ...",
+            "date": "May 29, 2025",
+            "position": 6
+        },
+        {
+            "title": "SPYxANYA: Operation Memories | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/spy-x-family/spyxanya-operation-memories",
+            "snippet": "Enjoy A Variety Of Mini-Games. Play over 15 mini-games, both inspired from the anime series and originally designed for the game!",
+            "position": 7
+        },
+        {
+            "title": "SHADOW LABYRINTH | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/pac-man/shadow-labyrinth",
+            "snippet": "Wishlist on your favourite platform. Wishlist now to stay tuned for the latest updates about this video game! Steam PlayStation.",
+            "position": 8
+        },
+        {
+            "title": "PARK BEYOND | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/park-beyond/park-beyond",
+            "snippet": "Whether you love to manage finances and visitor experience or just create fun and cozy parks, the game has something in store just for you! Park Beyond ...",
+            "position": 9
+        },
+        {
+            "title": "BLEACH Rebirth of Souls | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/bleach/bleach-rebirth-of-souls",
+            "snippet": "Wishlist on your favourite platform. Wishlist now to stay tuned for the latest updates about this video game! Steam PlayStation Xbox.",
+            "sitelinks": [
+                {
+                    "title": "Character Roster",
+                    "link": "https://en.bandainamcoent.eu/bleach-rebirth-of-souls-character-roster"
+                },
+                {
+                    "title": "Version 1.04 updates",
+                    "link": "https://en.bandainamcoent.eu/bleach/news/bleach-rebirth-of-souls-version-104-updates"
+                },
+                {
+                    "title": "Everything You Need to Know",
+                    "link": "https://en.bandainamcoent.eu/bleach/news/bleach-rebirth-of-souls-everything-you-need-know"
+                },
+                {
+                    "title": "Shop now",
+                    "link": "https://en.bandainamcoent.eu/bleach/bleach-rebirth-of-souls/shop-now"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop mac"
+        },
+        {
+            "query": "Game download dedicated desktop xbox"
+        },
+        {
+            "query": "Game download dedicated desktop android"
+        }
+    ],
+    "credits": 1
+}

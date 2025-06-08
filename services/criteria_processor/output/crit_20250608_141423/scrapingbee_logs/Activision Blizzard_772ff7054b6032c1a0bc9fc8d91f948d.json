@@ -1,4 +1,0 @@
-{
-    "url": "https://www.activisionblizzard.com/annual-reports",
-    "error": "RequestException: 400 Client Error: BAD REQUEST for url: https://app.scrapingbee.com/api/v1/?api_key=JLRXIU8UWXV80UGUI9M0BIN7FKHG9B6QPXMOJAPJCZPQPSI0FKE9D5PIWFPREPG3U6JZR06P3SS0TSSL&url=https%3A%2F%2Fwww.activisionblizzard.com%2Fannual-reports&extract_rules=text"
-}

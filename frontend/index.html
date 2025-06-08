@@ -412,34 +412,34 @@
             
             <!-- Main Content Area -->
             <div style="flex: 1;">
-                <form id="uploadForm">
-                    <div id="dropZoneContainer" 
-                         ondragover="this.classList.add('dragover'); event.preventDefault();" 
-                         ondragleave="this.classList.remove('dragover');"
-                         ondrop="this.classList.remove('dragover'); event.preventDefault();">
-                         <label class="dropZone-label">Drag & Drop Your File Here or Use the Button</label>
-                         <p class="dropZone-instructions">
-                             Supported formats: <b>CSV</b>, <b>XLSX</b>.<br><br>
-                         
-                             <b>Required format:</b> Two columns - Company names and website URLs.<br><br>
-                         
+        <form id="uploadForm">
+            <div id="dropZoneContainer" 
+                 ondragover="this.classList.add('dragover'); event.preventDefault();" 
+                 ondragleave="this.classList.remove('dragover');"
+                 ondrop="this.classList.remove('dragover'); event.preventDefault();">
+                 <label class="dropZone-label">Drag & Drop Your File Here or Use the Button</label>
+                 <p class="dropZone-instructions">
+                     Supported formats: <b>CSV</b>, <b>XLSX</b>.<br><br>
+                 
+                     <b>Required format:</b> Two columns - Company names and website URLs.<br><br>
+                 
                              <b>Note:</b> The first row (header) will be ignored.
-                         </p>
-                        <button type="button" id="customChooseFileButton">Choose File</button>
-                        <p id="fileNameDisplay"></p>
-                        
-                        <input type="file" id="inputFile" accept=".csv,.xlsx,.xls" required>
-                    </div>
-                </form>
-
-                <div id="sessionControls" style="display: none;">
-                    <button id="startProcessingBtn">Start Processing</button>
-                    <button id="viewLogsBtn">View Logs</button>
-                    <button id="downloadResultsBtn">Download .csv results</button>
-                </div>
-
-                <div id="progressStatus" style="display:none; margin: 20px 0; font-size: 1.1em; color: #007bff; font-weight: bold;">Processing...</div>
+                 </p>
+                <button type="button" id="customChooseFileButton">Choose File</button>
+                <p id="fileNameDisplay"></p>
                 
+                <input type="file" id="inputFile" accept=".csv,.xlsx,.xls" required>
+            </div>
+        </form>
+
+        <div id="sessionControls" style="display: none;">
+            <button id="startProcessingBtn">Start Processing</button>
+            <button id="viewLogsBtn">View Logs</button>
+            <button id="downloadResultsBtn">Download .csv results</button>
+        </div>
+
+        <div id="progressStatus" style="display:none; margin: 20px 0; font-size: 1.1em; color: #007bff; font-weight: bold;">Processing...</div>
+
             </div> <!-- End Main Content Area -->
         </div> <!-- End Sidebar Layout -->
         

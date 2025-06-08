@@ -20,4 +20,4 @@ AI,Public Sector Agencies,Qualification,"Organization is a municipal, state, or 
 AI,Public Sector Agencies,Mandatory,"Mentions AI projects in citizen services, healthcare, infrastructure, or public operations",description,"""AI project"" OR ""citizen services"" OR ""diagnostics"" OR ""chatbots"" OR ""smart city""","AI for citizen services, AI in diagnostics, public service automation"
 AI,Public Sector Agencies,NTH,"Mentions responsible AI, data protection, transparency, or public accountability",description,"""responsible AI"" OR ""citizen data"" OR ""public accountability"" OR ""ethical AI"" OR ""privacy"" OR ""digital ID""","responsible AI, citizen privacy, ethical use, digital ID"
 AI,Public Sector Agencies,NTH,"Describes AI pilot programs, trials, or innovation initiatives",description,"""AI trial"" OR ""pilot project"" OR ""innovation initiative"" OR ""R&D program""","AI pilots, innovation, research initiative, public testing"
-AI,,General,"The company does not have headquarters in Mainlaind China, Iran or Russia.",,, 
+AI,,General,"The company does not have headquarters in Mainlaind China, Iran or Russia.",,,
