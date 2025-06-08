@@ -3,8 +3,11 @@ import openai
 from openai import OpenAI
 import re
 from src.utils.logging import log_info, log_debug, log_error
-from src.external.serper import serper_search, save_serper_result, format_search_query
-from src.external.scrapingbee_client import scrape_website_text
+from src.external.serper import perform_google_search, save_serper_result, format_search_query
+from src.external.scrapingbee_client import scrape_website_text, scrape_multiple_urls_with_signals
+from src.external.async_scrapingbee import run_async_scrape_sync
+from src.utils.signals_processor import extract_signals_keywords
+from src.utils.config import ASYNC_SCRAPING_CONFIG
 from typing import Tuple
 
 class GPTAnalyzer:
@@ -103,27 +106,55 @@ class GPTAnalyzer:
                 search_query = search_query.replace('{company_name}', company_name)
             
             log_debug(f"Выполняем динамический поиск: {search_query}")
-            search_results = serper_search(search_query)
-            if self.session_id:
-                save_serper_result(self.session_id, company_name, search_query, search_results)
+            search_response = perform_google_search(search_query, self.session_id, company_name)
+            search_results = search_response.get('organic', []) if search_response else []
             
             if search_results:
                 search_context = "\\n".join([f"Title: {r.get('title', '')}\\nSnippet: {r.get('snippet', '')}" for r in search_results])
                 full_context += "\\n--- Dynamic Search Results ---\\n" + search_context
 
                 if str(criterion.get('Deep Analysis')).lower() == 'true':
-                    log_info(f"🐝 Starting deep analysis for '{search_query}'...")
-                    scraped_text = self._perform_deep_analysis_for_criterion(company_name, search_results, search_query)
-                    if scraped_text:
-                        full_context += "\\n--- Deep Analysis Content ---\\n" + scraped_text
+                    # Use async or sync scraping based on configuration
+                    if ASYNC_SCRAPING_CONFIG['enable_async_scraping']:
+                        log_info(f"🐝 Starting async deep analysis with signals for '{search_query}'...")
+                        try:
+                            scraped_text = run_async_scrape_sync(
+                                search_results, criterion, self.session_id, company_name, search_query, 
+                                max_concurrent=ASYNC_SCRAPING_CONFIG['max_concurrent_scrapes']
+                            )
+                            if scraped_text:
+                                full_context += "\\n--- Deep Analysis Content (Async) ---\\n" + scraped_text
+                        except Exception as e:
+                            log_error(f"❌ Async scraping failed: {e}")
+                            if ASYNC_SCRAPING_CONFIG['fallback_to_sync']:
+                                log_info("🔄 Falling back to sync scraping...")
+                                scraped_text = scrape_multiple_urls_with_signals(
+                                    search_results, criterion, self.session_id, company_name, search_query
+                                )
+                                if scraped_text:
+                                    full_context += "\\n--- Deep Analysis Content (Sync Fallback) ---\\n" + scraped_text
+                    else:
+                        log_info(f"🐝 Starting sync deep analysis with signals for '{search_query}'...")
+                        scraped_text = scrape_multiple_urls_with_signals(
+                            search_results, criterion, self.session_id, company_name, search_query
+                        )
+                        if scraped_text:
+                            full_context += "\\n--- Deep Analysis Content ---\\n" + scraped_text
+        
+        # Enhance prompt with signals context
+        signals_keywords = extract_signals_keywords(criterion)
+        signals_context = ""
+        if signals_keywords:
+            signals_context = f"\\nKey signals to look for: {', '.join(signals_keywords)}"
         
         prompt = f"""
         Context:
         {full_context}
         ---
-        Criterion: {criterion_text}
+        Criterion: {criterion_text}{signals_context}
         ---
         Based on the context, does the company meet the criterion? 
+        {f"Pay special attention to mentions of: {', '.join(signals_keywords)}" if signals_keywords else ""}
         Respond with "Yes" or "No" and a brief, one-sentence explanation.
         Example: Yes, the company provides cloud services which aligns with the criterion.
         """

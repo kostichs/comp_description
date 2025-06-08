@@ -1,0 +1,131 @@
+{
+    "searchParameters": {
+        "q": "\"AI platform\" OR \"AI model\" OR \"AI video\" OR \"AI-generated\" OR \"AI assistant\"",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Free AI Video Generator | Invideo AI",
+            "link": "https://invideo.io/make/ai-video-generator/",
+            "snippet": "AI generated images & videos. Create stories with AI-generated images and videos on Invideo AI v3.0 without juggling multiple AI video generator tools.",
+            "rating": 4.7,
+            "ratingCount": 530,
+            "position": 1
+        },
+        {
+            "title": "AI Video Generator - DeepAI",
+            "link": "https://deepai.org/video",
+            "snippet": "This AI video generator converts text to video, or image to video. Use it to convert images to animations. Or, Create videos from scratch from text!",
+            "position": 2
+        },
+        {
+            "title": "AI Video Generator: Text to Video AI Tool - Canva",
+            "link": "https://www.canva.com/features/ai-video-generator/",
+            "snippet": "How to make AI-generated video · Launch Canva · Access the AI video generator app · Create AI video · Customize your AI-generated video · Present, download, or share.",
+            "position": 3
+        },
+        {
+            "title": "Gemini AI video generator powered by Veo 3",
+            "link": "https://gemini.google/overview/video-generation/?hl=en",
+            "snippet": "Turn text into high-quality videos in Gemini with Veo 3, our latest AI video generator from Google ... AI-generated. Gemini's outputs are primarily determined by ...",
+            "position": 4
+        },
+        {
+            "title": "Free AI Video Generator - Create Videos from Text - VEED.IO",
+            "link": "https://www.veed.io/tools/ai-video",
+            "snippet": "AI Video Generator. AI-generated content and UGC-style creators to educate ... VEED's AI video generator lets you create content in seconds — complete ...",
+            "rating": 4.9,
+            "ratingCount": 79,
+            "position": 5
+        },
+        {
+            "title": "AI Assistant | Boost Your Productivity with Personalized AI",
+            "link": "https://aiassistant.so/",
+            "snippet": "Increase productivity, streamline tasks and keep information secure with your own personalized AI Assistant, connectable across devices.",
+            "position": 6
+        },
+        {
+            "title": "Introducing Gemini, your new personal AI assistant",
+            "link": "https://gemini.google/assistant/?hl=en",
+            "snippet": "Gemini is a new kind of AI assistant, built from the ground up with advanced language understanding and reasoning.",
+            "position": 7
+        },
+        {
+            "title": "AI Video Generator - Create videos from text and images - Freepik",
+            "link": "https://www.freepik.com/ai/video-generator",
+            "snippet": "Create AI-generated videos from text or images with Freepik's online AI Video Generator, choosing from multiple generation modes. Try it now!",
+            "position": 8
+        },
+        {
+            "title": "Vertex AI Platform | Google Cloud",
+            "link": "https://cloud.google.com/vertex-ai",
+            "snippet": "MLOps with Vertex AI: Model Evaluation. No cost training. Get started. Agent ... Get AI generated solution recommendations. Quickstarts. Get tutorials and ...",
+            "sitelinks": [
+                {
+                    "title": "Introduction",
+                    "link": "https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform"
+                },
+                {
+                    "title": "Train a model using Vertex AI...",
+                    "link": "https://cloud.google.com/vertex-ai/docs/tutorials/tabular-bq-prediction"
+                },
+                {
+                    "title": "Model Garden",
+                    "link": "https://console.cloud.google.com/vertex-ai/model-garden"
+                },
+                {
+                    "title": "AI Notebooks",
+                    "link": "https://cloud.google.com/vertex-ai-notebooks"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "What Is an AI Model? - IBM",
+            "link": "https://www.ibm.com/think/topics/ai-model",
+            "snippet": "An AI model is a program that applies one or more algorithms to data to recognize patterns, make predictions or make decisions without human intervention.",
+            "sitelinks": [
+                {
+                    "title": "What is an AI model?",
+                    "link": "https://www.ibm.com/think/topics/ai-model#What+is+an+AI+model%3F"
+                },
+                {
+                    "title": "AI models and machine learning",
+                    "link": "https://www.ibm.com/think/topics/ai-model#AI+models+and+machine+learning"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Free AI video generator"
+        },
+        {
+            "query": "AI text to video generator free"
+        },
+        {
+            "query": "AI video editor"
+        },
+        {
+            "query": "AI video generator from image"
+        },
+        {
+            "query": "Vidu AI"
+        },
+        {
+            "query": "AI image to video generator free"
+        },
+        {
+            "query": "AI video generator online"
+        },
+        {
+            "query": "Best free AI video generator"
+        }
+    ],
+    "credits": 1
+}

@@ -32,7 +32,7 @@ if str(CRITERIA_SRC_PATH) not in sys.path:
 if str(CRITERIA_PROCESSOR_PATH) not in sys.path:
     sys.path.insert(0, str(CRITERIA_PROCESSOR_PATH))
 
-def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False):
+def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 5):
     """Запускаем criteria_processor как отдельный процесс"""
     import subprocess
     import shutil
@@ -83,6 +83,11 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
         
         if use_deep_analysis:
             cmd.append("--deep-analysis")
+        
+        # Добавляем параметры параллельной обработки
+        if use_parallel:
+            cmd.append("--parallel")
+            cmd.extend(["--max-concurrent", str(max_concurrent)])
         
         # Меняем рабочую директорию на criteria_processor
         # Устанавливаем UTF-8 кодировку для Windows
@@ -136,7 +141,9 @@ async def run_criteria_analysis_task(
     session_id: str,
     input_file_path: Path,
     load_all_companies: bool = False,
-    use_deep_analysis: bool = False
+    use_deep_analysis: bool = False,
+    use_parallel: bool = True,
+    max_concurrent: int = 5
 ):
     """Асинхронная задача для запуска анализа критериев"""
     log_info = None
@@ -157,7 +164,9 @@ async def run_criteria_analysis_task(
             str(input_file_path),
             load_all_companies,
             session_id,
-            use_deep_analysis
+            use_deep_analysis,
+            use_parallel,
+            max_concurrent
         )
         
         # Проверяем результат выполнения процесса
@@ -195,7 +204,9 @@ async def create_criteria_analysis(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     load_all_companies: bool = Form(False),
-    use_deep_analysis: bool = Form(False)
+    use_deep_analysis: bool = Form(False),
+    use_parallel: bool = Form(True),
+    max_concurrent: int = Form(5)
 ):
     """
     Создает новую сессию анализа критериев
@@ -203,6 +214,8 @@ async def create_criteria_analysis(
     - **file**: CSV файл с описаниями компаний 
     - **load_all_companies**: Загружать ли все файлы из папки data
     - **use_deep_analysis**: Использовать ли глубокий анализ
+    - **use_parallel**: Параллельная обработка компаний (включена по умолчанию)
+    - **max_concurrent**: Максимальное количество одновременно обрабатываемых компаний (по умолчанию 5)
     """
     try:
         # Проверяем формат файла
@@ -234,7 +247,9 @@ async def create_criteria_analysis(
             "file_size": len(content),
             "input_file_path": str(input_file_path),
             "load_all_companies": load_all_companies,
-            "use_deep_analysis": use_deep_analysis
+            "use_deep_analysis": use_deep_analysis,
+            "use_parallel": use_parallel,
+            "max_concurrent": max_concurrent
         }
         
         # Запускаем анализ в фоновой задаче
@@ -243,7 +258,9 @@ async def create_criteria_analysis(
                 session_id, 
                 input_file_path, 
                 load_all_companies,
-                use_deep_analysis
+                use_deep_analysis,
+                use_parallel,
+                max_concurrent
             )
         )
         criteria_tasks[session_id] = task
@@ -267,7 +284,9 @@ async def create_criteria_analysis_from_session(
     background_tasks: BackgroundTasks,
     session_id: str = Form(...),
     load_all_companies: bool = Form(False),
-    use_deep_analysis: bool = Form(False)
+    use_deep_analysis: bool = Form(False),
+    use_parallel: bool = Form(True),
+    max_concurrent: int = Form(5)
 ):
     """
     Создает новую сессию анализа критериев используя результаты из существующей сессии
@@ -275,6 +294,8 @@ async def create_criteria_analysis_from_session(
     - **session_id**: ID сессии из которой взять результаты
     - **load_all_companies**: Загружать ли все файлы из папки data
     - **use_deep_analysis**: Использовать ли глубокий анализ
+    - **use_parallel**: Параллельная обработка компаний (включена по умолчанию)
+    - **max_concurrent**: Максимальное количество одновременно обрабатываемых компаний (по умолчанию 5)
     """
     try:
         # Получаем информацию о существующей сессии
@@ -330,7 +351,9 @@ async def create_criteria_analysis_from_session(
             "file_size": os.path.getsize(input_file_path),
             "input_file_path": str(input_file_path),
             "load_all_companies": load_all_companies,
-            "use_deep_analysis": use_deep_analysis
+            "use_deep_analysis": use_deep_analysis,
+            "use_parallel": use_parallel,
+            "max_concurrent": max_concurrent
         }
         
         # Запускаем анализ в фоновой задаче
@@ -339,7 +362,9 @@ async def create_criteria_analysis_from_session(
                 new_session_id, 
                 input_file_path, 
                 load_all_companies,
-                use_deep_analysis
+                use_deep_analysis,
+                use_parallel,
+                max_concurrent
             )
         )
         criteria_tasks[new_session_id] = task
@@ -450,16 +475,24 @@ async def get_criteria_session_results(session_id: str):
                 records = df.to_dict('records')
                 
                 # Дополнительная очистка каждой записи
+                def clean_data_recursive(obj):
+                    """Рекурсивно очищает данные от некорректных float значений"""
+                    if isinstance(obj, dict):
+                        return {k: clean_data_recursive(v) for k, v in obj.items()}
+                    elif isinstance(obj, list):
+                        return [clean_data_recursive(item) for item in obj]
+                    elif isinstance(obj, float):
+                        if np.isnan(obj) or np.isinf(obj):
+                            return None
+                        return obj
+                    elif pd.isna(obj):
+                        return None
+                    else:
+                        return obj
+                
                 cleaned_records = []
                 for record in records:
-                    cleaned_record = {}
-                    for key, value in record.items():
-                        if pd.isna(value) or value is None:
-                            cleaned_record[key] = None
-                        elif isinstance(value, float) and (np.isinf(value) or np.isnan(value)):
-                            cleaned_record[key] = None
-                        else:
-                            cleaned_record[key] = value
+                    cleaned_record = clean_data_recursive(record)
                     cleaned_records.append(cleaned_record)
                 
                 results = cleaned_records

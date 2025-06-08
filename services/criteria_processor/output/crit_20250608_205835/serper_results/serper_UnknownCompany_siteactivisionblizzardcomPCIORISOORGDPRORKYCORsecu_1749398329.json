@@ -1,0 +1,101 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"PCI\" OR \"ISO\" OR \"GDPR\" OR \"KYC\" OR \"secure\" OR \"data\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Data Analytics jobs",
+            "link": "https://careers.activisionblizzard.com/c/data-analytics-jobs",
+            "snippet": "The Analytics Insights team is seeking a talented Senior Data Analyst to work directly with and support partners such as Finance, Product, Player Insights, ...",
+            "position": 1
+        },
+        {
+            "title": "Privacy Policy",
+            "link": "https://www.activisionblizzard.com/legal/privacy-policy",
+            "snippet": "... data controller regarding your personal information. We take care of ... Security: To protect and secure our Properties, assets ...",
+            "date": "Dec 21, 2022",
+            "position": 2
+        },
+        {
+            "title": "Senior Data Analyst, Business Analytics",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025359EXTERNAL/Senior-Data-Analyst-Business-Analytics",
+            "snippet": "The Analytics Insights team is seeking a talented Senior Data Analyst to work directly with and support partners such as Finance, Product, Player Insights, ...",
+            "position": 3
+        },
+        {
+            "title": "Activision Blizzard | Your Privacy Choices",
+            "link": "https://www.activisionblizzard.com/legal/privacy",
+            "snippet": "To learn what personal information Activision Blizzard collects through activisionblizzard.com and how we use it, visit the Activision Blizzard Privacy Policy ...",
+            "position": 4
+        },
+        {
+            "title": "Activision Blizzard | Annual Reports",
+            "link": "https://www.activisionblizzard.com/annual-reports",
+            "snippet": "Download annual reports to learn more about Activision Blizzard's performance. 2022 Annual Report May 1, 2022 DOWNLOAD",
+            "position": 5
+        },
+        {
+            "title": "Activision Blizzard | Home",
+            "link": "https://www.activisionblizzard.com/",
+            "snippet": "We create the most epic interactive gaming and entertainment experiences. Our platforms immerse players in new, unimagined worlds and offer countless ways to ...",
+            "sitelinks": [
+                {
+                    "title": "About Our Company",
+                    "link": "https://www.activisionblizzard.com/about-us"
+                },
+                {
+                    "title": "Careers",
+                    "link": "https://careers.activisionblizzard.com/"
+                },
+                {
+                    "title": "Our Iconic Franchises",
+                    "link": "https://www.activisionblizzard.com/games"
+                },
+                {
+                    "title": "Who We Are",
+                    "link": "https://www.activisionblizzard.com/who-we-are"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Early Careers",
+            "link": "https://careers.activisionblizzard.com/early-careers",
+            "snippet": "Find our more about our Early Careers programs at Activision Blizzard and how you can apply for a career in epic entertainment today.",
+            "position": 7
+        },
+        {
+            "title": "King's Award-Winning 'Privacy Saga' Makes Terms of ...",
+            "link": "https://newsroom.activisionblizzard.com/p/king-privacy-saga-awards",
+            "snippet": "The dutiful progeny of legal and IT teams, privacy policies can all too often use stiff language and tiny fonts to explain how personal data is ...",
+            "date": "Jan 12, 2023",
+            "position": 8
+        },
+        {
+            "title": "Activision Blizzard | Protecting The Planet",
+            "link": "https://ourcommitments.activisionblizzard.com/protecting-the-planet",
+            "snippet": "In 2022, we focused our efforts on improving the quality, completeness, and accuracy of our greenhouse gas (GHG) emissions data and reporting capabilities in ...",
+            "position": 9
+        },
+        {
+            "title": "Senior Analytics Engineer in Santa Monica, California ...",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025006EXTERNAL/Senior-Analytics-Engineer",
+            "snippet": "The Mobile Analytics Team is seeking a talented Senior Analytics Engineer to collaborate directly with data, analytics/data science, and product functions.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Pci iso gdpr kyc secure data 2022"
+        },
+        {
+            "query": "Pci iso gdpr kyc secure data 2021"
+        }
+    ],
+    "credits": 1
+}

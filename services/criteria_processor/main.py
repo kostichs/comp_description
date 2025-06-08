@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 from src.utils.config import validate_config
 from src.utils.logging import setup_logging, log_info, log_error
 from src.core.processor import run_analysis
+from src.core.parallel_processor import run_parallel_analysis
 
 def parse_arguments():
     """Парсинг аргументов командной строки"""
@@ -41,6 +42,19 @@ def parse_arguments():
         '--deep-analysis',
         action='store_true',
         help='Включить глубокий анализ с использованием ScrapingBee'
+    )
+
+    parser.add_argument(
+        '--parallel',
+        action='store_true',
+        help='Включить параллельную обработку компаний (быстрее, но больше нагрузка на API)'
+    )
+
+    parser.add_argument(
+        '--max-concurrent',
+        type=int,
+        default=5,
+        help='Максимальное количество одновременно обрабатываемых компаний (только с --parallel)'
     )
     
     return parser.parse_args()
@@ -71,12 +85,24 @@ def main():
         
         # Запуск анализа с параметрами
         log_info("Начинаем анализ...")
-        results = run_analysis(
-            companies_file=args.file,
-            load_all_companies=args.all_files,
-            session_id=args.session_id,
-            use_deep_analysis=args.deep_analysis
-        )
+        
+        if args.parallel:
+            log_info(f"🚀 ПАРАЛЛЕЛЬНЫЙ РЕЖИМ: max_concurrent={args.max_concurrent}")
+            results = run_parallel_analysis(
+                companies_file=args.file,
+                load_all_companies=args.all_files,
+                session_id=args.session_id,
+                use_deep_analysis=args.deep_analysis,
+                max_concurrent_companies=args.max_concurrent
+            )
+        else:
+            log_info("🐌 ОБЫЧНЫЙ РЕЖИМ: последовательная обработка")
+            results = run_analysis(
+                companies_file=args.file,
+                load_all_companies=args.all_files,
+                session_id=args.session_id,
+                use_deep_analysis=args.deep_analysis
+            )
         
         log_info(f"Анализ завершен успешно! Обработано компаний: {len(results)}")
         

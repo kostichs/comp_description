@@ -1,0 +1,110 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"login\" OR \"user\" OR \"sign\" OR \"dashboard\" OR \"account\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Login | The Hub",
+            "link": "https://my.activisionblizzard.com/login?locale=us",
+            "snippet": "The Hub Customer Secure Login Page. Login to your The Hub Customer Account.",
+            "position": 1
+        },
+        {
+            "title": "Contact Us",
+            "link": "https://www.activisionblizzard.com/contact-us",
+            "snippet": "For customer support relating to Activision games, please visit https://support.activision.com/contactus · For customer support relating to Blizzard games, ...",
+            "position": 2
+        },
+        {
+            "title": "Activision Blizzard | Home",
+            "link": "https://www.activisionblizzard.com/",
+            "snippet": "We create the most epic interactive gaming and entertainment experiences. Our platforms immerse players in new, unimagined worlds and offer countless ways to ...",
+            "sitelinks": [
+                {
+                    "title": "About Our Company",
+                    "link": "https://www.activisionblizzard.com/about-us"
+                },
+                {
+                    "title": "Careers",
+                    "link": "https://careers.activisionblizzard.com/"
+                },
+                {
+                    "title": "Our Iconic Franchises",
+                    "link": "https://www.activisionblizzard.com/games"
+                },
+                {
+                    "title": "Who We Are",
+                    "link": "https://www.activisionblizzard.com/who-we-are"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Activision Blizzard | Search",
+            "link": "https://www.activisionblizzard.com/search",
+            "snippet": "Main Reports & Filings, Press Releases, Events & Presentations, Stock Performance, Corporate Governance, Dividend FAQ, Email Alerts, Subscription",
+            "position": 4
+        },
+        {
+            "title": "Important Scam Warning",
+            "link": "https://careers.activisionblizzard.com/important-scam-warning",
+            "snippet": "Sign up. Search Jobs; Students. Our Programs · inclusion in Games ... account information. Activision Blizzard recruiters will never use personal ...",
+            "position": 5
+        },
+        {
+            "title": "Benefits",
+            "link": "https://careers.activisionblizzard.com/benefits",
+            "snippet": "Sign up. Search Jobs; Students. Our Programs · inclusion in Games ... Health Reimbursement Account (HRA). The Health Reimbursement Account (HRA) is ...",
+            "position": 6
+        },
+        {
+            "title": "Senior Sales Account Executive | Activision Blizzard Media",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025242EXTERNAL/Senior-Sales-Account-Executive-Activision-Blizzard-Media",
+            "snippet": "Sign up. Search Jobs; Students. Our Programs · inclusion in Games Scholarship ... Medical, dental, vision, health savings account or health reimbursement account ...",
+            "position": 7
+        },
+        {
+            "title": "Careers at Activision Blizzard | Activision Blizzard Job ...",
+            "link": "https://careers.activisionblizzard.com/",
+            "snippet": "Sign up. Search Jobs; Students. Our Programs · inclusion in Games Scholarship · Events · Level Up U; Culture. Benefits · Meet Our People · Interviewing With ...",
+            "sitelinks": [
+                {
+                    "title": "Search Jobs",
+                    "link": "https://careers.activisionblizzard.com/search-results"
+                },
+                {
+                    "title": "Other33 jobs",
+                    "link": "https://careers.activisionblizzard.com/c/other-jobs"
+                },
+                {
+                    "title": "Programming/Software...",
+                    "link": "https://careers.activisionblizzard.com/c/programmingsoftware-engineering-jobs"
+                },
+                {
+                    "title": "Marketing and...",
+                    "link": "https://careers.activisionblizzard.com/c/marketing-and-communications-jobs"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Call of Duty®: Modern Warfare III",
+            "link": "https://www.activisionblizzard.com/games/call-of-duty/call-of-duty-modern-warfare-3",
+            "snippet": "Login Sign Up. Profile Log Out. Activision logo. Games; About. About Us · Studios And Locations · Ratings & Resources · Playtest · Research · Diversity & ...",
+            "position": 9
+        },
+        {
+            "title": "Comments - Our next adventure",
+            "link": "https://newsroom.activisionblizzard.com/p/our-next-adventure/comments",
+            "snippet": "Sign in. Share this post. Activision ... User's avatar. Carlos Eduardo GT: Dudufd3467's avatar · Carlos Eduardo ...",
+            "date": "Oct 13, 2023",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

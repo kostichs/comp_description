@@ -1,0 +1,81 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"PCI\" OR \"ISO\" OR \"GDPR\" OR \"KYC\" OR \"secure\" OR \"data\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Privacy Policy | Bandai Namco Europe",
+            "link": "https://en.bandainamcoent.eu/privacy-policy",
+            "snippet": "... data protection laws, including the General Data Protection Regulation (GDPR). The purpose of this policy is to provide you with information ...",
+            "date": "Oct 17, 2024",
+            "position": 1
+        },
+        {
+            "title": "Everything you need to know for the launch of ELDEN ...",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/everything-you-need-know-the-launch-of-elden-ring-nightreign",
+            "snippet": "Reservation of text/data mining rights · Illicit content report · Cookies policy; Management of cookies; Tax strategy · Modern slavery act ...",
+            "date": "May 22, 2025",
+            "position": 2
+        },
+        {
+            "title": "DRAGON BALL XENOVERSE 2: PlayStation®5 & Xbox ...",
+            "link": "https://en.bandainamcoent.eu/dragon-ball/news/dragon-ball-xenoverse-2-playstationr5-xbox-series-xs-upgrade",
+            "snippet": "PS Upgrade & Save Data Transfer · To transfer save data from the PS4 version, user will need to upgrade all games & DLC you own. · The saved data ...",
+            "date": "May 22, 2024",
+            "position": 3
+        },
+        {
+            "title": "MY HERO ULTRA RUMBLE – Developer's Blog VOL. 17",
+            "link": "https://en.bandainamcoent.eu/my-hero-academia/news/my-hero-ultra-rumble-developers-blog-vol-17",
+            "snippet": "*Character Data for characters you own and have unlocked will have prioritized drop rates. Additionally, the amount of Character Data earned is ...",
+            "date": "Nov 20, 2024",
+            "position": 4
+        },
+        {
+            "title": "ELDEN RING NIGHTREIGN is now available worldwide",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-nightreign-now-available-worldwide-already-surpassing-2-million-unit",
+            "snippet": "This data is kept until you withdraw your consent and is intended for ... Reservation of text/data mining rights · Illicit content report ...",
+            "date": "May 30, 2025",
+            "position": 5
+        },
+        {
+            "title": "Data mining | Bandai Namco Europe",
+            "link": "https://en.bandainamcoent.eu/data-mining",
+            "snippet": "In accordance with Article 4 of Directive (EU) 2019/790, BNE expressly reserves all rights concerning the use of this website for text and data mining.",
+            "position": 6
+        },
+        {
+            "title": "Tales of Arise: New Patch and save data transfer",
+            "link": "https://en.bandainamcoent.eu/tales-of/news/tales-of-arise-new-patch-and-save-data-transfer",
+            "snippet": "After downloading this patch, you will be able to transfer current gen save data (PS4/Xbox one) to next gen (PS5/Xbox S|X). There will be new options to choose ...",
+            "date": "Dec 13, 2021",
+            "position": 7
+        },
+        {
+            "title": "TEKKEN 8 - Patch 2.0",
+            "link": "https://en.bandainamcoent.eu/tekken/news/tekken-8-patch-20",
+            "snippet": "The update data for “TEKKEN 8” will be distributed with the following details: Ver.2.00.01. Application Date and Time.",
+            "date": "Apr 1, 2025",
+            "position": 8
+        },
+        {
+            "title": "DEATH NOTE Killer Within - Rules and Roles",
+            "link": "https://en.bandainamcoent.eu/death-note-killer-within-rules-and-roles",
+            "snippet": "This data is kept until you withdraw your consent and is intended for ... Reservation of text/data mining rights · Illicit content report · Cookies policy ...",
+            "position": 9
+        },
+        {
+            "title": "How to Play ELDEN RING NIGHTREIGN as a Solo Player",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/how-play-elden-ring-nightreign-solo-player",
+            "snippet": "This data is kept until you withdraw your consent and is intended for ... Reservation of text/data mining rights · Illicit content report ...",
+            "date": "May 30, 2025",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

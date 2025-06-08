@@ -1,0 +1,173 @@
+{
+    "searchParameters": {
+        "q": "(\"payment\" OR \"trade\" OR \"transaction\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Methods of Payment - International Trade Administration",
+            "link": "https://www.trade.gov/methods-payment",
+            "snippet": "An open account transaction is a sale where the goods are shipped ... Consignment in international trade is a variation of open account in which payment ...",
+            "sitelinks": [
+                {
+                    "title": "Documentary Collections",
+                    "link": "https://www.trade.gov/documentary-collections"
+                },
+                {
+                    "title": "Letter of Credit",
+                    "link": "https://www.trade.gov/letter-credit"
+                },
+                {
+                    "title": "Cash-in-Advance",
+                    "link": "https://www.trade.gov/cash-advance"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Trade Finance: What It Is, How It Works, and Benefits - Investopedia",
+            "link": "https://www.investopedia.com/terms/t/tradefinance.asp",
+            "snippet": "... payment and importers' preference for deferring payment ... A typical trade finance transaction involves steps to ensure secure and efficient cross-border trade:.",
+            "position": 2
+        },
+        {
+            "title": "E*TRADE | Investing, Trading & Retirement",
+            "link": "https://us.etrade.com/home",
+            "snippet": "Complete payment protection: Plus on-time, accurate online Bill pay and ... transaction history. Removing any deposit or cash from the new E*TRADE ...",
+            "position": 3
+        },
+        {
+            "title": "Methods of payment in trade finance | TFG 2025 Guide",
+            "link": "https://www.tradefinanceglobal.com/trade-finance/payment-methods/",
+            "snippet": "Methods of payment in trade finance | Trade Finance Global 2025 Guide ... An LC transaction generally happens as follows. An importer agrees ...",
+            "date": "Feb 5, 2025",
+            "position": 4
+        },
+        {
+            "title": "Trade Finance Guide - International Trade Administration",
+            "link": "https://www.trade.gov/report/trade-finance-guide",
+            "snippet": "An open account transaction in international trade is a sale where the goods are shipped before payment is due, which is typically in 30, 60 or 90 days.",
+            "position": 5
+        },
+        {
+            "title": "Methods of Payment in International Trade: Letters of Credit",
+            "link": "https://www.shippingsolutions.com/blog/methods-of-payment-in-international-trade-letters-of-credit",
+            "snippet": "Letters of credit provide security for both parties involved in an international trade transaction. Exporters can ensure they receive payment if ...",
+            "date": "Oct 14, 2024",
+            "position": 6
+        },
+        {
+            "title": "Guide to Payment Types, With Pros and Cons for Each - Investopedia",
+            "link": "https://www.investopedia.com/terms/p/payment.asp",
+            "snippet": "Payment in another currency often involves additional foreign exchange transaction ... The idea of trade and contracts will never go away, but the form in ...",
+            "position": 7
+        },
+        {
+            "title": "Payment Management Services: Home",
+            "link": "https://pms.psc.gov/",
+            "snippet": "The Payment Management Services (PMS) is a shared service provider and a leader in processing grant payments for the federal government.",
+            "sitelinks": [
+                {
+                    "title": "PMS Help Desk",
+                    "link": "https://pms.psc.gov/support/help-desk.html"
+                },
+                {
+                    "title": "PMS User Guide",
+                    "link": "https://pms.psc.gov/training/pms-user-guide.html"
+                },
+                {
+                    "title": "About Us | HHS PSC FMP...",
+                    "link": "https://pms.psc.gov/about-us.html"
+                },
+                {
+                    "title": "Payment Request",
+                    "link": "https://pms.psc.gov/grant-recipients/funding-request-formula.html"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Trade Misinvoicing - Global Financial Integrity",
+            "link": "https://gfintegrity.org/issue/trade-misinvoicing/",
+            "snippet": "Trade misinvoicing involves manipulating the price, quantity, or quality of ... transaction of goods or services by at least one party to the transaction.",
+            "position": 9
+        },
+        {
+            "title": "Global Trade and Supply Chain Finance - BofA Securities",
+            "link": "https://business.bofa.com/en-us/content/trade-supply-chain.html",
+            "snippet": "... payment at a BofA branch. Bank-to-bank reimbursement. Consolidate your L/C payments and get real-time balance and transaction reporting. Trade advance. Access ...",
+            "sitelinks": [
+                {
+                    "title": "Importer-Buyer",
+                    "link": "https://business.bofa.com/en-us/content/trade-supply-chain.html#:~:text=Importer%2DBuyer,-Compete%20more%20effectively%20on%20a"
+                },
+                {
+                    "title": "Exporter-Supplier",
+                    "link": "https://business.bofa.com/en-us/content/trade-supply-chain.html#:~:text=Exporter%2DSupplier,-Global%20trade%20at%20your%20fingertips"
+                },
+                {
+                    "title": "Cashpro Trade",
+                    "link": "https://business.bofa.com/en-us/content/trade-supply-chain.html#:~:text=CashPro%20Trade,-Innovative%20technology%20to%20effectively%20manage"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "peopleAlsoAsk": [
+        {
+            "question": "What is a trade payment?",
+            "snippet": "Trade Payments indicate how quickly a company is likely to pay its bills in the future by reviewing its payment performance with other vendors based on aging, amount of trade, and dollar amounts.",
+            "title": "D&B Credit | Viewing a Report | Trade Payments - Dun & Bradstreet",
+            "link": "https://docs.dnb.com/credit/en-US/viewing_a_report/trade_payments"
+        },
+        {
+            "question": "What is the meaning of trade transaction?",
+            "snippet": "Trade Transaction means a transaction involving the sale or purchase by Applicant of goods or services from/to a third party, and includes any contract(s) on which such transaction may be based. Trade Transaction means collectively the Purchase Transaction and the Sale Transaction.",
+            "title": "Trade Transaction Definition | Law Insider",
+            "link": "https://www.lawinsider.com/dictionary/trade-transaction"
+        },
+        {
+            "question": "What is an example of a trade transaction?",
+            "snippet": "A trade transaction occurs when the customer sells or buys products or services from or to a third party. It includes any contract(s) on which the transaction is based. Trade transactions can take several forms, such as purchasing, selling, bartering, and trading.",
+            "title": "Trade Transaction - Meaning, Examples, Steps - WallStreetMojo",
+            "link": "https://www.wallstreetmojo.com/trade-transaction/"
+        },
+        {
+            "question": "What is the difference between trade and payment?",
+            "snippet": "Balance of Trade focuses on goods and services. It's the difference between exports and imports. Balance of Payment includes all financial transactions. It covers goods, services, and financial transfers.",
+            "title": "Difference Between Balance of Trade and Balance of Payment - Shiksha",
+            "link": "https://www.shiksha.com/online-courses/articles/difference-between-balance-of-trade-and-balance-of-payment/"
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Payment trade transaction example"
+        },
+        {
+            "query": "Payment trade transaction pdf"
+        },
+        {
+            "query": "Payment trade transaction in international trade"
+        },
+        {
+            "query": "Payment trade transaction advantages and disadvantages"
+        },
+        {
+            "query": "what are the four methods of payment for the international transactions?"
+        },
+        {
+            "query": "What are the methods of payment in international trade"
+        },
+        {
+            "query": "Import export payment terms pdf"
+        },
+        {
+            "query": "What is trade finance in banking PDF"
+        }
+    ],
+    "credits": 1
+}

@@ -60,7 +60,49 @@ SCRAPINGBEE_API_KEY = os.getenv("SCRAPINGBEE_API_KEY")
 
 # Deep analysis via ScrapingBee
 USE_SCRAPINGBEE_DEEP_ANALYSIS = True  # Master switch for the new feature
-SCRAPE_TOP_N_RESULTS = 3  # Number of Google results to scrape
+SCRAPE_TOP_N_RESULTS = 10  # Number of Google results to scrape
+
+# Async ScrapingBee configuration
+ASYNC_SCRAPING_CONFIG = {
+    'enable_async_scraping': True,           # Use async ScrapingBee client for better performance
+    'max_concurrent_scrapes': 5,            # Concurrent scraping requests per criterion
+    'scraping_rate_limit_delay': 0.2,       # Delay between requests (seconds)
+    'scraping_timeout': 120,                # Request timeout (seconds)
+    'fallback_to_sync': True                 # Fallback to sync scraping if async fails
+}
+
+# Async GPT configuration
+ASYNC_GPT_CONFIG = {
+    'enable_async_gpt': True,                # Use async OpenAI client for better performance
+    'max_concurrent_gpt_requests': 10,       # Concurrent GPT requests per company
+    'gpt_rate_limit_delay': 0.1,            # Delay between requests (seconds)
+    'gpt_timeout': 60,                       # Request timeout (seconds)
+    'fallback_to_sync': True                 # Fallback to sync GPT if async fails
+}
+
+# Smart filtering configuration
+SMART_FILTERING_CONFIG = {
+    'enable_signals_prioritization': True,    # Use Signals column for content prioritization
+    'priority_section_header': "=== PRIORITY CONTENT (Contains signals keywords) ===",
+    'full_content_header': "=== FULL SCRAPED CONTENT ===",
+    'context_sentences_around_match': 2,      # Number of sentences around signal matches
+    'min_priority_content_length': 100,       # Minimum chars for priority section
+    'max_priority_content_ratio': 0.3,        # Max ratio of priority to full content
+    'case_sensitive_matching': False,         # Case sensitivity for keyword matching
+    'phrase_matching_enabled': True           # Support for quoted phrase matching
+}
+
+# Smart filtering configuration
+SMART_FILTERING_CONFIG = {
+    'enable_signals_prioritization': True,    # Use Signals column for content prioritization
+    'priority_section_header': "=== PRIORITY CONTENT (Contains signals keywords) ===",
+    'full_content_header': "=== FULL SCRAPED CONTENT ===",
+    'context_sentences_around_match': 2,      # Number of sentences around signal matches
+    'min_priority_content_length': 100,       # Minimum chars for priority section
+    'max_priority_content_ratio': 0.3,        # Max ratio of priority to full content
+    'case_sensitive_matching': False,         # Case sensitivity for keyword matching
+    'phrase_matching_enabled': True           # Support for quoted phrase matching
+}
 
 # Serper.dev API configuration
 SERPER_API_URL = "https://google.serper.dev/search"

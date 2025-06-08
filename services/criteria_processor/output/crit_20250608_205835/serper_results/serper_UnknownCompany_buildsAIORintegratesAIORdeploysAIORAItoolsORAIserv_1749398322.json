@@ -1,0 +1,185 @@
+{
+    "searchParameters": {
+        "q": "\"builds AI\" OR \"integrates AI\" OR \"deploys AI\" OR \"AI tools\" OR \"AI services\"",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "10+ AI tools you can start using for free in 2025 | Google Cloud",
+            "link": "https://cloud.google.com/use-cases/free-ai-tools",
+            "snippet": "Free AI tools from Google Cloud. Work with the latest AI models and turn your ideas into apps with free AI tools. Google AI Studio ...",
+            "position": 1
+        },
+        {
+            "title": "The 55 Best AI Tools in 2025 (Tried & Tested) - Synthesia",
+            "link": "https://www.synthesia.io/post/ai-tools",
+            "snippet": "Explore 55 top AI tools across 25 categories, with insights on use cases, features, and pricing.",
+            "date": "Mar 30, 2025",
+            "position": 2
+        },
+        {
+            "title": "Azure AI Services",
+            "link": "https://azure.microsoft.com/en-us/products/ai-services",
+            "snippet": "Azure AI services help you build AI apps with prebuilt and customizable models. Use our cognitive services to enhance automation, insights, and experiences.",
+            "sitelinks": [
+                {
+                    "title": "AI Language",
+                    "link": "https://azure.microsoft.com/en-us/products/ai-services/ai-language"
+                },
+                {
+                    "title": "Azure AI Translator",
+                    "link": "https://azure.microsoft.com/en-us/products/ai-services/ai-translator"
+                },
+                {
+                    "title": "AI Speech",
+                    "link": "https://azure.microsoft.com/en-us/products/ai-services/ai-speech"
+                },
+                {
+                    "title": "AI Search",
+                    "link": "https://azure.microsoft.com/en-us/products/ai-services/ai-search"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "The best AI productivity tools in 2025 - Zapier",
+            "link": "https://zapier.com/blog/best-ai-productivity-tools/",
+            "snippet": "The AI tools help repurpose content from platform to platform, so you can start writing for LinkedIn but have it ready for Facebook and Instagram, for example.",
+            "position": 4
+        },
+        {
+            "title": "AI Tools - Artificial Intelligence - Arizona State University",
+            "link": "https://ai.asu.edu/ai-tools",
+            "snippet": "ASU is offering a range of AI tool licenses to faculty, staff and students. AI tools on this page have completed the Vendor IT Risk Assessment (VITRA) process ...",
+            "position": 5
+        },
+        {
+            "title": "AI Tools Directory",
+            "link": "https://aitoolsdirectory.com/",
+            "snippet": "The world's best curated list of AI Tools.",
+            "position": 6
+        },
+        {
+            "title": "AI Services - Oracle",
+            "link": "https://www.oracle.com/artificial-intelligence/ai-services/",
+            "snippet": "Add prebuilt machine learning models to your organizations applications and business operations with AI services.",
+            "position": 7
+        },
+        {
+            "title": "AI services - Artificial Intelligence Products - AWS - Amazon.com",
+            "link": "https://aws.amazon.com/ai/services/",
+            "snippet": "Find AI Tools and Services on AWS for any use case. AWS Artificial ... Explore AWS AI services. AWS pre-trained artificial intelligence (AI) services ...",
+            "sitelinks": [
+                {
+                    "title": "Amazon Rekognition",
+                    "link": "https://aws.amazon.com/rekognition/"
+                },
+                {
+                    "title": "Amazon Translate",
+                    "link": "https://aws.amazon.com/translate/"
+                },
+                {
+                    "title": "Amazon Lex",
+                    "link": "https://aws.amazon.com/lex/"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "AITopTools | AI Tools Directory | AI Tools Updated Daily",
+            "link": "https://aitoptools.com/",
+            "snippet": "Find the best AI tools and boost productivity - explore a huge, always-growing library of 10000+ AI tools, all accompanied by user reviews.",
+            "sitelinks": [
+                {
+                    "title": "AI Tools",
+                    "link": "https://aitoptools.com/ai-tools/business-productivity/"
+                },
+                {
+                    "title": "AI Tools Categories",
+                    "link": "https://aitoptools.com/tool/"
+                },
+                {
+                    "title": "New AI Tools",
+                    "link": "https://aitoptools.com/new-tools/"
+                },
+                {
+                    "title": "Explore Free AI Tools",
+                    "link": "https://aitoptools.com/free-ai-tools/"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Google AI - How we're making AI helpful for everyone",
+            "link": "https://ai.google/",
+            "snippet": "Discover how Google AI is committed to enriching knowledge, solving complex challenges and helping people grow by building useful AI tools and technologies.",
+            "sitelinks": [
+                {
+                    "title": "Build",
+                    "link": "https://ai.google/build/"
+                },
+                {
+                    "title": "Research",
+                    "link": "https://ai.google/research/"
+                },
+                {
+                    "title": "Why AI",
+                    "link": "https://ai.google/why-ai/"
+                },
+                {
+                    "title": "AI Principles",
+                    "link": "https://ai.google/principles/"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "peopleAlsoAsk": [
+        {
+            "question": "What are AI deployments?",
+            "snippet": "Definition: AI Deployment refers to the implementation of artificial intelligence technologies to automate processes, enhance decision-making, and improve operational efficiency.",
+            "title": "What is Ai Deployment - Prohance.net",
+            "link": "https://www.prohance.net/glossary/what-is-ai-deployment.php"
+        },
+        {
+            "question": "Can I use AI Builder for free?",
+            "snippet": "Any individual can try out the features of AI Builder for 30 days and incur no costs to your company. This option is available to any user in an organization (tenant) and an admin can't disable it.",
+            "title": "Try AI Builder for Power Apps and Power Automate - Learn Microsoft",
+            "link": "https://learn.microsoft.com/en-us/ai-builder/ai-builder-trials"
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Grok"
+        },
+        {
+            "query": "Free AI tools list"
+        },
+        {
+            "query": "Free AI tools online"
+        },
+        {
+            "query": "Chatgpt"
+        },
+        {
+            "query": "Top 10 AI tools"
+        },
+        {
+            "query": "Free AI tools for students"
+        },
+        {
+            "query": "Jasper AI"
+        },
+        {
+            "query": "Best AI tools for students"
+        },
+        {
+            "query": "Best free AI tools"
+        }
+    ],
+    "credits": 1
+}

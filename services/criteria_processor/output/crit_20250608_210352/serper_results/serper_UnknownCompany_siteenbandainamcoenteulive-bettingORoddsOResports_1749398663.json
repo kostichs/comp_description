@@ -1,0 +1,74 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"live-betting\" OR \"odds\" OR \"esports\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Registration for the TEKKEN World Tour 2022 is now open ...",
+            "link": "https://en.bandainamcoent.eu/tekken/news/registration-the-tekken-world-tour-2022-now-open-players-and-tournament-organizers",
+            "snippet": "Independent tournament organizers can now register for DOJO events, with registration available on the Esports Tournament Portal, Tonamel, Start ...",
+            "date": "Jun 14, 2022",
+            "position": 1
+        },
+        {
+            "title": "TEKKEN 8 sells over 2 million copies worldwide in the first month ...",
+            "link": "https://en.bandainamcoent.eu/tekken/news/tekken-8-sells-over-2-million-copies-worldwide-the-first-month-after-launch?amp=",
+            "snippet": "The next step in TEKKEN esports, the TEKKEN WORLD TOUR 2024, will start on April 13, 2024. After successful TEKKEN WORLD TOUR events that have accompanied the ...",
+            "position": 2
+        },
+        {
+            "title": "TEKKEN WORLD TOUR 2024 starts on 13th April ...",
+            "link": "https://en.bandainamcoent.eu/tekken/news/tekken-world-tour-2024-starts-13th-april-2024-registrations-now-opened-new-details",
+            "snippet": "Players can register now on the Esports TEKKEN Portal. Starting with the Electric Clash 2024, happening on 20 April in Ontario, Canada, players ...",
+            "date": "Mar 19, 2024",
+            "position": 3
+        },
+        {
+            "title": "First-ever SOULCALIBUR World Invitational Tournament ...",
+            "link": "https://en.bandainamcoent.eu/soulcalibur/news/first-ever-soulcalibur-world-invitational-tournament-announced",
+            "snippet": "Following the success of the TEKKEN 7 and DRAGON BALL FighterZ competitions, BANDAI NAMCO Entertainment is proud to announce a new esports ...",
+            "date": "Aug 28, 2019",
+            "position": 4
+        },
+        {
+            "title": "TEKKEN 7 Brings Forth Details of Its Upcoming Season ...",
+            "link": "https://en.bandainamcoent.eu/tekken/news/tekken-7-brings-forth-details-of-its-upcoming-season-pass-4-update?amp=",
+            "snippet": "As we enter a new season of TEKKEN 7 esports competition, additional gameplay improvements and new content are coming for the acclaimed fighting ...",
+            "date": "Sep 28, 2020",
+            "position": 5
+        },
+        {
+            "title": "Japan fighting game publisher roundtable broadcasting live on ...",
+            "link": "https://en.bandainamcoent.eu/news/japan-fighting-game-publisher-roundtable-broadcasting-live-july-31st?amp=",
+            "snippet": "... esports industry on August 1st, 2020 at 2:00AM CEST (5:00PM PDT). The streamed event can be watched at https://www.twitch.tv/bandainamcous · TEKKEN 7 producer ...",
+            "position": 6
+        },
+        {
+            "title": "Dragon Ball FighterZ Championship: when it comes to ...",
+            "link": "https://en.bandainamcoent.eu/dragon-ball/news/dragon-ball-fighterz-championship-when-it-comes-passion-youll-never-beat-spain",
+            "snippet": "So how do you transfer that energy, that special something, to esports? More so onto the fighting game genre, known for being smaller than other ...",
+            "date": "Dec 4, 2020",
+            "position": 7
+        },
+        {
+            "title": "2019: The “TEKKEN” scene has entered a new era",
+            "link": "https://en.bandainamcoent.eu/tekken/news/2019-the-tekken-scene-has-entered-new-era",
+            "snippet": "TEKKEN 7 is a classic 3D fighting game that shows excitement in the esports scene on a global scale. Katsuhiro Harada, General Producer of ...",
+            "date": "May 14, 2021",
+            "position": 8
+        },
+        {
+            "title": "TEKKEN WORLD TOUR announces its 2022 Edition",
+            "link": "https://en.bandainamcoent.eu/tekken/news/tekken-world-tour-announces-its-2022-edition",
+            "snippet": "... the forefront of the competitive esports scene with the TEKKEN World Tour 2022, which is expanding to reach a total of 16 global regions.",
+            "date": "May 31, 2022",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

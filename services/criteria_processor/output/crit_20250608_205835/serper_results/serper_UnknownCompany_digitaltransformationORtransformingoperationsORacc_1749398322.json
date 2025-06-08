@@ -1,0 +1,128 @@
+{
+    "searchParameters": {
+        "q": "\"digital transformation\" OR \"transforming operations\" OR \"accelerating innovation\" OR \"intelligent systems\"",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "What is digital transformation? | The Enterprisers Project",
+            "link": "https://enterprisersproject.com/what-is-digital-transformation",
+            "snippet": "Digital transformation is the integration of digital technology into all areas of a business, fundamentally changing how you operate and deliver value to ...",
+            "position": 1
+        },
+        {
+            "title": "What is digital transformation? | McKinsey",
+            "link": "https://www.mckinsey.com/featured-insights/mckinsey-explainers/what-is-digital-transformation",
+            "snippet": "Digital transformation is the rewiring of an organization, with the goal of creating value by continuously deploying tech at scale.",
+            "date": "Aug 7, 2024",
+            "position": 2
+        },
+        {
+            "title": "Digital transformation - Wikipedia",
+            "link": "https://en.wikipedia.org/wiki/Digital_transformation",
+            "snippet": "Digital transformation (DT) is the process of adoption and implementation of digital technology by an organization in order to create new or modify existing ...",
+            "position": 3
+        },
+        {
+            "title": "What Is Digital Transformation? - IBM",
+            "link": "https://www.ibm.com/think/topics/digital-transformation",
+            "snippet": "Digital transformation is a business strategy initiative that incorporates digital technology across all areas of an organization.",
+            "position": 4
+        },
+        {
+            "title": "What Is Digital Transformation? Overview, Why, & How - Whatfix",
+            "link": "https://whatfix.com/digital-transformation/",
+            "snippet": "Digital transformation is the process of using digital technologies to transform existing traditional and non-digital business processes and services.",
+            "position": 5
+        },
+        {
+            "title": "What is Digital Transformation? | Definition and Guide from TechTarget",
+            "link": "https://www.techtarget.com/searchcio/definition/digital-transformation",
+            "snippet": "Digital transformation is the incorporation of computer-based technologies into an organization's products, processes and strategies.",
+            "date": "Nov 13, 2023",
+            "position": 6
+        },
+        {
+            "title": "What is Digital Transformation & Why is it Important? | Accenture",
+            "link": "https://www.accenture.com/us-en/insights/digital-transformation-index",
+            "snippet": "Digital transformation is the process by which companies embed technologies across their businesses to drive fundamental change.",
+            "position": 7
+        },
+        {
+            "title": "What is Digital Transformation? | Salesforce US",
+            "link": "https://www.salesforce.com/digital-transformation/",
+            "snippet": "Digital transformation is the process of using digital technologies to create new — or modify existing — business processes, culture, and customer experiences ...",
+            "position": 8
+        },
+        {
+            "title": "The CIO's Guide to Digital Transformation - Gartner",
+            "link": "https://www.gartner.com/en/information-technology/topics/digital-transformation",
+            "snippet": "Learn the digital transformation strategies and best practices that distinguish the CIOs and executive leaders outside of IT (CxOs) who consistently achieve ...",
+            "position": 9
+        },
+        {
+            "title": "What is digital transformation? Ongoing reinvention - CIO",
+            "link": "https://www.cio.com/article/230425/what-is-digital-transformation-a-necessary-disruption.html",
+            "snippet": "Digital transformation is an organization-wide strategy aimed at leveraging digital technologies to modernize key business processes and to introduce new ...",
+            "date": "Oct 11, 2024",
+            "position": 10
+        }
+    ],
+    "peopleAlsoAsk": [
+        {
+            "question": "What are the 4 main areas of digital transformation?",
+            "snippet": "WHAT ARE THE 4 MAIN AREAS OF DIGITAL TRANSFORMATION?\nCustomer experience.\nData and analytics.\nBusiness model transformation.\nDigital operations.",
+            "title": "What are the 4 main areas of digital transformation? - Enate",
+            "link": "https://www.enate.io/blog/4-main-areas-of-digital-transformation"
+        },
+        {
+            "question": "What are the 5 D's of digital transformation?",
+            "snippet": "This revolution can be characterised by what is known as the “5Ds of Digital” — digital devices, digital platforms, digital media, digital data, and digital technology. The 5Ds have completely changed how marketers reach, engage, and understand customers.",
+            "title": "The Digital Marketing Revolution: Exploring the 5D Framework That's ...",
+            "link": "https://meghaganguli23.medium.com/the-digital-marketing-revolution-exploring-the-5d-framework-thats-changing-everything-559b10fd2f51"
+        },
+        {
+            "question": "What are the 4 pillars of digital transformation?",
+            "snippet": "The four main areas of digital transformation There are four key pillars of digital transformation to keep in mind—organization transformation, moving from waterfall to agile, creating a customer-centered approach, and adopting and integrating emergent technologies.",
+            "title": "The 4 Pillars of Digital Transformation | Think Company",
+            "link": "https://www.thinkcompany.com/blog/the-4-pillars-of-digital-transformation/"
+        },
+        {
+            "question": "What are the 3 P's of digital transformation?",
+            "snippet": "Digital transformation consists of three main elements, collectively known as the 3Ps: people first, process second, and platform/technology third. Digital transformation rethinks how an organisation uses people, processes, and platforms/technologies in order to: Optimise customer and/or client experience.",
+            "title": "What does 'digital transformation' mean for not-for-profits?",
+            "link": "https://digitaltransformation.org.au/guides/it-management/what-does-digital-transformation-mean-not-profits"
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Digital transformation transforming operations accelerating innovation intelligent systems pdf"
+        },
+        {
+            "query": "Digital transformation transforming operations accelerating innovation intelligent systems examples"
+        },
+        {
+            "query": "Digital transformation examples"
+        },
+        {
+            "query": "What is digital transformation"
+        },
+        {
+            "query": "McKinsey digital transformation framework PDF"
+        },
+        {
+            "query": "Digital transformation strategy"
+        },
+        {
+            "query": "Digital transformation PDF"
+        },
+        {
+            "query": "Importance of digital transformation"
+        }
+    ],
+    "credits": 1
+}

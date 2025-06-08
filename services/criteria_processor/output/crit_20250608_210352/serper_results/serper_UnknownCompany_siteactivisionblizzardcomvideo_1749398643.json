@@ -1,0 +1,81 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"video\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "A brief history of video game music - by Eric Alt",
+            "link": "https://newsroom.activisionblizzard.com/p/a-brief-history-of-video-game-music",
+            "snippet": "Video game music was little more than ambient bleeps and bloops in the beginning, as the medium took its tentative first steps.",
+            "date": "Jun 29, 2023",
+            "position": 1
+        },
+        {
+            "title": "When movies take on video games - by Isaac Feldberg",
+            "link": "https://newsroom.activisionblizzard.com/p/when-movies-take-on-video-games",
+            "snippet": "When movies take on video games. Some movies are based on games. Others go further, attempting to emulate the feel or experience of gaming. This ...",
+            "date": "Aug 22, 2023",
+            "position": 2
+        },
+        {
+            "title": "5 video game references in pop music - by Joey Held",
+            "link": "https://newsroom.activisionblizzard.com/p/5-video-game-references-in-pop-music",
+            "snippet": "Today, we give some artists their props. Here are five great lines that pay homage to classic video games. “Cookie Jar” by Doja Cat (2018).",
+            "date": "Aug 4, 2023",
+            "position": 3
+        },
+        {
+            "title": "Want to Make Art for Video Games? Here's How - by Eric Alt",
+            "link": "https://newsroom.activisionblizzard.com/p/want-to-make-art-for-video-games",
+            "snippet": "What skills do you think are essential for being a successful video artist? The easier answer is talent. But talent without discipline is like a ...",
+            "date": "Mar 16, 2023",
+            "position": 4
+        },
+        {
+            "title": "Did Carl Sagan really work on a video game?",
+            "link": "https://newsroom.activisionblizzard.com/p/did-carl-sagan-really-work-on-a-video",
+            "snippet": "Did Carl Sagan really work on a video game? The telegenic astronomer who captivated the masses brought at least one of his \"billions and ...",
+            "date": "Jul 18, 2023",
+            "position": 5
+        },
+        {
+            "title": "Four intriguing 'lost' video game movies - by Eric Alt",
+            "link": "https://newsroom.activisionblizzard.com/p/four-intriguing-lost-video-game-movies",
+            "snippet": "Never say never, of course. But for now, here are some of the most intriguing video game-based movies we almost got to see. Spy Hunter.",
+            "date": "Aug 11, 2023",
+            "position": 6
+        },
+        {
+            "title": "Senior Video Editor, Marketing Creative",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025433EXTERNAL/Senior-Video-Editor-Marketing-Creative",
+            "snippet": "As a Senior Video Editor you will be responsible for spearheading production on creative for industry-leading trailers and media content produced by Marketing ...",
+            "position": 7
+        },
+        {
+            "title": "D'oh! The best fake video games in 'The Simpsons'",
+            "link": "https://newsroom.activisionblizzard.com/p/doh-the-best-fake-video-games-in",
+            "snippet": "The beloved TV show has introduced us to an array of fictional video games that range from the absurdly ludicrous to the strangely enticing.",
+            "date": "Aug 25, 2023",
+            "position": 8
+        },
+        {
+            "title": "Tiesto and DJ Hero® 2 Deliver First Ever Music Video ...",
+            "link": "https://investor.activisionblizzard.com/static-files/958be900-3db3-4ad0-8a1c-54dd55be55c6",
+            "snippet": "\"Creating the world's first ever music video with videogame footage further proves the groundbreaking ways that we're collaborating with the biggest artists in ...",
+            "position": 9
+        },
+        {
+            "title": "How to start gaming again after a long absence",
+            "link": "https://newsroom.activisionblizzard.com/p/field-upgrades-how-to-start-gaming",
+            "snippet": "Get started by searching “Top 10 [insert genre here] Games” or even just “Best Video Games of 2023.” Note the ones that interest you most, check ...",
+            "date": "Jul 21, 2023",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

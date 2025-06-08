@@ -1,0 +1,79 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"live-betting\" OR \"odds\" OR \"esports\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Who We Are",
+            "link": "https://www.activisionblizzard.com/who-we-are",
+            "snippet": "Our esports vision is to be the most innovative, scalable, and valuable developer of global competitive entertainment.",
+            "position": 1
+        },
+        {
+            "title": "An esports league of their own - by JD Carrere",
+            "link": "https://newsroom.activisionblizzard.com/p/an-esports-league-of-their-own",
+            "snippet": "XP League is the largest youth esports franchise league in North America. It was born out of a father's desire to connect with his kids.",
+            "date": "Jul 7, 2023",
+            "position": 2
+        },
+        {
+            "title": "The ideal workout for an esports junkie",
+            "link": "https://newsroom.activisionblizzard.com/p/the-ideal-workout-for-an-esports",
+            "snippet": "A survey of esports athletes in 2019 found that a majority (80.3%) believes physical fitness boosts gaming performance. And a 2020 study in ...",
+            "date": "Jun 13, 2023",
+            "position": 3
+        },
+        {
+            "title": "How one exec moved from pro sports to esports",
+            "link": "https://newsroom.activisionblizzard.com/p/kristin-connelly-pro-sports-esports",
+            "snippet": "Esports learned a lot from traditional sports. Now the tables have turned, says Kristin Connelly, co-head of Activision Blizzard Esports.",
+            "date": "Apr 27, 2023",
+            "position": 4
+        },
+        {
+            "title": "Following a Huge Year for Esports, The Call of Duty ...",
+            "link": "https://newsroom.activisionblizzard.com/p/following-a-huge-year-for-esports",
+            "snippet": "Daniel Tsay is the General Manager of Call of Duty Esports, where he oversees the strategic direction of esports programs across Call of Duty ...",
+            "date": "Jan 11, 2023",
+            "position": 5
+        },
+        {
+            "title": "How to eat like a professional gamer - by Nick Geracie",
+            "link": "https://newsroom.activisionblizzard.com/p/how-to-eat-like-a-professional-gamer",
+            "snippet": "Esports competitions may allow for less muscle-flexing than conventional sports, but hitting your macros is just as important for ...",
+            "date": "Jun 2, 2023",
+            "position": 6
+        },
+        {
+            "title": "Major League Gaming Announces MLG VEGAS, a Multi-Day ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/major-league-gaming-announces-mlg-vegas-multi-day-esports-and",
+            "snippet": "Major League Gaming Announces MLG VEGAS, a Multi-Day Esports and Digital Culture Festival in Las Vegas on December 16-18 Featuring Call of Duty World League and ...",
+            "position": 7
+        },
+        {
+            "title": "A bar where everybody knows your game - by Marques Edge",
+            "link": "https://newsroom.activisionblizzard.com/p/a-bar-where-everybody-knows-your",
+            "snippet": "A bright, massive venue where esports blare from the TVs, the crowd's chatter is lively, and beverages with names like “Mana Potion” and “Arcane Rune” dot the ...",
+            "date": "Jun 8, 2023",
+            "position": 8
+        },
+        {
+            "title": "Activision Blizzard | About",
+            "link": "https://www.activisionblizzard.com/about-us",
+            "snippet": "Activision Blizzard Esports operates Activision Blizzard's professional gaming properties, including the Overwatch League™, the Call of Duty League™, ...",
+            "position": 9
+        },
+        {
+            "title": "Activision's Call of Duty® World League Marks New Era for ...",
+            "link": "https://investor.activisionblizzard.com/static-files/d3a72ec4-bbb5-4ec9-8daa-408526090e27",
+            "snippet": "The new league marks an unprecedented commitment by Call of Duty and its dedicated eSports team to directly support the growing community of eSports fans.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}
