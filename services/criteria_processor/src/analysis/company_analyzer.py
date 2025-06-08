@@ -3,7 +3,6 @@ from typing import Dict, List
 import pandas as pd
 from src.external.serper import serper_search, save_serper_result
 from src.llm.gpt_analyzer import GPTAnalyzer
-from src.llm.query_builder import QueryBuilder
 from src.utils.logging import log_info, log_error, log_debug
 from src.analysis.deep_analysis import process_company_deep_analysis
 
@@ -11,18 +10,17 @@ class CompanyAnalyzer:
     """
     Класс для полного анализа одной компании.
     """
-    def __init__(self, criteria_df: pd.DataFrame, gpt_analyzer: GPTAnalyzer, query_builder: QueryBuilder):
+    def __init__(self, criteria_df: pd.DataFrame, gpt_analyzer: GPTAnalyzer):
         self.criteria_df = criteria_df
         self.gpt_analyzer = gpt_analyzer
-        self.query_builder = query_builder
 
-    def analyze(self, company_name: str, company_description: str, session_id: str, use_deep_analysis: bool = False) -> Dict:
+    def analyze(self, company_name: str, company_description: str, session_id: str, use_deep_analysis: bool = False, website: str = None) -> Dict:
         """
         Анализирует одну компанию: строит запрос, ищет в Serper, анализирует с помощью GPT.
         """
         log_info(f"Analyzing company: {company_name}")
         
-        query = self.query_builder.build_query(company_name, company_description)
+        query = f"{company_name} {company_description}"
         log_debug(f"🔎 Serper query: {query}")
         
         try:
@@ -47,7 +45,7 @@ class CompanyAnalyzer:
                 scraped_text=scraped_text_all
             )
             
-            analysis_result = self.gpt_analyzer.analyze_criteria(analysis_context, self.criteria_df)
+            analysis_result = self.gpt_analyzer.analyze_criteria(analysis_context, self.criteria_df, website=website)
             
             final_result = {
                 "Company": company_name,

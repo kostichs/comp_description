@@ -3,7 +3,7 @@ import openai
 from openai import OpenAI
 import re
 from src.utils.logging import log_info, log_debug, log_error
-from src.external.serper import serper_search, save_serper_result
+from src.external.serper import serper_search, save_serper_result, format_search_query
 from src.external.scrapingbee_client import scrape_website_text
 from typing import Tuple
 
@@ -15,10 +15,11 @@ class GPTAnalyzer:
         self.client = OpenAI()
         self.session_id = session_id
 
-    def analyze_criteria(self, context: str, criteria_df: pd.DataFrame) -> dict:
+    def analyze_criteria(self, context: str, criteria_df: pd.DataFrame, website: str = None) -> dict:
         """
         Итеративно проверяет соответствие компании критериям по разным продуктам и аудиториям.
         """
+        self.website = website  # Store for use in _process_dynamic_criterion
         results = {}
         # Группируем критерии по продуктам
         for product, product_group in criteria_df.groupby('Product'):
@@ -83,7 +84,24 @@ class GPTAnalyzer:
         full_context = context
 
         if pd.notna(criterion.get('Search Query')):
-            search_query = str(criterion['Search Query']).format(company_name=company_name)
+            search_query_template = str(criterion['Search Query'])
+            
+            # Handle both {website} and {company_name} placeholders
+            search_query = search_query_template
+            
+            # First replace {website} if present and available
+            if '{website}' in search_query:
+                if self.website:
+                    search_query = format_search_query(search_query, self.website)
+                else:
+                    log_debug(f"⚠️ Warning: Search query contains {{website}} but no website provided")
+                    # Skip this criterion if website is required but not available
+                    return False, "No website provided for site: search", ""
+            
+            # Then replace {company_name} if present
+            if '{company_name}' in search_query:
+                search_query = search_query.replace('{company_name}', company_name)
+            
             log_debug(f"Выполняем динамический поиск: {search_query}")
             search_results = serper_search(search_query)
             if self.session_id:
