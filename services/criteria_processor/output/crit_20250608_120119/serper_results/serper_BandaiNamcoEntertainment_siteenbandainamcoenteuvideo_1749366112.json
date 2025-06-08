@@ -1,0 +1,76 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"video\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Code Vein - Gameplay Video",
+            "link": "https://en.bandainamcoent.eu/code-vein/news/code-vein-gameplay-video",
+            "snippet": "Code Vein - Gameplay Video.",
+            "position": 1
+        },
+        {
+            "title": "DRAGON BALL: Sparking! ZERO – Most epic video so far ...",
+            "link": "https://en.bandainamcoent.eu/dragon-ball/news/dragon-ball-sparking-zero-most-epic-video-so-far-now-out-rediscover-the-ignite-the",
+            "snippet": "DRAGON BALL: Sparking! ZERO – Most epic video so far is now out! Rediscover the IGNITE THE SPARK Trailer. dbsz separator. DRAGON BALL: ...",
+            "date": "Oct 3, 2024",
+            "position": 2
+        },
+        {
+            "title": "JUMANJI: THE VIDEO GAME | Media gallery",
+            "link": "https://en.bandainamcoent.eu/jumanji/jumanji-the-video-game/media",
+            "snippet": "Find all the videos and pictures of JUMANJI: THE VIDEO GAME.",
+            "position": 3
+        },
+        {
+            "title": "Explore ELDEN RING with new narrated preview video along ...",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/explore-elden-ring-new-narrated-preview-video-along-pre-orders?amp=",
+            "snippet": "Explore ELDEN RING with new narrated preview video along with pre-orders ; Experience a first-look at narrated · gameplay giving players a deep-dive into the ...",
+            "position": 4
+        },
+        {
+            "title": "DreamWorks Dragons: Legends of the Nine Realms video game ...",
+            "link": "https://en.bandainamcoent.eu/how-train-your-dragon/news/dreamworks-dragons-legends-of-the-nine-realms-video-game-award-winning?amp=",
+            "snippet": "The video provides a firsthand look at the recording of Chris's composition of the game's inspiring title theme, which begins with an energetic string section ...",
+            "position": 5
+        },
+        {
+            "title": "Discover more about One Piece Odyssey in this video set ...",
+            "link": "https://en.bandainamcoent.eu/one-piece/news/discover-more-about-one-piece-odyssey-video-set-water-seven",
+            "snippet": "Discover more about One Piece Odyssey in this video set in Water Seven. In ONE PIECE ODYSSEY players will adventure in \"Memoria,\" the world of ...",
+            "date": "Nov 21, 2022",
+            "position": 6
+        },
+        {
+            "title": "Base Vegeta - Character Intro Video",
+            "link": "https://en.bandainamcoent.eu/dragon-ball/news/base-vegeta-character-intro-video?amp=",
+            "snippet": "Base Vegeta - Character Intro Video. Loading video. An error occurred. Try watching this video on www.youtube.com, or enable JavaScript if ...",
+            "position": 7
+        },
+        {
+            "title": "ELDEN RING: Influencer videos to guide your journey",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-influencer-videos-guide-your-journey",
+            "snippet": "Fextralife's focus on in-depth game information will put you on the right path to start the game out. Watch their video, and then visit their ...",
+            "date": "Mar 9, 2022",
+            "position": 8
+        },
+        {
+            "title": "JUMANJI: THE VIDEO GAME | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/jumanji/jumanji-the-video-game",
+            "snippet": "Star-studded family fun games for all ages! If you are looking for the best entertaining and stimulating video games for kids and family, then look no further!",
+            "position": 9
+        },
+        {
+            "title": "Broly - Character Intro Video",
+            "link": "https://en.bandainamcoent.eu/dragon-ball/news/broly-character-intro-video?amp=",
+            "snippet": "Broly - Character Intro Video. Loading video. An error occurred. Try watching this video on www.youtube.com, or enable JavaScript if it is ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

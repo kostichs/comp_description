@@ -514,6 +514,13 @@
                     <p id="latest-session-info" style="margin: 0; font-size: 14px; color: #666; display: none;"></p>
                 </div>
 
+                <div class="form-check mb-3" style="padding: 15px; background: #e8f4f8; border: 1px solid #007bff; border-radius: 8px; margin-bottom: 20px;">
+                    <input class="form-check-input" type="checkbox" id="deep-analysis-checkbox" checked style="transform: scale(1.2); margin-right: 10px;">
+                    <label class="form-check-label" for="deep-analysis-checkbox" style="font-weight: bold; color: #007bff; cursor: pointer;">
+                        Enable Deep Analysis (slower, more accurate)
+                    </label>
+                </div>
+
                 <form id="criteria-upload-form" enctype="multipart/form-data">
                     <div id="criteria-dropZoneContainer" 
                          ondragover="this.classList.add('dragover'); event.preventDefault();" 
@@ -587,6 +594,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 
     <div id="loading-indicator">
@@ -601,12 +609,6 @@
     <script src="/static/js/criteria-analysis.js"></script>
     <script>
         console.log('After app.js load');
-        
-        // Initialize criteria analysis
-        if (typeof CriteriaAnalysis !== 'undefined') {
-            window.criteriaAnalysis = new CriteriaAnalysis();
-            console.log('CriteriaAnalysis initialized');
-        }
         
         // Quick tab test if router doesn't load
         setTimeout(() => {

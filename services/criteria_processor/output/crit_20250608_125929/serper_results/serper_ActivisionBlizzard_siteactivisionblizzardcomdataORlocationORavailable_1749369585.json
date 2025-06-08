@@ -1,0 +1,74 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"data\" OR \"location\" OR \"available\" OR \"presence\") (countries OR regions OR worldwide OR global)",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Activision Blizzard | Location",
+            "link": "https://www.activisionblizzard.com/location",
+            "snippet": "International Offices · Publishing. Sydney, Australia. São Paulo, Brazil. Mississauga, Canada. Shanghai, China. Berlin, Germany. Cork, Ireland. Dublin, Ireland.",
+            "position": 1
+        },
+        {
+            "title": "Manager, Marketing Analytics - AP Global ...",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025110EXTERNAL/Manager-Marketing-Analytics-AP-Global-Marketing",
+            "snippet": "7+ years of experience in the field of data analytics, data science, or a related domain. ... location. Your Talent Professional can share this role's ...",
+            "position": 2
+        },
+        {
+            "title": "Call of Duty®: Vanguard Available Now Worldwide",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-dutyr-vanguard-available-now-worldwide",
+            "snippet": "Vanguard is available worldwide starting today on PlayStation®5, PlayStation®4, Xbox® Series X|S, Xbox One®, and PC in a fully optimized ...",
+            "date": "Nov 5, 2021",
+            "position": 3
+        },
+        {
+            "title": "Senior Manager, Emerging Regions, Mobile Marketing",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025324EXTERNAL/Senior-Manager-Emerging-Regions-Mobile-Marketing",
+            "snippet": "Strong project management and cross-functional leadership skills. Analytical thinker with experience using data to drive marketing decisions. Excellent verbal ...",
+            "position": 4
+        },
+        {
+            "title": "job openings at Activision Blizzard - Design Studio",
+            "link": "https://careers.activisionblizzard.com/search-results?from=40&s=1",
+            "snippet": "Feed your creativity while... Available in 2 locationsAvailable in 2 locations ... Location: Santa Monica, California. Your Mission ...",
+            "position": 5
+        },
+        {
+            "title": "QA Tester - Simplified Chinese in Dublin, Dublin, Ireland",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025090EXTERNAL/QA-Tester-Simplified-Chinese",
+            "snippet": "Various Shifts available (Mon-Fri or 4 days on 4 days off). This is a ... At our location you can expect to work with colleagues from all across the world.",
+            "position": 6
+        },
+        {
+            "title": "Game Project Manager, COD Mobile",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025262EXTERNAL/Game-Project-Manager-COD-Mobile",
+            "snippet": "Enter location or Language Clear text. No results found. Activision Blizzard ... regions . Serve as liaison between China and HQ publishing teams, follow ...",
+            "position": 7
+        },
+        {
+            "title": "Senior Data Analyst, Business Analytics",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025359EXTERNAL/Senior-Data-Analyst-Business-Analytics",
+            "snippet": "The Analytics Insights team is seeking a talented Senior Data Analyst to work directly with and support partners such as Finance, Product, Player Insights, ...",
+            "position": 8
+        },
+        {
+            "title": "Lead Content Designer in Santa Monica, California, United ...",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025375EXTERNAL/Lead-Content-Designer",
+            "snippet": "Ultimately, your specific range and offer will be based on several factors, including relevant experience, performance, and work location. Your Talent ...",
+            "position": 9
+        },
+        {
+            "title": "Expert Software Engineer, Frontend",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025293EXTERNAL/Expert-Software-Engineer-Frontend",
+            "snippet": "Comprised of seven main teams, we have many specialties including big data, privacy and security, motion capture and animation pipeline technologies, graphics, ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -6,8 +6,9 @@ from src.criteria.base import get_structured_response
 from src.external.serper import get_information_for_criterion
 from src.utils.logging import log_info, log_error
 
-def check_nth_criteria(description, company_info, audience, nth_df):
+def check_nth_criteria(company_info, audience, nth_df, session_id=None, use_deep_analysis=False):
     """Check NTH criteria for an audience - updated for manager requirements"""
+    description = company_info.get("Description", "")
     filtered_df = nth_df[nth_df["Target Audience"] == audience]
     passed_count = 0
     nd_count = 0
@@ -24,7 +25,7 @@ def check_nth_criteria(description, company_info, audience, nth_df):
         log_info(f"NTH {audience}: {crit}", console=False)
         
         # Get information based on the Place field
-        information, source_desc = get_information_for_criterion(company_info, place, search_query)
+        information, source_desc = get_information_for_criterion(company_info, place, search_query, session_id=session_id, use_deep_analysis=use_deep_analysis)
         log_info(f"Источник: {source_desc}", console=False)
         
         result, error = get_structured_response("nth", information, crit, "standard")

@@ -2,18 +2,52 @@
 Модуль для работы с Serper.dev API
 """
 
+import os
+import re
 import time
 import json
 import requests
-from src.utils.config import SERPER_API_KEY, SERPER_API_URL, SERPER_MAX_RETRIES, SERPER_RETRY_DELAY, DEBUG_SERPER
+from src.utils.config import SERPER_API_KEY, SERPER_API_URL, SERPER_MAX_RETRIES, SERPER_RETRY_DELAY, DEBUG_SERPER, OUTPUT_DIR, USE_SCRAPINGBEE_DEEP_ANALYSIS, SCRAPE_TOP_N_RESULTS
 from src.utils.logging import log_info, log_error, log_debug
+from src.external.scrapingbee_client import scrape_website_text
 
-def perform_google_search(query, retries=None):
+def save_serper_result(session_id, company_name, query, data):
+    """Saves Serper results to a file in the session directory."""
+    if not session_id:
+        log_debug("No session_id provided, skipping save.")
+        return
+
+    try:
+        # Sanitize inputs for filename
+        sanitized_company_name = re.sub(r'[^a-zA-Z0-9_-]', '', company_name)
+        sanitized_query = re.sub(r'[^a-zA-Z0-9_-]', '', query)[:50] # Truncate query part
+        timestamp = int(time.time())
+
+        # Define session-specific directory
+        session_dir = os.path.join(OUTPUT_DIR, session_id, "serper_results")
+        os.makedirs(session_dir, exist_ok=True)
+
+        # Create filename
+        filename = f"serper_{sanitized_company_name}_{sanitized_query}_{timestamp}.json"
+        filepath = os.path.join(session_dir, filename)
+
+        # Save data
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+
+        log_debug(f"💾 Serper result saved to {filepath}")
+
+    except Exception as e:
+        log_error(f"Failed to save Serper result for session {session_id}: {e}")
+
+def perform_google_search(query, session_id=None, company_name=None, retries=None):
     """
     Perform a Google search using the serper.dev API
     
     Args:
         query (str): The search query to send to serper.dev
+        session_id (str, optional): The session ID for saving results.
+        company_name (str, optional): The company name for saving results.
         retries (int, optional): Number of retries if API call fails. Defaults to config value.
     
     Returns:
@@ -44,6 +78,9 @@ def perform_google_search(query, retries=None):
             
             response_json = response.json()
             log_debug(f"✅ Search successful! Response time: {response_time:.2f} seconds")
+            
+            if session_id and company_name:
+                save_serper_result(session_id, company_name, query, response_json)
             
             # Debug output if enabled
             if DEBUG_SERPER:
@@ -143,7 +180,7 @@ def format_search_query(query_template, website):
     log_debug(f"📝 Formatted query: {formatted_query}")
     return formatted_query
 
-def get_information_for_criterion(company_info, place, search_query=None):
+def get_information_for_criterion(company_info, place, search_query=None, session_id=None, use_deep_analysis=False):
     """
     Get information for evaluating a criterion based on its "Place" value
     
@@ -151,6 +188,8 @@ def get_information_for_criterion(company_info, place, search_query=None):
         company_info (dict): Company information dictionary
         place (str): The "Place" column value (e.g., "gen_descr", "website")
         search_query (str, optional): The search query template to use if place is "website"
+        session_id (str, optional): The session ID for saving results.
+        use_deep_analysis (bool, optional): Whether to use deep analysis
     
     Returns:
         tuple: (information_text, source_description)
@@ -183,46 +222,44 @@ def get_information_for_criterion(company_info, place, search_query=None):
         formatted_query = format_search_query(search_query, website)
         
         # Perform the search
-        search_results = perform_google_search(formatted_query)
+        search_results = perform_google_search(formatted_query, session_id=session_id, company_name=company_name)
         
         if not search_results:
             log_debug(f"ℹ️ Search failed for {company_name}, using general description instead")
             return description, "General Description (search failed)"
+
+        # --- DEEP ANALYSIS LOGIC ---
+        if use_deep_analysis:
+            log_info(f"🐝 Starting deep analysis for '{formatted_query}'...")
+            
+            scraped_texts = []
+            links_to_scrape = [result['link'] for result in search_results.get('organic', [])[:SCRAPE_TOP_N_RESULTS]]
+            
+            for link in links_to_scrape:
+                scraped_content = scrape_website_text(link, session_id=session_id, company_name=company_name)
+                if scraped_content:
+                    scraped_texts.append(f"--- CONTENT FROM {link} ---\n\n{scraped_content}")
+
+            if scraped_texts:
+                scraped_info = "\n\n".join(scraped_texts)
+                combined_information = (
+                    f"SCRAPED CONTENT FOR: {formatted_query}\n\n"
+                    f"{scraped_info}\n\n"
+                    f"GENERAL DESCRIPTION:\n{description}"
+                )
+                log_info(f"✅ Deep analysis complete. Total scraped length: {len(scraped_info)} chars")
+                return combined_information, f"Deep Analysis of top {len(scraped_texts)} search results"
+            else:
+                log_info(f"⚠️ Deep analysis did not return any content, using search snippets instead.")
         
-        # Convert search results to string and combine with general description
-        search_results_str = json.dumps(search_results, indent=2)
-        combined_information = (
-            f"SEARCH RESULTS FOR: {formatted_query}\n\n"
-            f"{search_results_str}\n\n"
-            f"GENERAL DESCRIPTION:\n{description}"
-        )
+        # --- SNIPPET ANALYSIS (FALLBACK) ---
+        search_snippets = [result.get('snippet', '') for result in search_results.get('organic', [])]
+        combined_snippets = "\n".join(search_snippets)
         
-        log_debug(f"📊 Combined information length: {len(combined_information)} characters")
-        return combined_information, f"Search Results + General Description"
+        # Если не было глубокого анализа или он не удался, возвращаем сниппеты
+        source_description = "Google Search Snippets"
+        log_debug(f"🔍 Using {source_description} for criterion evaluation")
+        return combined_snippets, source_description
     
-    # If place is website but no search query, use general description
-    elif place_str == "website":
-        log_debug(f"🔍 Place is 'website' but no search query provided, using general description")
-        return description, "General Description (no search query)"
-    
-    # For any other place value, use it as a search query
-    else:
-        log_debug(f"🔍 Using custom search query: {place}")
-        
-        # Use the place value as a search query directly
-        search_results = perform_google_search(place)
-        
-        if not search_results:
-            log_debug(f"ℹ️ Custom search failed for '{place}', using general description instead")
-            return description, "General Description (custom search failed)"
-        
-        # Convert search results to string
-        search_results_str = json.dumps(search_results, indent=2)
-        combined_information = (
-            f"SEARCH RESULTS FOR: {place}\n\n"
-            f"{search_results_str}\n\n"
-            f"GENERAL DESCRIPTION:\n{description}"
-        )
-        
-        log_debug(f"📊 Custom search information length: {len(combined_information)} characters")
-        return combined_information, f"Custom Search Results + General Description" 
+    # Fallback for any other case
+    return description, "General Description (fallback)" 

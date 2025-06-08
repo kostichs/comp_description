@@ -56,6 +56,11 @@ DEBUG_SCORING = True  # Show detailed scoring calculations
 load_dotenv(dotenv_path=ENV_PATH)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SERPER_API_KEY = os.getenv("SERPER_API_KEY")
+SCRAPINGBEE_API_KEY = os.getenv("SCRAPINGBEE_API_KEY")
+
+# Deep analysis via ScrapingBee
+USE_SCRAPINGBEE_DEEP_ANALYSIS = True  # Master switch for the new feature
+SCRAPE_TOP_N_RESULTS = 3  # Number of Google results to scrape
 
 # Serper.dev API configuration
 SERPER_API_URL = "https://google.serper.dev/search"
@@ -105,6 +110,10 @@ def validate_config():
     if not SERPER_API_KEY:
         raise ValueError("Missing SERPER_API_KEY in .env file")
     
+    # Check for ScrapingBee API key if feature is enabled
+    if USE_SCRAPINGBEE_DEEP_ANALYSIS and not SCRAPINGBEE_API_KEY:
+        raise ValueError("USE_SCRAPINGBEE_DEEP_ANALYSIS is True, but SCRAPINGBEE_API_KEY is missing in .env file")
+
     # Create output directory if it doesn't exist
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     

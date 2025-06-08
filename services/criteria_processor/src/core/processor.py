@@ -17,9 +17,9 @@ from src.criteria.nth import check_nth_criteria
 from src.formatters.json_format import create_structured_output
 from src.data.savers import save_results
 from src.utils.logging import log_info, log_error
-from src.utils.config import PROCESSING_CONFIG
+from src.utils.config import PROCESSING_CONFIG, USE_SCRAPINGBEE_DEEP_ANALYSIS
 
-def run_analysis(companies_file=None, load_all_companies=False, session_id=None):
+def run_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False):
     """Run analysis: separate record for each company-product combination"""
     try:
         # Load all data
@@ -126,9 +126,13 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None)
                         "final_status": "Failed"
                     }
                     
-                    # Check Mandatory Criteria
-                    temp_mandatory_info = {}
-                    mandatory_passed = check_mandatory_criteria(description, temp_mandatory_info, audience, product_data["mandatory_df"])
+                    # Check Mandatory Criteria - передаем нужные данные из company_data
+                    temp_mandatory_info = {
+                        "Company_Name": company_data.get("Company_Name"),
+                        "Official_Website": company_data.get("Official_Website"),
+                        "Description": description
+                    }
+                    mandatory_passed = check_mandatory_criteria(temp_mandatory_info, audience, product_data["mandatory_df"], session_id=session_id, use_deep_analysis=use_deep_analysis)
                     
                     if not mandatory_passed:
                         log_info(f"Mandatory НЕ пройдены для {product} -> {audience}")
@@ -139,9 +143,13 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None)
                     log_info(f"Mandatory пройдены для {product} -> {audience}")
                     audience_results["mandatory_status"] = "Passed"
                     
-                    # Check NTH Criteria
-                    temp_nth_info = {}
-                    check_nth_criteria(description, temp_nth_info, audience, product_data["nth_df"])
+                    # Check NTH Criteria - передаем нужные данные из company_data
+                    temp_nth_info = {
+                        "Company_Name": company_data.get("Company_Name"),
+                        "Official_Website": company_data.get("Official_Website"),
+                        "Description": description
+                    }
+                    check_nth_criteria(temp_nth_info, audience, product_data["nth_df"], session_id=session_id, use_deep_analysis=use_deep_analysis)
                     
                     # Record NTH results
                     nth_score = temp_nth_info.get(f"NTH_Score_{audience}", 0)

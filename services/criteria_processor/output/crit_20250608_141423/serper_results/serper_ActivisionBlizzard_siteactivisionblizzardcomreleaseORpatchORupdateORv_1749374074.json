@@ -1,0 +1,87 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press Releases",
+            "link": "https://www.activisionblizzard.com/press-releases",
+            "snippet": "November 3, 2023. Blizzard Entertainment Announces the Next Three Expansions for World of Warcraft®, Kicking Off The Worldsoul Saga™ with The War Within™ in 2024. Additional Formats. PDF Version. November 3, 2023. Blizzard Takes the Stage at BlizzCon® 2023; Announces the Next Three World of Warcraft® Expansions, ...",
+            "position": 1
+        },
+        {
+            "title": "Newsroom",
+            "link": "https://www.activisionblizzard.com/newsroom.For",
+            "snippet": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We pledged to make Activision Blizzard a more diverse and inclusive workplace — we're now #1 in our industry. The Art (and Science) of Following Your Gaming Passion.",
+            "position": 2
+        },
+        {
+            "title": "Press Releases - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/press-releases",
+            "snippet": "Blizzard Takes the Stage at BlizzCon® 2023; Announces the Next Three World of Warcraft® Expansions, First Expansion for Diablo® IV, a New Overwatch® hero, and more! Additional Formats. PDF Version. November 3, 2023. Blizzard Entertainment Announces the Next Three Expansions for World of Warcraft®, Kicking Off The ...",
+            "position": 3
+        },
+        {
+            "title": "Deadline extended: an update on the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the",
+            "snippet": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the deal until after October 18.",
+            "date": "Jul 19, 2023",
+            "position": 4
+        },
+        {
+            "title": "Activision Announces Free Upgrade to Next-Gen for Call of Duty",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-free-upgrade-next-gen-call-duty-advanced",
+            "snippet": "The forward-looking statements in this release are based upon information available to Activision Publishing and Activision Blizzard as of the date of this release, and neither Activision Publishing nor Activision Blizzard assumes any obligation to update any such forward-looking statements. Forward-looking statements ...",
+            "position": 5
+        },
+        {
+            "title": "End-of-year Blizzard Update",
+            "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update",
+            "snippet": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update. 2022 has been a great year for Blizzard, made possible by the hard work, creativity, and passion of everyone who works here, and the support, feedback, and joy from the ...",
+            "date": "Dec 22, 2022",
+            "position": 6
+        },
+        {
+            "title": "The latest step in the UK for the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/uk-cma-microsoft-activision-blizzard-preliminary",
+            "snippet": "I want to share an important update on our planned merger with Microsoft. Today the UK regulatory authority, the CMA, issued a preliminary approval of our merger with Microsoft based on the solutions Microsoft presented in connection with its new merger application. This approval is critical to ...",
+            "date": "Sep 21, 2023",
+            "position": 7
+        },
+        {
+            "title": "Call of Duty: Black Ops III Salvation DLC Season Finale Set to ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-black-ops-iii-salvation-dlc-season-finale-set-arrive",
+            "snippet": "The forward-looking statements in this release are based upon information available to Activision Publishing and Activision Blizzard as of the date of this release, and neither Activision Publishing nor Activision Blizzard assumes any obligation to update any such forward-looking statements. Forward-looking statements ...",
+            "position": 8
+        },
+        {
+            "title": "Call of Duty: Infinite Warfare is #1 Top Selling Console Game ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-infinite-warfare-1-top-selling-console-game-year-date",
+            "snippet": "The forward-looking statements in this release are based upon information available to Activision Publishing and Activision Blizzard as of the date of this release, and neither Activision Publishing nor Activision Blizzard assumes any obligation to update any such forward-looking statements. Forward-looking statements ...",
+            "position": 9
+        },
+        {
+            "title": "Activision To Release Call Of Duty October 29",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-release-call-duty-october-29",
+            "snippet": "Santa Monica, CA – Oct. 14, 2003 – Activision, Inc. (Nasdaq: ATVI) has confirmed October 29 as the release date for Call of Duty™ to invade retail outlets nationwide. The highly anticipated, first-person, WWII action game is set for an all-out assault on fans everywhere, having already received critical acclaim ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version xbox"
+        },
+        {
+            "query": "Release patch update version free"
+        },
+        {
+            "query": "Release patch update version download"
+        }
+    ],
+    "credits": 1
+}

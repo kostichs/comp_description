@@ -7,8 +7,9 @@ from src.external.serper import get_information_for_criterion
 from src.utils.config import PROCESSING_CONFIG
 from src.utils.logging import log_info, log_error
 
-def check_mandatory_criteria(description, company_info, audience, mandatory_df):
+def check_mandatory_criteria(company_info, audience, mandatory_df, session_id=None, use_deep_analysis=False):
     """Check mandatory criteria for an audience - updated for manager requirements"""
+    description = company_info.get("Description", "")
     mandatory = mandatory_df[mandatory_df["Target Audience"] == audience]
     failed = False
     nd_count = 0
@@ -27,7 +28,7 @@ def check_mandatory_criteria(description, company_info, audience, mandatory_df):
             place = "website"
         
         # Get information based on the Place field
-        information, source_desc = get_information_for_criterion(company_info, place, search_query)
+        information, source_desc = get_information_for_criterion(company_info, place, search_query, session_id=session_id, use_deep_analysis=use_deep_analysis)
         log_info(f"🔍 Источник: {source_desc}", console=False)
         
         result, error = get_structured_response("mandatory", information, crit, "standard")

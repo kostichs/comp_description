@@ -1,0 +1,20 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"99.9\" OR \"99.99\" OR \"99.95\" OR \"99.999\") (uptime OR SLA OR availability)",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Diablo® IV Launches, Immediately Sets New Record as ...",
+            "link": "https://investor.activisionblizzard.com/node/36091/pdf",
+            "snippet": "Diablo IV is available for digital purchase as a Standard edition ($69.99), Deluxe edition ($89.99), and Ultimate edition ($99.99).",
+            "date": "Jun 6, 2023",
+            "position": 1
+        }
+    ],
+    "credits": 1
+}

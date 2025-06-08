@@ -1,0 +1,77 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Senior Environment Artist - World in Warsaw, Poland",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025366EXTERNAL/Senior-Environment-Artist-World",
+            "snippet": "Experience working in Modern Game Engines with an awareness of game budgets, limits, and memory constraints. Ability to consistently resolve issues from a ...",
+            "position": 1
+        },
+        {
+            "title": "Tidy up your digital life with these organizer apps",
+            "link": "https://newsroom.activisionblizzard.com/p/tidy-up-your-digital-life-with-these",
+            "snippet": "C'mon, let's be real: Underneath this very story lies a cluttered desktop ... game apps in one more (so you're not tempted to”accidentally ...",
+            "date": "Aug 25, 2023",
+            "position": 2
+        },
+        {
+            "title": "Activision Unveils World Series of Poker(R) Video Game at ...",
+            "link": "https://investor.activisionblizzard.com/static-files/b33c26b6-7fca-417e-a125-44fcc49ddc38",
+            "snippet": "Activision will develop and publish the World Series of Poker video game for PlayStation(R)2 computer entertainment system,.",
+            "position": 3
+        },
+        {
+            "title": "When movies take on video games - by Isaac Feldberg",
+            "link": "https://newsroom.activisionblizzard.com/p/when-movies-take-on-video-games",
+            "snippet": "“Shall we play a game?” Matthew Broderick's techie breaks into a computer company's database in hopes of playing an unreleased game, only to ...",
+            "date": "Aug 22, 2023",
+            "position": 4
+        },
+        {
+            "title": "Free Downloadable Content Now Available for DJ Hero® 2 ...",
+            "link": "https://investor.activisionblizzard.com/static-files/bd2177d5-f9f0-4ef8-9729-489cd0502854",
+            "snippet": "For information on how to connect your console and access DJ Hero downloadable content, please visit: http://www.djhero.com/en-us/education/download. ... The game ...",
+            "position": 5
+        },
+        {
+            "title": "DreamWorks Animation's Madagascar Kartz™ Video Game ...",
+            "link": "https://investor.activisionblizzard.com/static-files/77c2d68a-0b76-4f2c-b053-e82581a357a2",
+            "snippet": "The video game combines the wild world of DreamWorks Animation's. Madagascar(R) franchise with over-the-top kart racing, resulting in an ...",
+            "date": "Oct 27, 2024",
+            "position": 6
+        },
+        {
+            "title": "Call of Duty: Advanced Warfare #1 Top- Selling Video ...",
+            "link": "https://investor.activisionblizzard.com/static-files/410cdc8b-7b6f-45f6-b365-9893420c8687",
+            "snippet": "game globally, and Skylanders is the #1 kids video game franchise of ... download. A current gen version for Xbox 360 games and entertainment system ...",
+            "position": 7
+        },
+        {
+            "title": "Activision's Bakugan Battle Brawlers™ Video Game is Now ...",
+            "link": "https://investor.activisionblizzard.com/static-files/f5c5fa9b-b800-43ab-ae80-f618dd49fd0a",
+            "snippet": "The game allows fans to become a part of the universe they love - meeting all the characters from the show and taking part in battles to become the world's best ...",
+            "position": 8
+        },
+        {
+            "title": "Activision Blizzard 2022 ESG Report",
+            "link": "https://ourcommitments.activisionblizzard.com/",
+            "snippet": "In 2022, we hired our first dedicated Chief Diversity, Equity, and Inclusion Officer and appointed our first head of Inclusive Game ... Download Our Full ...",
+            "position": 9
+        },
+        {
+            "title": "How controllers evolved to serve more gamers - by Joey Held",
+            "link": "https://newsroom.activisionblizzard.com/p/how-controllers-evolved-to-serve",
+            "snippet": "Inclusivity and accessibility? Key considerations in game development. But don't sleep on how they're influencing controllers, too.",
+            "date": "Jun 23, 2023",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

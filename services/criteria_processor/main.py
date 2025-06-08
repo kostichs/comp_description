@@ -36,6 +36,12 @@ def parse_arguments():
         type=str,
         help='ID сессии для создания отдельной папки результатов'
     )
+
+    parser.add_argument(
+        '--deep-analysis',
+        action='store_true',
+        help='Включить глубокий анализ с использованием ScrapingBee'
+    )
     
     return parser.parse_args()
 
@@ -68,7 +74,8 @@ def main():
         results = run_analysis(
             companies_file=args.file,
             load_all_companies=args.all_files,
-            session_id=args.session_id
+            session_id=args.session_id,
+            use_deep_analysis=args.deep_analysis
         )
         
         log_info(f"Анализ завершен успешно! Обработано компаний: {len(results)}")

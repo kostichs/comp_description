@@ -15,6 +15,7 @@ import asyncio
 import aiofiles
 import pandas as pd
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, BackgroundTasks
+from starlette.background import BackgroundTask
 from fastapi.responses import FileResponse, JSONResponse
 
 # Добавляем путь к criteria_processor в sys.path СРАЗУ
@@ -31,7 +32,7 @@ if str(CRITERIA_SRC_PATH) not in sys.path:
 if str(CRITERIA_PROCESSOR_PATH) not in sys.path:
     sys.path.insert(0, str(CRITERIA_PROCESSOR_PATH))
 
-def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None):
+def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False):
     """Запускаем criteria_processor как отдельный процесс"""
     import subprocess
     import shutil
@@ -79,6 +80,9 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
                 "--file", f"data/{target_path.name}",  # Путь относительно criteria_processor
                 "--session-id", session_id  # Передаем session_id для создания отдельной папки
             ]
+        
+        if use_deep_analysis:
+            cmd.append("--deep-analysis")
         
         # Меняем рабочую директорию на criteria_processor
         # Устанавливаем UTF-8 кодировку для Windows
@@ -131,7 +135,8 @@ def generate_criteria_session_id() -> str:
 async def run_criteria_analysis_task(
     session_id: str,
     input_file_path: Path,
-    load_all_companies: bool = False
+    load_all_companies: bool = False,
+    use_deep_analysis: bool = False
 ):
     """Асинхронная задача для запуска анализа критериев"""
     log_info = None
@@ -151,7 +156,8 @@ async def run_criteria_analysis_task(
             run_criteria_processor,
             str(input_file_path),
             load_all_companies,
-            session_id
+            session_id,
+            use_deep_analysis
         )
         
         # Проверяем результат выполнения процесса
@@ -188,13 +194,15 @@ async def run_criteria_analysis_task(
 async def create_criteria_analysis(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
-    load_all_companies: bool = Form(False)
+    load_all_companies: bool = Form(False),
+    use_deep_analysis: bool = Form(False)
 ):
     """
     Создает новую сессию анализа критериев
     
     - **file**: CSV файл с описаниями компаний 
     - **load_all_companies**: Загружать ли все файлы из папки data
+    - **use_deep_analysis**: Использовать ли глубокий анализ
     """
     try:
         # Проверяем формат файла
@@ -225,7 +233,8 @@ async def create_criteria_analysis(
             "filename": file.filename,
             "file_size": len(content),
             "input_file_path": str(input_file_path),
-            "load_all_companies": load_all_companies
+            "load_all_companies": load_all_companies,
+            "use_deep_analysis": use_deep_analysis
         }
         
         # Запускаем анализ в фоновой задаче
@@ -233,7 +242,8 @@ async def create_criteria_analysis(
             run_criteria_analysis_task(
                 session_id, 
                 input_file_path, 
-                load_all_companies
+                load_all_companies,
+                use_deep_analysis
             )
         )
         criteria_tasks[session_id] = task
@@ -256,13 +266,15 @@ async def create_criteria_analysis(
 async def create_criteria_analysis_from_session(
     background_tasks: BackgroundTasks,
     session_id: str = Form(...),
-    load_all_companies: bool = Form(False)
+    load_all_companies: bool = Form(False),
+    use_deep_analysis: bool = Form(False)
 ):
     """
     Создает новую сессию анализа критериев используя результаты из существующей сессии
     
     - **session_id**: ID сессии из которой взять результаты
     - **load_all_companies**: Загружать ли все файлы из папки data
+    - **use_deep_analysis**: Использовать ли глубокий анализ
     """
     try:
         # Получаем информацию о существующей сессии
@@ -317,7 +329,8 @@ async def create_criteria_analysis_from_session(
             "source_session_id": session_id,
             "file_size": os.path.getsize(input_file_path),
             "input_file_path": str(input_file_path),
-            "load_all_companies": load_all_companies
+            "load_all_companies": load_all_companies,
+            "use_deep_analysis": use_deep_analysis
         }
         
         # Запускаем анализ в фоновой задаче
@@ -325,7 +338,8 @@ async def create_criteria_analysis_from_session(
             run_criteria_analysis_task(
                 new_session_id, 
                 input_file_path, 
-                load_all_companies
+                load_all_companies,
+                use_deep_analysis
             )
         )
         criteria_tasks[new_session_id] = task
@@ -478,41 +492,55 @@ async def get_criteria_session_results(session_id: str):
 
 @router.get("/sessions/{session_id}/download")
 async def download_criteria_results(session_id: str):
-    """Скачать файл результатов анализа критериев"""
+    """Скачивает CSV файл с результатами анализа для указанной сессии."""
     if session_id not in criteria_sessions:
         raise HTTPException(status_code=404, detail="Session not found")
-    
-    session_data = criteria_sessions[session_id]
-    
-    if session_data["status"] != "completed":
-        raise HTTPException(
-            status_code=400, 
-            detail=f"Analysis not completed. Current status: {session_data['status']}"
-        )
-    
-    # Ищем файлы результатов в папке сессии
-    session_results_dir = CRITERIA_PROCESSOR_PATH / "output" / session_id
-    
-    if not session_results_dir.exists():
-        raise HTTPException(status_code=404, detail=f"Session results directory not found: {session_id}")
-    
-    result_files = list(session_results_dir.glob("*.csv"))
-    
-    if result_files:
-        # Берем самый свежий CSV файл из папки сессии
-        latest_file = max(result_files, key=os.path.getctime)
         
-        return FileResponse(
-            latest_file,
-            filename=f"criteria_analysis_results_{session_id}.csv",
-            media_type="text/csv"
-        )
-    else:
-        raise HTTPException(status_code=404, detail="No result files found")
+    session_info = criteria_sessions[session_id]
+    if session_info["status"] != "completed":
+        raise HTTPException(status_code=400, detail="Analysis is not completed yet")
+        
+    # Путь к файлу с результатами внутри папки output микросервиса
+    # Мы используем session_id, чтобы найти правильный файл
+    output_dir = CRITERIA_PROCESSOR_PATH / "output" / session_id
+    result_files = list(output_dir.glob("*.csv"))
+    
+    if not result_files:
+        raise HTTPException(status_code=404, detail="Result file not found in session directory")
+        
+    # Берем первый найденный CSV файл
+    result_file_path = result_files[0]
+    
+    return FileResponse(
+        path=result_file_path,
+        filename=f"criteria_analysis_{session_id}.csv",
+        media_type="text/csv"
+    )
+
+@router.get("/sessions/{session_id}/scrapingbee_logs")
+async def download_scrapingbee_logs(session_id: str):
+    """Скачивает единый, читаемый файл .log с результатами ScrapingBee."""
+    if session_id not in criteria_sessions:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    session_info = criteria_sessions[session_id]
+    if session_info["status"] != "completed":
+        raise HTTPException(status_code=400, detail="Analysis is not completed yet")
+
+    log_file_path = CRITERIA_PROCESSOR_PATH / "output" / session_id / "scrapingbee_logs" / "scrapingbee_session.log"
+
+    if not log_file_path.is_file():
+        raise HTTPException(status_code=404, detail="No ScrapingBee logs found for this session.")
+
+    return FileResponse(
+        path=log_file_path,
+        filename=f"scrapingbee_logs_{session_id}.log",
+        media_type="text/plain"
+    )
 
 @router.post("/sessions/{session_id}/cancel")
 async def cancel_criteria_analysis(session_id: str):
-    """Отменить выполнение анализа критериев"""
+    """Отменяет текущую задачу анализа критериев."""
     if session_id not in criteria_sessions:
         raise HTTPException(status_code=404, detail="Session not found")
     

@@ -61,6 +61,11 @@ class CriteriaAnalysis {
             analyzeBtn.addEventListener('click', (e) => {
                 // Если кнопка submit в форме, предотвращаем двойное срабатывание
                 if (analyzeBtn.type === 'submit') {
+                    // Store checkbox state before disabling everything
+                    const deepAnalysisCheckbox = document.getElementById('deep-analysis-checkbox');
+                    if (deepAnalysisCheckbox) {
+                        deepAnalysisCheckbox.dataset.waschecked = deepAnalysisCheckbox.checked;
+                    }
                     return; // Пусть срабатывает через форму
                 }
                 this.handleUploadWithSessionCheck(e);
@@ -82,6 +87,16 @@ class CriteriaAnalysis {
                 btn.dataset.bound = 'true'; // Prevent multiple bindings
             }
         });
+
+        // Use event delegation on the parent container for the dynamic button
+        const statusContainer = document.getElementById('criteria-status');
+        if (statusContainer) {
+            statusContainer.addEventListener('click', (event) => {
+                if (event.target && event.target.id === 'download-scrapingbee-logs-btn') {
+                    this.downloadScrapingBeeLogs();
+                }
+            });
+        }
 
         // Bind load sessions button
         const loadSessionsBtn = document.getElementById('load-sessions-btn');
@@ -171,6 +186,7 @@ class CriteriaAnalysis {
         const formData = new FormData();
         const fileInput = document.getElementById('criteria-file');
         const loadAllCheckbox = document.getElementById('load-all-companies');
+        const useDeepAnalysis = document.getElementById('deep-analysis-checkbox').checked;
         
         // Skip file validation if using latest session
         const useLatestSession = document.getElementById('use-latest-session').checked;
@@ -181,6 +197,7 @@ class CriteriaAnalysis {
 
         formData.append('file', fileInput.files[0]);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
+        formData.append('use_deep_analysis', useDeepAnalysis);
 
         try {
             this.showStatus('Uploading file...');
@@ -218,6 +235,15 @@ class CriteriaAnalysis {
         const downloadBtn = document.getElementById('download-results-btn-main') || 
                            document.getElementById('download-results-btn-router');
         const analyzeBtn = document.getElementById('criteria-analyze-btn');
+        
+        // Use the parent container of the download button
+        const downloadButtonsContainer = downloadBtn ? downloadBtn.parentElement : null;
+
+        // Remove existing scrapingbee button to avoid duplicates
+        const existingScrapingBtn = document.getElementById('download-scrapingbee-logs-btn');
+        if (existingScrapingBtn) {
+            existingScrapingBtn.remove();
+        }
 
         statusSection.style.display = 'block';
         statusText.textContent = message;
@@ -236,6 +262,24 @@ class CriteriaAnalysis {
             progressBar.style.display = 'none';
             cancelBtn.style.display = 'none';
             if (downloadBtn) downloadBtn.style.display = 'inline-block';
+            
+            // Check if deep analysis was used to show the button
+            const deepAnalysisCheckbox = document.getElementById('deep-analysis-checkbox');
+            if (deepAnalysisCheckbox && (deepAnalysisCheckbox.checked || deepAnalysisCheckbox.dataset.waschecked === 'true') && downloadButtonsContainer) {
+                // Ensure we don't add duplicates
+                if (!document.getElementById('download-scrapingbee-logs-btn')) {
+                    const scrapingBeeBtn = document.createElement('button');
+                    scrapingBeeBtn.id = 'download-scrapingbee-logs-btn';
+                    // Apply similar styling as the main download button
+                    scrapingBeeBtn.className = 'btn btn-secondary';
+                    scrapingBeeBtn.textContent = '💾 Download ScrapingBee Logs';
+                    scrapingBeeBtn.style.marginLeft = '10px';
+                    scrapingBeeBtn.style.background = '#6c757d';
+                    
+                    downloadButtonsContainer.appendChild(scrapingBeeBtn);
+                }
+            }
+
             // Re-enable analyze button when completed
             if (analyzeBtn) {
                 analyzeBtn.disabled = false;
@@ -623,10 +667,14 @@ class CriteriaAnalysis {
     }
 
     async downloadResults() {
-        if (!this.currentSessionId) return;
+        const sessionId = document.getElementById('criteria-session-id').textContent;
+        if (!sessionId) {
+            alert('Session ID not found on the page. Cannot download results.');
+            return;
+        }
 
         try {
-            const response = await fetch(`/api/criteria/sessions/${this.currentSessionId}/download`);
+            const response = await fetch(`/api/criteria/sessions/${sessionId}/download`);
 
             if (!response.ok) {
                 const error = await response.json();
@@ -637,7 +685,7 @@ class CriteriaAnalysis {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `criteria_analysis_${this.currentSessionId}.csv`;
+            a.download = `criteria_analysis_${sessionId}.csv`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
@@ -1252,9 +1300,11 @@ class CriteriaAnalysis {
 
         const formData = new FormData();
         const loadAllCheckbox = document.getElementById('load-all-companies');
+        const useDeepAnalysis = document.getElementById('deep-analysis-checkbox').checked;
         
         formData.append('session_id', this.latestSessionId);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
+        formData.append('use_deep_analysis', useDeepAnalysis);
 
         try {
             this.showStatus('Using results from latest session...');
@@ -1281,6 +1331,39 @@ class CriteriaAnalysis {
             console.error('Upload from session error:', error);
             this.showStatus(`Error: ${error.message}`, 'error');
             throw error; // Пропускаем ошибку выше для обработки в handleUploadWithSessionCheck
+        }
+    }
+
+    async downloadScrapingBeeLogs() {
+        const sessionId = document.getElementById('criteria-session-id').textContent;
+        if (!sessionId) {
+            alert('Session ID not found on the page. Cannot download logs.');
+            return;
+        }
+
+        try {
+            console.log(`Downloading ScrapingBee logs for session: ${sessionId}`);
+            const response = await fetch(`/api/criteria/sessions/${sessionId}/scrapingbee_logs`);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `scrapingbee_logs_${sessionId}.log`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+
+        } catch (error) {
+            console.error('Error downloading ScrapingBee logs:', error);
+            alert(`Failed to download logs: ${error.message}`);
         }
     }
 }
