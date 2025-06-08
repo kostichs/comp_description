@@ -8,6 +8,7 @@ import pandas as pd
 from datetime import datetime
 from src.utils.config import OUTPUT_DIR
 from src.utils.logging import log_info
+from src.utils.encoding_handler import save_csv_with_encoding, save_text_with_encoding
 
 def save_results(results, product, timestamp=None, session_id=None):
     """Save results to both JSON and CSV files in session-specific directory"""
@@ -32,10 +33,9 @@ def save_results(results, product, timestamp=None, session_id=None):
     json_path = os.path.join(session_output_dir, json_filename)
     csv_path = os.path.join(session_output_dir, csv_filename)
     
-    # Save to JSON with pretty formatting
-    with open(json_path, 'w', encoding='utf-8') as f:
-        json.dump(results, f, ensure_ascii=False, indent=2)
-    
+    # Save to JSON with pretty formatting using UTF-8
+    json_content = json.dumps(results, ensure_ascii=False, indent=2)
+    save_text_with_encoding(json_content, json_path, encoding='utf-8')
     log_info(f"💾 JSON результаты сохранены: {json_path}")
     
     # Convert to CSV format
@@ -45,20 +45,14 @@ def save_results(results, product, timestamp=None, session_id=None):
         flat_result = flatten_result_for_csv(result)
         csv_data.append(flat_result)
     
-    # Save to CSV with proper line break handling - CUSTOM APPROACH
+    # Save to CSV with proper encoding handling
     if csv_data:
-        import csv
-        with open(csv_path, 'w', newline='', encoding='utf-8-sig') as csvfile:
-            if csv_data:
-                fieldnames = csv_data[0].keys()
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
-                writer.writeheader()
-                for row in csv_data:
-                    writer.writerow(row)
+        df = pd.DataFrame(csv_data)
+        save_csv_with_encoding(df, csv_path, encoding='utf-8-sig')
         
         log_info(f"💾 CSV результаты сохранены: {csv_path}")
         log_info(f"📊 Обработано записей: {len(results)}")
-        log_info(f"📋 Колонок в CSV: {len(fieldnames) if csv_data else 0}")
+        log_info(f"📋 Колонок в CSV: {len(df.columns) if not df.empty else 0}")
     
     return json_path, csv_path
 

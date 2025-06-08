@@ -232,11 +232,19 @@ async def create_criteria_analysis(
         session_dir = Path("temp") / "criteria_analysis" / session_id
         session_dir.mkdir(parents=True, exist_ok=True)
         
-        # Сохраняем загруженный файл
+        # Сохраняем загруженный файл с правильной обработкой кодировки
         input_file_path = session_dir / file.filename
         async with aiofiles.open(input_file_path, 'wb') as f:
             content = await file.read()
             await f.write(content)
+        
+        # Проверяем кодировку загруженного файла
+        try:
+            from services.criteria_processor.src.utils.encoding_handler import get_file_info
+            file_info = get_file_info(str(input_file_path))
+            logger.info(f"Uploaded file info: {file_info}")
+        except Exception as e:
+            logger.warning(f"Could not detect encoding for uploaded file: {e}")
         
         # Создаем метаданные сессии
         criteria_sessions[session_id] = {

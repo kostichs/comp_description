@@ -7,17 +7,27 @@ import glob
 import pandas as pd
 from src.utils.config import DATA_DIR, COMPANIES_LIMIT, CRITERIA_DIR, CRITERIA_TYPE, INDUSTRY_MAPPING
 from src.utils.logging import log_info, log_error, log_debug
-from src.data.encodings import load_csv_with_encoding
+from src.utils.encoding_handler import (
+    read_csv_with_encoding, 
+    read_excel_with_encoding, 
+    normalize_text_encoding,
+    get_file_info
+)
 
 def load_file_smart(file_path):
-    """Загружает файл автоматически определяя тип (CSV или Excel) с правильным парсингом"""
+    """Загружает файл автоматически определяя тип (CSV или Excel) с правильным парсингом и кодировкой"""
     file_ext = os.path.splitext(file_path)[1].lower()
+    
+    # Получаем информацию о файле, включая кодировку
+    file_info = get_file_info(file_path)
+    log_info(f"📁 Файл: {os.path.basename(file_path)} ({file_info.get('size_mb', 0)} MB, {file_info.get('detected_encoding', 'unknown')})")
     
     try:
         if file_ext in ['.csv']:
             log_debug(f"📋 Загружаем CSV файл: {os.path.basename(file_path)}")
-            # Используем правильные параметры для CSV с многострочными полями
-            df = pd.read_csv(file_path, quoting=1, encoding='utf-8', on_bad_lines='skip')
+            # Используем новый encoding handler для CSV
+            df, used_encoding = read_csv_with_encoding(file_path, quoting=1, on_bad_lines='skip')
+            log_info(f"✅ CSV загружен с кодировкой: {used_encoding}")
             
             # УДАЛЕНИЕ НЕЖЕЛАТЕЛЬНЫХ КОЛОНОК: убираем validation колонки
             columns_to_remove = ['validation_status', 'validation_warning']
@@ -29,6 +39,17 @@ def load_file_smart(file_path):
             
             if columns_removed:
                 log_info(f"🗑️  Удалены колонки: {', '.join(columns_removed)}")
+            
+            # НОРМАЛИЗАЦИЯ ТЕКСТА: исправляем проблемы с кодировкой в текстовых полях
+            text_columns = ['Company_Name', 'Description', 'Official_Website', 'LinkedIn_URL']
+            normalized_columns = []
+            for col in text_columns:
+                if col in df.columns:
+                    df[col] = df[col].apply(lambda x: normalize_text_encoding(str(x)) if pd.notna(x) else x)
+                    normalized_columns.append(col)
+            
+            if normalized_columns:
+                log_info(f"🧹 Нормализованы текстовые колонки: {', '.join(normalized_columns)}")
             
             # ФИЛЬТРАЦИЯ ПУСТЫХ СТРОК: удаляем строки где все основные колонки пустые
             main_columns = ['Company_Name', 'Description']  # Основные колонки для проверки
@@ -48,7 +69,9 @@ def load_file_smart(file_path):
             return df
         elif file_ext in ['.xlsx', '.xls']:
             log_debug(f"📊 Загружаем Excel файл: {os.path.basename(file_path)}")
-            df = pd.read_excel(file_path)
+            # Используем новый encoding handler для Excel
+            df, used_encoding = read_excel_with_encoding(file_path)
+            log_info(f"✅ Excel загружен с кодировкой: {used_encoding}")
             
             # УДАЛЕНИЕ НЕЖЕЛАТЕЛЬНЫХ КОЛОНОК: убираем validation колонки
             columns_to_remove = ['validation_status', 'validation_warning']
@@ -60,6 +83,17 @@ def load_file_smart(file_path):
             
             if columns_removed:
                 log_info(f"🗑️  Удалены колонки: {', '.join(columns_removed)}")
+            
+            # НОРМАЛИЗАЦИЯ ТЕКСТА для Excel: исправляем проблемы с кодировкой в текстовых полях
+            text_columns = ['Company_Name', 'Description', 'Official_Website', 'LinkedIn_URL']
+            normalized_columns = []
+            for col in text_columns:
+                if col in df.columns:
+                    df[col] = df[col].apply(lambda x: normalize_text_encoding(str(x)) if pd.notna(x) else x)
+                    normalized_columns.append(col)
+            
+            if normalized_columns:
+                log_info(f"🧹 Нормализованы текстовые колонки: {', '.join(normalized_columns)}")
             
             # Аналогичная фильтрация для Excel
             main_columns = ['Company_Name', 'Description']
@@ -176,7 +210,23 @@ def load_all_criteria_files():
         log_info(f"📋 Загружаем критерии из: {filename}")
         
         try:
-            df = pd.read_csv(file_path, encoding='utf-8')
+            # Используем encoding handler для файлов критериев
+            file_info = get_file_info(file_path)
+            log_debug(f"📁 Критерии: {filename} ({file_info.get('detected_encoding', 'unknown')})")
+            
+            df, used_encoding = read_csv_with_encoding(file_path)
+            log_debug(f"✅ Критерии загружены с кодировкой: {used_encoding}")
+            
+            # НОРМАЛИЗАЦИЯ ТЕКСТА в критериях
+            text_columns = ['Product', 'Target Audience', 'Criteria Type', 'Criteria', 'Place', 'Search Query', 'Signals']
+            normalized_columns = []
+            for col in text_columns:
+                if col in df.columns:
+                    df[col] = df[col].apply(lambda x: normalize_text_encoding(str(x)) if pd.notna(x) else x)
+                    normalized_columns.append(col)
+            
+            if normalized_columns:
+                log_debug(f"🧹 Нормализованы критерии: {', '.join(normalized_columns)}")
             
             # Validate required columns
             required_columns = ['Product', 'Target Audience', 'Criteria Type', 'Criteria']
@@ -238,8 +288,49 @@ def load_data(companies_file=None, load_all_companies=False):
         
         # НОВАЯ ЛОГИКА: Собираем все General критерии из всех файлов
         log_info("🌐 Собираем все General критерии из всех файлов критериев...")
-        all_general_criteria = df_criteria[df_criteria["Criteria Type"] == "General"]["Criteria"].dropna().unique().tolist()
-        log_info(f"✅ Найдено уникальных General критериев: {len(all_general_criteria)}")
+        all_general_raw = df_criteria[df_criteria["Criteria Type"] == "General"]["Criteria"].dropna().tolist()
+        
+        # УМНАЯ ДЕДУПЛИКАЦИЯ General критериев
+        def deduplicate_general_criteria(criteria_list):
+            """Remove duplicate and similar criteria"""
+            import re
+            
+            deduplicated = []
+            seen_patterns = []
+            
+            for criteria in criteria_list:
+                criteria_lower = criteria.lower()
+                
+                # Skip WAAP-specific criteria for non-WAAP analysis
+                if "waap" in criteria_lower or "special protocols" in criteria_lower:
+                    log_debug(f"   ⚠️ Пропускаем WAAP-специфичный критерий: {criteria[:50]}...")
+                    continue
+                
+                # Check for HQ/headquarters duplicates
+                is_hq_criteria = ("headquarter" in criteria_lower or "hq" in criteria_lower) and any(country in criteria_lower for country in ["china", "iran", "russia"])
+                
+                if is_hq_criteria:
+                    # Check if we already have a similar HQ criteria
+                    has_similar_hq = any("hq_criteria" in pattern for pattern in seen_patterns)
+                    if has_similar_hq:
+                        log_debug(f"   🔄 Пропускаем дублирующий HQ критерий: {criteria[:50]}...")
+                        continue
+                    else:
+                        seen_patterns.append("hq_criteria")
+                        deduplicated.append(criteria)
+                        log_debug(f"   ✅ Добавлен HQ критерий: {criteria[:50]}...")
+                else:
+                    # For non-HQ criteria, check for exact duplicates
+                    if criteria not in deduplicated:
+                        deduplicated.append(criteria)
+                        log_debug(f"   ✅ Добавлен критерий: {criteria[:50]}...")
+                    else:
+                        log_debug(f"   🔄 Пропускаем дубликат: {criteria[:50]}...")
+            
+            return deduplicated
+        
+        all_general_criteria = deduplicate_general_criteria(all_general_raw)
+        log_info(f"✅ Найдено уникальных General критериев: {len(all_general_criteria)} (было {len(all_general_raw)})")
         for i, criteria in enumerate(all_general_criteria, 1):
             log_info(f"   {i}. {criteria}")
         

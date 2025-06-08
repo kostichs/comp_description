@@ -1,0 +1,2047 @@
+[
+  {
+    "Company_Name": "Microsoft",
+    "Official_Website": "microsoft.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/microsoft",
+    "Description": "Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers.",
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "general_criteria": {
+        "passed": true,
+        "passed_count": 1,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Pass",
+            "reason": "General criterion met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "Yes",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Data-First Innovators",
+        "Software ISVs & System Integrators"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Enterprise Digital Transformers target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions digital transformation or intelligent systems",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"digital transformation\" OR \"transforming operations\" OR \"accelerating innovation\" OR \"intelligent systems\"",
+              "signals": "digital transformation, intelligent systems, accelerating innovation",
+              "product": "AI",
+              "target_audience": "Enterprise Digital Transformers",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            },
+            {
+              "criteria_text": "Mentions use of AI in at least two different business functions",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"supply chain\" OR \"inventory\" OR \"finance\" OR \"customer experience\" OR \"R&D\" OR \"IT\" OR \"automation\" OR \"marketing\"",
+              "signals": "supply chain, finance, customer experience, R&D, IT, automation, marketing",
+              "product": "AI",
+              "target_audience": "Enterprise Digital Transformers",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions structured AI programs or leadership roles",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"Chief AI Officer\" OR \"AI assistant\" OR \"AI center\" OR \"AI innovation\" OR \"strategic AI partner\"",
+                "signals": "Chief AI Officer, AI assistant, AI center, AI innovation, strategic AI partner",
+                "product": "AI",
+                "target_audience": "Enterprise Digital Transformers",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions formal AI strategy, budget, or program ownership",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"AI strategy\" OR \"AI roadmap\" OR \"AI budget\" OR \"AI initiative\"",
+                "signals": "AI strategy, AI roadmap, AI investment, strategic AI initiative",
+                "product": "AI",
+                "target_audience": "Enterprise Digital Transformers",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Enterprise Digital Transformers"
+        },
+        "Data-First Innovators": {
+          "audience": "Data-First Innovators",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Data-First Innovators target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Company offers personalized, real-time, or automated digital services as a core feature",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"personalized\" OR \"real-time\" OR \"automated\" OR \"tailored\" OR \"forecast\" OR \"instant delivery\"",
+              "signals": "personalized, real-time, automated, tailored, forecast, instant delivery",
+              "product": "AI",
+              "target_audience": "Data-First Innovators",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions fast iteration, innovation, or scaling of digital services",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"rapid growth\" OR \"fast scaling\" OR \"global expansion\" OR \"innovation\" OR \"agile\"",
+                "signals": "rapid growth, fast scaling, global expansion, innovation, agile",
+                "product": "AI",
+                "target_audience": "Data-First Innovators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "References using customer behavior or data insights to enhance services",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"customer data\" OR \"user insights\" OR \"behavior analysis\" OR \"personalized experience\"",
+                "signals": "customer data, user insights, behavior analysis, personalized experience",
+                "product": "AI",
+                "target_audience": "Data-First Innovators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Data-First Innovators"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Software ISVs & System Integrators target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Company states it builds, integrates, or deploys AI solutions or platforms for enterprise clients",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"builds AI\" OR \"integrates AI\" OR \"deploys AI\" OR \"AI tools\" OR \"AI services\"",
+              "signals": "builds AI, integrates AI, deploys AI, AI tools, AI services",
+              "product": "AI",
+              "target_audience": "Software ISVs & System Integrators",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions industry-specific or verticalized AI services (e.g. finance, manufacturing, healthcare)",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"finance\" OR \"manufacturing\" OR \"healthcare\" OR \"industry-specific\" OR \"retail\" OR \"audit\"",
+                "signals": "finance, manufacturing, healthcare, industry-specific, retail, audit",
+                "product": "AI",
+                "target_audience": "Software ISVs & System Integrators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions a proprietary or branded AI platform, framework, or packaged solution",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"AI Refinery\" OR \"Omnia\" OR \"Applied AI\" OR \"Topaz\" OR \"agentic AI\"",
+                "signals": "AI Refinery, Omnia, Applied AI, Topaz, agentic AI",
+                "product": "AI",
+                "target_audience": "Software ISVs & System Integrators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Software ISVs & System Integrators"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Enterprise Digital Transformers\nNTH Score: 1.000\nTotal NTH Criteria: 2\nPassed: 2\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Microsoft",
+    "Official_Website": "microsoft.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/microsoft",
+    "Description": "Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers.",
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "general_criteria": {
+        "passed": true,
+        "passed_count": 1,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Pass",
+            "reason": "General criterion met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "Yes",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Data-First Innovators",
+        "Software ISVs & System Integrators"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Enterprise Digital Transformers target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions digital transformation or intelligent systems",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"digital transformation\" OR \"transforming operations\" OR \"accelerating innovation\" OR \"intelligent systems\"",
+              "signals": "digital transformation, intelligent systems, accelerating innovation",
+              "product": "AI",
+              "target_audience": "Enterprise Digital Transformers",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            },
+            {
+              "criteria_text": "Mentions use of AI in at least two different business functions",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"supply chain\" OR \"inventory\" OR \"finance\" OR \"customer experience\" OR \"R&D\" OR \"IT\" OR \"automation\" OR \"marketing\"",
+              "signals": "supply chain, finance, customer experience, R&D, IT, automation, marketing",
+              "product": "AI",
+              "target_audience": "Enterprise Digital Transformers",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions structured AI programs or leadership roles",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"Chief AI Officer\" OR \"AI assistant\" OR \"AI center\" OR \"AI innovation\" OR \"strategic AI partner\"",
+                "signals": "Chief AI Officer, AI assistant, AI center, AI innovation, strategic AI partner",
+                "product": "AI",
+                "target_audience": "Enterprise Digital Transformers",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions formal AI strategy, budget, or program ownership",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"AI strategy\" OR \"AI roadmap\" OR \"AI budget\" OR \"AI initiative\"",
+                "signals": "AI strategy, AI roadmap, AI investment, strategic AI initiative",
+                "product": "AI",
+                "target_audience": "Enterprise Digital Transformers",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Enterprise Digital Transformers"
+        },
+        "Data-First Innovators": {
+          "audience": "Data-First Innovators",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Data-First Innovators target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Company offers personalized, real-time, or automated digital services as a core feature",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"personalized\" OR \"real-time\" OR \"automated\" OR \"tailored\" OR \"forecast\" OR \"instant delivery\"",
+              "signals": "personalized, real-time, automated, tailored, forecast, instant delivery",
+              "product": "AI",
+              "target_audience": "Data-First Innovators",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions fast iteration, innovation, or scaling of digital services",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"rapid growth\" OR \"fast scaling\" OR \"global expansion\" OR \"innovation\" OR \"agile\"",
+                "signals": "rapid growth, fast scaling, global expansion, innovation, agile",
+                "product": "AI",
+                "target_audience": "Data-First Innovators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "References using customer behavior or data insights to enhance services",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"customer data\" OR \"user insights\" OR \"behavior analysis\" OR \"personalized experience\"",
+                "signals": "customer data, user insights, behavior analysis, personalized experience",
+                "product": "AI",
+                "target_audience": "Data-First Innovators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Data-First Innovators"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Software ISVs & System Integrators target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Company states it builds, integrates, or deploys AI solutions or platforms for enterprise clients",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"builds AI\" OR \"integrates AI\" OR \"deploys AI\" OR \"AI tools\" OR \"AI services\"",
+              "signals": "builds AI, integrates AI, deploys AI, AI tools, AI services",
+              "product": "AI",
+              "target_audience": "Software ISVs & System Integrators",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions industry-specific or verticalized AI services (e.g. finance, manufacturing, healthcare)",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"finance\" OR \"manufacturing\" OR \"healthcare\" OR \"industry-specific\" OR \"retail\" OR \"audit\"",
+                "signals": "finance, manufacturing, healthcare, industry-specific, retail, audit",
+                "product": "AI",
+                "target_audience": "Software ISVs & System Integrators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions a proprietary or branded AI platform, framework, or packaged solution",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"AI Refinery\" OR \"Omnia\" OR \"Applied AI\" OR \"Topaz\" OR \"agentic AI\"",
+                "signals": "AI Refinery, Omnia, Applied AI, Topaz, agentic AI",
+                "product": "AI",
+                "target_audience": "Software ISVs & System Integrators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Software ISVs & System Integrators"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Data-First Innovators\nNTH Score: 1.000\nTotal NTH Criteria: 2\nPassed: 2\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Microsoft",
+    "Official_Website": "microsoft.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/microsoft",
+    "Description": "Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers.",
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": true,
+      "general_criteria": {
+        "passed": true,
+        "passed_count": 1,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Pass",
+            "reason": "General criterion met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "Yes",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Data-First Innovators",
+        "Software ISVs & System Integrators"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Enterprise Digital Transformers target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions digital transformation or intelligent systems",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"digital transformation\" OR \"transforming operations\" OR \"accelerating innovation\" OR \"intelligent systems\"",
+              "signals": "digital transformation, intelligent systems, accelerating innovation",
+              "product": "AI",
+              "target_audience": "Enterprise Digital Transformers",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            },
+            {
+              "criteria_text": "Mentions use of AI in at least two different business functions",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"supply chain\" OR \"inventory\" OR \"finance\" OR \"customer experience\" OR \"R&D\" OR \"IT\" OR \"automation\" OR \"marketing\"",
+              "signals": "supply chain, finance, customer experience, R&D, IT, automation, marketing",
+              "product": "AI",
+              "target_audience": "Enterprise Digital Transformers",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions structured AI programs or leadership roles",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"Chief AI Officer\" OR \"AI assistant\" OR \"AI center\" OR \"AI innovation\" OR \"strategic AI partner\"",
+                "signals": "Chief AI Officer, AI assistant, AI center, AI innovation, strategic AI partner",
+                "product": "AI",
+                "target_audience": "Enterprise Digital Transformers",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions formal AI strategy, budget, or program ownership",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"AI strategy\" OR \"AI roadmap\" OR \"AI budget\" OR \"AI initiative\"",
+                "signals": "AI strategy, AI roadmap, AI investment, strategic AI initiative",
+                "product": "AI",
+                "target_audience": "Enterprise Digital Transformers",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Enterprise Digital Transformers"
+        },
+        "Data-First Innovators": {
+          "audience": "Data-First Innovators",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Data-First Innovators target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Company offers personalized, real-time, or automated digital services as a core feature",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"personalized\" OR \"real-time\" OR \"automated\" OR \"tailored\" OR \"forecast\" OR \"instant delivery\"",
+              "signals": "personalized, real-time, automated, tailored, forecast, instant delivery",
+              "product": "AI",
+              "target_audience": "Data-First Innovators",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions fast iteration, innovation, or scaling of digital services",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"rapid growth\" OR \"fast scaling\" OR \"global expansion\" OR \"innovation\" OR \"agile\"",
+                "signals": "rapid growth, fast scaling, global expansion, innovation, agile",
+                "product": "AI",
+                "target_audience": "Data-First Innovators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "References using customer behavior or data insights to enhance services",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"customer data\" OR \"user insights\" OR \"behavior analysis\" OR \"personalized experience\"",
+                "signals": "customer data, user insights, behavior analysis, personalized experience",
+                "product": "AI",
+                "target_audience": "Data-First Innovators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Data-First Innovators"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Software ISVs & System Integrators target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Company states it builds, integrates, or deploys AI solutions or platforms for enterprise clients",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"builds AI\" OR \"integrates AI\" OR \"deploys AI\" OR \"AI tools\" OR \"AI services\"",
+              "signals": "builds AI, integrates AI, deploys AI, AI tools, AI services",
+              "product": "AI",
+              "target_audience": "Software ISVs & System Integrators",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions industry-specific or verticalized AI services (e.g. finance, manufacturing, healthcare)",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"finance\" OR \"manufacturing\" OR \"healthcare\" OR \"industry-specific\" OR \"retail\" OR \"audit\"",
+                "signals": "finance, manufacturing, healthcare, industry-specific, retail, audit",
+                "product": "AI",
+                "target_audience": "Software ISVs & System Integrators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions a proprietary or branded AI platform, framework, or packaged solution",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"AI Refinery\" OR \"Omnia\" OR \"Applied AI\" OR \"Topaz\" OR \"agentic AI\"",
+                "signals": "AI Refinery, Omnia, Applied AI, Topaz, agentic AI",
+                "product": "AI",
+                "target_audience": "Software ISVs & System Integrators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Software ISVs & System Integrators"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Software ISVs & System Integrators\nNTH Score: 1.000\nTotal NTH Criteria: 2\nPassed: 2\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Epic Games",
+    "Official_Website": "epicgames.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/epic-games",
+    "Description": "Epic Games is a leading interactive entertainment company and provider of 3D engine technology. Epic operates Fortnite, one of the world's largest games with over 350 million accounts and 2.5 billion friend connections. Epic also develops Unreal Engine, which powers the world's leading games and is also adopted across industries such as film and television, architecture, automotive, manufacturing, and simulation. Through Unreal Engine, Epic Games Store, and Epic Online Services, Epic provides an end-to-end digital ecosystem for developers and creators to build, distribute, and operate games and other content.",
+    "Product": "AI",
+    "All_Results": {
+      "product": "AI",
+      "general_status": false,
+      "general_criteria": {
+        "passed": false,
+        "passed_count": 0,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Fail",
+            "reason": "General criterion not met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Enterprise Digital Transformers": "Yes",
+        "Data-First Innovators": "Yes",
+        "Software ISVs & System Integrators": "Yes",
+        "AI-Native Startups": "No",
+        "Public Sector Agencies": "No"
+      },
+      "qualified_audiences": [
+        "Enterprise Digital Transformers",
+        "Data-First Innovators",
+        "Software ISVs & System Integrators"
+      ],
+      "detailed_results": {
+        "Enterprise Digital Transformers": {
+          "audience": "Enterprise Digital Transformers",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Enterprise Digital Transformers target audience",
+          "mandatory_status": "Failed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions digital transformation or intelligent systems",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"digital transformation\" OR \"transforming operations\" OR \"accelerating innovation\" OR \"intelligent systems\"",
+              "signals": "digital transformation, intelligent systems, accelerating innovation",
+              "product": "AI",
+              "target_audience": "Enterprise Digital Transformers",
+              "result": "Fail",
+              "reason": "Mandatory criteria not met - company does not satisfy this requirement"
+            },
+            {
+              "criteria_text": "Mentions use of AI in at least two different business functions",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"supply chain\" OR \"inventory\" OR \"finance\" OR \"customer experience\" OR \"R&D\" OR \"IT\" OR \"automation\" OR \"marketing\"",
+              "signals": "supply chain, finance, customer experience, R&D, IT, automation, marketing",
+              "product": "AI",
+              "target_audience": "Enterprise Digital Transformers",
+              "result": "Fail",
+              "reason": "Mandatory criteria not met - company does not satisfy this requirement"
+            }
+          ],
+          "nth_results": {},
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Failed",
+          "mandatory_reason": "One or more mandatory criteria failed for Enterprise Digital Transformers"
+        },
+        "Data-First Innovators": {
+          "audience": "Data-First Innovators",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Data-First Innovators target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Company offers personalized, real-time, or automated digital services as a core feature",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"personalized\" OR \"real-time\" OR \"automated\" OR \"tailored\" OR \"forecast\" OR \"instant delivery\"",
+              "signals": "personalized, real-time, automated, tailored, forecast, instant delivery",
+              "product": "AI",
+              "target_audience": "Data-First Innovators",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 2,
+            "passed_criteria": 2,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Mentions fast iteration, innovation, or scaling of digital services",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"rapid growth\" OR \"fast scaling\" OR \"global expansion\" OR \"innovation\" OR \"agile\"",
+                "signals": "rapid growth, fast scaling, global expansion, innovation, agile",
+                "product": "AI",
+                "target_audience": "Data-First Innovators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "References using customer behavior or data insights to enhance services",
+                "criteria_type": "NTH",
+                "place": "description",
+                "search_query": "\"customer data\" OR \"user insights\" OR \"behavior analysis\" OR \"personalized experience\"",
+                "signals": "customer data, user insights, behavior analysis, personalized experience",
+                "product": "AI",
+                "target_audience": "Data-First Innovators",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Data-First Innovators"
+        },
+        "Software ISVs & System Integrators": {
+          "audience": "Software ISVs & System Integrators",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Software ISVs & System Integrators target audience",
+          "mandatory_status": "Failed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Company states it builds, integrates, or deploys AI solutions or platforms for enterprise clients",
+              "criteria_type": "Mandatory",
+              "place": "description",
+              "search_query": "\"builds AI\" OR \"integrates AI\" OR \"deploys AI\" OR \"AI tools\" OR \"AI services\"",
+              "signals": "builds AI, integrates AI, deploys AI, AI tools, AI services",
+              "product": "AI",
+              "target_audience": "Software ISVs & System Integrators",
+              "result": "Fail",
+              "reason": "Mandatory criteria not met - company does not satisfy this requirement"
+            }
+          ],
+          "nth_results": {},
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Failed",
+          "mandatory_reason": "One or more mandatory criteria failed for Software ISVs & System Integrators"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Data-First Innovators\nNTH Score: 1.000\nTotal NTH Criteria: 2\nPassed: 2\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Microsoft",
+    "Official_Website": "microsoft.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/microsoft",
+    "Description": "Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers.",
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "general_criteria": {
+        "passed": true,
+        "passed_count": 1,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Pass",
+            "reason": "General criterion met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "Yes",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS",
+        "Gaming"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Software/SaaS target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Public site exposes \"/api\", \"/docs\", or \"/developer\".",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website}/ (inurl:api OR inurl:docs OR inurl:developer)",
+              "signals": "\\bAPI\\b, API documentation, Developer API, Integration, RESTful API, GraphQL, Webhooks",
+              "product": "CDN",
+              "target_audience": "Software/SaaS",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 3,
+            "passed_criteria": 3,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Public status page link.",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (inurl:status OR \"status\" OR \"system\" OR \"uptime\")",
+                "signals": "Anchor text \"Status\", \"Status Page\", \"Uptime\".",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Claims 99.9 % (or higher) uptime SLA.",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"99.9\" OR \"99.99\" OR \"99.95\" OR \"99.999\") (uptime OR SLA OR availability)",
+                "signals": "Text \"99.9\", \"99.99\", or \"99.999\" next to \"uptime\" or \"SLA\".",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Site or docs mention more than one country",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"data\" OR \"location\" OR \"available\" OR \"presence\") (countries OR regions OR worldwide OR global)",
+                "signals": "\"East Asia and the Pacific\", \"EAP\", \"Europe and Central Asia\", \"ECA\", \"Latin America and the Caribbean\", \"LAC\", \"Middle East and North Africa\", \"MENA\", \"North America\", \"NA\", \"South Asia\", \"SA\", \"Sub-Saharan Africa\", \"SSA\", \"Eastern\", \"Middle East\", \"Europe\", \"Asia\", \"America\", \"Oceania\", \"EMEA\"...",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Software/SaaS"
+        },
+        "Gaming": {
+          "audience": "Gaming",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Gaming target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions multiplayer, online servers, or live-service model.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+              "signals": "\"Global servers\", \"low-latency servers\", \"multiplayer battles\" , \"live-service model\" , \"global servers\"",
+              "product": "CDN",
+              "target_audience": "Gaming",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 4,
+            "passed_criteria": 4,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Publisher has more than 100 employees",
+                "criteria_type": "NTH",
+                "place": "gen_descr",
+                "search_query": NaN,
+                "signals": "x employees worldwide",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Publishes updates",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+                "signals": "\"Patch notes\", \"update v\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Operates a dedicated game launcher/platform",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+                "signals": "\"Game launcher\", \"patcher\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions DDoS protection or past attacks mitigation",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+                "signals": "\"DDoS protected\", \"attack mitigation\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Gaming"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Software/SaaS\nNTH Score: 1.000\nTotal NTH Criteria: 3\nPassed: 3\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Microsoft",
+    "Official_Website": "microsoft.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/microsoft",
+    "Description": "Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers.",
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": true,
+      "general_criteria": {
+        "passed": true,
+        "passed_count": 1,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Pass",
+            "reason": "General criterion met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "Yes",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS",
+        "Gaming"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Software/SaaS target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Public site exposes \"/api\", \"/docs\", or \"/developer\".",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website}/ (inurl:api OR inurl:docs OR inurl:developer)",
+              "signals": "\\bAPI\\b, API documentation, Developer API, Integration, RESTful API, GraphQL, Webhooks",
+              "product": "CDN",
+              "target_audience": "Software/SaaS",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 3,
+            "passed_criteria": 3,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Public status page link.",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (inurl:status OR \"status\" OR \"system\" OR \"uptime\")",
+                "signals": "Anchor text \"Status\", \"Status Page\", \"Uptime\".",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Claims 99.9 % (or higher) uptime SLA.",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"99.9\" OR \"99.99\" OR \"99.95\" OR \"99.999\") (uptime OR SLA OR availability)",
+                "signals": "Text \"99.9\", \"99.99\", or \"99.999\" next to \"uptime\" or \"SLA\".",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Site or docs mention more than one country",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"data\" OR \"location\" OR \"available\" OR \"presence\") (countries OR regions OR worldwide OR global)",
+                "signals": "\"East Asia and the Pacific\", \"EAP\", \"Europe and Central Asia\", \"ECA\", \"Latin America and the Caribbean\", \"LAC\", \"Middle East and North Africa\", \"MENA\", \"North America\", \"NA\", \"South Asia\", \"SA\", \"Sub-Saharan Africa\", \"SSA\", \"Eastern\", \"Middle East\", \"Europe\", \"Asia\", \"America\", \"Oceania\", \"EMEA\"...",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Software/SaaS"
+        },
+        "Gaming": {
+          "audience": "Gaming",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Gaming target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions multiplayer, online servers, or live-service model.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+              "signals": "\"Global servers\", \"low-latency servers\", \"multiplayer battles\" , \"live-service model\" , \"global servers\"",
+              "product": "CDN",
+              "target_audience": "Gaming",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 4,
+            "passed_criteria": 4,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Publisher has more than 100 employees",
+                "criteria_type": "NTH",
+                "place": "gen_descr",
+                "search_query": NaN,
+                "signals": "x employees worldwide",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Publishes updates",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+                "signals": "\"Patch notes\", \"update v\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Operates a dedicated game launcher/platform",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+                "signals": "\"Game launcher\", \"patcher\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions DDoS protection or past attacks mitigation",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+                "signals": "\"DDoS protected\", \"attack mitigation\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Gaming"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Gaming\nNTH Score: 1.000\nTotal NTH Criteria: 4\nPassed: 4\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Epic Games",
+    "Official_Website": "epicgames.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/epic-games",
+    "Description": "Epic Games is a leading interactive entertainment company and provider of 3D engine technology. Epic operates Fortnite, one of the world's largest games with over 350 million accounts and 2.5 billion friend connections. Epic also develops Unreal Engine, which powers the world's leading games and is also adopted across industries such as film and television, architecture, automotive, manufacturing, and simulation. Through Unreal Engine, Epic Games Store, and Epic Online Services, Epic provides an end-to-end digital ecosystem for developers and creators to build, distribute, and operate games and other content.",
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": false,
+      "general_criteria": {
+        "passed": false,
+        "passed_count": 0,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Fail",
+            "reason": "General criterion not met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "Yes",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS",
+        "Gaming"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Software/SaaS target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Public site exposes \"/api\", \"/docs\", or \"/developer\".",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website}/ (inurl:api OR inurl:docs OR inurl:developer)",
+              "signals": "\\bAPI\\b, API documentation, Developer API, Integration, RESTful API, GraphQL, Webhooks",
+              "product": "CDN",
+              "target_audience": "Software/SaaS",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 3,
+            "passed_criteria": 3,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Public status page link.",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (inurl:status OR \"status\" OR \"system\" OR \"uptime\")",
+                "signals": "Anchor text \"Status\", \"Status Page\", \"Uptime\".",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Claims 99.9 % (or higher) uptime SLA.",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"99.9\" OR \"99.99\" OR \"99.95\" OR \"99.999\") (uptime OR SLA OR availability)",
+                "signals": "Text \"99.9\", \"99.99\", or \"99.999\" next to \"uptime\" or \"SLA\".",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Site or docs mention more than one country",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"data\" OR \"location\" OR \"available\" OR \"presence\") (countries OR regions OR worldwide OR global)",
+                "signals": "\"East Asia and the Pacific\", \"EAP\", \"Europe and Central Asia\", \"ECA\", \"Latin America and the Caribbean\", \"LAC\", \"Middle East and North Africa\", \"MENA\", \"North America\", \"NA\", \"South Asia\", \"SA\", \"Sub-Saharan Africa\", \"SSA\", \"Eastern\", \"Middle East\", \"Europe\", \"Asia\", \"America\", \"Oceania\", \"EMEA\"...",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Software/SaaS"
+        },
+        "Gaming": {
+          "audience": "Gaming",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Gaming target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions multiplayer, online servers, or live-service model.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+              "signals": "\"Global servers\", \"low-latency servers\", \"multiplayer battles\" , \"live-service model\" , \"global servers\"",
+              "product": "CDN",
+              "target_audience": "Gaming",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 4,
+            "passed_criteria": 4,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Publisher has more than 100 employees",
+                "criteria_type": "NTH",
+                "place": "gen_descr",
+                "search_query": NaN,
+                "signals": "x employees worldwide",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Publishes updates",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+                "signals": "\"Patch notes\", \"update v\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Operates a dedicated game launcher/platform",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+                "signals": "\"Game launcher\", \"patcher\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions DDoS protection or past attacks mitigation",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+                "signals": "\"DDoS protected\", \"attack mitigation\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Gaming"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Software/SaaS\nNTH Score: 1.000\nTotal NTH Criteria: 3\nPassed: 3\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Epic Games",
+    "Official_Website": "epicgames.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/epic-games",
+    "Description": "Epic Games is a leading interactive entertainment company and provider of 3D engine technology. Epic operates Fortnite, one of the world's largest games with over 350 million accounts and 2.5 billion friend connections. Epic also develops Unreal Engine, which powers the world's leading games and is also adopted across industries such as film and television, architecture, automotive, manufacturing, and simulation. Through Unreal Engine, Epic Games Store, and Epic Online Services, Epic provides an end-to-end digital ecosystem for developers and creators to build, distribute, and operate games and other content.",
+    "Product": "CDN",
+    "All_Results": {
+      "product": "CDN",
+      "general_status": false,
+      "general_criteria": {
+        "passed": false,
+        "passed_count": 0,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Fail",
+            "reason": "General criterion not met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Software/SaaS": "Yes",
+        "Media & Entertainment": "No",
+        "Gaming": "Yes",
+        "Finance": "No"
+      },
+      "qualified_audiences": [
+        "Software/SaaS",
+        "Gaming"
+      ],
+      "detailed_results": {
+        "Software/SaaS": {
+          "audience": "Software/SaaS",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Software/SaaS target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Public site exposes \"/api\", \"/docs\", or \"/developer\".",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website}/ (inurl:api OR inurl:docs OR inurl:developer)",
+              "signals": "\\bAPI\\b, API documentation, Developer API, Integration, RESTful API, GraphQL, Webhooks",
+              "product": "CDN",
+              "target_audience": "Software/SaaS",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 3,
+            "passed_criteria": 3,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Public status page link.",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (inurl:status OR \"status\" OR \"system\" OR \"uptime\")",
+                "signals": "Anchor text \"Status\", \"Status Page\", \"Uptime\".",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Claims 99.9 % (or higher) uptime SLA.",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"99.9\" OR \"99.99\" OR \"99.95\" OR \"99.999\") (uptime OR SLA OR availability)",
+                "signals": "Text \"99.9\", \"99.99\", or \"99.999\" next to \"uptime\" or \"SLA\".",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Site or docs mention more than one country",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"data\" OR \"location\" OR \"available\" OR \"presence\") (countries OR regions OR worldwide OR global)",
+                "signals": "\"East Asia and the Pacific\", \"EAP\", \"Europe and Central Asia\", \"ECA\", \"Latin America and the Caribbean\", \"LAC\", \"Middle East and North Africa\", \"MENA\", \"North America\", \"NA\", \"South Asia\", \"SA\", \"Sub-Saharan Africa\", \"SSA\", \"Eastern\", \"Middle East\", \"Europe\", \"Asia\", \"America\", \"Oceania\", \"EMEA\"...",
+                "product": "CDN",
+                "target_audience": "Software/SaaS",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Software/SaaS"
+        },
+        "Gaming": {
+          "audience": "Gaming",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Gaming target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions multiplayer, online servers, or live-service model.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+              "signals": "\"Global servers\", \"low-latency servers\", \"multiplayer battles\" , \"live-service model\" , \"global servers\"",
+              "product": "CDN",
+              "target_audience": "Gaming",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 4,
+            "passed_criteria": 4,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Publisher has more than 100 employees",
+                "criteria_type": "NTH",
+                "place": "gen_descr",
+                "search_query": NaN,
+                "signals": "x employees worldwide",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Publishes updates",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+                "signals": "\"Patch notes\", \"update v\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Operates a dedicated game launcher/platform",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+                "signals": "\"Game launcher\", \"patcher\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Mentions DDoS protection or past attacks mitigation",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+                "signals": "\"DDoS protected\", \"attack mitigation\".",
+                "product": "CDN",
+                "target_audience": "Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Gaming"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Gaming\nNTH Score: 1.000\nTotal NTH Criteria: 4\nPassed: 4\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Microsoft",
+    "Official_Website": "microsoft.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/microsoft",
+    "Description": "Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers.",
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": true,
+      "general_criteria": {
+        "passed": true,
+        "passed_count": 1,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Pass",
+            "reason": "General criterion met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Gaming & Game Development": "Yes",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "Yes",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [
+        "Gaming & Game Development",
+        "SaaS, IaaS & IT Service Providers"
+      ],
+      "detailed_results": {
+        "Gaming & Game Development": {
+          "audience": "Gaming & Game Development",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Gaming & Game Development target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions multiplayer, online servers, or live-service model.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} \"Global servers\", \"low-latency servers\", \"multiplayer battles\", \"live-service model\", \"global servers\"",
+              "signals": "\"Global servers\", \"low-latency servers\", \"multiplayer battles\", \"live-service model\", \"global servers\"",
+              "product": "DDOS",
+              "target_audience": "Gaming & Game Development",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0,
+            "detailed_criteria": []
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Failed",
+          "mandatory_reason": "All mandatory criteria passed for Gaming & Game Development"
+        },
+        "SaaS, IaaS & IT Service Providers": {
+          "audience": "SaaS, IaaS & IT Service Providers",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for SaaS, IaaS & IT Service Providers target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Owns ASN, public IP ranges, uses BGP/GRE tunnels.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} \"BGP announce\", \"GRE tunnel\", \"IP transit service\"",
+              "signals": "\"BGP announce\", \"GRE tunnel\", \"IP transit service\"",
+              "product": "DDOS",
+              "target_audience": "SaaS, IaaS & IT Service Providers",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0,
+            "detailed_criteria": []
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Failed",
+          "mandatory_reason": "All mandatory criteria passed for SaaS, IaaS & IT Service Providers"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Epic Games",
+    "Official_Website": "epicgames.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/epic-games",
+    "Description": "Epic Games is a leading interactive entertainment company and provider of 3D engine technology. Epic operates Fortnite, one of the world's largest games with over 350 million accounts and 2.5 billion friend connections. Epic also develops Unreal Engine, which powers the world's leading games and is also adopted across industries such as film and television, architecture, automotive, manufacturing, and simulation. Through Unreal Engine, Epic Games Store, and Epic Online Services, Epic provides an end-to-end digital ecosystem for developers and creators to build, distribute, and operate games and other content.",
+    "Product": "DDOS",
+    "All_Results": {
+      "product": "DDOS",
+      "general_status": false,
+      "general_criteria": {
+        "passed": false,
+        "passed_count": 0,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Fail",
+            "reason": "General criterion not met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Gaming & Game Development": "Yes",
+        "Financial Services & Fintech": "No",
+        "SaaS, IaaS & IT Service Providers": "Yes",
+        "Media, Entertainment & Streaming": "No",
+        "E-commerce & Retail Tech": "No",
+        "Government & Public Sector": "No"
+      },
+      "qualified_audiences": [
+        "Gaming & Game Development",
+        "SaaS, IaaS & IT Service Providers"
+      ],
+      "detailed_results": {
+        "Gaming & Game Development": {
+          "audience": "Gaming & Game Development",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Gaming & Game Development target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions multiplayer, online servers, or live-service model.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} \"Global servers\", \"low-latency servers\", \"multiplayer battles\", \"live-service model\", \"global servers\"",
+              "signals": "\"Global servers\", \"low-latency servers\", \"multiplayer battles\", \"live-service model\", \"global servers\"",
+              "product": "DDOS",
+              "target_audience": "Gaming & Game Development",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 0,
+            "total_criteria": 0,
+            "passed_criteria": 0,
+            "nd_criteria": 0,
+            "pass_rate": 0.0,
+            "detailed_criteria": []
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Failed",
+          "mandatory_reason": "All mandatory criteria passed for Gaming & Game Development"
+        },
+        "SaaS, IaaS & IT Service Providers": {
+          "audience": "SaaS, IaaS & IT Service Providers",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for SaaS, IaaS & IT Service Providers target audience",
+          "mandatory_status": "Failed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Owns ASN, public IP ranges, uses BGP/GRE tunnels.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} \"BGP announce\", \"GRE tunnel\", \"IP transit service\"",
+              "signals": "\"BGP announce\", \"GRE tunnel\", \"IP transit service\"",
+              "product": "DDOS",
+              "target_audience": "SaaS, IaaS & IT Service Providers",
+              "result": "Fail",
+              "reason": "Mandatory criteria not met - company does not satisfy this requirement"
+            }
+          ],
+          "nth_results": {},
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Failed",
+          "mandatory_reason": "One or more mandatory criteria failed for SaaS, IaaS & IT Service Providers"
+        }
+      }
+    },
+    "Qualified_Products": "NOT QUALIFIED"
+  },
+  {
+    "Company_Name": "Microsoft",
+    "Official_Website": "microsoft.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/microsoft",
+    "Description": "Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers.",
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": true,
+      "general_criteria": {
+        "passed": true,
+        "passed_count": 1,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Pass",
+            "reason": "General criterion met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Online Gaming": "Yes",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [
+        "Online Gaming"
+      ],
+      "detailed_results": {
+        "Online Gaming": {
+          "audience": "Online Gaming",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Online Gaming target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions multiplayer, online servers, or live-service model.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} (\"multiplayer\" OR \"service\" OR \"game\")",
+              "signals": "\"Global servers\", \"low-latency servers\", \"multiplayer battles\" , \"live-service model\" , \"global servers\"",
+              "product": "VM",
+              "target_audience": "Online Gaming",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 3,
+            "passed_criteria": 3,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Publishes updates",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+                "signals": "\"Patch notes\", \"update v\".",
+                "product": "VM",
+                "target_audience": "Online Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Operates a dedicated game launcher/platform",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+                "signals": "\"Game launcher\", \"patcher\".",
+                "product": "VM",
+                "target_audience": "Online Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Past DDoS incidents or security downtime",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"DDoS\" OR \"downtime\" OR \"attack\")",
+                "signals": "\"Mitigated DDoS\", \"downtime due to attack\", \"security breach\"",
+                "product": "VM",
+                "target_audience": "Online Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Online Gaming"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Online Gaming\nNTH Score: 1.000\nTotal NTH Criteria: 3\nPassed: 3\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Epic Games",
+    "Official_Website": "epicgames.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/epic-games",
+    "Description": "Epic Games is a leading interactive entertainment company and provider of 3D engine technology. Epic operates Fortnite, one of the world's largest games with over 350 million accounts and 2.5 billion friend connections. Epic also develops Unreal Engine, which powers the world's leading games and is also adopted across industries such as film and television, architecture, automotive, manufacturing, and simulation. Through Unreal Engine, Epic Games Store, and Epic Online Services, Epic provides an end-to-end digital ecosystem for developers and creators to build, distribute, and operate games and other content.",
+    "Product": "VM",
+    "All_Results": {
+      "product": "VM",
+      "general_status": false,
+      "general_criteria": {
+        "passed": false,
+        "passed_count": 0,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Fail",
+            "reason": "General criterion not met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "Online Gaming": "Yes",
+        "Gambling": "No",
+        "Fintech/Trading": "No"
+      },
+      "qualified_audiences": [
+        "Online Gaming"
+      ],
+      "detailed_results": {
+        "Online Gaming": {
+          "audience": "Online Gaming",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for Online Gaming target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [
+            {
+              "criteria_text": "Mentions multiplayer, online servers, or live-service model.",
+              "criteria_type": "Mandatory",
+              "place": "website",
+              "search_query": "site:{website} (\"multiplayer\" OR \"service\" OR \"game\")",
+              "signals": "\"Global servers\", \"low-latency servers\", \"multiplayer battles\" , \"live-service model\" , \"global servers\"",
+              "product": "VM",
+              "target_audience": "Online Gaming",
+              "result": "Pass",
+              "reason": "Mandatory criteria successfully met through analysis"
+            }
+          ],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 3,
+            "passed_criteria": 3,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "Publishes updates",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+                "signals": "\"Patch notes\", \"update v\".",
+                "product": "VM",
+                "target_audience": "Online Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Operates a dedicated game launcher/platform",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+                "signals": "\"Game launcher\", \"patcher\".",
+                "product": "VM",
+                "target_audience": "Online Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              },
+              {
+                "criteria_text": "Past DDoS incidents or security downtime",
+                "criteria_type": "NTH",
+                "place": "website",
+                "search_query": "site:{website} (\"DDoS\" OR \"downtime\" OR \"attack\")",
+                "signals": "\"Mitigated DDoS\", \"downtime due to attack\", \"security breach\"",
+                "product": "VM",
+                "target_audience": "Online Gaming",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for Online Gaming"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: Online Gaming\nNTH Score: 1.000\nTotal NTH Criteria: 3\nPassed: 3\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Microsoft",
+    "Official_Website": "microsoft.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/microsoft",
+    "Description": "Microsoft Corporation is an American multinational technology corporation which produces computer software, consumer electronics, personal computers, and related services. Microsoft is best known for its Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers. Its flagship hardware products are the Xbox video game consoles and the Microsoft Surface lineup of touchscreen personal computers.",
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": true,
+      "general_criteria": {
+        "passed": true,
+        "passed_count": 1,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Pass",
+            "reason": "General criterion met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "IT Service Providers": "Yes",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [
+        "IT Service Providers"
+      ],
+      "detailed_results": {
+        "IT Service Providers": {
+          "audience": "IT Service Providers",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for IT Service Providers target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 1,
+            "passed_criteria": 1,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "The Company has its own SOC",
+                "criteria_type": "NTH",
+                "place": "Careers page, about/security pages, LinkedIn job listings",
+                "search_query": "site:{website} (\"SOC\" OR \"Security Operations Center\")",
+                "signals": "Roles like \"SOC Analyst\", \"Security Operations\", or internal threat monitoring teams",
+                "product": "WAAP",
+                "target_audience": "IT Service Providers",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for IT Service Providers"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: IT Service Providers\nNTH Score: 1.000\nTotal NTH Criteria: 1\nPassed: 1\nND (No Data): 0"
+  },
+  {
+    "Company_Name": "Epic Games",
+    "Official_Website": "epicgames.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/epic-games",
+    "Description": "Epic Games is a leading interactive entertainment company and provider of 3D engine technology. Epic operates Fortnite, one of the world's largest games with over 350 million accounts and 2.5 billion friend connections. Epic also develops Unreal Engine, which powers the world's leading games and is also adopted across industries such as film and television, architecture, automotive, manufacturing, and simulation. Through Unreal Engine, Epic Games Store, and Epic Online Services, Epic provides an end-to-end digital ecosystem for developers and creators to build, distribute, and operate games and other content.",
+    "Product": "WAAP",
+    "All_Results": {
+      "product": "WAAP",
+      "general_status": false,
+      "general_criteria": {
+        "passed": false,
+        "passed_count": 0,
+        "total_count": 1,
+        "detailed_criteria": [
+          {
+            "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+            "criteria_type": "General",
+            "place": "description",
+            "search_query": "",
+            "signals": "",
+            "result": "Fail",
+            "reason": "General criterion not met based on company description analysis"
+          }
+        ]
+      },
+      "qualification_results": {
+        "IT Service Providers": "Yes",
+        "Financial Services Enterprises": "No",
+        "Telecommunications Providers": "No",
+        "Adult and Dating Platforms (Large)": "No",
+        "Betting Platforms": "No"
+      },
+      "qualified_audiences": [
+        "IT Service Providers"
+      ],
+      "detailed_results": {
+        "IT Service Providers": {
+          "audience": "IT Service Providers",
+          "qualification_status": "Passed",
+          "qualification_reason": "Company qualifies for IT Service Providers target audience",
+          "mandatory_status": "Passed",
+          "mandatory_criteria": [],
+          "nth_results": {
+            "score": 1.0,
+            "total_criteria": 1,
+            "passed_criteria": 1,
+            "nd_criteria": 0,
+            "pass_rate": 1.0,
+            "detailed_criteria": [
+              {
+                "criteria_text": "The Company has its own SOC",
+                "criteria_type": "NTH",
+                "place": "Careers page, about/security pages, LinkedIn job listings",
+                "search_query": "site:{website} (\"SOC\" OR \"Security Operations Center\")",
+                "signals": "Roles like \"SOC Analyst\", \"Security Operations\", or internal threat monitoring teams",
+                "product": "WAAP",
+                "target_audience": "IT Service Providers",
+                "result": "Pass",
+                "reason": "Criteria met based on analysis"
+              }
+            ]
+          },
+          "general_status_explanation": "Company passed initial general criteria screening",
+          "final_status": "Qualified",
+          "mandatory_reason": "All mandatory criteria passed for IT Service Providers"
+        }
+      }
+    },
+    "Qualified_Products": "QUALIFIED: IT Service Providers\nNTH Score: 1.000\nTotal NTH Criteria: 1\nPassed: 1\nND (No Data): 0"
+  }
+]

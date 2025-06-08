@@ -52,9 +52,23 @@ def process_single_company_for_product(args):
         }
         
         # Initialize results for this product
+        general_passed = general_status.get(company_name, False)
+        
+        # Get detailed general criteria results if available
+        general_detailed_info = general_status.get(f"{company_name}_detailed", {})
+        general_detailed_results = general_detailed_info.get("General_Detailed_Results", [])
+        general_passed_count = general_detailed_info.get("General_Passed_Count", 0)
+        general_total_count = general_detailed_info.get("General_Total_Count", 0)
+        
         product_results = {
             "product": product,
-            "general_status": general_status.get(company_name, False),
+            "general_status": general_passed,
+            "general_criteria": {
+                "passed": general_passed,
+                "passed_count": general_passed_count,
+                "total_count": general_total_count,
+                "detailed_criteria": general_detailed_results
+            },
             "qualification_results": {},
             "qualified_audiences": [],
             "detailed_results": {}
@@ -92,6 +106,7 @@ def process_single_company_for_product(args):
                 "audience": audience,
                 "qualification_status": "Passed",
                 "mandatory_status": "Not Started",
+                "mandatory_criteria": [],
                 "nth_results": {},
                 "final_status": "Failed"
             }
@@ -108,10 +123,13 @@ def process_single_company_for_product(args):
                 session_id=session_id, use_deep_analysis=use_deep_analysis
             )
             
+            # Get detailed mandatory results
+            mandatory_detailed = temp_mandatory_info.get(f"Mandatory_Detailed_{audience}", [])
+            audience_results["mandatory_criteria"] = mandatory_detailed
+            
             if not mandatory_passed:
                 log_info(f"❌ [{product}] {company_name} mandatory НЕ пройдены для {audience}")
                 audience_results["mandatory_status"] = "Failed"
-                audience_results["final_status"] = "Failed"
                 product_results["detailed_results"][audience] = audience_results
                 continue
             
@@ -155,12 +173,9 @@ def process_single_company_for_product(args):
                 "detailed_criteria": nth_detailed
             }
             
-            # Add mandatory detailed results if available
-            mandatory_detailed = temp_mandatory_info.get(f"Mandatory_Detailed_{audience}", [])
-            if mandatory_detailed:
-                audience_results["mandatory_results"] = {
-                    "detailed_criteria": mandatory_detailed
-                }
+            # Update mandatory criteria with any additional details from temp_mandatory_info
+            if f"Mandatory_Detailed_{audience}" in temp_mandatory_info:
+                audience_results["mandatory_criteria"] = temp_mandatory_info[f"Mandatory_Detailed_{audience}"]
             
             # ВСЕГДА добавляем detailed_results для каждой проверенной аудитории
             product_results["detailed_results"][audience] = audience_results
@@ -245,25 +260,21 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
             for idx, (_, criterion_row) in enumerate(audience_mandatory_df.iterrows()):
                 criterion_info = {
                     "criteria_text": criterion_row.get("Criteria", "Unknown"),
-                    "criteria_type": criterion_row.get("Criteria Type", "Unknown"),
-                    "place": criterion_row.get("Place", "Unknown"),
-                    "search_query": criterion_row.get("Search Query", ""),
-                    "signals": criterion_row.get("Signals", ""),
-                    "result": "Unknown",
-                    "reason": "No data"
+                    "result": "Unknown"
                 }
                 
-                # Try to match this criterion result in the GPT response
+                # Better matching: look for qualification results that match this criterion
+                found_result = False
                 for key, value in result.items():
                     if key.startswith("Qualified_") and value == "Yes":
-                        if passed_mandatory == idx or len(detailed_mandatory_results) == idx:
-                            criterion_info["result"] = "Pass"
-                            criterion_info["reason"] = "Mandatory criteria met"
-                            passed_mandatory += 1
-                            break
-                else:
+                        # For mandatory, if ANY failed, all fail. If we get here, this one passed.
+                        criterion_info["result"] = "Pass"
+                        passed_mandatory += 1
+                        found_result = True
+                        break
+                
+                if not found_result:
                     criterion_info["result"] = "Fail"
-                    criterion_info["reason"] = "Mandatory criteria not met"
                 
                 detailed_mandatory_results.append(criterion_info)
             
@@ -326,12 +337,7 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
             for idx, (_, criterion_row) in enumerate(audience_nth_df.iterrows()):
                 criterion_info = {
                     "criteria_text": criterion_row.get("Criteria", "Unknown"),
-                    "criteria_type": criterion_row.get("Criteria Type", "Unknown"),
-                    "place": criterion_row.get("Place", "Unknown"),
-                    "search_query": criterion_row.get("Search Query", ""),
-                    "signals": criterion_row.get("Signals", ""),
-                    "result": "Unknown",
-                    "reason": "No data"
+                    "result": "Unknown"
                 }
                 
                 # Try to match this criterion result in the GPT response
@@ -340,12 +346,10 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                         # This is a simplified matching - in reality you'd want more sophisticated matching
                         if qualified_count == idx or len(detailed_criteria_results) == idx:
                             criterion_info["result"] = "Pass"
-                            criterion_info["reason"] = "Criteria met based on analysis"
                             qualified_count += 1
                             break
                 else:
                     criterion_info["result"] = "Fail"
-                    criterion_info["reason"] = "Criteria not met or no data found"
                 
                 detailed_criteria_results.append(criterion_info)
             
@@ -415,6 +419,9 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
             temp_general_info = {}
             general_passed = check_general_criteria(description, temp_general_info, general_criteria)
             general_status[company_name] = general_passed
+            
+            # Store detailed general criteria information
+            general_status[f"{company_name}_detailed"] = temp_general_info
             
             if general_passed:
                 log_info("✅ General пройдены")
