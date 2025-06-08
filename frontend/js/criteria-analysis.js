@@ -43,7 +43,28 @@ class CriteriaAnalysis {
         });
 
         if (uploadForm) {
-            uploadForm.addEventListener('submit', (e) => this.handleUploadWithSessionCheck(e));
+            uploadForm.addEventListener('submit', (e) => {
+                // МГНОВЕННО отключаем кнопку ПЕРВЫМ ДЕЛОМ
+                const analyzeBtn = document.getElementById('criteria-analyze-btn');
+                if (analyzeBtn) {
+                    analyzeBtn.disabled = true;
+                    analyzeBtn.textContent = '⏳ Analyzing...';
+                }
+                
+                this.handleUploadWithSessionCheck(e);
+            });
+        }
+
+        // Также привязываем обработчик напрямую к кнопке для дополнительной гарантии
+        if (analyzeBtn) {
+            console.log('Binding analyze button directly');
+            analyzeBtn.addEventListener('click', (e) => {
+                // Если кнопка submit в форме, предотвращаем двойное срабатывание
+                if (analyzeBtn.type === 'submit') {
+                    return; // Пусть срабатывает через форму
+                }
+                this.handleUploadWithSessionCheck(e);
+            });
         }
 
         if (cancelBtn) {
@@ -161,13 +182,6 @@ class CriteriaAnalysis {
         formData.append('file', fileInput.files[0]);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
 
-        // Disable analyze button during processing
-        const analyzeBtn = document.getElementById('criteria-analyze-btn');
-        if (analyzeBtn) {
-            analyzeBtn.disabled = true;
-            analyzeBtn.textContent = '⏳ Analyzing...';
-        }
-
         try {
             this.showStatus('Uploading file...');
             
@@ -192,13 +206,7 @@ class CriteriaAnalysis {
         } catch (error) {
             console.error('Upload error:', error);
             this.showStatus(`Error: ${error.message}`, 'error');
-            
-            // Re-enable analyze button on error
-            const analyzeBtn = document.getElementById('criteria-analyze-btn');
-            if (analyzeBtn) {
-                analyzeBtn.disabled = false;
-                analyzeBtn.textContent = ' Analyze ';
-            }
+            throw error; // Пропускаем ошибку выше для обработки в handleUploadWithSessionCheck
         }
     }
 
@@ -1206,11 +1214,33 @@ class CriteriaAnalysis {
         event.preventDefault();
         
         const useLatestSession = document.getElementById('use-latest-session').checked;
+        const fileInput = document.getElementById('criteria-file');
+        const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
         
-        if (useLatestSession) {
-            return this.handleUploadFromSession();
-        } else {
-            return this.handleUpload(event);
+        // Проверяем условия - если плохо, включаем кнопку обратно
+        if (!useLatestSession && !hasFile) {
+            const analyzeBtn = document.getElementById('criteria-analyze-btn');
+            if (analyzeBtn) {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = ' Analyze ';
+            }
+            alert('Please select a file or check "Use results from latest session" checkbox');
+            return;
+        }
+        
+        try {
+            if (useLatestSession) {
+                return await this.handleUploadFromSession();
+            } else {
+                return await this.handleUpload(event);
+            }
+        } catch (error) {
+            // При ошибке возвращаем кнопку обратно
+            if (analyzeBtn) {
+                analyzeBtn.disabled = false;
+                analyzeBtn.textContent = ' Analyze ';
+            }
+            throw error;
         }
     }
 
@@ -1225,13 +1255,6 @@ class CriteriaAnalysis {
         
         formData.append('session_id', this.latestSessionId);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
-
-        // Disable analyze button during processing
-        const analyzeBtn = document.getElementById('criteria-analyze-btn');
-        if (analyzeBtn) {
-            analyzeBtn.disabled = true;
-            analyzeBtn.textContent = '⏳ Analyzing...';
-        }
 
         try {
             this.showStatus('Using results from latest session...');
@@ -1257,13 +1280,7 @@ class CriteriaAnalysis {
         } catch (error) {
             console.error('Upload from session error:', error);
             this.showStatus(`Error: ${error.message}`, 'error');
-            
-            // Re-enable analyze button on error
-            const analyzeBtn = document.getElementById('criteria-analyze-btn');
-            if (analyzeBtn) {
-                analyzeBtn.disabled = false;
-                analyzeBtn.textContent = ' Analyze ';
-            }
+            throw error; // Пропускаем ошибку выше для обработки в handleUploadWithSessionCheck
         }
     }
 }
