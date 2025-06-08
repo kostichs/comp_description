@@ -1,0 +1,77 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press Releases",
+            "link": "https://www.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. November 3, 2023 ... Please follow this link [https://www.activision.com/legal/ap-eula] in order to see these changes. ×. Privacy Policy Update.",
+            "position": 1
+        },
+        {
+            "title": "Press Releases - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. October 3, 2023. Joyful Chaos Wherever You Go! Warcraft Rumble™ Launches at BlizzCon on November 3. Additional Formats. PDF Version. September 29 ...",
+            "position": 2
+        },
+        {
+            "title": "Newsroom",
+            "link": "https://www.activisionblizzard.com/newsroom.For",
+            "snippet": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We ...",
+            "position": 3
+        },
+        {
+            "title": "Deadline extended: an update on the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the",
+            "snippet": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the ...",
+            "date": "Jul 19, 2023",
+            "position": 4
+        },
+        {
+            "title": "End-of-year Blizzard Update",
+            "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update",
+            "snippet": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update.",
+            "date": "Dec 22, 2022",
+            "position": 5
+        },
+        {
+            "title": "A March Update on the Microsoft Deal",
+            "link": "https://newsroom.activisionblizzard.com/p/microsoft-deal-update-march",
+            "snippet": "A March Update on the Microsoft Deal ... You may have seen statements from Sony, including an argument that if this deal goes through, Microsoft ...",
+            "date": "Mar 28, 2023",
+            "position": 6
+        },
+        {
+            "title": "Activision Blizzard Announces Second Quarter 2023 Financial ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-blizzard-announces-second-quarter-2023-financial",
+            "snippet": "Please refer to the tables at the back of this earnings release for a reconciliation of the company's GAAP and non-GAAP results. ... version ...",
+            "date": "Jul 19, 2023",
+            "position": 7
+        },
+        {
+            "title": "Press Releases - Activision Blizzard - Investor Relations",
+            "link": "https://investor.activisionblizzard.com/press-releases?page=2",
+            "snippet": "PDF Version. April 18, 2023. Activision Blizzard to Release First Quarter 2023 Financial Results on April 27, 2023. Additional Formats. PDF Version. April 11 ...",
+            "position": 8
+        },
+        {
+            "title": "The Fairytale Continues With The Release Of Activision's ...",
+            "link": "https://investor.activisionblizzard.com/static-files/fcca1090-d8a2-4c6d-a568-bd9c7b781496",
+            "snippet": "\"Shrek 2\" feature film with the release of the Shrek 2™video game from Activision, Inc. ... \"The Shrek 2 video game offers fans an expanded version of Shrek's ...",
+            "position": 9
+        },
+        {
+            "title": "Diablo® III: Ultimate Evil Edition™ Coming to Consoles ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/diablor-iii-ultimate-evil-editiontm-coming-consoles-august-19",
+            "snippet": "... version. For more information on Reaper of Souls - Ultimate Evil Edition ... release dates, are forward-looking statements that are not facts and ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

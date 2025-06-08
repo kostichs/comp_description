@@ -1,0 +1,151 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "My Hero Ultra Rumble - Download",
+            "link": "https://en.bandainamcoent.eu/my-hero-academia/my-hero-ultra-rumble/download",
+            "snippet": "Latest game news. Revenants unite in CODE VEIN II, the next major action ... Register a game · Join the CLUB! Languages English. Languages. English · Français ...",
+            "sitelinks": [
+                {
+                    "title": "Latest game news. Revenants unite in CODE VEIN II, the next major action ... Register a game · Join the CLUB! Languages English. Languages. English · Français ...",
+                    "link": "https://en.bandainamcoent.eu/my-hero-academia/my-hero-ultra-rumble/download#:~:text=Register%20a%20game,Languages%20English"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "All Games",
+            "link": "https://en.bandainamcoent.eu/games",
+            "snippet": "11/10/2024. Search for a game. Submit. Category. Category, Action, Anime, RPG, Fighting, JRPG, Adventure, Horror, Kids game, Management, Music/Dance, Racing ...",
+            "sitelinks": [
+                {
+                    "title": "11/10/2024. Search for a game. Submit. Category. Category, Action, Anime, RPG, Fighting, JRPG, Adventure, Horror, Kids game, Management, Music/Dance, Racing ...",
+                    "link": "https://en.bandainamcoent.eu/games#:~:text=11%2F10%2F2024,Category"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Register a Bandai Namco Game",
+            "link": "https://en.bandainamcoent.eu/register-bandai-namco-game",
+            "snippet": "Latest game news. MOBILE SUIT GUNDAM SEED BATTLE DESTINY REMASTERED Is Now Available Worldwide On Nintendo Switch And Pc · Dragon Ball DAIMA Pack is now ...",
+            "position": 3
+        },
+        {
+            "title": "ELDEN RING NIGHTREIGN | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign",
+            "snippet": "ELDEN RING NIGHTREIGN is a standalone adventure within the ELDEN RING universe, crafted to offer players a new gaming experience by reimagining the game's core",
+            "sitelinks": [
+                {
+                    "title": "Standalone adventure game...",
+                    "link": "https://en.bandainamcoent.eu/elden-ring/news/standalone-adventure-game-elden-ring-nightreign-launches-30th-may-preorders-now"
+                },
+                {
+                    "title": "Shop now",
+                    "link": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign/shop-now"
+                },
+                {
+                    "title": "Wiki | Bandai Namco Europe",
+                    "link": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign/wiki"
+                },
+                {
+                    "title": "Press kit",
+                    "link": "https://en.bandainamcoent.eu/press/9744"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "THE PATRICK STAR GAME | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/sponge-bob/the-patrick-star-game",
+            "snippet": "THE PATRICK STAR GAME ... Become the Star of the show, put your silliest ideas into action, and enjoy the physics-based chaos that unfolds all around you! Patrick ...",
+            "sitelinks": [
+                {
+                    "title": "THE PATRICK STAR GAME ... Become the Star of the show, put your silliest ideas into action, and enjoy the physics-based chaos that unfolds all around you! Patrick ...",
+                    "link": "https://en.bandainamcoent.eu/sponge-bob/the-patrick-star-game#:~:text=THE%20PATRICK%20STAR%20GAME&text=Become%20the%20Star%20of%20the,Patrick"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "ELDEN RING NIGHTREIGN – Patch Notes Version 1.01",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-nightreign-patch-notes-version-101",
+            "snippet": "This update aims to improve gameplay and stability. Please make sure to download and apply the latest update before launching the game. Patch ...",
+            "date": "May 29, 2025",
+            "sitelinks": [
+                {
+                    "title": "This update aims to improve gameplay and stability. Please make sure to download and apply the latest update before launching the game. Patch ...",
+                    "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-nightreign-patch-notes-version-101#:~:text=This%20update%20aims%20to%20improve,Patch"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "SHADOW LABYRINTH | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/pac-man/shadow-labyrinth",
+            "snippet": "Wishlist on your favourite platform. Wishlist now to stay tuned for the latest updates about this video game! Steam PlayStation.",
+            "sitelinks": [
+                {
+                    "title": "Wishlist on your favourite platform. Wishlist now to stay tuned for the latest updates about this video game! Steam PlayStation.",
+                    "link": "https://en.bandainamcoent.eu/pac-man/shadow-labyrinth#:~:text=Wishlist%20on%20your%20favourite%20platform,PlayStation"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "SPYxANYA: Operation Memories | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/spy-x-family/spyxanya-operation-memories",
+            "snippet": "Enjoy A Variety Of Mini-Games. Play over 15 mini-games, both inspired from the anime series and originally designed for the game!",
+            "sitelinks": [
+                {
+                    "title": "Enjoy A Variety Of Mini-Games. Play over 15 mini-games, both inspired from the anime series and originally designed for the game!",
+                    "link": "https://en.bandainamcoent.eu/spy-x-family/spyxanya-operation-memories#:~:text=Enjoy%20A%20Variety%20Of%20Mini%2DGames,originally%20designed%20for%20the%20game!"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "That Time I Got Reincarnated as a Slime ISEKAI Chronicles",
+            "link": "https://en.bandainamcoent.eu/time-i-got-reincarnated-slime-isekai-chronicles/time-i-got-reincarnated-slime-isekai-chronicles",
+            "snippet": "*Main game must be cleared before DLC can be accessed. STEAMPLAYSTATION STOREMICROSOFT STORENintendo eShop. slime isekai chronicles DLC 2. That Time I Got ...",
+            "sitelinks": [
+                {
+                    "title": "*Main game must be cleared before DLC can be accessed. STEAMPLAYSTATION STOREMICROSOFT STORENintendo eShop. slime isekai chronicles DLC 2. That Time I Got ...",
+                    "link": "https://en.bandainamcoent.eu/time-i-got-reincarnated-slime-isekai-chronicles/time-i-got-reincarnated-slime-isekai-chronicles#:~:text=*Main%20game%20must%20be%20cleared,STEAMPLAYSTATION%20STOREMICROSOFT%20STORENintendo%20eShop"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "PARK BEYOND | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/park-beyond/park-beyond",
+            "snippet": "Whether you love to manage finances and visitor experience or just create fun and cozy parks, the game has something in store just for you! Park Beyond ...",
+            "sitelinks": [
+                {
+                    "title": "Whether you love to manage finances and visitor experience or just create fun and cozy parks, the game has something in store just for you! Park Beyond ...",
+                    "link": "https://en.bandainamcoent.eu/park-beyond/park-beyond#:~:text=Whether%20you%20love%20to%20manage,in%20store%20just%20for%20you!"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop mac"
+        },
+        {
+            "query": "Game download dedicated desktop xbox"
+        },
+        {
+            "query": "Game download dedicated desktop android"
+        }
+    ],
+    "credits": 1
+}

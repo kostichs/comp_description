@@ -272,7 +272,7 @@ class CriteriaAnalysis {
                     scrapingBeeBtn.id = 'download-scrapingbee-logs-btn';
                     // Apply similar styling as the main download button
                     scrapingBeeBtn.className = 'btn btn-secondary';
-                    scrapingBeeBtn.textContent = '💾 Download ScrapingBee Logs';
+                    scrapingBeeBtn.textContent = 'Download Logs';
                     scrapingBeeBtn.style.marginLeft = '10px';
                     scrapingBeeBtn.style.background = '#6c757d';
                     
@@ -830,11 +830,11 @@ class CriteriaAnalysis {
                 <div style="display: flex; gap: 5px;">
                     <button onclick="criteriaAnalysis.editCriteriaFile('${file.filename}')" 
                             style="background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">
-                        ✏️ Edit
+                        Edit
                     </button>
                     <button onclick="criteriaAnalysis.deleteCriteriaFile('${file.filename}')" 
                             style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">
-                        🗑️ Delete
+                        Delete
                     </button>
                 </div>
             `;
