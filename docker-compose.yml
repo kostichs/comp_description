@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Монтируем output директорию для сохранения данных между перезапусками
+      - ./output:/app/output
+      # Монтируем sessions_metadata.json для синхронизации метаданных
+      - ./sessions_metadata.json:/app/sessions_metadata.json
+      # Монтируем temp директорию для временных файлов
+      - ./temp:/app/temp
+      # Монтируем logs если нужно
+      - ./logs:/app/logs
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PYTHONIOENCODING=utf-8
+      - PYTHONLEGACYWINDOWSSTDIO=0
+    restart: unless-stopped 

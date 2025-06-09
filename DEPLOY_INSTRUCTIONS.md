@@ -16,7 +16,7 @@ docker rm company-canvas-prod
 
 # Удалить старые образы (опционально)
 docker rmi company-canvas-app
-docker rmi sergeykostichev/company-canvas-app:v06
+docker rmi sergeykostichev/company-canvas-app:v07
 ```
 
 ### 1.3. Сборка нового образа
@@ -39,11 +39,11 @@ docker login
 
 ### 1.5. Тегирование и публикация
 ```bash
-# Тегировать образ (увеличить номер версии v06 -> v07)
-docker tag company-canvas-app sergeykostichev/company-canvas-app:v07
+# Тегировать образ (увеличить номер версии v07 -> v08)
+docker tag company-canvas-app sergeykostichev/company-canvas-app:v08
 
 # Отправить на Docker Hub
-docker push sergeykostichev/company-canvas-app:v07
+docker push sergeykostichev/company-canvas-app:v08
 ```
 
 ## Шаг 2: Развертывание на виртуальной машине
@@ -60,12 +60,12 @@ docker stop company-canvas-prod
 docker rm company-canvas-prod
 
 # Удалить старые образы (опционально)
-docker rmi sergeykostichev/company-canvas-app:v06
+docker rmi sergeykostichev/company-canvas-app:v07
 ```
 
 ### 2.3. Скачивание нового образа
 ```bash
-docker pull sergeykostichev/company-canvas-app:v07
+docker pull sergeykostichev/company-canvas-app:v08
 ```
 
 ### 2.4. Создание директории для данных (если еще не создана)
@@ -85,7 +85,7 @@ docker run -d --restart unless-stopped -p 80:8000 \
   -e DEBUG="false" \
   --name company-canvas-prod \
   -v /srv/company-canvas/output:/app/output \
-  sergeykostichev/company-canvas-app:v07
+  sergeykostichev/company-canvas-app:v08
 ```
 
 ### 2.6. Проверка работы

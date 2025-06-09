@@ -24,16 +24,17 @@ pyproject.toml
 .idea/
 .cursor/
 
-# Local data / logs
-output/
-*.log
+# Local data / logs - НЕ исключаем output/ и sessions_metadata.json для контейнера
+output/logs/*.log
+logs/*.log
 
 # Tests
 tests/
 .pytest_cache/
 
-# Session metadata file
-sessions_metadata.json
+# НЕ исключаем эти файлы - они нужны в контейнере:
+# output/ - нужен для сессий и результатов  
+# sessions_metadata.json - нужен для управления сессиями
 
 # OS specific
 .DS_Store

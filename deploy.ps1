@@ -3,7 +3,7 @@
 # Version: 1.0
 
 param(
-    [string]$Version = "v07",
+    [string]$Version = "v08",
     [string]$DockerHubUser = "sergeykostichev",
     [switch]$SkipBuild,
     [switch]$SkipPush,

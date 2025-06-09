@@ -22,8 +22,8 @@
 3. **Или вручную:**
    ```bash
    docker build -t company-canvas-app .
-   docker tag company-canvas-app sergeykostichev/company-canvas-app:v07
-   docker push sergeykostichev/company-canvas-app:v07
+   docker tag company-canvas-app sergeykostichev/company-canvas-app:v08
+   docker push sergeykostichev/company-canvas-app:v08
    ```
 
 ### На виртуальной машине:
@@ -31,14 +31,14 @@
 1. **Автоматическое развертывание:**
    ```bash
    chmod +x deploy_vm.sh
-   ./deploy_vm.sh v07
+   ./deploy_vm.sh v08
    ```
 
 2. **Или вручную:**
    ```bash
    docker stop company-canvas-prod
    docker rm company-canvas-prod
-   docker pull sergeykostichev/company-canvas-app:v07
+   docker pull sergeykostichev/company-canvas-app:v08
    
    docker run -d --restart unless-stopped -p 80:8000 \
      -e OPENAI_API_KEY="ваш_ключ" \
@@ -47,7 +47,7 @@
      -e HUBSPOT_API_KEY="ваш_ключ" \
      --name company-canvas-prod \
      -v /srv/company-canvas/output:/app/output \
-     sergeykostichev/company-canvas-app:v07
+     sergeykostichev/company-canvas-app:v08
    ```
 
 ## Проверка работы
@@ -65,16 +65,17 @@ docker logs -f company-canvas-prod
 
 ## Версии
 
-- **v06**: предыдущая версия  
-- **v07**: текущая версия с исправлениями соединений
-- **v08**: следующая версия
+- **v07**: предыдущая версия с исправлениями соединений
+- **v08**: текущая версия с criteria processor микросервисом
+- **v09**: следующая версия
 
-## Важные изменения в v07
+## Важные изменения в v08
 
-1. **Семафор для валидации URL**: ограничение до 5 одновременных проверок
-2. **Ограничения соединений**: 10 общих, 2 на хост для этапа валидации  
-3. **Сохранен batch processing**: основной pipeline работает с обычными ограничениями (50/10)
-4. **Стабильность**: исправлена ошибка "too many file descriptors" на Windows
+1. **Criteria Processor микросервис**: полная интеграция анализа критериев
+2. **Async параллельная обработка**: 5-8x ускорение анализа компаний
+3. **Международные кодировки**: поддержка UTF-8, Cyrillic, специальных символов
+4. **Чистая JSON структура**: только criteria_text и result без лишних полей
+5. **Сохранение форматирования**: переносы строк и параграфы в описаниях
 
 ## Структура файлов развертывания
 

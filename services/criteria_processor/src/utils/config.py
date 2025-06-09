@@ -3,7 +3,7 @@ from datetime import datetime
 from configparser import ConfigParser
 from dotenv import load_dotenv
 
-# Base directory - исправлено для корня проекта
+# Base directory - исправлено для корня criteria_processor  
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Criteria type configuration - изменено для поддержки новых требований
@@ -57,6 +57,14 @@ load_dotenv(dotenv_path=ENV_PATH)
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SERPER_API_KEY = os.getenv("SERPER_API_KEY")
 SCRAPINGBEE_API_KEY = os.getenv("SCRAPINGBEE_API_KEY")
+
+# If .env file not found but environment variables are set, use them directly
+if not OPENAI_API_KEY:
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+if not SERPER_API_KEY:
+    SERPER_API_KEY = os.environ.get("SERPER_API_KEY")  
+if not SCRAPINGBEE_API_KEY:
+    SCRAPINGBEE_API_KEY = os.environ.get("SCRAPINGBEE_API_KEY")
 
 # Deep analysis via ScrapingBee
 USE_SCRAPINGBEE_DEEP_ANALYSIS = True  # Master switch for the new feature
@@ -117,9 +125,12 @@ LOGS_DIR = "logs"
 def validate_config():
     """Validate that all required files exist"""
     required_files = {
-        "ENV_PATH": ENV_PATH,
         "YAML_PATH": YAML_PATH
     }
+    
+    # Check .env file only if environment variables are not already set
+    if not (OPENAI_API_KEY and SERPER_API_KEY):
+        required_files["ENV_PATH"] = ENV_PATH
     
     # Check for all required files
     missing = []
@@ -147,14 +158,14 @@ def validate_config():
     
     # Check for required API keys
     if not OPENAI_API_KEY:
-        raise ValueError("Missing OPENAI_API_KEY in .env file")
+        raise ValueError("Missing OPENAI_API_KEY in .env file or environment variables")
     
     if not SERPER_API_KEY:
-        raise ValueError("Missing SERPER_API_KEY in .env file")
+        raise ValueError("Missing SERPER_API_KEY in .env file or environment variables")
     
     # Check for ScrapingBee API key if feature is enabled
     if USE_SCRAPINGBEE_DEEP_ANALYSIS and not SCRAPINGBEE_API_KEY:
-        raise ValueError("USE_SCRAPINGBEE_DEEP_ANALYSIS is True, but SCRAPINGBEE_API_KEY is missing in .env file")
+        raise ValueError("USE_SCRAPINGBEE_DEEP_ANALYSIS is True, but SCRAPINGBEE_API_KEY is missing in .env file or environment variables")
 
     # Create output directory if it doesn't exist
     os.makedirs(OUTPUT_DIR, exist_ok=True)

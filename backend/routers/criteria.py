@@ -307,8 +307,21 @@ async def create_criteria_analysis_from_session(
     """
     try:
         # Получаем информацию о существующей сессии
-        from .sessions import load_session_metadata
-        metadata = load_session_metadata()
+        import json
+        sessions_metadata_file = "/app/sessions_metadata.json"
+        
+        # Загружаем метаданные сессий напрямую
+        metadata = []
+        if os.path.exists(sessions_metadata_file):
+            try:
+                with open(sessions_metadata_file, 'r', encoding='utf-8') as f:
+                    metadata = json.load(f)
+                    if not isinstance(metadata, list):
+                        metadata = []
+            except Exception as e:
+                logger.error(f"Error loading session metadata: {e}")
+                metadata = []
+        
         source_session = next((m for m in metadata if m.get("session_id") == session_id), None)
         
         if not source_session:
@@ -318,9 +331,8 @@ async def create_criteria_analysis_from_session(
             raise HTTPException(status_code=400, detail=f"Source session {session_id} is not completed")
         
         # Ищем CSV файл с результатами в папке сессии
-        import os
         import glob
-        session_dir = f"output/sessions/{session_id}"
+        session_dir = f"/app/output/sessions/{session_id}"
         
         if not os.path.exists(session_dir):
             raise HTTPException(status_code=404, detail=f"Session directory not found for session {session_id}")
@@ -345,7 +357,6 @@ async def create_criteria_analysis_from_session(
         session_dir.mkdir(parents=True, exist_ok=True)
         
         # Копируем файл результатов в папку новой сессии
-        import shutil
         input_file_path = session_dir / "source_results.csv"
         shutil.copy2(source_file_path, input_file_path)
         

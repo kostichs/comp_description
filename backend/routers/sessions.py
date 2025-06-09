@@ -20,7 +20,7 @@ async def get_sessions():
         filtered_sessions = []
         for session in metadata:
             session_id = session.get("session_id")
-            session_dir = f"output/sessions/{session_id}"
+            session_dir = f"/app/output/sessions/{session_id}"
             
             # Проверяем существование папки сессии и статус completed
             if os.path.exists(session_dir) and session.get("status") == "completed":
@@ -107,7 +107,7 @@ async def get_session_results_file(session_id: str):
             raise HTTPException(status_code=400, detail=f"Session {session_id} is not completed yet")
         
         # Путь к результирующему файлу
-        results_file_path = f"output/sessions/{session_id}/final_results.csv"
+        results_file_path = f"/app/output/sessions/{session_id}/final_results.csv"
         
         return {
             "session_id": session_id,

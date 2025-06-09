@@ -4,7 +4,7 @@
 # Версия: 1.0
 
 # Параметры по умолчанию
-VERSION="v07"
+VERSION="v08"
 DOCKER_HUB_USER="sergeykostichev"
 IMAGE_NAME="company-canvas-app"
 CONTAINER_NAME="company-canvas-prod"
