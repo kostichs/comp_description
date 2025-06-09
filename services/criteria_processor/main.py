@@ -15,6 +15,7 @@ from src.utils.config import validate_config
 from src.utils.logging import setup_logging, log_info, log_error
 from src.core.processor import run_analysis
 from src.core.parallel_processor import run_parallel_analysis
+from src.core.recovery import resume_processing, get_resumable_sessions
 
 def parse_arguments():
     """Парсинг аргументов командной строки"""
@@ -57,6 +58,25 @@ def parse_arguments():
         help='Максимальное количество одновременно обрабатываемых компаний (только с --parallel)'
     )
     
+    # Circuit Breaker and Recovery arguments
+    parser.add_argument(
+        '--resume-session',
+        type=str,
+        help='Возобновить прерванную сессию по ID (например: crit_20241201_143022)'
+    )
+    
+    parser.add_argument(
+        '--list-resumable',
+        action='store_true',
+        help='Показать список сессий которые можно возобновить'
+    )
+    
+    parser.add_argument(
+        '--disable-circuit-breaker',
+        action='store_true',
+        help='Отключить Circuit Breaker (не рекомендуется)'
+    )
+    
     return parser.parse_args()
 
 def main():
@@ -69,15 +89,69 @@ def main():
         setup_logging()
         
         log_info("Запуск системы анализа критериев компаний v2.0")
-        log_info("Новая модульная архитектура")
+        log_info("Новая модульная архитектура с Circuit Breaker и State Management")
         
-        # Логирование выбора файлов
+        # Handle list resumable sessions command
+        if args.list_resumable:
+            log_info("📋 Поиск возобновляемых сессий...")
+            resumable_sessions = get_resumable_sessions()
+            
+            if not resumable_sessions:
+                log_info("❌ Нет сессий для возобновления")
+                return
+            
+            log_info(f"📊 Найдено {len(resumable_sessions)} сессий:")
+            for session in resumable_sessions:
+                if session.get('can_resume', False):
+                    log_info(f"  ✅ {session['session_id']} - {session.get('status', 'unknown')}")
+                    log_info(f"     Прогресс: {session.get('progress', {})}")
+                    log_info(f"     Обновлено: {session.get('last_updated', 'unknown')}")
+                else:
+                    log_info(f"  ❌ {session['session_id']} - {session.get('resume_reason', 'cannot resume')}")
+            
+            log_info("💡 Для возобновления используйте: --resume-session SESSION_ID")
+            return
+        
+        # Handle resume session command
+        if args.resume_session:
+            log_info(f"🔄 Возобновление сессии: {args.resume_session}")
+            
+            # Disable circuit breaker if requested
+            if args.disable_circuit_breaker:
+                log_info("⚠️ Circuit Breaker отключен по запросу")
+                from src.utils.config import CIRCUIT_BREAKER_CONFIG
+                CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker'] = False
+            
+            success, message, results = resume_processing(
+                session_id=args.resume_session,
+                companies_file=args.file,
+                load_all_companies=args.all_files,
+                use_deep_analysis=args.deep_analysis,
+                max_concurrent_companies=args.max_concurrent
+            )
+            
+            if success:
+                log_info(f"🎉 {message}")
+                log_info(f"📊 Результатов: {len(results) if results else 0}")
+            else:
+                log_error(f"❌ {message}")
+                sys.exit(1)
+            
+            return
+        
+        # Логирование выбора файлов для обычного режима
         if args.all_files:
             log_info("РЕЖИМ: Загрузка ВСЕХ файлов компаний из папки data/")
         elif args.file:
             log_info(f"РЕЖИМ: Загрузка конкретного файла: {args.file}")
         else:
             log_info("РЕЖИМ: Загрузка файла по умолчанию из конфигурации")
+        
+        # Disable circuit breaker if requested
+        if args.disable_circuit_breaker:
+            log_info("⚠️ Circuit Breaker отключен по запросу")
+            from src.utils.config import CIRCUIT_BREAKER_CONFIG
+            CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker'] = False
         
         # Валидация конфигурации
         log_info("Проверяем конфигурацию...")

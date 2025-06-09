@@ -39,11 +39,11 @@ docker login
 
 ### 1.5. Тегирование и публикация
 ```bash
-# Тегировать образ (увеличить номер версии v08g -> v08h)
-docker tag company-canvas-app sergeykostichev/company-canvas-app:v08h
+# Тегировать образ (новая версия с Circuit Breaker: v10f)
+docker tag company-canvas-app sergeykostichev/company-canvas-app:v10f
 
 # Отправить на Docker Hub
-docker push sergeykostichev/company-canvas-app:v08h
+docker push sergeykostichev/company-canvas-app:v10f
 ```
 
 ## Шаг 2: Развертывание на виртуальной машине
@@ -65,7 +65,7 @@ docker rmi sergeykostichev/company-canvas-app:v08g
 
 ### 2.3. Скачивание нового образа
 ```bash
-docker pull sergeykostichev/company-canvas-app:v08h
+docker pull sergeykostichev/company-canvas-app:v10f
 ```
 
 ### 2.4. Создание директорий для данных
@@ -96,7 +96,7 @@ docker run -d --restart unless-stopped -p 80:8000 \
   --name company-canvas-prod \
   -v /srv/company-canvas/output:/app/output \
   -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
-  sergeykostichev/company-canvas-app:v08h
+  sergeykostichev/company-canvas-app:v10f
 ```
 
 ### 2.6. Проверка работы

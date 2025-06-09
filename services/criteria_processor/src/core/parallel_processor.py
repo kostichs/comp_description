@@ -22,7 +22,8 @@ from src.criteria.nth import check_nth_criteria
 from src.formatters.json_format import create_structured_output
 from src.data.savers import save_results
 from src.utils.logging import log_info, log_error
-from src.utils.config import PROCESSING_CONFIG, ASYNC_GPT_CONFIG
+from src.utils.config import PROCESSING_CONFIG, ASYNC_GPT_CONFIG, CIRCUIT_BREAKER_CONFIG
+from src.utils.state_manager import ProcessingStateManager
 
 # Import async components
 from src.llm.async_gpt_analyzer import run_async_gpt_analysis_sync
@@ -242,6 +243,15 @@ def process_single_company_for_product(args):
 
 def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session_id=None, use_deep_analysis=False):
     """Асинхронная проверка mandatory критериев с пакетной обработкой"""
+    # Check for Circuit Breaker exceptions
+    if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
+        from src.utils.circuit_breaker import CircuitOpenException
+        try:
+            pass  # Circuit breaker check happens in openai_client
+        except CircuitOpenException as e:
+            log_error(f"🔴 Circuit Breaker блокирует mandatory критерии для {audience}: {e}")
+            return False  # Fail mandatory when circuit is open
+    
     if ASYNC_GPT_CONFIG['enable_async_gpt'] and not mandatory_df.empty:
         log_info(f"🤖 Using async GPT for mandatory criteria: {audience}")
         try:
@@ -309,6 +319,13 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
             return mandatory_passed
             
         except Exception as e:
+            # Handle Circuit Breaker exceptions specially
+            if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
+                from src.utils.circuit_breaker import CircuitOpenException
+                if isinstance(e, CircuitOpenException):
+                    log_error(f"🔴 Circuit Breaker открыт во время mandatory анализа: {e}")
+                    return False  # Don't fallback when circuit is open
+            
             log_error(f"❌ Async mandatory analysis failed: {e}")
             if ASYNC_GPT_CONFIG['fallback_to_sync']:
                 log_info("🔄 Falling back to sync mandatory analysis...")
@@ -321,6 +338,20 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
 
 def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, use_deep_analysis=False):
     """Асинхронная проверка NTH критериев с пакетной обработкой"""
+    # Check for Circuit Breaker exceptions  
+    if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
+        from src.utils.circuit_breaker import CircuitOpenException
+        try:
+            pass  # Circuit breaker check happens in openai_client
+        except CircuitOpenException as e:
+            log_error(f"🔴 Circuit Breaker блокирует NTH критерии для {audience}: {e}")
+            # For NTH, set default values instead of failing
+            company_info[f"NTH_Score_{audience}"] = 0
+            company_info[f"NTH_Total_{audience}"] = 0
+            company_info[f"NTH_Passed_{audience}"] = 0
+            company_info[f"NTH_ND_{audience}"] = 0
+            return
+    
     if ASYNC_GPT_CONFIG['enable_async_gpt'] and not nth_df.empty:
         log_info(f"🤖 Using async GPT for NTH criteria: {audience}")
         try:
@@ -405,6 +436,18 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
             log_info(f"✅ NTH results for {audience}: {qualified_count}/{total_criteria} passed (Score: {nth_score:.3f})")
             
         except Exception as e:
+            # Handle Circuit Breaker exceptions specially
+            if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
+                from src.utils.circuit_breaker import CircuitOpenException
+                if isinstance(e, CircuitOpenException):
+                    log_error(f"🔴 Circuit Breaker открыт во время NTH анализа: {e}")
+                    # Set default values when circuit is open
+                    company_info[f"NTH_Score_{audience}"] = 0
+                    company_info[f"NTH_Total_{audience}"] = 0
+                    company_info[f"NTH_Passed_{audience}"] = 0
+                    company_info[f"NTH_ND_{audience}"] = 0
+                    return
+            
             log_error(f"❌ Async NTH analysis failed: {e}")
             if ASYNC_GPT_CONFIG['fallback_to_sync']:
                 log_info("🔄 Falling back to sync NTH analysis...")
@@ -418,7 +461,14 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
     """
     Запускает анализ с параллельной обработкой компаний внутри каждого продукта.
     СОХРАНЯЕТ порядок: все компании проходят продукт 1, потом все компании проходят продукт 2, и т.д.
+    Поддерживает Circuit Breaker и State Management для устойчивости к сбоям.
     """
+    # Initialize State Manager
+    state_manager = None
+    if session_id:
+        state_manager = ProcessingStateManager(session_id)
+        log_info(f"💾 State Manager активирован для сессии: {session_id}")
+    
     try:
         # Load all data (аналогично оригинальному процессору)
         log_info("📋 Загружаем данные...")
@@ -432,6 +482,11 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
         products_data = data_dict["products_data"]
         general_criteria = data_dict["general_criteria"]
         
+        # Update state manager with totals
+        if state_manager:
+            state_manager.update_totals(len(products), len(companies_df))
+            state_manager.save_progress(0, 0, stage="data_loaded")
+        
         log_info(f"🚀 ПАРАЛЛЕЛЬНАЯ ОБРАБОТКА АКТИВИРОВАНА")
         log_info(f"📊 Компаний: {len(companies_df)}")
         log_info(f"📋 Продукты: {', '.join(products)}")
@@ -442,6 +497,9 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
         log_info(f"\n📝 Этап 1: Проверяем General критерии для ВСЕХ компаний...")
         general_status = {}
         
+        if state_manager:
+            state_manager.save_progress(0, 0, stage="general_criteria_start")
+        
         for index, company_row in companies_df.iterrows():
             company_data = company_row.to_dict()
             company_name = company_data.get("Company_Name", "Unknown")
@@ -449,24 +507,51 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
             
             log_info(f"🌐 General для: {company_name}")
             
-            temp_general_info = {}
-            general_passed = check_general_criteria(description, temp_general_info, general_criteria)
-            general_status[company_name] = general_passed
-            
-            # Store detailed general criteria information
-            general_status[f"{company_name}_detailed"] = temp_general_info
-            
-            if general_passed:
-                log_info("✅ General пройдены")
-            else:
-                log_info("❌ General НЕ пройдены")
+            try:
+                temp_general_info = {}
+                general_passed = check_general_criteria(description, temp_general_info, general_criteria)
+                general_status[company_name] = general_passed
+                
+                # Store detailed general criteria information
+                general_status[f"{company_name}_detailed"] = temp_general_info
+                
+                if general_passed:
+                    log_info("✅ General пройдены")
+                else:
+                    log_info("❌ General НЕ пройдены")
+                
+                # Save progress for general criteria
+                if state_manager:
+                    state_manager.save_progress(0, index + 1, stage="general_criteria")
+                    
+            except Exception as e:
+                # Handle Circuit Breaker and other errors during general criteria
+                if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
+                    from src.utils.circuit_breaker import CircuitOpenException
+                    if isinstance(e, CircuitOpenException):
+                        log_error(f"🔴 Circuit Breaker открыт во время General критериев для {company_name}")
+                        # Mark as failed general criteria when circuit is open
+                        general_status[company_name] = False
+                        general_status[f"{company_name}_detailed"] = {}
+                        continue
+                
+                log_error(f"❌ Ошибка в General критериях для {company_name}: {e}")
+                general_status[company_name] = False
+                general_status[f"{company_name}_detailed"] = {}
         
         # 2. Process each product (СОХРАНЯЕМ ПОРЯДОК ПРОДУКТОВ)
+        # Load existing results if resuming
         all_results = []
+        if state_manager:
+            all_results = state_manager.load_partial_results()
+            log_info(f"📂 Загружено {len(all_results)} существующих результатов")
         
         for product_index, product in enumerate(products, 1):
             log_info(f"\n🎯 ПРОДУКТ {product_index}/{len(products)}: {product}")
             log_info(f"⚡ Обрабатываем ВСЕ {len(companies_df)} компаний ПАРАЛЛЕЛЬНО для продукта {product}")
+            
+            if state_manager:
+                state_manager.save_progress(product_index, 0, product_name=product, stage="product_start")
             
             product_data = products_data[product]
             
@@ -476,31 +561,107 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                 args = (company_row, product, product_data, general_status, session_id, use_deep_analysis)
                 company_args.append(args)
             
-            # ПАРАЛЛЕЛЬНАЯ ОБРАБОТКА компаний для текущего продукта
+            # ПАРАЛЛЕЛЬНАЯ ОБРАБОТКА компаний для текущего продукта с Circuit Breaker
             product_results = []
-            with ThreadPoolExecutor(max_workers=max_concurrent_companies) as executor:
-                # Отправляем все компании на обработку
-                future_to_company = {
-                    executor.submit(process_single_company_for_product, args): args[0].get("Company_Name", f"Company_{i}")
-                    for i, args in enumerate(company_args)
-                }
-                
-                # Собираем результаты по мере завершения
-                for future in as_completed(future_to_company):
-                    company_name = future_to_company[future]
-                    try:
-                        company_results = future.result()
-                        product_results.extend(company_results)
-                        log_info(f"✅ [{product}] {company_name} завершена")
-                    except Exception as e:
-                        log_error(f"❌ [{product}] Ошибка обработки {company_name}: {e}")
+            circuit_breaker_triggered = False
             
-            # Добавляем результаты продукта к общим результатам
-            all_results.extend(product_results)
-            log_info(f"🎉 ПРОДУКТ {product} ЗАВЕРШЕН: обработано {len(product_results)} записей")
+            try:
+                with ThreadPoolExecutor(max_workers=max_concurrent_companies) as executor:
+                    # Отправляем все компании на обработку
+                    future_to_company = {
+                        executor.submit(process_single_company_for_product, args): args[0].get("Company_Name", f"Company_{i}")
+                        for i, args in enumerate(company_args)
+                    }
+                    
+                    # Собираем результаты по мере завершения
+                    for future in as_completed(future_to_company):
+                        company_name = future_to_company[future]
+                        try:
+                            company_results = future.result()
+                            product_results.extend(company_results)
+                            log_info(f"✅ [{product}] {company_name} завершена")
+                            
+                            # Mark company as completed in state manager
+                            if state_manager:
+                                state_manager.mark_company_completed(company_name, product, success=True)
+                                
+                        except Exception as e:
+                            # Handle Circuit Breaker exceptions
+                            if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
+                                from src.utils.circuit_breaker import CircuitOpenException
+                                if isinstance(e, CircuitOpenException):
+                                    log_error(f"🔴 Circuit Breaker сработал для {company_name}: {e}")
+                                    circuit_breaker_triggered = True
+                                    if state_manager:
+                                        state_manager.record_circuit_breaker_event("triggered_during_processing", {
+                                            "product": product,
+                                            "company": company_name,
+                                            "error": str(e)
+                                        })
+                                    break  # Stop processing this product
+                            
+                            log_error(f"❌ [{product}] Ошибка обработки {company_name}: {e}")
+                            if state_manager:
+                                state_manager.mark_company_completed(company_name, product, success=False)
+                
+                # Save partial results after each product
+                if state_manager and product_results:
+                    state_manager.save_partial_results(product_results)
+                
+                # If circuit breaker triggered, pause processing
+                if circuit_breaker_triggered:
+                    log_error(f"🔴 Circuit Breaker прервал обработку продукта {product}")
+                    log_info(f"💾 Сохраняем частичные результаты...")
+                    
+                    if state_manager:
+                        state_manager.save_progress(product_index, 0, product_name=product, stage="paused_circuit_breaker")
+                        state_manager.save_partial_results(product_results)
+                        state_manager.mark_completed("paused")
+                    
+                    # Add partial results to total
+                    all_results.extend(product_results)
+                    
+                    # Save partial results and return
+                    save_results(all_results, product="partial", session_id=session_id)
+                    log_info(f"🛑 Обработка приостановлена из-за Circuit Breaker. Результаты сохранены.")
+                    return all_results
+                
+                # Normal completion of product
+                all_results.extend(product_results)
+                log_info(f"🎉 ПРОДУКТ {product} ЗАВЕРШЕН: обработано {len(product_results)} записей")
+                
+                if state_manager:
+                    state_manager.save_progress(product_index, len(companies_df), product_name=product, stage="product_completed")
+                    
+            except Exception as e:
+                log_error(f"💥 Критическая ошибка в продукте {product}: {e}")
+                
+                # Save what we have and continue or stop
+                if state_manager and product_results:
+                    state_manager.save_partial_results(product_results)
+                
+                all_results.extend(product_results)
+                
+                # Decide whether to continue or stop based on error type
+                if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
+                    from src.utils.circuit_breaker import CircuitOpenException
+                    if isinstance(e, CircuitOpenException):
+                        log_error("🔴 Circuit Breaker активирован на уровне продукта - останавливаем обработку")
+                        if state_manager:
+                            state_manager.mark_completed("failed_circuit_breaker")
+                        save_results(all_results, product="partial", session_id=session_id)
+                        return all_results
+                
+                # For other errors, continue with next product
+                log_info(f"⏭️ Продолжаем с следующего продукта...")
+                continue
         
         log_info(f"\n🏁 АНАЛИЗ ЗАВЕРШЕН!")
         log_info(f"📊 Итого записей: {len(all_results)}")
+        
+        # Mark session as completed in state manager
+        if state_manager:
+            state_manager.mark_completed("completed")
         
         # 3. Save results (аналогично оригинальному процессору)
         save_results(all_results, product="mixed", session_id=session_id)
@@ -509,7 +670,11 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
         
     except KeyboardInterrupt:
         log_info("❌ Анализ прерван пользователем")
+        if state_manager:
+            state_manager.mark_completed("cancelled")
         raise
     except Exception as e:
         log_error(f"💥 Критическая ошибка: {e}")
+        if state_manager:
+            state_manager.mark_completed("failed")
         raise 

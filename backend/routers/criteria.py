@@ -92,6 +92,12 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
             cmd.append("--parallel")
             cmd.extend(["--max-concurrent", str(max_concurrent)])
         
+        # Add Circuit Breaker support (enabled by default, can be disabled via env var)
+        import os
+        if os.getenv('DISABLE_CIRCUIT_BREAKER', 'false').lower() == 'true':
+            cmd.append("--disable-circuit-breaker")
+            logger.info("Circuit Breaker отключен через переменную окружения")
+        
         # Меняем рабочую директорию на criteria_processor
         # Устанавливаем UTF-8 кодировку для Windows
         env = os.environ.copy()

@@ -88,6 +88,20 @@ ASYNC_GPT_CONFIG = {
     'fallback_to_sync': True                 # Fallback to sync GPT if async fails
 }
 
+# Circuit Breaker configuration для OpenAI API rate limiting
+CIRCUIT_BREAKER_CONFIG = {
+    'enable_circuit_breaker': True,          # Мастер-переключатель Circuit Breaker
+    'failure_threshold': 5,                  # Количество rate limit ошибок для открытия circuit
+    'recovery_timeout': 120,                 # Секунд ожидания в OPEN состоянии перед попыткой восстановления
+    'success_threshold': 3,                  # Успешных запросов для закрытия circuit из HALF_OPEN
+    'rate_limit_keywords': [                 # Ключевые слова для определения rate limit ошибок
+        'rate_limit', 'quota_exceeded', 'too_many_requests', 
+        'rate limit', 'limit exceeded', 'throttled',
+        'rate limiting', 'usage limit', 'api limit'
+    ],
+    'max_half_open_requests': 3              # Максимум тестовых запросов в HALF_OPEN состоянии
+}
+
 # Smart filtering configuration
 SMART_FILTERING_CONFIG = {
     'enable_signals_prioritization': True,    # Use Signals column for content prioritization
