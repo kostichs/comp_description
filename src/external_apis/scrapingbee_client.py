@@ -100,9 +100,9 @@ class CustomScrapingBeeClient:
                     # Проверка на лимит одновременных запросов
                     if response.status == 403 and "Looks like you\'ve hit the concurrency limit" in response_text:
                         logger.warning(f"[ScrapingBee] Достигнут лимит одновременных запросов для URL: {url}")
-                        # Ждем немного и пробуем еще раз
+                        # Адекватная задержка для лимита одновременных запросов (ScrapingBee требует времени)
                         if attempt_num < len(attempts):
-                            await asyncio.sleep(2)
+                            await asyncio.sleep(1.5)  # Компромисс: короче чем 2с, но достаточно для ScrapingBee
                             continue
                         return None, response.status, "ScrapingBee concurrency limit reached"
                     
@@ -143,7 +143,7 @@ class CustomScrapingBeeClient:
                 logger.error(f"[ScrapingBee] Ошибка соединения для {url}: {e}")
                 last_error = f"ScrapingBee Connection Error: {str(e)}"
                 if attempt_num < len(attempts):
-                    await asyncio.sleep(1)
+                    await asyncio.sleep(0.2)  # Сокращена с 1 до 0.2 секунд
                     continue
             except asyncio.TimeoutError:
                 logger.error(f"[ScrapingBee] Таймаут запроса к {url}")

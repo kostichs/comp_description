@@ -36,7 +36,7 @@ from src.pipeline.utils.logging import setup_session_logging
 logger = logging.getLogger(__name__)
 
 # Constants
-DEFAULT_BATCH_SIZE = 2
+DEFAULT_BATCH_SIZE = 5
 
 class PipelineAdapter:
     """

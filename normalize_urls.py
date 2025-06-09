@@ -547,14 +547,14 @@ async def normalize_and_remove_duplicates(
     )
     
     # Семафор для ограничения одновременных проверок URL
-    max_concurrent_validations = 5  # Максимум 5 одновременных валидаций
+    max_concurrent_validations = 7  # Компромисс: больше чем 5, но не перегружает API
     semaphore = asyncio.Semaphore(max_concurrent_validations)
     
     async def validate_url_with_semaphore(original_url, session, scrapingbee_client):
         """Валидация URL с семафором для ограничения одновременных соединений"""
         async with semaphore:
-            # Добавляем небольшую задержку между запросами для уменьшения rate limiting
-            await asyncio.sleep(0.5)
+            # Короткая задержка для предотвращения rate limiting, но не блокирующая асинхронность
+            await asyncio.sleep(0.2)  # Компромисс: короче чем 0.5с, но защищает от rate limiting
             return await get_url_status_and_final_location_async(original_url, session, scrapingbee_client=scrapingbee_client)
     
     async with aiohttp.ClientSession(connector=conn) as session:
