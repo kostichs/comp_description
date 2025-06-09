@@ -53,7 +53,7 @@ def parse_arguments():
     parser.add_argument(
         '--max-concurrent',
         type=int,
-        default=5,
+        default=12,
         help='Максимальное количество одновременно обрабатываемых компаний (только с --parallel)'
     )
     

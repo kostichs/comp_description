@@ -192,15 +192,15 @@ def process_single_company_for_product(args):
             # независимо от счета (даже если nth_score = 0)
             
             if nth_score > 0:
-                # SUCCESS! This is a QUALIFIED result
+                # SUCCESS! This is a QUALIFIED result with positive score
                 audience_results["final_status"] = "Qualified"
                 status_text = "QUALIFIED"
                 log_message = f"🎉 [{product}] {company_name} QUALIFIED для {audience} (Score: {nth_score:.3f})"
             else:
-                # This is a completed analysis with 0 score - still show full results
-                audience_results["final_status"] = "Not Qualified" 
-                status_text = "NOT QUALIFIED"
-                log_message = f"❌ [{product}] {company_name} NOT QUALIFIED для {audience} (Score: {nth_score:.3f}) - но анализ завершен"
+                # This is also QUALIFIED (passed qualification/mandatory) but with 0 NTH score
+                audience_results["final_status"] = "Qualified" 
+                status_text = "QUALIFIED"
+                log_message = f"✅ [{product}] {company_name} QUALIFIED для {audience} (Score: {nth_score:.3f}) - прошла все этапы"
             
             # Create readable text format for ALL completed NTH analyses
             result_text_parts = [
@@ -279,15 +279,21 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                     "result": "Unknown"
                 }
                 
-                # Better matching: look for qualification results that match this criterion
+                # ИСПРАВЛЕНИЕ: Более точное сопоставление для mandatory критериев
                 found_result = False
                 for key, value in result.items():
                     if key.startswith("Qualified_") and value == "Yes":
-                        # For mandatory, if ANY failed, all fail. If we get here, this one passed.
-                        criterion_info["result"] = "Pass"
-                        passed_mandatory += 1
-                        found_result = True
-                        break
+                        # Проверяем совпадение по индексу критерия
+                        try:
+                            key_index = int(key.split("_")[-1]) - 1  # GPT считает с 1, мы с 0
+                            if key_index == idx:
+                                criterion_info["result"] = "Pass"
+                                passed_mandatory += 1
+                                found_result = True
+                                break
+                        except (ValueError, IndexError):
+                            # Если не можем извлечь номер, пропускаем
+                            continue
                 
                 if not found_result:
                     criterion_info["result"] = "Fail"
@@ -356,15 +362,26 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                     "result": "Unknown"
                 }
                 
-                # Try to match this criterion result in the GPT response
+                # ИСПРАВЛЕНИЕ: Более точное сопоставление результатов GPT
+                criterion_text = criterion_info["criteria_text"]
+                found_match = False
+                
                 for key, value in result.items():
                     if key.startswith("Qualified_") and value == "Yes":
-                        # This is a simplified matching - in reality you'd want more sophisticated matching
-                        if qualified_count == idx or len(detailed_criteria_results) == idx:
-                            criterion_info["result"] = "Pass"
-                            qualified_count += 1
-                            break
-                else:
+                        # Проверяем совпадение по индексу критерия
+                        # Извлекаем номер из ключа (например "Qualified_1" -> 1)
+                        try:
+                            key_index = int(key.split("_")[-1]) - 1  # GPT считает с 1, мы с 0
+                            if key_index == idx:
+                                criterion_info["result"] = "Pass"
+                                qualified_count += 1
+                                found_match = True
+                                break
+                        except (ValueError, IndexError):
+                            # Если не можем извлечь номер, используем старую логику
+                            continue
+                
+                if not found_match:
                     criterion_info["result"] = "Fail"
                 
                 detailed_criteria_results.append(criterion_info)
@@ -397,7 +414,7 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
         check_nth_criteria(company_info, audience, nth_df, session_id, use_deep_analysis)
 
 
-def run_parallel_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False, max_concurrent_companies=5):
+def run_parallel_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False, max_concurrent_companies=12):
     """
     Запускает анализ с параллельной обработкой компаний внутри каждого продукта.
     СОХРАНЯЕТ порядок: все компании проходят продукт 1, потом все компании проходят продукт 2, и т.д.

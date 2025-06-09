@@ -35,7 +35,7 @@ if str(CRITERIA_PROCESSOR_PATH) not in sys.path:
 # Импортируем правильные пути из data_io.py
 from src.data_io import SESSIONS_DIR, SESSIONS_METADATA_FILE
 
-def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 5):
+def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 12):
     """Запускаем criteria_processor как отдельный процесс"""
     import subprocess
     import shutil
@@ -146,7 +146,7 @@ async def run_criteria_analysis_task(
     load_all_companies: bool = False,
     use_deep_analysis: bool = False,
     use_parallel: bool = True,
-    max_concurrent: int = 5
+    max_concurrent: int = 12
 ):
     """Асинхронная задача для запуска анализа критериев"""
     log_info = None
@@ -209,7 +209,7 @@ async def create_criteria_analysis(
     load_all_companies: bool = Form(False),
     use_deep_analysis: bool = Form(False),
     use_parallel: bool = Form(True),
-    max_concurrent: int = Form(5)
+    max_concurrent: int = Form(12)
 ):
     """
     Создает новую сессию анализа критериев
@@ -218,7 +218,7 @@ async def create_criteria_analysis(
     - **load_all_companies**: Загружать ли все файлы из папки data
     - **use_deep_analysis**: Использовать ли глубокий анализ
     - **use_parallel**: Параллельная обработка компаний (включена по умолчанию)
-    - **max_concurrent**: Максимальное количество одновременно обрабатываемых компаний (по умолчанию 5)
+    - **max_concurrent**: Максимальное количество одновременно обрабатываемых компаний (по умолчанию 12)
     """
     try:
         # Проверяем формат файла
@@ -297,7 +297,7 @@ async def create_criteria_analysis_from_session(
     load_all_companies: bool = Form(False),
     use_deep_analysis: bool = Form(False),
     use_parallel: bool = Form(True),
-    max_concurrent: int = Form(5)
+    max_concurrent: int = Form(12)
 ):
     """
     Создает новую сессию анализа критериев используя результаты из существующей сессии
@@ -306,7 +306,7 @@ async def create_criteria_analysis_from_session(
     - **load_all_companies**: Загружать ли все файлы из папки data
     - **use_deep_analysis**: Использовать ли глубокий анализ
     - **use_parallel**: Параллельная обработка компаний (включена по умолчанию)
-    - **max_concurrent**: Максимальное количество одновременно обрабатываемых компаний (по умолчанию 5)
+    - **max_concurrent**: Максимальное количество одновременно обрабатываемых компаний (по умолчанию 12)
     """
     try:
         # Получаем информацию о существующей сессии

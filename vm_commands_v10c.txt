@@ -1,0 +1,70 @@
+# Company Canvas v10c Deployment Commands (FINAL CORRECTED VERSION)
+
+# 1. Pull new version v10c (FINAL LOGIC FIX)
+docker pull sergeykostichev/company-canvas-app:v10c
+
+# 2. Stop and remove old container
+docker stop company-canvas-prod
+docker rm company-canvas-prod
+
+# 3. Create data directories if they don't exist
+sudo mkdir -p /srv/company-canvas/output
+sudo chown -R $USER:$USER /srv/company-canvas/output
+
+# 4. Create sessions_metadata.json if it doesn't exist
+if [ ! -f /srv/company-canvas/sessions_metadata.json ]; then
+    echo '[]' > /srv/company-canvas/sessions_metadata.json
+    echo "Created empty sessions_metadata.json"
+fi
+chmod 666 /srv/company-canvas/sessions_metadata.json
+
+# 5. Start new version v10c with all features
+docker run -d --restart unless-stopped --name company-canvas-prod -p 80:8000 \
+  -e OPENAI_API_KEY="YOUR_OPENAI_KEY" \
+  -e SERPER_API_KEY="YOUR_SERPER_KEY" \
+  -e SCRAPINGBEE_API_KEY="YOUR_SCRAPINGBEE_KEY" \
+  -e HUBSPOT_API_KEY="YOUR_HUBSPOT_KEY" \
+  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/YOUR_PORTAL_ID/record/0-2/" \
+  -e DEBUG="false" \
+  -v /srv/company-canvas/output:/app/output \
+  -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
+  sergeykostichev/company-canvas-app:v10c
+
+# 6. Check deployment status
+docker ps
+
+# 7. Check logs
+docker logs company-canvas-prod
+
+# 8. Monitor logs in real-time (optional)
+# docker logs -f company-canvas-prod
+
+# FINAL LOGIC in v10c:
+# - FIXED: Results display logic - ALL completed NTH analyses appear in "All Results"
+# - FIXED: Zero NTH score results display full analysis data with "QUALIFIED" status
+# - FIXED: Auto-refresh of latest session info on criteria tab after completion 
+# - FIXED: GPT result matching logic - correct individual criterion evaluation
+# - CORRECTED: Proper "QUALIFIED" status for companies that reach NTH analysis stage
+
+# QUALIFICATION LOGIC (CORRECT):
+# - Fail qualification questions → "NOT QUALIFIED - Failed Qualification Questions"
+# - Fail mandatory criteria → "NOT QUALIFIED - Failed Mandatory Criteria"  
+# - Reach NTH analysis (any score including 0) → "QUALIFIED: audience" + full results
+
+# Why this logic is correct:
+# - If company reaches NTH stage, it has already passed qualification and mandatory
+# - NTH criteria are additional scoring, not qualification barriers
+# - Even 0 NTH score means company is qualified but with low additional score
+# - Companies should see "QUALIFIED" status with detailed NTH breakdown
+
+# Expected Behavior in v10c:
+# - Companies failing early stages → "NOT QUALIFIED" with specific reason
+# - Companies reaching NTH analysis → "QUALIFIED: audience" regardless of NTH score
+# - All NTH results display full breakdown: Total/Passed/ND criteria
+# - Latest session info auto-updates between tabs without F5
+
+# Test the deployment:
+# 1. Process companies on first tab
+# 2. Verify companies with 0 NTH score show "QUALIFIED: audience" status
+# 3. Verify full NTH breakdown appears in "All Results" column
+# 4. Check latest session auto-updates on second tab 

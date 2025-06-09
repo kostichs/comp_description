@@ -1,0 +1,71 @@
+# Company Canvas v10d Deployment Commands (ASYNC FIX - FALLBACK TO SYNC)
+
+# 1. Pull new version v10d (ASYNC DISABLED - SYNC ANALYSIS)
+docker pull sergeykostichev/company-canvas-app:v10d
+
+# 2. Stop and remove old container
+docker stop company-canvas-prod
+docker rm company-canvas-prod
+
+# 3. Create data directories if they don't exist
+sudo mkdir -p /srv/company-canvas/output
+sudo chown -R $USER:$USER /srv/company-canvas/output
+
+# 4. Create sessions_metadata.json if it doesn't exist
+if [ ! -f /srv/company-canvas/sessions_metadata.json ]; then
+    echo '[]' > /srv/company-canvas/sessions_metadata.json
+    echo "Created empty sessions_metadata.json"
+fi
+chmod 666 /srv/company-canvas/sessions_metadata.json
+
+# 5. Start new version v10d with all features
+docker run -d --restart unless-stopped --name company-canvas-prod -p 80:8000 \
+  -e OPENAI_API_KEY="YOUR_OPENAI_KEY" \
+  -e SERPER_API_KEY="YOUR_SERPER_KEY" \
+  -e SCRAPINGBEE_API_KEY="YOUR_SCRAPINGBEE_KEY" \
+  -e HUBSPOT_API_KEY="YOUR_HUBSPOT_KEY" \
+  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/YOUR_PORTAL_ID/record/0-2/" \
+  -e DEBUG="false" \
+  -v /srv/company-canvas/output:/app/output \
+  -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
+  sergeykostichev/company-canvas-app:v10d
+
+# 6. Check deployment status
+docker ps
+
+# 7. Check logs
+docker logs company-canvas-prod
+
+# 8. Monitor logs in real-time (optional)
+# docker logs -f company-canvas-prod
+
+# CRITICAL FIX in v10d:
+# - DISABLED async GPT analysis (enable_async_gpt: False)
+# - REVERTED to proven sync analysis logic for mandatory/NTH criteria  
+# - FIXED: Results display logic - ALL completed NTH analyses appear in "All Results"
+# - FIXED: Zero NTH score results display with "QUALIFIED" status + full analysis data
+# - FIXED: Auto-refresh of latest session info on criteria tab after completion
+
+# PROBLEM DIAGNOSIS:
+# - After performance optimizations, async GPT analysis was causing too many "NOT QUALIFIED"
+# - Even companies that previously passed qualification were failing
+# - Async logic for matching GPT results to criteria was unreliable
+# - v10d falls back to reliable sync analysis until async can be properly debugged
+
+# ANALYSIS MODE in v10d:
+# - Mandatory criteria: SYNC analysis (proven logic)
+# - NTH criteria: SYNC analysis (proven logic)  
+# - Qualification questions: Still using optimized logic
+# - Expected behavior: Return to previous qualification success rates
+
+# Expected Behavior in v10d:
+# - Companies failing early stages → "NOT QUALIFIED" with specific reason
+# - Companies reaching NTH analysis → "QUALIFIED: audience" regardless of NTH score
+# - Qualification success rates should return to previous levels
+# - Criteria evaluation should be more accurate and reliable
+
+# Test the deployment:
+# 1. Process companies that previously passed qualification
+# 2. Verify qualification success rates improve vs v10c
+# 3. Check that NTH criteria evaluation is accurate (not all Pass/Fail)
+# 4. Confirm "QUALIFIED" status for companies reaching NTH stage 

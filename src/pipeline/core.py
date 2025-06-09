@@ -604,7 +604,7 @@ async def _process_single_company_async(
                         aiohttp_session=aiohttp_session,  # Добавляем HTTP сессию
                         sb_client=sb_client  # Добавляем ScrapingBee клиент
                     )
-                
+                    
                     if hubspot_success:
                         logger.info(f"{run_stage_log} - Data uploaded to HubSpot successfully")
                         # Добавляем информацию о загрузке в HubSpot в результаты

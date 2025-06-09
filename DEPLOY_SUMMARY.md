@@ -1,150 +1,137 @@
-# Краткая сводка по развертыванию Company Canvas
+# Company Canvas Deployment Summary
 
-## Подготовка к развертыванию
+## Latest Version: v10 ✅
 
-**Готово к развертыванию:**
-✅ Dockerfile актуален
-✅ Requirements.txt проверен  
-✅ Контейнеризация исправлена (v08g+)
-✅ sessions_metadata.json поддержка добавлена
-✅ Документация и скрипты обновлены
-
-## Быстрый старт
-
-### На Windows (локально):
-
-1. **Запустите Docker Desktop** (обязательно!)
-
-2. **Автоматическое развертывание:**
-   ```powershell
-   .\deploy.ps1
-   ```
-
-3. **Или вручную:**
-   ```bash
-   docker build -t company-canvas-app .
-   docker tag company-canvas-app sergeykostichev/company-canvas-app:v08h
-   docker push sergeykostichev/company-canvas-app:v08h
-   ```
-
-### На виртуальной машине:
-
-1. **Подготовка данных (ВАЖНО!):**
-   ```bash
-   sudo mkdir -p /srv/company-canvas/output
-   sudo chown -R $USER:$USER /srv/company-canvas/output
-   
-   # Создать файл метаданных сессий если его нет
-   if [ ! -f /srv/company-canvas/sessions_metadata.json ]; then
-       echo '[]' > /srv/company-canvas/sessions_metadata.json
-   fi
-   chmod 666 /srv/company-canvas/sessions_metadata.json
-   ```
-
-2. **Автоматическое развертывание:**
-   ```bash
-   chmod +x deploy_vm.sh
-   ./deploy_vm.sh v08h
-   ```
-
-3. **Или вручную:**
-   ```bash
-   docker stop company-canvas-prod
-   docker rm company-canvas-prod
-   docker pull sergeykostichev/company-canvas-app:v08h
-   
-   docker run -d --restart unless-stopped -p 80:8000 \
-     -e OPENAI_API_KEY="ваш_ключ" \
-     -e SERPER_API_KEY="ваш_ключ" \
-     -e SCRAPINGBEE_API_KEY="ваш_ключ" \
-     -e HUBSPOT_API_KEY="ваш_ключ" \
-     --name company-canvas-prod \
-     -v /srv/company-canvas/output:/app/output \
-     -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
-     sergeykostichev/company-canvas-app:v08h
-   ```
-
-## Проверка работы
-
+### Quick Deployment (Current Version)
 ```bash
-# Статус контейнера
+# Stop old version
+docker stop company-canvas-prod && docker rm company-canvas-prod
+
+# Pull and start v10
+docker pull sergeykostichev/company-canvas-app:v10
+
+docker run -d --restart unless-stopped --name company-canvas-prod -p 80:8000 \
+  -e OPENAI_API_KEY="YOUR_KEY" \
+  -e SERPER_API_KEY="YOUR_KEY" \
+  -e SCRAPINGBEE_API_KEY="YOUR_KEY" \
+  -e HUBSPOT_API_KEY="YOUR_KEY" \
+  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/YOUR_PORTAL_ID/record/0-2/" \
+  -v /srv/company-canvas/output:/app/output \
+  -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
+  sergeykostichev/company-canvas-app:v10
+```
+
+## Version History
+
+### v10 (Current) - Results Display & Session Sync Fixes
+**Released:** December 2024
+**Key Changes:**
+- 🎯 **FIXED:** Results display logic - ALL completed NTH analyses now appear in "All Results"
+- 🎯 **FIXED:** Zero NTH score results show full analysis data instead of "NOT QUALIFIED"  
+- 🔄 **FIXED:** Auto-refresh of latest session info on criteria tab after completion
+- 📊 **IMPROVED:** Clear distinction between failed qualification/mandatory vs completed analysis
+- ⚖️ **ENHANCED:** Performance optimizations with balanced API rate limiting
+
+**Critical Bug Fixes:**
+- Companies reaching NTH analysis stage (even with 0 score) now display complete results
+- Latest session automatically updates on second tab without manual refresh (F5)
+- Proper categorization: fail before NTH = "NOT QUALIFIED", complete NTH = full results
+
+### v09 - Performance Optimizations
+**Key Changes:**
+- Balanced API rate limiting (speed vs stability)
+- URL validation optimization (0.2s delay)
+- ScrapingBee concurrency improvements
+- Batch size standardization to 5
+
+### v08 - Result Validation System
+**Key Changes:**
+- LLM-based validation to prevent unrelated company information
+- Person name vs company name detection
+- New CSV fields: validation_status, validation_warning
+- Prevents irrelevant data like personal GitHub profiles
+
+### v07 - Criteria Analysis Enhancement
+**Key Changes:**
+- Added deep analysis mode for criteria processing
+- Parallel processing improvements
+- Enhanced error handling
+
+## Current Status
+- ✅ **Performance:** ~3 companies per minute (balanced settings)
+- ✅ **Stability:** API rate limiting protections in place
+- ✅ **UI/UX:** Auto-updating session info, complete results display
+- ✅ **Validation:** LLM-powered result verification
+- ✅ **Criteria Analysis:** Full parallel processing with detailed results
+
+## Validation Checklist for v10
+After deployment, verify:
+
+1. **Results Display:**
+   - [ ] Companies with 0 NTH score show full analysis (not "NOT QUALIFIED")
+   - [ ] Failed qualification/mandatory show "NOT QUALIFIED" with reason
+   - [ ] All completed analyses appear in "All Results" column
+
+2. **Session Sync:**
+   - [ ] Process companies on first tab
+   - [ ] Latest session info auto-updates on second tab (no F5 needed)
+   - [ ] "Use results from latest session" checkbox gets new data
+
+3. **Performance:**
+   - [ ] Processing speed around 3 companies per minute
+   - [ ] No API rate limiting errors in logs
+   - [ ] Stable operation during long sessions
+
+## Common Issues & Solutions
+
+### Issue: Zero score results don't appear
+**Solution:** Check v10 deployment - this was the main fix
+
+### Issue: Latest session not updating automatically  
+**Solution:** Check v10 deployment - auto-refresh was added
+
+### Issue: Performance degradation
+**Solution:** Check API keys, monitor logs for rate limiting
+
+### Issue: Container won't start
+**Solution:** 
+```bash
+# Check logs
+docker logs company-canvas-prod
+
+# Common fixes
+sudo mkdir -p /srv/company-canvas/output
+echo '[]' > /srv/company-canvas/sessions_metadata.json
+chmod 666 /srv/company-canvas/sessions_metadata.json
+```
+
+## Monitoring Commands
+```bash
+# Check container status
 docker ps
 
-# Логи
+# View logs
+docker logs company-canvas-prod
+
+# Real-time logs
 docker logs -f company-canvas-prod
 
-# Проверка API
-curl http://localhost/api/sessions
-curl http://localhost/api/criteria/sessions
-
-# Веб-интерфейс
-# http://IP_адрес_вашей_VM
+# Check resource usage
+docker stats company-canvas-prod
 ```
 
-## Версии и история исправлений
-
-### Проблемы контейнеризации (v08e - v08g):
-- **v08e**: первая попытка - проблемы с .dockerignore
-- **v08f**: исправление путей - проблемы с импортами  
-- **v08g**: исправление импортов - проблемы с метаданными
-- **v08h**: полное исправление контейнеризации ✅
-
-### Следующие версии:
-- **v08i**: следующая версия для новых функций
-
-## Критические исправления в v08h
-
-### 🔧 Контейнеризация исправлена:
-- ✅ Убрали `output/` и `sessions_metadata.json` из .dockerignore
-- ✅ Заменили относительные пути на абсолютные (`/app/output/sessions/`)
-- ✅ Исправили конфликты импортов модулей
-- ✅ Добавили монтирование `sessions_metadata.json` как отдельный том
-
-### 🐛 Решенные проблемы:
-1. **Не видны сессии во 2-й вкладке** → исправлено монтированием метаданных
-2. **"File not found" ошибки** → исправлено абсолютными путями
-3. **"cannot access local variable 'os'"** → исправлено порядком импортов
-4. **Потеря метаданных при перезапуске** → исправлено отдельным томом
-
-## Функциональные возможности v08h
-
-1. **Criteria Processor микросервис**: полная интеграция анализа критериев
-2. **Async параллельная обработка**: 5-8x ускорение анализа компаний
-3. **Международные кодировки**: поддержка UTF-8, Cyrillic, специальных символов
-4. **Контейнерная стабильность**: все пути и зависимости корректно работают в Docker
-5. **Сохранение состояния**: метаданные сессий сохраняются между перезапусками
-
-## Структура файлов развертывания
-
-- `DEPLOY_INSTRUCTIONS.md` - подробная инструкция с troubleshooting
-- `deploy.ps1` - PowerShell скрипт для Windows
-- `deploy_vm.sh` - Bash скрипт для VM
-- `DEPLOY_SUMMARY.md` - эта сводка
-- `docs/DEPLOYMENT_GUIDE.md` - полная документация
-
-## Диагностика проблем
-
-### Быстрая проверка:
+## Rollback (if needed)
 ```bash
-# Контейнер запущен?
-docker ps | grep company-canvas-prod
-
-# Есть ли монтированные файлы?
-docker exec company-canvas-prod ls -la /app/sessions_metadata.json
-
-# Работают ли API?
-curl -s http://localhost/api/sessions | jq length
-curl -s http://localhost/api/criteria/sessions | jq length
+# Rollback to previous stable version
+docker stop company-canvas-prod && docker rm company-canvas-prod
+docker run -d --restart unless-stopped --name company-canvas-prod -p 80:8000 \
+  [same environment variables and volumes] \
+  sergeykostichev/company-canvas-app:v09
 ```
 
-### Если что-то не работает:
-```bash
-# Подробные логи с фильтрацией
-docker logs -f company-canvas-prod | grep -E "(ERROR|criteria|sessions|WARN)"
-
-# Проверка структуры в контейнере
-docker exec company-canvas-prod find /app -name "*.json" -o -name "sessions"
-
-# Перезапуск с чистыми логами
-docker restart company-canvas-prod
-``` 
+## Next Version Planning: v11
+Potential improvements:
+- Real-time WebSocket updates for session progress
+- Advanced analytics dashboard
+- Batch processing queue management
+- Enhanced criteria management interface 

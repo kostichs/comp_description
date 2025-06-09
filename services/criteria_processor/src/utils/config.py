@@ -81,7 +81,7 @@ ASYNC_SCRAPING_CONFIG = {
 
 # Async GPT configuration
 ASYNC_GPT_CONFIG = {
-    'enable_async_gpt': True,                # Use async OpenAI client for better performance
+    'enable_async_gpt': False,               # ВРЕМЕННО ОТКЛЮЧАЕМ - async версия может работать некорректно
     'max_concurrent_gpt_requests': 10,       # Concurrent GPT requests per company
     'gpt_rate_limit_delay': 0.1,            # Delay between requests (seconds)
     'gpt_timeout': 60,                       # Request timeout (seconds)
