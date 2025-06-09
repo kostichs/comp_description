@@ -567,37 +567,77 @@ async def _process_single_company_async(
         # 8. Сохранение в HubSpot, если клиент доступен и запись разрешена
         if hubspot_client and found_homepage_url and description_text and write_to_hubspot:
             try:
-                logger.info(f"{run_stage_log} - Attempting to upload data to HubSpot")
-                # Используем правильный метод save_company_description который возвращает (success, company_id)
-                hubspot_success, hubspot_company_id = await hubspot_client.save_company_description(
-                    company_data=None,  # Пусть метод сам найдет компанию по URL
-                    company_name=company_name,
-                    url=found_homepage_url,
-                    description=description_text,
-                    linkedin_url=linkedin_url,
-                    aiohttp_session=aiohttp_session,  # Добавляем HTTP сессию
-                    sb_client=sb_client  # Добавляем ScrapingBee клиент
-                )
+                # Проверяем качество описания перед записью в HubSpот
+                from src.integrations.hubspot.quality_checker import should_write_to_hubspot_async
                 
-                if hubspot_success:
-                    logger.info(f"{run_stage_log} - Data uploaded to HubSpot successfully")
-                    # Добавляем информацию о загрузке в HubSpot в результаты
-                    result_data.setdefault("integrations", {})["hubspot"] = {
-                        "success": True, 
-                        "company_id": hubspot_company_id,
-                        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-                    }
-                    # Добавляем HubSpot Company ID в основные результаты
-                    from src.integrations.hubspot.adapter import format_hubspot_company_id
-                    result_data["HubSpot_Company_ID"] = format_hubspot_company_id(hubspot_company_id)
+                # Получаем настройки проверки качества из конфигурации
+                quality_config = llm_config.get("hubspot_quality_check", {})
+                quality_enabled = quality_config.get("enabled", True)
+                use_llm_validation = quality_config.get("use_llm_validation", False)
+                
+                if quality_enabled:
+                    min_length = quality_config.get("min_description_length", 500)
+                    quality_ok, quality_reason, quality_details = await should_write_to_hubspot_async(
+                        description=description_text,
+                        company_name=company_name,
+                        openai_client=openai_client,
+                        use_llm_validation=use_llm_validation,
+                        min_description_length=min_length
+                    )
                 else:
-                    logger.warning(f"{run_stage_log} - Failed to upload data to HubSpot")
+                    # Если проверка качества отключена, считаем все описания хорошими
+                    quality_ok = True
+                    quality_reason = "Quality check disabled"
+                    quality_details = {"quality_check_enabled": False}
+                
+                logger.info(f"{run_stage_log} - Quality check result: {quality_ok}, reason: {quality_reason}")
+                
+                if quality_ok:
+                    logger.info(f"{run_stage_log} - Attempting to upload data to HubSpot")
+                    # Используем правильный метод save_company_description который возвращает (success, company_id)
+                    hubspot_success, hubspot_company_id = await hubspot_client.save_company_description(
+                        company_data=None,  # Пусть метод сам найдет компанию по URL
+                        company_name=company_name,
+                        url=found_homepage_url,
+                        description=description_text,
+                        linkedin_url=linkedin_url,
+                        aiohttp_session=aiohttp_session,  # Добавляем HTTP сессию
+                        sb_client=sb_client  # Добавляем ScrapingBee клиент
+                    )
+                
+                    if hubspot_success:
+                        logger.info(f"{run_stage_log} - Data uploaded to HubSpot successfully")
+                        # Добавляем информацию о загрузке в HubSpot в результаты
+                        result_data.setdefault("integrations", {})["hubspot"] = {
+                            "success": True, 
+                            "company_id": hubspot_company_id,
+                            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                            "quality_check": quality_details
+                        }
+                        # Добавляем HubSpot Company ID в основные результаты
+                        from src.integrations.hubspot.adapter import format_hubspot_company_id
+                        result_data["HubSpot_Company_ID"] = format_hubspot_company_id(hubspot_company_id)
+                        result_data["Quality_Status"] = "PASSED - Uploaded to HubSpot"
+                    else:
+                        logger.warning(f"{run_stage_log} - Failed to upload data to HubSpot")
+                        result_data.setdefault("integrations", {})["hubspot"] = {
+                            "success": False,
+                            "error": "Failed to upload data to HubSpot",
+                            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                            "quality_check": quality_details
+                        }
+                        result_data["HubSpot_Company_ID"] = ""
+                        result_data["Quality_Status"] = f"PASSED - Upload failed: {result_data.get('error', 'Unknown error')}"
+                else:
+                    logger.warning(f"{run_stage_log} - Description quality check failed, skipping HubSpot upload: {quality_reason}")
                     result_data.setdefault("integrations", {})["hubspot"] = {
                         "success": False,
-                        "error": "Failed to upload data to HubSpot",
-                        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                        "error": f"Quality check failed: {quality_reason}",
+                        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                        "quality_check": quality_details
                     }
                     result_data["HubSpot_Company_ID"] = ""
+                    result_data["Quality_Status"] = f"FAILED - {quality_reason}"
             except Exception as e:
                 logger.error(f"{run_stage_log} - Error uploading to HubSpot: {e}", exc_info=True)
                 result_data.setdefault("integrations", {})["hubspot"] = {
@@ -606,10 +646,20 @@ async def _process_single_company_async(
                     "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
                 result_data["HubSpot_Company_ID"] = ""
+                result_data["Quality_Status"] = f"ERROR - {str(e)[:50]}..."
         else:
             # Если HubSpot клиент недоступен или запись отключена, добавляем пустое поле
             if hubspot_client and not write_to_hubspot:
                 logger.info(f"{run_stage_log} - HubSpot write is disabled, skipping upload")
+                result_data["Quality_Status"] = "NOT_CHECKED - HubSpot write disabled"
+            elif not hubspot_client:
+                result_data["Quality_Status"] = "NOT_CHECKED - HubSpot not configured"
+            elif not found_homepage_url:
+                result_data["Quality_Status"] = "NOT_CHECKED - No homepage URL found"
+            elif not description_text:
+                result_data["Quality_Status"] = "NOT_CHECKED - No description generated"
+            else:
+                result_data["Quality_Status"] = "NOT_CHECKED - Unknown reason"
             result_data["HubSpot_Company_ID"] = ""
         
         # logger.info(f"{run_stage_log} - Processing completed successfully") # Закомментировано

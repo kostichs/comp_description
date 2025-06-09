@@ -2,7 +2,7 @@ import time
 import logging
 from fastapi import HTTPException
 from fastapi import APIRouter
-from src.data_io import load_session_metadata, save_session_metadata
+from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR, SESSIONS_METADATA_FILE
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +20,10 @@ async def get_sessions():
         filtered_sessions = []
         for session in metadata:
             session_id = session.get("session_id")
-            session_dir = f"/app/output/sessions/{session_id}"
+            session_dir = SESSIONS_DIR / session_id  # Используем динамический путь
             
             # Проверяем существование папки сессии и статус completed
-            if os.path.exists(session_dir) and session.get("status") == "completed":
+            if session_dir.exists() and session.get("status") == "completed":
                 # Исправляем поле created_time если используется старое поле timestamp_created
                 if "created_time" not in session and "timestamp_created" in session:
                     session["created_time"] = session["timestamp_created"]
@@ -106,12 +106,12 @@ async def get_session_results_file(session_id: str):
         if session_data.get("status") != "completed":
             raise HTTPException(status_code=400, detail=f"Session {session_id} is not completed yet")
         
-        # Путь к результирующему файлу
-        results_file_path = f"/app/output/sessions/{session_id}/final_results.csv"
+        # Путь к результирующему файлу (динамический)
+        results_file_path = SESSIONS_DIR / session_id / f"{session_id}_results.csv"
         
         return {
             "session_id": session_id,
-            "file_path": results_file_path,
+            "file_path": str(results_file_path),  # Возвращаем абсолютный путь как строку
             "status": session_data.get("status"),
             "total_companies": session_data.get("total_companies", 0),
             "created_time": session_data.get("created_time", "")

@@ -4,7 +4,7 @@
 # Версия: 1.0
 
 # Параметры по умолчанию
-VERSION="v08"
+VERSION="v08h"
 DOCKER_HUB_USER="sergeykostichev"
 IMAGE_NAME="company-canvas-app"
 CONTAINER_NAME="company-canvas-prod"
@@ -89,11 +89,22 @@ else
     exit 1
 fi
 
-# 5. Создание директории для данных
-log_info "\n5. Подготовка директорий..."
+# 5. Создание директорий и файлов для данных
+log_info "\n5. Подготовка директорий и файлов..."
 sudo mkdir -p /srv/company-canvas/output
 sudo chown -R $USER:$USER /srv/company-canvas/output
-log_success "Директории подготовлены"
+
+# Создание файла метаданных сессий если его нет
+if [ ! -f /srv/company-canvas/sessions_metadata.json ]; then
+    echo '[]' > /srv/company-canvas/sessions_metadata.json
+    log_success "Создан пустой файл sessions_metadata.json"
+else
+    log_info "Файл sessions_metadata.json уже существует"
+fi
+
+# Убедиться что файл доступен для записи
+chmod 666 /srv/company-canvas/sessions_metadata.json
+log_success "Директории и файлы подготовлены"
 
 # 6. Проверка переменных окружения
 log_info "\n6. Проверка переменных окружения..."
@@ -114,6 +125,7 @@ log_info "\n7. Запуск нового контейнера..."
 DOCKER_CMD="docker run -d --restart unless-stopped -p 80:8000"
 DOCKER_CMD="$DOCKER_CMD --name $CONTAINER_NAME"
 DOCKER_CMD="$DOCKER_CMD -v /srv/company-canvas/output:/app/output"
+DOCKER_CMD="$DOCKER_CMD -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json"
 
 # Добавляем переменные окружения если они установлены
 if [ ! -z "$OPENAI_API_KEY" ]; then
@@ -154,6 +166,7 @@ if [ -z "$OPENAI_API_KEY" ] || [ -z "$SERPER_API_KEY" ] || [ -z "$SCRAPINGBEE_AP
     echo "  -e DEBUG=\"false\" \\"
     echo "  --name $CONTAINER_NAME \\"
     echo "  -v /srv/company-canvas/output:/app/output \\"
+    echo "  -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \\"
     echo "  $FULL_IMAGE_NAME"
     echo ""
     read -p "Продолжить запуск без API ключей? (y/n): " -n 1 -r

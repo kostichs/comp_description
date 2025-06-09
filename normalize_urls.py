@@ -51,8 +51,20 @@ async def get_url_status_and_final_location_async(
     if not url or not isinstance(url, str):
         return False, None, "URL отсутствует или имеет неверный тип"
 
+    # Более реалистичные заголовки для обхода блокировок
     common_headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        "Accept-Language": "en-US,en;q=0.9,ru;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "DNT": "1",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "Cache-Control": "max-age=0"
     }
 
     original_url = url
@@ -119,28 +131,14 @@ async def get_url_status_and_final_location_async(
                     # Если сервер вернул 500, но есть редирект на другой URL - проверим конечный URL
                     logger.info(f"[URL_CHECK] Статус 500 для {current_url_to_try}, но есть редирект на {final_url_after_redirect}. Считаем успешным.")
                     return True, final_url_after_redirect, None
-                elif response.status == 403: # Forbidden часто означает, что сайт жив, но блокирует HEAD
-                     logger.warning(f"[URL_CHECK] HEAD для {current_url_to_try} вернул 403. Пробуем GET.")
+                elif response.status in [403, 429]: # Forbidden или Too Many Requests - сайт живой, но блокирует боты
+                     logger.warning(f"[URL_CHECK] HEAD для {current_url_to_try} вернул {response.status} (блокировка ботов). Считаем сайт живым.")
                      
-                     # Проверяем был ли редирект даже при 403
-                     if final_url_after_redirect != current_url_to_try:
-                         logger.info(f"[URL_CHECK] Обнаружен редирект при 403 с {current_url_to_try} на {final_url_after_redirect}. Считаем сайт живым.")
-                         return True, final_url_after_redirect, None
+                     # Проверяем был ли редирект даже при 403/429
+                     final_url = final_url_after_redirect if final_url_after_redirect != current_url_to_try else current_url_to_try
+                     logger.info(f"[URL_CHECK] Сайт {current_url_to_try} блокирует ботов ({response.status}), но сайт живой. Финальный URL: {final_url}")
+                     return True, final_url, f"Website blocks bots (HTTP {response.status}) but is alive"
                      
-                     async with session.get(current_url_to_try, timeout=client_timeout, allow_redirects=True, headers=common_headers) as get_response:
-                        final_get_url = str(get_response.url)
-                        logger.info(f"[URL_CHECK] GET (после 403) для {current_url_to_try}: статус {get_response.status}, финальный URL: {final_get_url}")
-                        
-                        if 200 <= get_response.status < 400:
-                            return True, final_get_url, None
-                        elif get_response.status == 403 and final_get_url != current_url_to_try:
-                            # Даже если GET тоже вернул 403, но произошел редирект - сайт живой
-                            logger.info(f"[URL_CHECK] GET вернул 403, но произошел редирект на {final_get_url}. Считаем сайт живым.")
-                            return True, final_get_url, None
-                        else:
-                            if attempt_num == 0 and processed_url.startswith("https://"): continue
-                            last_aiohttp_error_message = f"Статус GET (после 403) {get_response.status} для {current_url_to_try}"
-                            continue # К следующей попытке aiohttp
                 else: # Другие ошибки (404, 5xx и т.д.)
                     error_msg = f"Статус HEAD {response.status} для {current_url_to_try}"
                     logger.warning(f"[URL_CHECK] {error_msg}")
@@ -171,6 +169,9 @@ async def get_url_status_and_final_location_async(
                             logger.info(f"[URL_CHECK] HEAD (без SSL проверки) для {current_url_to_try}: статус {response_no_ssl.status}, финальный URL: {final_url_no_ssl}")
                             if 200 <= response_no_ssl.status < 400:
                                 return True, final_url_no_ssl, None
+                            elif response_no_ssl.status in [403, 429]: # Блокировка ботов
+                                logger.info(f"[URL_CHECK] Сайт {current_url_to_try} блокирует ботов ({response_no_ssl.status}), но сайт живой.")
+                                return True, final_url_no_ssl, f"Website blocks bots (HTTP {response_no_ssl.status}) but is alive"
                             # Если и это не помогло, вторая итерация цикла (с http) все равно будет
                  except Exception as e_no_ssl:
                      logger.warning(f"[URL_CHECK] Ошибка при попытке без SSL проверки для {current_url_to_try}: {e_no_ssl}")
@@ -246,6 +247,10 @@ async def get_url_status_and_final_location_async(
                 final_sb_url = final_url_or_error # Если успешно, это должен быть final_url
                 logger.info(f"[URL_CHECK] ScrapingBee для {url_for_sb}: статус {status_code}, финальный URL: {final_sb_url}")
                 return True, final_sb_url, None
+            elif status_code and status_code in [403, 429]:  # Блокировка ботов - сайт живой
+                final_sb_url = final_url_or_error if final_url_or_error else url_for_sb
+                logger.info(f"[URL_CHECK] ScrapingBee: сайт {url_for_sb} блокирует ботов (статус {status_code}), но сайт живой")
+                return True, final_sb_url, f"Website blocks bots (HTTP {status_code}) but is alive"
             else:
                 error_msg_sb = f"ScrapingBee не смог получить {url_for_sb}, статус: {status_code}, ответ: {final_url_or_error}"
                 logger.warning(f"[URL_CHECK] {error_msg_sb}")
@@ -548,6 +553,8 @@ async def normalize_and_remove_duplicates(
     async def validate_url_with_semaphore(original_url, session, scrapingbee_client):
         """Валидация URL с семафором для ограничения одновременных соединений"""
         async with semaphore:
+            # Добавляем небольшую задержку между запросами для уменьшения rate limiting
+            await asyncio.sleep(0.5)
             return await get_url_status_and_final_location_async(original_url, session, scrapingbee_client=scrapingbee_client)
     
     async with aiohttp.ClientSession(connector=conn) as session:

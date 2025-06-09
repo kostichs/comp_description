@@ -48,62 +48,116 @@ class CustomScrapingBeeClient:
             - final_url_or_error_message: Финальный URL после редиректов, или сообщение об ошибке.
         """
         session = await self._get_session()
-        params = {
-            "api_key": self.api_key,
-            "url": url,
-            "render_js": str(render_js).lower(),
-            "premium_proxy": str(premium_proxy).lower(),
-            "forward_headers": "true", # Попробуем пересылать заголовки для лучшей совместимости
-        }
-        if country_code:
-            params["country_code"] = country_code
-        if timeout_source:
-            params["timeout_source"] = "true"
+        
+        # Несколько попыток с разными параметрами для обхода блокировок
+        attempts = [
+            {
+                "render_js": render_js,
+                "premium_proxy": premium_proxy,
+                "forward_headers": True,
+                "block_resources": False,
+                "country_code": country_code
+            },
+            {
+                "render_js": False,  # Без JS для экономии
+                "premium_proxy": True,  # Премиум прокси
+                "forward_headers": True,
+                "block_resources": True,  # Блокируем картинки/CSS
+                "country_code": "us"
+            },
+            {
+                "render_js": True,
+                "premium_proxy": True,
+                "forward_headers": False,  # Без пересылки заголовков
+                "block_resources": True,
+                "country_code": "gb"
+            }
+        ]
+        
+        last_error = None
+        
+        for attempt_num, attempt_params in enumerate(attempts, 1):
+            params = {
+                "api_key": self.api_key,
+                "url": url,
+                "render_js": str(attempt_params["render_js"]).lower(),
+                "premium_proxy": str(attempt_params["premium_proxy"]).lower(),
+                "forward_headers": str(attempt_params["forward_headers"]).lower(),
+            }
+            
+            if attempt_params.get("block_resources"):
+                params["block_resources"] = "true"
+            if attempt_params.get("country_code"):
+                params["country_code"] = attempt_params["country_code"]
+            if timeout_source:
+                params["timeout_source"] = "true"
 
+            try:
+                logger.info(f"[ScrapingBee] Попытка {attempt_num}/3 для {url} с параметрами: {attempt_params}")
+                async with session.get(self.BASE_URL, params=params) as response:
+                    response_text = await response.text()
 
-        try:
-            logger.info(f"[ScrapingBee] Запрос к {url} с параметрами: render_js={render_js}, premium_proxy={premium_proxy}")
-            async with session.get(self.BASE_URL, params=params) as response:
-                response_text = await response.text() # Читаем текст ответа для логгирования и обработки ошибок
+                    # Проверка на лимит одновременных запросов
+                    if response.status == 403 and "Looks like you\'ve hit the concurrency limit" in response_text:
+                        logger.warning(f"[ScrapingBee] Достигнут лимит одновременных запросов для URL: {url}")
+                        # Ждем немного и пробуем еще раз
+                        if attempt_num < len(attempts):
+                            await asyncio.sleep(2)
+                            continue
+                        return None, response.status, "ScrapingBee concurrency limit reached"
+                    
+                    # Проверка на невалидный URL
+                    if response.status == 422 and "Url is not valid" in response_text:
+                        logger.warning(f"[ScrapingBee] URL '{url}' не валиден для ScrapingBee. Ответ: {response_text[:200]}")
+                        return None, response.status, f"ScrapingBee: Invalid URL - {response_text[:100]}"
 
-                # ScrapingBee может вернуть 200 OK, но с ошибкой в теле ответа, если URL невалиден для них.
-                # Или может вернуть 4xx/5xx если что-то пошло не так с их стороны или с URL.
+                    # Проверка на таймаут
+                    if response.headers.get("X-ScrapingBee-Error") == "TIMEOUT" or "render timed out" in response_text.lower():
+                        logger.warning(f"[ScrapingBee] Таймаут при обработке URL: {url}")
+                        if attempt_num < len(attempts):
+                            continue  # Пробуем следующую конфигурацию
+                        return None, 408, "ScrapingBee render timed out"
 
-                if response.status == 403 and "Looks like you\'ve hit the concurrency limit" in response_text:
-                    logger.warning(f"[ScrapingBee] Достигнут лимит одновременных запросов для URL: {url}")
-                    return None, response.status, "ScrapingBee concurrency limit reached"
-                
-                if response.status == 422 and "Url is not valid" in response_text: # Пример обработки ошибки от ScrapingBee
-                    logger.warning(f"[ScrapingBee] URL '{url}' не валиден для ScrapingBee. Ответ: {response_text[:200]}")
-                    return None, response.status, f"ScrapingBee: Invalid URL - {response_text[:100]}"
+                    final_url = response.headers.get("X-ScrapingBee-Final-Url", url)
 
-                # Проверка на специфичную ошибку таймаута от ScrapingBee (если они ее возвращают в заголовках)
-                # Пример: 'X-ScrapingBee-Error': 'Timeout'
-                # Или если в теле ответа есть что-то подобное
-                if response.headers.get("X-ScrapingBee-Error") == "TIMEOUT" or "render timed out" in response_text.lower():
-                    logger.warning(f"[ScrapingBee] Таймаут при обработке URL: {url}")
-                    return None, 408, "ScrapingBee render timed out"
+                    if response.ok:  # Статусы 2xx
+                        logger.info(f"[ScrapingBee] Успешный запрос к {url}, статус {response.status}, финальный URL: {final_url}")
+                        html_content = response_text if return_text else None
+                        return html_content, response.status, final_url
+                    elif response.status in [403, 429]:  # Блокировка ботов
+                        logger.info(f"[ScrapingBee] Сайт {url} блокирует ботов (статус {response.status}), но сайт вероятно живой")
+                        # Возвращаем как успешный результат, так как это означает что сайт работает
+                        return None, response.status, final_url
+                    elif response.status == 500:
+                        logger.warning(f"[ScrapingBee] Внутренняя ошибка сервера для {url}: {response_text[:200]}")
+                        if attempt_num < len(attempts):
+                            continue  # Пробуем следующую конфигурацию
+                        last_error = f"ScrapingBee Error: Status {response.status} - {response_text[:100]}"
+                    else:
+                        logger.warning(f"[ScrapingBee] Ошибка при запросе к {url}: статус {response.status}, ответ: {response_text[:200]}")
+                        if attempt_num < len(attempts):
+                            continue  # Пробуем следующую конфигурацию
+                        last_error = f"ScrapingBee Error: Status {response.status} - {response_text[:100]}"
 
-
-                final_url = response.headers.get("X-ScrapingBee-Final-Url", url) # ScrapingBee может вернуть финальный URL
-
-                if response.ok: # Статусы 2xx
-                    logger.info(f"[ScrapingBee] Успешный запрос к {url}, статус {response.status}, финальный URL: {final_url}")
-                    html_content = response_text if return_text else None
-                    return html_content, response.status, final_url
-                else:
-                    logger.warning(f"[ScrapingBee] Ошибка при запросе к {url}: статус {response.status}, ответ: {response_text[:200]}")
-                    return None, response.status, f"ScrapingBee Error: Status {response.status} - {response_text[:100]}"
-
-        except aiohttp.ClientConnectorError as e:
-            logger.error(f"[ScrapingBee] Ошибка соединения для {url}: {e}")
-            return None, None, f"ScrapingBee Connection Error: {str(e)}"
-        except asyncio.TimeoutError:
-            logger.error(f"[ScrapingBee] Таймаут запроса к {url}")
-            return None, 408, f"ScrapingBee Request Timeout" # HTTP 408 Request Timeout
-        except Exception as e:
-            logger.error(f"[ScrapingBee] Неожиданная ошибка для {url}: {e}", exc_info=True)
-            return None, None, f"ScrapingBee Unexpected Error: {str(e)}"
+            except aiohttp.ClientConnectorError as e:
+                logger.error(f"[ScrapingBee] Ошибка соединения для {url}: {e}")
+                last_error = f"ScrapingBee Connection Error: {str(e)}"
+                if attempt_num < len(attempts):
+                    await asyncio.sleep(1)
+                    continue
+            except asyncio.TimeoutError:
+                logger.error(f"[ScrapingBee] Таймаут запроса к {url}")
+                last_error = f"ScrapingBee Request Timeout"
+                if attempt_num < len(attempts):
+                    continue
+            except Exception as e:
+                logger.error(f"[ScrapingBee] Неожиданная ошибка для {url}: {e}", exc_info=True)
+                last_error = f"ScrapingBee Unexpected Error: {str(e)}"
+                if attempt_num < len(attempts):
+                    continue
+        
+        # Если все попытки не удались
+        return None, None, last_error or "All ScrapingBee attempts failed"
 
     async def close_async(self):
         if self._session and not self._session.closed:

@@ -32,6 +32,9 @@ if str(CRITERIA_SRC_PATH) not in sys.path:
 if str(CRITERIA_PROCESSOR_PATH) not in sys.path:
     sys.path.insert(0, str(CRITERIA_PROCESSOR_PATH))
 
+# Импортируем правильные пути из data_io.py
+from src.data_io import SESSIONS_DIR, SESSIONS_METADATA_FILE
+
 def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 5):
     """Запускаем criteria_processor как отдельный процесс"""
     import subprocess
@@ -308,13 +311,12 @@ async def create_criteria_analysis_from_session(
     try:
         # Получаем информацию о существующей сессии
         import json
-        sessions_metadata_file = "/app/sessions_metadata.json"
         
-        # Загружаем метаданные сессий напрямую
+        # Загружаем метаданные сессий через data_io.py (работает и локально и в Docker)
         metadata = []
-        if os.path.exists(sessions_metadata_file):
+        if SESSIONS_METADATA_FILE.exists():
             try:
-                with open(sessions_metadata_file, 'r', encoding='utf-8') as f:
+                with open(SESSIONS_METADATA_FILE, 'r', encoding='utf-8') as f:
                     metadata = json.load(f)
                     if not isinstance(metadata, list):
                         metadata = []
@@ -332,22 +334,22 @@ async def create_criteria_analysis_from_session(
         
         # Ищем CSV файл с результатами в папке сессии
         import glob
-        session_dir = f"/app/output/sessions/{session_id}"
+        session_dir = SESSIONS_DIR / session_id  # Используем динамический путь
         
-        if not os.path.exists(session_dir):
+        if not session_dir.exists():
             raise HTTPException(status_code=404, detail=f"Session directory not found for session {session_id}")
         
         # Ищем CSV файлы с результатами
-        csv_files = glob.glob(f"{session_dir}/*results*.csv")
+        csv_files = list(session_dir.glob("*results*.csv"))
         if not csv_files:
             # Пытаемся найти любой CSV файл
-            csv_files = glob.glob(f"{session_dir}/*.csv")
+            csv_files = list(session_dir.glob("*.csv"))
         
         if not csv_files:
             raise HTTPException(status_code=404, detail=f"No CSV results file found for session {session_id}")
         
         # Берем самый новый файл
-        source_file_path = max(csv_files, key=os.path.getctime)
+        source_file_path = max(csv_files, key=lambda p: p.stat().st_ctime)
         
         # Генерируем ID новой сессии анализа критериев
         new_session_id = generate_criteria_session_id()

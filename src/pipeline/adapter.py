@@ -132,7 +132,7 @@ class PipelineAdapter:
             # Expected CSV field names
             # Используем переданный список или значение по умолчанию
             final_expected_csv_fieldnames = expected_csv_fieldnames or [
-                "Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID"
+                "Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID", "Quality_Status"
             ]
             
             # Run pipeline for input file

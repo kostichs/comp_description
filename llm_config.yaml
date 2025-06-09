@@ -5,6 +5,13 @@ temperature: 0.1
 # top_p: 0.9
 use_hubspot_integration: true
 
+# Настройки проверки качества описаний для HubSpot
+hubspot_quality_check:
+  enabled: true
+  min_description_length: 500  # Минимальная длина описания в символах
+  use_llm_validation: false    # LLM валидация отключена для скорости
+  skip_on_quality_failure: true  # Пропускать запись в HubSpot при плохом качестве
+
 messages:
   - role: system
     content: |
