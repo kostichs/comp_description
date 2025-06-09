@@ -1,0 +1,86 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "How To Set Up A Multiplayer Game",
+            "link": "https://edusupport.minecraft.net/hc/en-us/articles/360047555531-How-To-Set-Up-A-Multiplayer-Game",
+            "snippet": "Read the Configure settings for your Multiplayer game section to learn how to access your Join Code and change settings for your hosted world.",
+            "date": "May 27, 2025",
+            "position": 1
+        },
+        {
+            "title": "Play Minecraft: Bedrock Edition Online in a Multiplayer Server",
+            "link": "https://help.minecraft.net/hc/en-us/articles/4410316619533-Play-Minecraft-Bedrock-Edition-online-in-a-multiplayer-server",
+            "snippet": "If you're having issues joining a multiplayer world, see Troubleshooting Unable to Join Multiplayer Worlds in Minecraft. ... Xbox Game Studios Logo. © 2025 Mojang ...",
+            "position": 2
+        },
+        {
+            "title": "Managing Multiplayer Game Access for a Child Account in ...",
+            "link": "https://help.minecraft.net/hc/en-us/articles/24302916594701-Managing-Multiplayer-Game-Access-for-a-Child-Account-in-Minecraft",
+            "snippet": "Managing Multiplayer Game Access for a Child Account in Minecraft. Minecraft allows you to manage your child's ability to find friends and join them in ...",
+            "position": 3
+        },
+        {
+            "title": "Multiplayer Support",
+            "link": "https://help.minecraft.net/hc/en-us/sections/27166460834061",
+            "snippet": "Multiplayer Support. Hello! Welcome to the Minecraft Help Center. Search ... Xbox Game Studios Logo. © 2025 Mojang AB. TM Microsoft Corporation. Minecraft ...",
+            "position": 4
+        },
+        {
+            "title": "How to connect to Multiplayer games from different networks",
+            "link": "https://edusupport.minecraft.net/hc/en-us/articles/360047118592-How-to-connect-to-Multiplayer-games-from-different-networks",
+            "snippet": "The How to Set up a Multiplayer Game article walks you through many aspects of multiplayer, such as how to host and join a game, as well as managing players ...",
+            "date": "May 7, 2024",
+            "position": 5
+        },
+        {
+            "title": "Play Minecraft: Java Edition Online in a Multiplayer Server",
+            "link": "https://help.minecraft.net/hc/en-us/articles/32899741198989-How-to-Join-a-Server-with-Friends-in-Minecraft-Java-Edition",
+            "snippet": "Troubleshoot Minecraft Network Connection Errors · Troubleshooting Multiplayer Game Issues in Minecraft: Java Edition ... In-Game Purchases / Users Interact.",
+            "position": 6
+        },
+        {
+            "title": "Welcome to the Minecraft Official Site | Minecraft",
+            "link": "https://www.minecraft.net/",
+            "snippet": "Game on. adidas x Minecraft team up to bring you collectible in-game gear and ... Single-player + Multiplayer · A Hero stands between two opposing armies ...",
+            "position": 7
+        },
+        {
+            "title": "Play Minecraft: Java Edition on a Local Area Network (LAN)",
+            "link": "https://help.minecraft.net/hc/en-us/articles/4410317081741-How-to-Play-Minecraft-Java-Edition-Multiplayer",
+            "snippet": "Host a Local Area Network (LAN) multiplayer game. The host can start a multiplayer game and play in the world on the same computer. Verify that all players ...",
+            "position": 8
+        },
+        {
+            "title": "Requirements to Play Minecraft Multiplayer Games",
+            "link": "https://help.minecraft.net/hc/en-us/articles/35930809028749-Requirements-to-Play-Minecraft-Multiplayer-Games",
+            "snippet": "Active online subscription required for consoles: If you're playing Minecraft multiplayer on a console, you must be subscribed to Xbox Game Pass Core, Nintendo ...",
+            "position": 9
+        },
+        {
+            "title": "Minecraft Dungeons Multiplayer and Cross-Platform Play",
+            "link": "https://help.minecraft.net/hc/en-us/articles/360043512112-Minecraft-Dungeons-Multiplayer-and-Cross-Platform-Play",
+            "snippet": "You can also start an online game by yourself and have others join your quest for glory while your game is in progress. Enable Cross-Platform Multiplayer Play.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Video game multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Multiplayer service game xbox"
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,84 @@
+{
+    "searchParameters": {
+        "q": "site:ubisoft.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Multiplayer - Games",
+            "link": "https://store.ubisoft.com/us/genre-multiplayer?lang=en_US",
+            "snippet": "Multiplayer ; Tom Clancy's Rainbow Six Siege · Standard Edition. $19.99 ; Tom Clancy's Ghost Recon Breakpoint Gold Edition · Gold Edition. $20.00 ; Tom Clancy's ...",
+            "position": 1
+        },
+        {
+            "title": "Multiplayer in The Settlers: New Allies | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/the-settlers-new-allies/gameplay/article/multiplayer-in-the-settlers-new-allies/000104168",
+            "snippet": "You can enjoy The Settlers: New Allies with up to eight players in multiplayer activities online. PvP Compete on your own or with friends against other players.",
+            "position": 2
+        },
+        {
+            "title": "Live Show mode in Family Feud",
+            "link": "https://www.ubisoft.com/es-es/help/family-feud/gameplay/article/live-show-mode-in-family-feud/000079173",
+            "snippet": "Family Feud includes a Live Show mode which allows the host to compete with viewers of their YouTube or Twitch stream.",
+            "position": 3
+        },
+        {
+            "title": "The Settlers Online - Free city-building online strategy browser ...",
+            "link": "https://connect.ubisoft.com/refresh.html?env=PROD&appId=39164658-8187-4bf4-b46c-375f68356e3b&genomeId=978da00d-2533-4af4-a550-3ba09289084e&nextUrl=https%3A%2F%2Fwww.thesettlersonline.net%2Fen&sendBackQParams=false",
+            "snippet": "The Settlers Online. CREATE AN ACCOUNTLogin. Before starting the account creation we have to know about your age to adapt our services. Your date of birth (DD ...",
+            "position": 4
+        },
+        {
+            "title": "Multiplayer in The Crew 2",
+            "link": "https://www.ubisoft.com/en-gb/help/the-crew-2/gameplay/article/multiplayer-in-the-crew-2/000062414",
+            "snippet": "Live Battle Compete online with up to eight players in this multiplayer mode. Street Racing, Offroad, Freestyle, and Pro Racing are all part of your career ...",
+            "position": 5
+        },
+        {
+            "title": "Multiplayer availability on Ubisoft games purchased from ...",
+            "link": "https://www.ubisoft.com/en-us/help/connectivity-and-performance/article/multiplayer-availability-on-ubisoft-games-purchased-from-approved-retailers/000061893",
+            "snippet": "When purchasing PC Ubisoft games through an approved retailer, such as Epic Games or Steam, you can access locale or online multiplayer modes with your Ubisoft ...",
+            "position": 6
+        },
+        {
+            "title": "TRIVIAL PURSUIT Live! 2 on Xbox, PS4, & Switch (US)",
+            "link": "https://www.ubisoft.com/en-us/game/trivial-pursuit-2/twitch-mode",
+            "snippet": "TRIVIAL PURSUIT Live! 2 Twitch Mode allows streamers to compete against their viewers thanks to a voting system in the Twitch chat.",
+            "position": 7
+        },
+        {
+            "title": "Multiplayer in Trackmania | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/trackmania/gameplay/article/multiplayer-in-trackmania/000097467",
+            "snippet": "You can enjoy Trackmania with up to 100 players per server in multiplayer activities online, or locally. These game modes are available depending on your ...",
+            "position": 8
+        },
+        {
+            "title": "Online Modes in Watch Dogs 2 | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/watch-dogs-2/gameplay/article/online-modes-in-watch-dogs-2/000060513",
+            "snippet": "... Live subscription if playing on console. ... Select Join Game to enter their game, or Invite to Co-op to invite them to yours. Online Multiplayer Settings in ...",
+            "position": 9
+        },
+        {
+            "title": "Multiplayer in The Crew Motorfest | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-gb/help/the-crew-motorfest/gameplay/article/multiplayer-in-the-crew-motorfest/000105252",
+            "snippet": "Multiplayer in The Crew Motorfest. You can enjoy The Crew Motorfest with up to 32 players online as part of Live Competitions. These game modes will be ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,75 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"video\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Capcom Video Policy",
+            "link": "https://www.capcom.com/video-policy/",
+            "snippet": "Capcom Video Policy. Last updated March 15, 2021. Here is a PDF version of our Video Policy for those who wish to save or print the contents of this page.",
+            "position": 1
+        },
+        {
+            "title": "Behind the Scenes of the Ode to Joy (Resident Evil Ver. ...",
+            "link": "https://game.capcom.com/residentevil/sp/uk/umbrella-20241120160000.html?ref=content_link_right",
+            "snippet": "Video! Hello, everyone! In this issue, we'll be diving into the concepts that inspired the new video \"Ode to Joy (Resident Evil Ver.)\". If ...",
+            "date": "Nov 20, 2024",
+            "position": 2
+        },
+        {
+            "title": "Resident Evil Portal | CAPCOM",
+            "link": "https://game.capcom.com/residentevil/sp/en/",
+            "snippet": "Rejoice in Terror: Behind the Scenes of the Ode to Joy (Resident Evil Ver.) Video! Nov.20.2024 UNDER THE UMBRELLA · Jill Valentine: Famed Operator, Storied ...",
+            "position": 3
+        },
+        {
+            "title": "The Greatest Partners in Resident Evil",
+            "link": "https://game.capcom.com/residentevil/en/news_topics-201511121213.html",
+            "snippet": "As mentioned in the first few seconds, there are plenty of spoilers in the video, but I'm guessing that's not going to be a problem for most of you.",
+            "position": 4
+        },
+        {
+            "title": "Capcom",
+            "link": "https://www.capcom.com/",
+            "snippet": "Now an industry leader in the video game industry, Capcom's legacy of historic franchises in home and arcade gaming are testaments to an unparalleled commitment ...",
+            "position": 5
+        },
+        {
+            "title": "Resident Evil 2 - Story Trailer (TGS 2018)",
+            "link": "https://game.capcom.com/residentevil/en/redirect-outside.html?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DKyGk4KTJu5w&ref=tw",
+            "snippet": "This video may be inappropriate for some users. Sign in. Resident Evil 2 - Story Trailer (TGS 2018). 275K views · 6 years ago ...more ...",
+            "date": "Sep 19, 2018",
+            "position": 6
+        },
+        {
+            "title": "Movies | Resident Evil Village Official Web Manual",
+            "link": "https://game.capcom.com/manual/village/en/ps5/page/7/2",
+            "snippet": "From Movies, you will be able to watch a recap video of the events from Resident Evil 7 biohazard. More bonus movies will unlock once you've completed the game.",
+            "position": 7
+        },
+        {
+            "title": "Enter the Ring! G | CAPCOM:Shadaloo C.R.I.",
+            "link": "https://game.capcom.com/cfn/sfv/promotion/g?lang=en",
+            "snippet": "This self-proclaimed \"President of the World\" appeared suddenly one day on the video site FooTube. Boasting himself to be the pinnacle of humanity on Earth ...",
+            "position": 8
+        },
+        {
+            "title": "Capcom Elections: Round 2 Result",
+            "link": "https://captown.capcom.com/en/elections/4",
+            "snippet": "Watch the video. Go straight to the results. Watch the video again. SKIP. Thank you to everyone for voting! WINNER. Sengoku Basara Special Exhibit!",
+            "position": 9
+        },
+        {
+            "title": "Capcom Press Release",
+            "link": "https://www.capcom.com/capcom/press_releases/lp_best_leipzig.html",
+            "snippet": "SUNNYVALE, Calif Sept 12, 2006 - Capcom , a leading worldwide developer and publisher of video games, today announced that its epic sci-fi action shooter ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

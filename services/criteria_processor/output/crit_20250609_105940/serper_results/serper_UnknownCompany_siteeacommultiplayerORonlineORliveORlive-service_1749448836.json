@@ -1,0 +1,84 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Multiplayer Video Games - Official EA Site",
+            "link": "https://www.ea.com/games/library/multiplayer",
+            "snippet": "Explore multiplayer video games for from Electronic Arts, a leading ... Online Service Updates Security · Your Privacy Choices. Cookie Preferences.",
+            "position": 1
+        },
+        {
+            "title": "New Live Service Updates to EA Games",
+            "link": "https://www.ea.com/news/new-live-service-updates-to-ea-games",
+            "snippet": "New Live Service Updates to EA Games · Celebrate EA PLAY through free trials, updates across console and mobile games and Play to Give Challenges! · Celebrate EA ...",
+            "position": 2
+        },
+        {
+            "title": "EA Play Live - EA Sports - Official EA Site",
+            "link": "https://www.ea.com/ea-play-live/10",
+            "snippet": "EA Play Live Close. Spotlight Series News. Relive The Event ... Online Service Updates Security · Your Privacy Choices. Cookie Preferences.",
+            "position": 3
+        },
+        {
+            "title": "Re: Online multiplayer - F1® 23",
+            "link": "https://forums.ea.com/discussions/f1-23-en/re-online-multiplayer/8403131",
+            "snippet": "Re: Online multiplayer. On the Home Screen you can start a League. Invite your friends and lets go. Like. 0. Reply. 3 Replies. Replies sorted by Oldest.",
+            "position": 4
+        },
+        {
+            "title": "Online Video Games - Official EA Site",
+            "link": "https://www.ea.com/games/library/online",
+            "snippet": "Explore Online video games from Electronic Arts, a leading publisher of games for the PC, consoles and mobile.",
+            "position": 5
+        },
+        {
+            "title": "Cant play any online modes?? - NHL 25",
+            "link": "https://forums.ea.com/discussions/nhl-25-technical-issues-en/cant-play-any-online-modes/4973426",
+            "snippet": "Every time I load into an online mode, I get an error code. For example ... multiplayer · playstation. Like. 3. Reply. No RepliesBe the first to reply. About ...",
+            "position": 6
+        },
+        {
+            "title": "Re: Online Multiplayer Mode is Dead (for PC at least)",
+            "link": "https://forums.ea.com/discussions/pga-tour-franchise-discussion-en/re-online-multiplayer-mode-is-dead-for-pc-at-least/8387658",
+            "snippet": "Re: Online Multiplayer Mode is Dead (for PC at least). I think you're making an awfully big assumption that Tour is more popular than Pro. In my experience ...",
+            "position": 7
+        },
+        {
+            "title": "Launch: Anthem - Our Live Service Begins",
+            "link": "https://www.ea.com/games/anthem/news/anthem-launch-live-service",
+            "snippet": "This is just the start of a rich Live Service we'll be creating together. ... Legal & Privacy Online Service Updates User Agreement Privacy & Cookie Policy (Your ...",
+            "position": 8
+        },
+        {
+            "title": "Re: Multiplayer - do we need to pay for it on PC? Please ...",
+            "link": "https://forums.ea.com/discussions/star-wars-games-discussion-en/re-multiplayer---do-we-need-to-pay-for-it-on-pc-please-answer/10553176",
+            "snippet": "... multiplayer or subscribe to access multiplayer at \"no additional cost\". ... Or can I buy the game and be able to play online without paying for anything but the ...",
+            "position": 9
+        },
+        {
+            "title": "NBA LIVE 19: THE ONE Like You've Never Seen It Before",
+            "link": "https://www.ea.com/news/feature-the-one",
+            "snippet": "... online or offline, Co-op Live Events or multiplayer Live Run,” said NBA LIVE Creative Director Ryan Santos when I asked about THE ONE in NBA LIVE 18. “I'm ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        }
+    ],
+    "credits": 1
+}

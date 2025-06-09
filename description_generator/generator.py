@@ -26,28 +26,28 @@ from description_generator.schemas import (
     generate_text_summary_from_json_async
 )
 
-# Configure logging
+# Настройка логирования
 logger = logging.getLogger(__name__)
 
-# Load API keys from .env
+# Загружаем API-ключи из .env
 load_dotenv()
 
-# Use API key directly from environment variables if not passed in constructor
+# Используем API-ключ напрямую из переменных окружения, если он не передан в конструкторе
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 class DescriptionGenerator:
     """
-    Company description generator that uses data collected by finders
-    and OpenAI model to create structured, informative descriptions.
+    Генератор описаний компаний, используя данные, собранные финдерами,
+    и OpenAI модель для создания структурированных, информативных описаний.
     """
     
     def __init__(self, api_key: str, model_config: Dict[str, Any] = None):
         """
-        Initialize description generator with API key and optional model configuration.
+        Инициализирует генератор описаний с API ключом и опциональной конфигурацией модели.
         
         Args:
-            api_key: OpenAI API key
-            model_config: Model configuration (optional)
+            api_key: API ключ для OpenAI
+            model_config: Конфигурация модели (опционально)
         """
         self.api_key = api_key
         self.client = AsyncOpenAI(api_key=api_key)

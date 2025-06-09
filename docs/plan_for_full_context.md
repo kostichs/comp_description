@@ -1,32 +1,33 @@
-To obtain more complete answers from search models and extract maximum information from found sources, I propose the following options:
 
-1. **Parsing found sources**:
-   - Yes, using requests and BeautifulSoup to parse URLs from sources is a very effective approach
-   - Can create a new finder `SourceContentFinder` that will take a list of URLs from `LLMDeepSearchFinder` and extract content
-   - Important: use your existing ScrapingBeeClient to bypass site restrictions
+Для получения более полных ответов от поисковых моделей и извлечения максимальной информации из найденных источников предлагаю следующие варианты:
 
-2. **Multi-stage LLM query process**:
-   - First query (current) - getting basic information
-   - Second query - gap analysis: "Identify what important information is missing"
-   - Third query - targeted search for missing information
+1. **Парсинг найденных источников**:
+   - Да, использование requests и BeautifulSoup для парсинга URL из sources - очень эффективный подход
+   - Можно создать новый финдер `SourceContentFinder`, который будет принимать список URLs из `LLMDeepSearchFinder` и извлекать содержимое
+   - Важно: использовать ваш существующий ScrapingBeeClient для обхода ограничений сайтов
 
-3. **Modifying prompt in LLMDeepSearchFinder**:
-   - Remove the last part "Provide COMPLETE and THOROUGH information..."
-   - Add: "Quote textual fragments from sources and provide exact quotes"
-   - Indicate to the model that priority is quantity of information, not its structuring
+2. **Многоэтапный процесс запросов к LLM**:
+   - Первый запрос (текущий) - получение основной информации
+   - Второй запрос - анализ пробелов: "Выявите, какая важная информация отсутствует"
+   - Третий запрос - целенаправленный поиск отсутствующей информации
 
-4. **Processing source content**:
-   - Extract text from HTML sources
-   - Split into chunks of 8000-10000 characters
-   - For each chunk, ask LLM: "Extract all useful information about {company_name} from the following fragment"
-   - Combine results into a single document
+3. **Модификация промпта в LLMDeepSearchFinder**:
+   - Удалить последнюю часть "Provide COMPLETE and THOROUGH information..."
+   - Добавить: "Цитируйте текстуальные фрагменты из источников и приводите точные цитаты"
+   - Указать модели, что приоритет - количество информации, а не её структурирование
 
-5. **Modifying URL extractor**:
-   - Add parameters to `ScrapingBeeClient` for saving full HTML pages
-   - Create local storage for HTML content from sources
-   - Implement extraction chain: URL → HTML → text → analytics
+4. **Обработка контента источников**:
+   - Извлечь текст из HTML источников
+   - Разбить на чанки по 8000-10000 символов
+   - Для каждого чанка задать вопрос LLM: "Извлеките всю полезную информацию о {company_name} из следующего фрагмента"
+   - Объединить результаты в единый документ
 
-6. **Concrete solution for direct implementation**:
+5. **Модификация URL экстрактора**:
+   - Добавить в `ScrapingBeeClient` параметры для сохранения полных HTML-страниц
+   - Создать локальное хранилище HTML содержимого источников
+   - Реализовать цепочку извлечения: URL → HTML → текст → аналитика
+
+6. **Конкретное решение для прямой реализации**:
 ```python
 async def extract_source_content(sources, company_name, sb_client):
     all_extracted_contents = []
@@ -37,17 +38,17 @@ async def extract_source_content(sources, company_name, sb_client):
             continue
             
         try:
-            # Use ScrapingBee to bypass restrictions
+            # Использование ScrapingBee для обхода ограничений
             response = sb_client.get(url, params={
                 'extract_rules': {'text': 'body'},
                 'wait': '5000'
             })
             
             if response.ok:
-                # Extract main text
+                # Извлечение основного текста
                 content = response.text
                 
-                # If content is too large, split into parts
+                # Если контент слишком большой, разбиваем на части
                 if len(content) > 10000:
                     chunks = [content[i:i+10000] for i in range(0, len(content), 10000)]
                 else:
@@ -59,9 +60,9 @@ async def extract_source_content(sources, company_name, sb_client):
                     "content": chunks
                 })
         except Exception as e:
-            logger.error(f"Error extracting content from {url}: {e}")
+            logger.error(f"Ошибка при извлечении контента из {url}: {e}")
     
     return all_extracted_contents
 ```
 
-Which of these solutions would you like to implement first?
+Какое из этих решений вы хотели бы реализовать в первую очередь?

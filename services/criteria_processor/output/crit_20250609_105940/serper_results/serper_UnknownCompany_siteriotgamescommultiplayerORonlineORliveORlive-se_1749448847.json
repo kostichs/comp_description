@@ -1,0 +1,96 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Now Streaming on Riot Mobile",
+            "link": "https://www.riotgames.com/en/news/now-streaming-on-riot-mobile",
+            "snippet": "Now you can check the schedule, view past matches, and watch live matches on the go. You can even earn rewards by watching select matches on ...",
+            "date": "Dec 13, 2022",
+            "position": 1
+        },
+        {
+            "title": "Live community events - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/sections/115002165607-Live-community-events",
+            "snippet": "Live community events. Events, apps, promos, & merch. League of Legends Basics · Account recovery, safety, & data · Ranked gameplay, honor, & rewards · Lag, low ...",
+            "position": 2
+        },
+        {
+            "title": "URF Academy",
+            "link": "https://www.riotgames.com/en/urf-academy",
+            "snippet": "URF Academy Online. What's URF Academy? Welcome to the URF Academy, a ... multiplayer game. Up Next: The Curriculum · Creative Commons License The URF ...",
+            "position": 3
+        },
+        {
+            "title": "Riot Mobile Features - VALORANT Support",
+            "link": "https://support-valorant.riotgames.com/hc/en-us/articles/4407665971603-Riot-Mobile-Features",
+            "snippet": "With Riot Mobile, you'll be able to chat with friends regardless of what game they're playing or where they live, receive hot-off-the-press news about the Riot ...",
+            "date": "Apr 24, 2025",
+            "position": 4
+        },
+        {
+            "title": "League Displays",
+            "link": "https://displays.riotgames.com/",
+            "snippet": "Privacy Notice · Terms of Service · ESRB. Blood Fantasy Violence Mild Suggestive Themes Use of Alcohol and Tobacco Online Interactions Not Rated by the ESRB.",
+            "position": 5
+        },
+        {
+            "title": "Game Designer II - League of Legends, Summoner's Rift ...",
+            "link": "https://www.riotgames.com/en/work-with-us/job/6493907/game-designer-ii-league-of-legends-summoners-rift-team-live-pod-los-angeles-usa",
+            "snippet": "As a Game Designer II on the League of Legends Summoner's Rift Team Live Pod, you will be responsible for optimizing the live game experience across several ...",
+            "position": 6
+        },
+        {
+            "title": "Riot Mobile - Apps on Google Play",
+            "link": "https://qrlogin.riotgames.com/riotmobile/",
+            "snippet": "... lets me know who is online, in game, etc. 26 people found this review helpful. Did you find this helpful? Yes. No. A Google user. more_vert. Flag inappropriate.",
+            "rating": 4.6,
+            "ratingCount": 263713,
+            "position": 7
+        },
+        {
+            "title": "Running Online Services at Riot: Part I",
+            "link": "https://technology.riotgames.com/news/running-online-services-riot-part-i",
+            "snippet": "Running Online Services at Riot: Part I ... It then continually sweeps both the live and desired state of the cluster to figure out what actions ...",
+            "date": "Sep 22, 2016",
+            "position": 8
+        },
+        {
+            "title": "Manager, Software Engineering - VALORANT, Live Design",
+            "link": "https://www.riotgames.com/en/work-with-us/job/6302382/manager-software-engineering-valorant-live-design-los-angeles-usa",
+            "snippet": "As a Manager of Software Engineering on the Live Design team, you will help Riot expand and scale our newest AAA title.",
+            "position": 9
+        },
+        {
+            "title": "Offices",
+            "link": "https://www.riotgames.com/en/work-with-us/offices",
+            "snippet": "I don't live in any of the cities with a Riot office. Is there an opportunity to work remotely? We take a hybrid approach by entrusting teams to decide the ...",
+            "sitelinks": [
+                {
+                    "title": "Los Angeles, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/los-angeles"
+                },
+                {
+                    "title": "SF Bay Area, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/sf-bay-area"
+                },
+                {
+                    "title": "St. Louis, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/st-louis"
+                },
+                {
+                    "title": "Seoul, Korea",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/seoul"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

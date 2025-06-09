@@ -1,0 +1,31 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com \"Add to Cart\", \"Checkout\" buttons",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Nintendo Support - Nintendo",
+            "link": "https://www.nintendo.com/au/support/articles/?articleTags=Orders&hardwareTags=My%20Nintendo%20Store&srsltid=AfmBOorecMcrrjnOV4aPZyLaAGcuPxB5kN16AgQhpOUF0pDe6xkAMFxA",
+            "snippet": "If the content of the cart is correct, click the Proceed to Checkout button to enter the checkout process. ... Add to Cart button will not ...",
+            "position": 1
+        },
+        {
+            "title": "What are each of the steps from placing an order until ...",
+            "link": "https://www.nintendo.com/au/support/articles/what-are-each-of-the-steps-from-placing-an-order-until-shipment/?srsltid=AfmBOopbL4cnWtugfKW7hqi_JDrdyCeOm3x6kqdwAkHXSnrNyAcwYNbK",
+            "snippet": "Click the Add to Cart button on the product ... If the content of the cart is correct, click the Proceed to Checkout button to enter the checkout process.",
+            "position": 2
+        },
+        {
+            "title": "Nintendo Support - Nintendo",
+            "link": "https://www.nintendo.com/au/support/articles/?hardwareTags=Click%20%26%20Collect&hardwareTags=My%20Nintendo%20Store&srsltid=AfmBOorzTShhAAyldt6ms6R0w9Z7-8wH_y-A6ITAvj7ZgH9Lv1i62GKE",
+            "snippet": "Click the Add to Cart ... If the content of the cart is correct, click the Proceed to Checkout button to enter the checkout process.",
+            "position": 3
+        }
+    ],
+    "credits": 1
+}

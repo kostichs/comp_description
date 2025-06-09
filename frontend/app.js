@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded'); // Debug info
+    console.log('DOM Content Loaded'); // Отладочная информация
 
     // DOM Elements
     const sessionSelect = document.getElementById('sessionSelect');
@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const dropZoneContainer = document.getElementById('dropZoneContainer');
     const customChooseFileButton = document.getElementById('customChooseFileButton');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const charCounterContext = document.getElementById('charCounterContext');
+    const charCounterContext = document.getElementById('charCounterContext'); // Получаем элемент счетчика
 
-    console.log('Elements found:', { // Debug info
+    console.log('Elements found:', { // Отладочная информация
         sessionSelect: !!sessionSelect,
         newSessionBtn: !!newSessionBtn,
         uploadForm: !!uploadForm,
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dropZoneContainer: !!dropZoneContainer,
         customChooseFileButton: !!customChooseFileButton,
         fileNameDisplay: !!fileNameDisplay,
-        charCounterContext: !!charCounterContext // Log the counter
+        charCounterContext: !!charCounterContext // Логируем счетчик
     });
 
     let currentSessionId = null;
@@ -51,12 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Loading Indicator Functions ---
     function showLoading() {
-        console.log('Showing loading indicator'); // Debug info
+        console.log('Showing loading indicator'); // Отладочная информация
         if (loadingIndicator) loadingIndicator.style.display = 'block';
     }
 
     function hideLoading() {
-        console.log('Hiding loading indicator'); // Debug info
+        console.log('Hiding loading indicator'); // Отладочная информация
         if (loadingIndicator) loadingIndicator.style.display = 'none';
     }
 
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- UI State Functions ---
     async function showNewSessionUI() {
-        console.log('Showing new session UI'); // Debug info
+        console.log('Showing new session UI'); // Отладочная информация
         
         // Отменяем активную сессию если она есть
         if (currentSessionId) {
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Сбрасываем состояние HubSpot toggle на включенное и активируем его
         const writeToHubspotCheckbox = document.getElementById('writeToHubspot');
         if (writeToHubspotCheckbox) {
-            writeToHubspotCheckbox.checked = true;
+            writeToHubspotCheckbox.checked = false;
         }
         enableHubSpotToggle();
         
@@ -162,19 +162,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showCurrentSessionUI(sessionId) {
-        console.log('Showing current session UI:', sessionId); // Debug info
+        console.log('Showing current session UI:', sessionId); // Отладочная информация
         if (uploadForm) uploadForm.style.display = 'none';
         if (sessionControls) sessionControls.style.display = 'none'; // Скрываем sessionControls по умолчанию
         currentSessionId = sessionId;
     }
 
     function updateStatus(message) {
-        console.log('Updating status:', message); // Debug info
+        console.log('Updating status:', message); // Отладочная информация
         if (statusDisplay) statusDisplay.textContent = message;
     }
 
     function clearResultsTable() {
-        console.log('Clearing results table'); // Debug info
+        console.log('Clearing results table'); // Отладочная информация
         if (resultsTableBody) resultsTableBody.innerHTML = '';
         // Также очищаем статус
         if (statusDisplay) statusDisplay.textContent = '';
@@ -182,15 +182,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
     if (newSessionBtn) {
-        console.log('Adding click listener to newSessionBtn'); // Debug info
+        console.log('Adding click listener to newSessionBtn'); // Отладочная информация
         newSessionBtn.addEventListener('click', async () => {
-            console.log('New Session button clicked'); // Debug info
+            console.log('New Session button clicked'); // Отладочная информация
             await showNewSessionUI();
         });
     }
 
     if (uploadForm) {
-        console.log('Adding submit listener to uploadForm'); // Debug info
+        console.log('Adding submit listener to uploadForm'); // Отладочная информация
         uploadForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             showLoading();
@@ -201,40 +201,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 progressStatus.textContent = 'Processing...';
             }
             const formData = new FormData();
-            
-            // Отладка для диагностики проблемы с multipart
-            console.log('Creating FormData with following data:');
-            console.log('inputFile element:', inputFile);
-            console.log('inputFile.files:', inputFile ? inputFile.files : 'inputFile is null');
-            console.log('inputFile.files[0]:', inputFile && inputFile.files[0] ? inputFile.files[0] : 'No file selected');
-            
             if (inputFile && inputFile.files[0]) {
                 formData.append('file', inputFile.files[0]);
-                console.log('File appended to FormData:', inputFile.files[0].name);
-            } else {
-                console.error('No file selected or inputFile element not found!');
             }
-            
             if (contextTextarea && contextTextarea.value.trim() !== "") {
                 formData.append('context_text', contextTextarea.value.trim());
-                console.log('Context text appended to FormData');
             }
 
             // LLM Deep Search pipeline всегда включен
             formData.append('run_llm_deep_search_pipeline', true);
-            console.log('run_llm_deep_search_pipeline appended to FormData');
             
             // Добавляем состояние HubSpot toggle
             const writeToHubspotCheckbox = document.getElementById('writeToHubspot');
             if (writeToHubspotCheckbox) {
                 formData.append('write_to_hubspot', writeToHubspotCheckbox.checked);
-                console.log('write_to_hubspot appended to FormData:', writeToHubspotCheckbox.checked);
-            }
-            
-            // Отладка содержимого FormData
-            console.log('FormData contents:');
-            for (let [key, value] of formData) {
-                console.log(key, value);
             }
 
             try {
@@ -458,26 +438,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = escapeHtml(row.Company_Name || '');
             console.log('Adding to table:', name); // <--- ДОБАВЛЕН ЭТОТ ЛОГ
         
-            // Description (с переводом переносов строк в <br>)
-            let descriptionHtml = escapeHtml(row.Description || '');
-            descriptionHtml = descriptionHtml.replace(/\n/g, '<br>');
-        
-            // Добавляем ссылку на официальный сайт
-            if (row.Official_Website && row.Official_Website !== 'Not found') {
-                const link = escapeHtml(row.Official_Website);
-                descriptionHtml += `<br><br>Homepage: <a href="${link}" target="_blank">${link}</a>`;
-            }
-        
-            // Добавляем ссылку на LinkedIn
-            if (row.LinkedIn_URL && row.LinkedIn_URL !== 'Not found') {
-                const link = escapeHtml(row.LinkedIn_URL);
-                descriptionHtml += `<br>LinkedIn: <a href="${link}" target="_blank">${link}</a>`;
-            }
-        
-            tr.innerHTML = `
-                <td>${name}</td>
-                <td>${descriptionHtml}</td>
-            `;
+                    // Description (с переводом переносов строк в <br>)
+        let descriptionHtml = escapeHtml(row.Description || '');
+        descriptionHtml = descriptionHtml.replace(/\n/g, '<br>');
+    
+        // Добавляем ссылку на официальный сайт
+        if (row.Official_Website && row.Official_Website !== 'Not found') {
+            const link = escapeHtml(row.Official_Website);
+            descriptionHtml += `<br><br>Homepage: <a href="${link}" target="_blank">${link}</a>`;
+        }
+    
+        // Добавляем ссылку на LinkedIn
+        if (row.LinkedIn_URL && row.LinkedIn_URL !== 'Not found') {
+            const link = escapeHtml(row.LinkedIn_URL);
+            descriptionHtml += `<br>LinkedIn: <a href="${link}" target="_blank">${link}</a>`;
+        }
+    
+        tr.innerHTML = `
+            <td>${name}</td>
+            <td>${descriptionHtml}</td>
+        `;
             resultsTableBody.appendChild(tr);
         });
     }

@@ -31,19 +31,19 @@ class HubSpotIntegrationService:
                  use_integration: bool = True,
                  max_age_months: int = 6):
         """
-        Initialize integration module.
+        Инициализация модуля интеграции.
         
         Args:
-            api_key (str, optional): HubSpot API key. If not specified, 
-                                     will be taken from HUBSPOT_API_KEY environment variable.
-            use_integration (bool): Flag to enable/disable integration.
-            max_age_months (int): Maximum description age in months.
+            api_key (str, optional): API ключ для HubSpot. Если не указан, 
+                                     будет взят из переменной окружения HUBSPOT_API_KEY.
+            use_integration (bool): Флаг для включения/отключения интеграции.
+            max_age_months (int): Максимальный возраст описания в месяцах.
         """
         self.use_integration = use_integration
         self.adapter = None
         
         if use_integration:
-            # Use dynamic import to avoid circular dependency
+            # Используем динамический импорт для избежания циклической зависимости
             from src.integrations.hubspot.adapter import HubSpotAdapter
             self.adapter = HubSpotAdapter(api_key=api_key, max_age_months=max_age_months)
             logger.info(f"HubSpot integration initialized with max age: {max_age_months} months")

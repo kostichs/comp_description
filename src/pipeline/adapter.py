@@ -36,7 +36,7 @@ from src.pipeline.utils.logging import setup_session_logging
 logger = logging.getLogger(__name__)
 
 # Constants
-DEFAULT_BATCH_SIZE = 5
+DEFAULT_BATCH_SIZE = 2
 
 class PipelineAdapter:
     """
@@ -58,9 +58,9 @@ class PipelineAdapter:
         """
         self.config_path = config_path
         self.input_file = input_file or "test_companies.csv"
-        self.company_col_index = 0  # By default, company names are in the first column
-        self.session_id = session_id  # Save session_id if passed
-        self.use_raw_llm_data_as_description = use_raw_llm_data_as_description  # Save flag
+        self.company_col_index = 0  # По умолчанию названия компаний в первом столбце
+        self.session_id = session_id  # Сохраняем session_id, если он передан
+        self.use_raw_llm_data_as_description = use_raw_llm_data_as_description  # Сохраняем флаг
         
         self.llm_config = {}
         self.api_keys = {
@@ -117,14 +117,15 @@ class PipelineAdapter:
         """
         await self.setup()
         
-        # Create SSL context that doesn't verify certificates
-        ssl_context = ssl.create_default_context()
-        ssl_context.check_hostname = False
-        ssl_context.verify_mode = ssl.CERT_NONE
-        
-        # Create connector with SSL context
-        connector = aiohttp.TCPConnector(ssl=ssl_context)
-        
+        # Создаем коннектор с обычными ограничениями для основного pipeline
+        connector = aiohttp.TCPConnector(
+            limit=50,  # Обычное количество соединений для основного pipeline
+            limit_per_host=10,  # Обычное количество соединений на хост
+            ttl_dns_cache=300,
+            use_dns_cache=True,
+            keepalive_timeout=30,
+            enable_cleanup_closed=True
+        )
         async with aiohttp.ClientSession(connector=connector) as session:
             self.aiohttp_session = session
             
@@ -144,8 +145,8 @@ class PipelineAdapter:
                 context_text=None, # В базовом адаптере контекст не передается так
                 company_col_index=self.company_col_index,
                 aiohttp_session=session, # Используем созданную сессию
-                sb_client=self.sb_client, # Should be initialized in setup
-                openai_client=self.openai_client, # Should be initialized in setup
+                sb_client=self.sb_client, # Должен быть инициализирован в setup
+                openai_client=self.openai_client, # Должен быть инициализирован в setup
                 serper_api_key=self.api_keys.get("serper"), # Берем из self.api_keys
                 expected_csv_fieldnames=final_expected_csv_fieldnames, # <--- Передаем актуальный список
                 broadcast_update=None, # В базовом адаптере broadcast_update не используется напрямую

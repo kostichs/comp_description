@@ -1,0 +1,98 @@
+{
+    "searchParameters": {
+        "q": "site:hoyoverse.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Zenless Zone Zero Official Website – Version 2.0 \"Where ...",
+            "link": "https://zenless.hoyoverse.com/",
+            "snippet": "Zenless Zone Zero Version 2.0 \"Where Clouds Embrace the Dawn\" is now live ... Online Services are trademarks and/or registered trademarks of Epic Games.",
+            "position": 1
+        },
+        {
+            "title": "Genshin Impact – Step Into a Vast Magical World of Adventure",
+            "link": "https://genshin.hoyoverse.com/",
+            "snippet": "Epic, Epic Games, Epic Games Store, the Epic Games Store logo, and Epic Online Services are trademarks and/or registered trademarks of Epic Games. All other ...",
+            "position": 2
+        },
+        {
+            "title": "Honkai: Star Rail - 3T Online - Apps on Google Play",
+            "link": "https://oig.hoyoverse.com/hsrvn_android/",
+            "snippet": "Honkai: Star Rail - 3T Online. 3T Online Entertainment Joint Stock Company. In-app purchases. Icon image. 4.0star. 19.8K reviews. 1M+. Downloads. Content rating.",
+            "rating": 4,
+            "ratingCount": 19827,
+            "position": 3
+        },
+        {
+            "title": "Zenless Zone Zero Version 1.4 Twitch Livestream Incentive ...",
+            "link": "https://zenless.hoyoverse.com/en-us/news/127240",
+            "snippet": "Livestream Watch Rewards: Twitch Drops are now live! ... Epic, Epic Games, Epic Games Store, the Epic Games Store logo, and Epic Online Services are trademarks ...",
+            "position": 4
+        },
+        {
+            "title": "Honkai: Star Rail official site — The brand-new Version 3.3 ...",
+            "link": "https://hsr.hoyoverse.com/",
+            "snippet": "Epic, Epic Games, Epic Games Store, the Epic Games Store logo, and Epic Online Services are trademarks and/or registered trademarks of Epic Games. All other ...",
+            "position": 5
+        },
+        {
+            "title": "HoYoverse: Home",
+            "link": "https://www.hoyoverse.com/en-us/",
+            "snippet": "Honkai: Star Rail's V3.3 \"The Fall at Dawn's Rise\" Is Now Online. More. Genshin Impact. Genshin Impact. Latest Updates on Version 5.6 \"Paralogism\". More.",
+            "position": 6
+        },
+        {
+            "title": "Zenless Zone Zero Version 2.0 \"Where Clouds Embrace the ...",
+            "link": "https://zenless.hoyoverse.com/m/en-us/news/155952",
+            "snippet": "Epic, Epic Games, Epic Games Store, the Epic Games Store logo, and Epic Online Services are trademarks and/or registered trademarks of Epic ...",
+            "date": "May 19, 2025",
+            "position": 7
+        },
+        {
+            "title": "Step Into a Vast Magical World of Adventure - Genshin Impact",
+            "link": "https://genshin.hoyoverse.com/en/news/398",
+            "snippet": "Epic, Epic Games, Epic Games Store, the Epic Games Store logo, and Epic Online Services are trademarks and/or registered trademarks of Epic Games. All other ...",
+            "sitelinks": [
+                {
+                    "title": "The night deepens as stars...",
+                    "link": "https://genshin.hoyoverse.com/m/en/news/detail/155258"
+                },
+                {
+                    "title": "The prophecy has been...",
+                    "link": "https://genshin.hoyoverse.com/en/news/detail/154614"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Zenless Zone Zero Version 1.6 \"Among the Forgotten Ruins ...",
+            "link": "https://zenless.hoyoverse.com/m/en-us/news/154474",
+            "snippet": "Epic, Epic Games, Epic Games Store, the Epic Games Store logo, and Epic Online Services are trademarks and/or registered trademarks of Epic ...",
+            "date": "Feb 26, 2025",
+            "position": 9
+        },
+        {
+            "title": "Genshin Impact Version 5.3 Discord Quest Livestream Event",
+            "link": "https://genshin.hoyoverse.com/en/news/detail/127891",
+            "snippet": "... Live-and-Screen-Share#h_01HFFJ28PJAY9AHGRQ85XRSF8G. c. Once you have ... Online Services are trademarks and/or registered trademarks of Epic Games.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service android"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        }
+    ],
+    "credits": 1
+}

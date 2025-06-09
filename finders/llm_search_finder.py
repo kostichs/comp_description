@@ -4,24 +4,24 @@ from openai import AsyncOpenAI
 class LLMSearchFinder(Finder):
     def __init__(self, api_key: str):
         """
-        Initialize the finder with OpenAI API key.
+        Инициализирует финдер с API ключом для OpenAI.
         
         Args:
-            api_key: OpenAI API key
+            api_key: API ключ для OpenAI
         """
         self.api_key = api_key
         self.client = AsyncOpenAI(api_key=api_key)
         
     async def find(self, company_name: str, **context) -> dict:
         """
-        Use LLM to search for company information.
+        Использует LLM для поиска информации о компании.
         
         Args:
-            company_name: Company name
-            context: Additional context
+            company_name: Название компании
+            context: Дополнительный контекст
             
         Returns:
-            dict: Search result {"source": "llm_search", "result": information or None}
+            dict: Результат поиска {"source": "llm_search", "result": информация или None}
         """
         result = await self._ask_llm_search_model(company_name)
         return {"source": "llm_search", "result": result}

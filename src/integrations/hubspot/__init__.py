@@ -10,13 +10,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 try:
-    # Fix circular dependencies by importing client first
+    # Исправляем циклические зависимости, импортируя сначала клиент
     from src.integrations.hubspot.client import HubSpotClient
 
-    # Then import adapters
+    # Затем импортируем адаптеры
     from src.integrations.hubspot.adapter import HubSpotAdapter, HubSpotPipelineAdapter
 
-    # Then import service
+    # Затем импортируем сервис
     from src.integrations.hubspot.service import HubSpotIntegrationService
 
     __all__ = [
@@ -33,7 +33,7 @@ except ImportError as e:
     HUBSPOT_AVAILABLE = False
     logger.error(f"Failed to import HubSpot integration module: {e}")
     
-    # Create stub classes
+    # Создаем заглушки для классов
     class HubSpotClient:
         def __init__(self, *args, **kwargs):
             logger.error("HubSpotClient unavailable - module import failed")

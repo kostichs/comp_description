@@ -58,7 +58,7 @@ class LoginDetectionFinder(Finder):
                "מנוי", "משתמש", "לקוח", "עגלת קניות", "תשלום", "שמור", "צפה", "הזרמה"]
     }
     
-    # Login URL patterns
+    # Паттерны URL логина
     LOGIN_URL_PATTERNS = [
         "/login", "/signin", "/register", "/signup", "/account", "/auth", "/profile", 
         "/portal", "/dashboard", "/customer", "/user", "/my", "/cabinet", "/panel",
@@ -69,11 +69,11 @@ class LoginDetectionFinder(Finder):
     
     def __init__(self, timeout: int = 30, verbose: bool = False):
         """
-        Initialize the finder.
+        Инициализация финдера.
         
         Args:
-            timeout: Request timeout in seconds
-            verbose: Detailed information output
+            timeout: Таймаут запросов в секундах
+            verbose: Подробный вывод информации
         """
         self.timeout = timeout
         self.verbose = verbose

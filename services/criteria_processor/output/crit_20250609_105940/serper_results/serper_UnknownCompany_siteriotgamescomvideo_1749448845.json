@@ -1,0 +1,92 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"video\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "WHY WE FIGHT // EGO ft. Qing Madi // Year 5 Music Video ...",
+            "link": "https://www.riotgames.com/en/news/why-we-fight-ego-ft-qing-madi-year-5-music-video-valorant",
+            "snippet": "WHY WE FIGHT // EGO ft. Qing Madi // Year 5 Music Video - VALORANT. 7M views · 6 days ago #QINGMADI #EGO #VALORANT ...more. VALORANT. 2.69M.",
+            "date": "6 days ago",
+            "position": 1
+        },
+        {
+            "title": "Heavy Is The Crown ft. Linkin Park (Official Music Video ...",
+            "link": "https://www.riotgames.com/en/news/heavy-is-the-crown-ft-linkin-park-official-music-video-league-of-legends-worlds-2024-anthem",
+            "snippet": "Heavy Is The Crown ft. Linkin Park (Official Music Video) | League of Legends Worlds 2024 Anthem · Comments.",
+            "position": 2
+        },
+        {
+            "title": "Blood Sweat & Tears ft. Sheryl Lee Ralph | Official Music ...",
+            "link": "https://www.riotgames.com/en/news/blood-sweat-tears-official-music-video-league-of-legends",
+            "snippet": "Blood Sweat & Tears ft. Sheryl Lee Ralph | Official Music Video - League of Legends.",
+            "position": 3
+        },
+        {
+            "title": "Arcane: Season 2 | \"Paint The Town Blue\" | Music Video | Netflix",
+            "link": "https://www.riotgames.com/en/news/paint-the-town-blue-ft-ashnikko-from-the-series-arcane-league-of-legends-season-2-official-music-video",
+            "snippet": "The official music video for Ashnikko's \"Paint The Town Blue\" from the Arcane Season 2 Original Soundtrack is here! Stream \"Paint The Town ...",
+            "position": 4
+        },
+        {
+            "title": "K/DA - POP/STARS (ft. Madison Beer, (G)I- ...",
+            "link": "https://www.riotgames.com/en/news/k-da-pop-stars",
+            "snippet": "K/DA - POP/STARS (ft. Madison Beer, (G)I-DLE, Jaira Burns) | Music Video - League of Legends · Comments.",
+            "date": "Nov 3, 2018",
+            "position": 5
+        },
+        {
+            "title": "A Dark Gambit | 2025 Season 1 Cinematic - League of ...",
+            "link": "https://www.riotgames.com/en/news/a-dark-gambit-2025-season-1-cinematic-league-of-legends",
+            "snippet": "... Video created in partnership with Fortiche. League of Legends - Play Free Now: https://signup.leagueoflegends.com/",
+            "date": "Apr 10, 2025",
+            "position": 6
+        },
+        {
+            "title": "GODS ft. NewJeans (뉴진스) (Official Music Video) | Worlds ...",
+            "link": "https://www.riotgames.com/en/news/gods-ft-newjeans-official-music-video-worlds-2023-anthem",
+            "snippet": "This is the story of an unbreakable spirit and the unbending heart of a champion. The official anthem and music video for Worlds 2023 ft.",
+            "position": 7
+        },
+        {
+            "title": "Here, Tomorrow (ft Lilas, Kevin Penkin) - Spirit Blossom ...",
+            "link": "https://www.riotgames.com/en/news/here-tomorrow-ft-lilas-kevin-penkin-2025-season-2-cinematic-league-of-legends",
+            "snippet": "Zhao's saga in the first of two motion comics on May 14, 2025. Music Video ... BAEKHYUN, tobi lou, ØZI, and Cal Scruby (Official Music Video).",
+            "date": "Apr 14, 2025",
+            "sitelinks": [
+                {
+                    "title": "Kin of the Stained Blade",
+                    "link": "https://www.youtube.com/watch?v=D4L0OkSrsI8"
+                },
+                {
+                    "title": "Around every light, a shadow...",
+                    "link": "https://www.youtube.com/shorts/QWVbZgZrq6o"
+                },
+                {
+                    "title": "The Path, An Ionian Myth",
+                    "link": "https://www.youtube.com/watch?v=u9fFG4ZLp9Y&pp=0gcJCdgAo7VqN5tD"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Welcome to Noxus - Bite Marks (ft. TEYA) | 2025 Season 1 ...",
+            "link": "https://www.riotgames.com/en/news/welcome-to-noxus-bite-marks-ft-teya-2025-season-1-cinematic-league-of-legends",
+            "snippet": "Are you strong enough? Prove it. Season 1 of 2025 is live January 9th @ 12 PM PST. Video created in partnership with Fortiche.",
+            "date": "Jan 7, 2025",
+            "position": 9
+        },
+        {
+            "title": "HEARTSTEEL - PARANOIA ft. BAEKHYUN, tobi lou, ØZI, and ...",
+            "link": "https://www.riotgames.com/en/news/heartsteel-paranoia-ft-baekhyun-tobi-lou-ozi-and-cal-scruby-official-music-video",
+            "snippet": "HEARTSTEEL - PARANOIA ft. BAEKHYUN, tobi lou, ØZI, and Cal Scruby (Official Music Video) · Comments.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

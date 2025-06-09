@@ -27,6 +27,45 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        
+        /* Navigation tabs */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab:hover {
+            color: #495057;
+            background-color: #f8f9fa;
+        }
+        
+        .nav-tab.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background-color: #fff;
+        }
+        
+        /* Page content containers */
+        .page-content {
+            display: none;
+        }
+        
+        .page-content.active {
+            display: block;
+        }
         .header {
             display: flex;
             justify-content: space-between;
@@ -128,6 +167,14 @@
             transform: translateY(0);
         }
         
+        .run-button:disabled {
+            background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+            cursor: not-allowed !important;
+            opacity: 0.7;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
         /* New Session Button Styles */
         .new-session-button {
             padding: 12px 24px;
@@ -158,6 +205,12 @@
         }
         .form-group {
             margin-bottom: 15px;
+        }
+        
+        /* Progress bar animation */
+        @keyframes progress-pulse {
+            0% { background: linear-gradient(90deg, #007bff, #0056b3); }
+            100% { background: linear-gradient(90deg, #0056b3, #007bff); }
         }
         label {
             display: block;
@@ -204,6 +257,12 @@
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+        
+        /* Bold style for company names in results table */
+        #resultsTable td:first-child {
+            font-weight: bold;
         }
         th {
             background-color: #f8f9fa;
@@ -267,7 +326,7 @@
         #inputFile {
             display: none;
         }
-        #customChooseFileButton {
+        #customChooseFileButton, #criteria-customChooseFileButton {
             padding: 10px 20px;
             background-color: #007bff;
             color: white;
@@ -278,15 +337,30 @@
             transition: background-color 0.2s;
             margin-bottom: 10px;
         }
-        #customChooseFileButton:hover {
+        #customChooseFileButton:hover, #criteria-customChooseFileButton:hover {
             background-color: #0056b3;
         }
-        #fileNameDisplay {
+        #fileNameDisplay, #criteria-fileNameDisplay {
             margin-top: 10px;
             font-size: 0.9em;
             color: #495057;
             min-height: 1.2em;
         }
+        #criteria-dropZoneContainer {
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 500px;
+            background-color: #f8f9fa;
+            transition: background-color 0.2s ease-in-out;
+        }
+        #criteria-dropZoneContainer.dragover {
+            background-color: #e9ecef;
+            border-color: #0056b3;
+        }
+
 
     </style>
 </head>
@@ -295,12 +369,20 @@
         console.log('Body start');
     </script>
     <div class="container">
+        <!-- Navigation tabs -->
+        <div class="nav-tabs">
+            <button id="company-tab" class="nav-tab active">📝 Company Generation</button>
+            <button id="criteria-tab" class="nav-tab">🔍 Criteria Analysis</button>
+        </div>
+        
+        <!-- Company Generation Page -->
+        <div id="company-generation-page" class="page-content active">
         <div class="header">
-            <h1>Company Insights</h1>
-            <div class="header-controls">
+            <!-- <h1>Company Insights</h1> -->
+            <div class="header-controls" style="display: flex; justify-content: flex-end; width: 100%;">
                 <!-- HubSpot Toggle -->
                 <div class="hubspot-toggle" title="Enable/disable writing results to HubSpot CRM">
-                    <input type="checkbox" id="writeToHubspot" checked>
+                    <input type="checkbox" id="writeToHubspot">
                     <label for="writeToHubspot" class="toggle-icon">
                         <img src="/static/icons/hubspot.png" alt="HubSpot" height="20">
                     </label>
@@ -314,6 +396,22 @@
             </div>
         </div>
 
+        <!-- Main Content with Sidebar Layout -->
+        <div style="display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 20px;">
+            
+            <!-- Left Sidebar - Additional Context -->
+            <div id="context-sidebar" style="width: 300px; background: #f8f9fa; border-radius: 8px; padding: 15px; min-height: 250px; border: 1px solid #dee2e6;">
+                <h3 style="margin: 0 0 15px 0; color: #333; font-size: 16px;">📝 Additional Context</h3>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label for="contextText" style="font-size: 14px; margin-bottom: 8px;">Optional — e.g. region, industry, focus area:</label>
+                    <textarea id="contextText" name="context_text" placeholder="Enter any additional context (max 120 chars)..." maxlength="120" style="font-size:14px; line-height:1.4; width: 100%; height: 220px; resize: vertical; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;"></textarea>
+                    <div id="charCounterContext" style="font-size: 0.8em; text-align: right; color: #6c757d; margin-top: 5px;"></div>
+                </div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div style="flex: 1;">
         <form id="uploadForm">
             <div id="dropZoneContainer" 
                  ondragover="this.classList.add('dragover'); event.preventDefault();" 
@@ -325,21 +423,13 @@
                  
                      <b>Required format:</b> Two columns - Company names and website URLs.<br><br>
                  
-                     <b>Note:</b> The first row (header) will be ignored. Both columns are required for processing.
+                             <b>Note:</b> The first row (header) will be ignored.
                  </p>
                 <button type="button" id="customChooseFileButton">Choose File</button>
                 <p id="fileNameDisplay"></p>
                 
                 <input type="file" id="inputFile" accept=".csv,.xlsx,.xls" required>
             </div>
-
-            <div class="form-group">
-                <label for="contextText">Additional Context (Optional — e.g. region, industry, focus area):</label>
-                <textarea id="contextText" name="context_text" placeholder="Enter any additional context (max 120 chars)..." maxlength="120" style="font-size:16px; line-height:1.4;"></textarea>
-                <div id="charCounterContext" style="font-size: 0.8em; text-align: right; color: #6c757d;"></div>
-            </div>
-
-
         </form>
 
         <div id="sessionControls" style="display: none;">
@@ -350,7 +440,11 @@
 
         <div id="progressStatus" style="display:none; margin: 20px 0; font-size: 1.1em; color: #007bff; font-weight: bold;">Processing...</div>
 
-        <div id="resultsSection" style="display: none;">
+            </div> <!-- End Main Content Area -->
+        </div> <!-- End Sidebar Layout -->
+        
+        <!-- Full Width Results Section -->
+        <div id="resultsSection" style="display: none; margin-top: 20px;">
             <div class="table-container section">
                 <h2>Results</h2>
                 <table id="resultsTable">
@@ -368,6 +462,139 @@
                 </table>
             </div>
         </div>
+        </div>
+        
+        <!-- Criteria Analysis Page -->
+        <div id="criteria-analysis-page" class="page-content">
+            <div class="header">
+                <div class="header-controls" style="display: flex; justify-content: flex-end; width: 100%;">
+                    <!-- Analyze Companies Button -->
+                    <button type="submit" id="criteria-analyze-btn" form="criteria-upload-form" class="run-button" title="Analyze companies against product criteria for AI, DDOS, WAAP and other products."> Analyze </button>
+                </div>
+            </div>
+            
+            <!-- Main Content with Sidebar Layout -->
+            <div style="display: flex; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 20px;">
+                
+                <!-- Left Sidebar - Criteria Files -->
+                <div id="criteria-sidebar" style="width: 300px; background: #f8f9fa; border-radius: 8px; padding: 15px; min-height: 250px; border: 1px solid #dee2e6;">
+                    <h3 style="margin: 0 0 15px 0; color: #333; font-size: 16px;">📁 Criteria Files</h3>
+                    
+                    <!-- Drag & Drop Zone for Criteria Files -->
+                    <div id="criteria-drop-zone" style="border: 2px dashed #28a745; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; background-color: #f8fff8; transition: all 0.3s ease;" 
+                         ondragover="event.preventDefault(); this.style.backgroundColor='#e8f5e8'; this.style.borderColor='#20c997';" 
+                         ondragleave="this.style.backgroundColor='#f8fff8'; this.style.borderColor='#28a745';"
+                         ondrop="event.preventDefault(); this.style.backgroundColor='#f8fff8'; this.style.borderColor='#28a745'; handleCriteriaFileDrop(event);">
+                        <p style="margin: 5px 0; color: #28a745; font-weight: bold; font-size: 14px;">Drop CSV Files</p>
+                    </div>
+                    
+                    <div id="criteria-files-list" style="margin-bottom: 15px;">
+                        <!-- Files will be loaded here -->
+                    </div>
+                    
+                    <div id="selected-criteria-display" style="margin-bottom: 15px; padding: 10px; background: #e8f5e8; border-radius: 4px; display: none;">
+                        <strong style="font-size: 12px;">Selected Files:</strong>
+                        <div id="selected-criteria-list" style="margin-top: 5px; font-size: 12px;"></div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <button id="refresh-criteria-btn" style="background: #6c757d; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Refresh</button>
+                    </div>
+                </div>
+                
+                <!-- Main Content Area -->
+                <div style="flex: 1;">
+                
+                <!-- Use Latest Session Results -->
+                <div id="use-latest-session-container" style="background: #e8f4f8; border: 1px solid #007bff; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <input type="checkbox" id="use-latest-session" style="transform: scale(1.2);">
+                        <label for="use-latest-session" style="font-weight: bold; color: #007bff; cursor: pointer;">Use results from latest session</label>
+                    </div>
+                    <p id="latest-session-info" style="margin: 0; font-size: 14px; color: #666; display: none;"></p>
+                </div>
+
+                <div class="form-check mb-3" style="padding: 15px; background: #e8f4f8; border: 1px solid #007bff; border-radius: 8px; margin-bottom: 20px;">
+                    <input class="form-check-input" type="checkbox" id="deep-analysis-checkbox" checked style="transform: scale(1.2); margin-right: 10px;">
+                    <label class="form-check-label" for="deep-analysis-checkbox" style="font-weight: bold; color: #007bff; cursor: pointer;">
+                        Enable Deep Analysis (slower, more accurate)
+                    </label>
+                </div>
+
+                <form id="criteria-upload-form" enctype="multipart/form-data">
+                    <div id="criteria-dropZoneContainer" 
+                         ondragover="this.classList.add('dragover'); event.preventDefault();" 
+                         ondragleave="this.classList.remove('dragover');"
+                         ondrop="this.classList.remove('dragover'); event.preventDefault();">
+                         <label class="dropZone-label">Drag & Drop Your File Here or Use the Button</label>
+                         <p class="dropZone-instructions">
+                             Supported formats: <b>CSV</b>, <b>XLSX</b>.<br><br>
+                         
+                             <b>Required columns:</b> Company_Name, Official_Website and Description.<br><br>
+                         
+                             <b>Note:</b> The first row (header) will be ignored. 
+                         </p>
+                        <button type="button" id="criteria-customChooseFileButton">Choose File</button>
+                        <p id="criteria-fileNameDisplay"></p>
+                    </div>
+                    
+                    <input type="file" id="criteria-file" name="file" accept=".csv,.xlsx,.xls" required style="display: none;">
+                    
+                    <div id="selected-criteria-display" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; display: none;">
+                        <strong>Selected Criteria Files:</strong>
+                        <div id="selected-criteria-list" style="margin-top: 5px;"></div>
+                    </div>
+                </form>
+
+                <div id="criteria-status" style="display: none; background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                    <h3>⏳ Analysis Status</h3>
+                    <div>
+                        <p><strong>Session ID:</strong> <span id="criteria-session-id"></span></p>
+                        <p><strong>Status:</strong> <span id="criteria-status-text"></span></p>
+                        <div id="criteria-progress" style="display: none; width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; margin: 10px 0; overflow: hidden;">
+                            <div style="width: 0%; height: 100%; background: linear-gradient(90deg, #007bff, #0056b3); border-radius: 10px; animation: progress-pulse 2s ease-in-out infinite alternate;"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px;">
+                        <button id="cancel-criteria-btn" style="display: none;">❌ Cancel</button>
+                        <button id="refresh-criteria-btn">Refresh</button>
+                        <button id="download-results-btn-main" style="display: none; background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">Download Full Results</button>
+                    </div>
+                </div>
+
+                </div> <!-- End Main Content Area -->
+            </div> <!-- End Sidebar Layout -->
+            
+            <!-- Full Width Results Section -->
+            <div id="criteria-results" style="display: none; margin-top: 20px;">
+                <div style="background: #f8f9fa; border-radius: 8px; padding: 20px;">
+                    <h2>Analysis Results</h2>
+                    <div id="results-table"></div>
+                </div>
+            </div>
+            
+            <!-- Full Width Criteria Editor -->
+            <div id="criteria-editor" style="display: none; margin-top: 20px;">
+                <div style="background: white; border: 1px solid #ddd; border-radius: 6px; padding: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 id="editor-title" style="margin: 0;">Edit Criteria File</h4>
+                        <div>
+                            <button id="save-criteria-btn" style="background: #28a745; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; margin-right: 5px;">💾 Save</button>
+                            <button id="cancel-edit-btn" style="background: #6c757d; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">❌ Cancel</button>
+                        </div>
+                    </div>
+                    <div id="criteria-table-container" style="overflow-x: auto; max-height: 400px; border: 1px solid #eee;">
+                        <!-- Table will be inserted here -->
+                    </div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        <button id="add-row-btn" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">➕ Add Row</button>
+                        <button id="delete-row-btn" style="background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Delete Selected</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 
     <div id="loading-indicator">
@@ -378,8 +605,38 @@
         console.log('Before app.js load');
     </script>
     <script src="/static/app.js"></script>
+    <script src="/static/js/router.js"></script>
+    <script src="/static/js/criteria-analysis.js"></script>
     <script>
         console.log('After app.js load');
+        
+        // Quick tab test if router doesn't load
+        setTimeout(() => {
+            if (!window.router) {
+                console.log('Router not loaded, adding manual tab switching');
+                document.getElementById('company-tab').onclick = function() {
+                    document.getElementById('company-generation-page').style.display = 'block';
+                    document.getElementById('criteria-analysis-page').style.display = 'none';
+                    this.classList.add('active');
+                    document.getElementById('criteria-tab').classList.remove('active');
+                };
+                
+                document.getElementById('criteria-tab').onclick = function() {
+                    document.getElementById('company-generation-page').style.display = 'none';
+                    const criteriaPage = document.getElementById('criteria-analysis-page');
+                    criteriaPage.style.display = 'block';
+                    this.classList.add('active');
+                    document.getElementById('company-tab').classList.remove('active');
+                    
+                    // Auto-load criteria files when switching to criteria tab
+                    if (window.criteriaAnalysis) {
+                        setTimeout(() => {
+                            window.criteriaAnalysis.loadCriteriaFiles();
+                        }, 100);
+                    }
+                };
+            }
+        }, 1000);
     </script>
 </body>
 </html> 

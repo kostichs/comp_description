@@ -1,0 +1,110 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "LIVE A LIVE out now on Steam and PlayStation with demo",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=BLOG&l=LIVE-A-LIVE&utm_source=sqex-social&utm_content=LaunchBlog&utm_campaign=LiveALive",
+            "snippet": "LIVE A LIVE is out now on PC and PlayStation! First released on Nintendo Switch in 2022, this one-of-a kind RPG now available to a whole new audience!",
+            "position": 1
+        },
+        {
+            "title": "FINAL FANTASY XIV Online - Complete Edition",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIV&l=sestorecompletepc",
+            "snippet": "The FINAL FANTASY XIV Online Complete Collector's Edition is perfect for new players as it includes the base game and all expansions through Dawntrail.",
+            "currency": "$",
+            "price": 59.99,
+            "position": 2
+        },
+        {
+            "title": "FINAL FANTASY XIV Online - 10th ANNIVERSARY EDITION",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIV10thAnniversaryEdition&l=sestore",
+            "snippet": "Online multiplayer only, internet required Includes 30-day free subscription period* for all newly created service accounts. User registration and service ...",
+            "currency": "$",
+            "price": 22.83,
+            "position": 3
+        },
+        {
+            "title": "SQUARE ENIX | The Official SQUARE ENIX Website",
+            "link": "https://na.square-enix.com/",
+            "snippet": "Book a stay at KILLER INN - a new multiplayer murder mystery action game. Step into a deadly game of co-operation and survival. But beware - some of your ...",
+            "sitelinks": [
+                {
+                    "title": "Games",
+                    "link": "https://www.square-enix-games.com/games"
+                },
+                {
+                    "title": "News",
+                    "link": "https://www.square-enix-games.com/news"
+                },
+                {
+                    "title": "Store",
+                    "link": "https://na.store.square-enix-games.com/"
+                },
+                {
+                    "title": "U.S. Privacy Notice",
+                    "link": "https://www.square-enix-games.com/documents/privacy"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?id=5382&kid=64540",
+            "snippet": "Game Time Cards are available for $29.99 USD and can be purchased from the SQUARE ENIX Online Store or your favorite local retailer or online game retailer.",
+            "currency": "$",
+            "price": 29.99,
+            "position": 5
+        },
+        {
+            "title": "Square Enix",
+            "link": "https://xmail.square-enix.com/fe/track/link/7otifejafafi/4f8499469f4d460f7fdf9f9e88c23364/1498/en/10/eyJ1c2VyIjp7ImNvdW50cnkiOiJJVCIsImV4dHJhIjoienZuaXQzZ2gyL0pZRG9mTHRrb28xM1IzT0V6dkhkYlJNQis0QXNka09rQ2c3Q3diU0dzSW9FUDBQaERoejlDNiIsImxhbmciOiJlbiIsImxvY2FsZSI6ImVuX0lUIn19",
+            "snippet": "Square Enix Pride Live Stream for December 2024! Featuring Blu Allen and Olivia AbiAssi from Life is Strange: Double Exposure. Square Enix · Discuții diverse.",
+            "position": 6
+        },
+        {
+            "title": "FINAL FANTASY XIV Online - Starter Edition",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVSTARTEREDITION&l=sestorepcdownload",
+            "snippet": "FINAL FANTASY XIV Online - Starter Edition · Join over 27 million adventurers worldwide and take part in an epic and ever-changing FINAL FANTASY. · Party up with ...",
+            "currency": "$",
+            "price": 19.99,
+            "position": 7
+        },
+        {
+            "title": "Letter from the Producer LIVE Part LXXXVI Airs Friday ...",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=pll86_reminder",
+            "snippet": "Square Enix Online Store. Letter from the Producer LIVE Part LXXXVI Airs Friday, March 14. 03/12/2025 1:00 AM. The next Letter from the Producer LIVE ...",
+            "position": 8
+        },
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?id=5382&kid=70929",
+            "snippet": "How do I join and play the FINAL FANTASY XIV Online Free Trial? ... 1) Download and install the free trial software. 2) Create a FINAL FANTASY XIV free trial ...",
+            "position": 9
+        },
+        {
+            "title": "THE PRIMALS Live in Japan - Darkest Before Dawn",
+            "link": "https://www.jp.square-enix.com/music/sem/page/ff14/primals/en/live/",
+            "snippet": "THE PRIMALS- FINAL FANTASY XIV Online official band led by Sound Director, Masayoshi Soken since 2014 ... LIVE EVENTS ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        }
+    ],
+    "credits": 1
+}

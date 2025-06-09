@@ -1,0 +1,28 @@
+# Commands for VM deployment
+
+# Stop old container
+docker stop company-canvas-prod
+docker rm company-canvas-prod
+
+# Pull new image
+docker pull sergeykostichev/company-canvas-app:v07
+
+# Create data directory (if not exists)
+sudo mkdir -p /srv/company-canvas/output
+sudo chown -R $USER:$USER /srv/company-canvas/output
+
+# Run new container with your API keys
+docker run -d --restart unless-stopped -p 80:8000 \
+  -e OPENAI_API_KEY="your_openai_key" \
+  -e SERPER_API_KEY="your_serper_key" \
+  -e SCRAPINGBEE_API_KEY="your_scrapingbee_key" \
+  -e HUBSPOT_API_KEY="your_hubspot_key" \
+  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/your_portal_id/record/0-2/" \
+  -e DEBUG="false" \
+  --name company-canvas-prod \
+  -v /srv/company-canvas/output:/app/output \
+  sergeykostichev/company-canvas-app:v07
+
+# Check status
+docker ps
+docker logs -f company-canvas-prod 

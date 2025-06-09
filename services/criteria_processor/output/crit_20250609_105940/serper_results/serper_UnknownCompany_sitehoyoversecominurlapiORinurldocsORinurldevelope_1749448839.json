@@ -1,0 +1,69 @@
+{
+    "searchParameters": {
+        "q": "site:hoyoverse.com/ (inurl:api OR inurl:docs OR inurl:developer)",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Zenless Zone Zero Daily Check-In",
+            "link": "https://sg-public-api.hoyoverse.com/event/social_sea_share/redirectUrl?key=m02091416191721&lang=en-us&game_biz=nap_global&title_key=share_title&url=https%3A%2F%2Fact.hoyolab.com%2Fbbs%2Fevent%2Fsignin%2Fzzz%2Fe202406031448091.html%3Fact_id%3De202406031448091%26bbs_auth_required%3Dtrue%26bbs_presentation_style%3Dfullscreen%26lang%3Den-us%26utm_source%3Dshare%26utm_medium%3Dreddit%26utm_campaign%3Dweb&img_key=share_img&desc_key=share_desc&timeStamp=5740711",
+            "snippet": "Link to your HoYoLAB account to claim an extra Polychrome ×30! New players will receive extra rewards for the first three times they check in!",
+            "position": 1
+        },
+        {
+            "title": "Survey already completed",
+            "link": "https://sg-public-api.hoyoverse.com/common/short_link_user/v1/transit?code=8b28BCA6&",
+            "snippet": "Survey already completed.",
+            "position": 2
+        },
+        {
+            "title": "Genshin Impact Battle Chronicle",
+            "link": "https://sg-public-api.hoyoverse.com/event/social_sea_share/redirectUrl?key=m11241040191111&lang=en-us&game_biz=bbs_oversea&title_key=document_title_ys&url=https%3A%2F%2Fact.hoyolab.com%2Fapp%2Fcommunity-game-records-sea%2Fm.html%3Fbbs_presentation_style%3Dfullscreen%26gid%3D2%26utm_source%3Dshare%26utm_medium%3Dhoyolab%26utm_campaign%3Dapp%23%2Fys%2Frole%2Fall%3Frole_id%3D744431680%26server%3Dos_euro&img_url=https%3A%2F%2Fact-upload.hoyoverse.com%2Fevent-ugc-review%2F2024%2F01%2F12%2F237736576%2Ff420758c62563b61dd01215933337c65_2905018665748439234.png&desc=Quick%20introduction%20to%20Characters%2C%20Spiral%20Abyss%2C%20World%20Exploration%2C%20Version%20Events%2C%20and%20more!&timeStamp=5683341",
+            "snippet": "数据加载中. 1.",
+            "position": 3
+        },
+        {
+            "title": "Zenless Zone Zero Battle Records",
+            "link": "https://sg-public-api.hoyoverse.com/event/social_sea_share/redirectUrl?key=m20240410hy38foxb7k&lang=pt-pt&game_biz=nap_global&title_key=document_title_zzz&url=https%3A%2F%2Fact.hoyolab.com%2Fapp%2Fzzz-game-record%2Fm.html%3Fhyl_presentation_style%3Dfullscreen%26bbs_auth_required%3Dtrue%26game_id%3D8%26user_id%3D74424033%26uid%3D74424033%26utm_source%3Dshare%26utm_medium%3Dhoyolab%26utm_campaign%3Dapp%23%2Fzzz%2Froles%2F1041%2Fdetail%3Frole_id%3D1000341281%26server%3Dprod_gf_us&img_url=https%3A%2F%2Fact-upload.hoyoverse.com%2Fevent-ugc-review%2F2025%2F02%2F17%2F74424033%2F2df7d080425c49b8f83d996dddafd59d_5940571617840406144.png&desc_key=&timeStamp=5799148",
+            "snippet": "数据加载中. This website uses cookies to enhance your browsing experience. Learn more. OK. Account Log In. To log in to HoYoverse websites, apps, and games.",
+            "position": 4
+        },
+        {
+            "title": "Genshin Impact Version 2.2 -Into the Perilous Labyrinth of ...",
+            "link": "https://api-sea.hoyoverse.com/social-share-sea/api/redirectUrlWithCustomize?key=m03081132281951&lang=ru-ru&game_biz=hk4e_global&title_key=share_title&url=https%3A%2F%2Fwebstatic-sea.hoyoverse.com%2Fys%2Fevent%2Fe20220319-previ-fd5q%2Findex.html%3Fmhy_presentation_style%3Dfullscreen%26mhy_landscape%3Dtrue%26game_biz%3Dhk4e_global%26utm_source%3Dshare%26utm_medium%3Dtwitter%26utm_campaign%3Dweb&img_url=https%3A%2F%2Fwebstatic-sea.hoyoverse.com%2Fupload%2Fevent%2F2022%2F03%2F16%2F9a4f3707e9347d711666abad01b8fbb1_2954304386179237064.jpg&desc_key=share_desc&timeStamp=1647689573752",
+            "snippet": "Loading, please wait... This website uses cookies to enhance your browsing experience. Learn more. OK.",
+            "position": 5
+        },
+        {
+            "title": "Festive Celebration of Flowing Hues | Genshin Impact",
+            "link": "https://sg-public-api.hoyoverse.com/common/short_link_user/v1/transit?code=05ehQGA6&",
+            "snippet": "Front and back. Left and right. Save and Share. Log In. Switch Accounts. Log Out. This website uses cookies to enhance your browsing ...",
+            "date": "Jan 29, 2022",
+            "position": 6
+        },
+        {
+            "title": "Hidden Civilizations",
+            "link": "https://sg-public-api.hoyoverse.com/event/social_sea_share/redirectUrl?key=m09162032051461&lang=ja-jp&game_biz=bbs_oversea&title_key=pz_page-share-title&url=https%3A%2F%2Fact.hoyolab.com%2Fpuzzle%2Fbbs%2Fpz_fKWaqWI9U4%2Findex.html%3Fmhy_presentation_style%3Dfullscreen%26mhy_auth_required%3Dtrue%26game_biz%3Dbbs_oversea%26utm_source%3Dshare%26utm_medium%3Dhoyolab%26utm_campaign%3Dapp&img_key=pz_page-share-img_url&desc_key=pz_page-share-desc&timeStamp=5549930",
+            "snippet": "Number of Copper Coins0. Prize Preview. 0Draw Once. Remaining Draws Today: 0/0. This website uses cookies to enhance your browsing experience. Learn more.",
+            "position": 7
+        },
+        {
+            "title": "Boulder Town Super League Event Details Honkai: Star Rail",
+            "link": "https://sg-public-api.hoyoverse.com/common/short_link_user/v1/transit?code=2ceqCDAd&",
+            "snippet": "The Boulder Town Super League is split into the standard event and the time-limited event. ○ Standard event: Trailblazer can challenge 5 matches ...",
+            "date": "May 19, 2023",
+            "position": 8
+        },
+        {
+            "title": "About me (late omfg)",
+            "link": "https://sg-public-api.hoyoverse.com/common/short_link_user/v1/transit?code=amMVFBAL&",
+            "snippet": "Ambivert but more on extrovert. Or- introverted extrovert. I actually struggle on talking to new people, but showing them affection (headpats, comfort, etc.) ...",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

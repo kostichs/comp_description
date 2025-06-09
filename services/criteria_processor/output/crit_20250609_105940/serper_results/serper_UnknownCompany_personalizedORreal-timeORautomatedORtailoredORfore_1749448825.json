@@ -1,0 +1,136 @@
+{
+    "searchParameters": {
+        "q": "\"personalized\" OR \"real-time\" OR \"automated\" OR \"tailored\" OR \"forecast\" OR \"instant delivery\"",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Forecast App: AI Project & Resource Management Software",
+            "link": "https://www.forecast.app/",
+            "snippet": "AI Project & Resource Management Software. Forecast helps operational leaders plan, run and track projects in one place to optimize productivity.",
+            "position": 1
+        },
+        {
+            "title": "Time Series Forecasting Service - AWS - Amazon.com",
+            "link": "https://aws.amazon.com/forecast/",
+            "snippet": "More Retail built an automated ordering system with Amazon Forecast. More Retail built an automated ordering system with Amazon Forecast · Missing alt text ...",
+            "position": 2
+        },
+        {
+            "title": "Forecast Pro: Better Decisions Demand Forecast Accuracy",
+            "link": "https://www.forecastpro.com/",
+            "snippet": "Forecast Pro is powerful and accurate forecasting software, designed for business forecasters across virtually all industries.",
+            "date": "Oct 8, 2024",
+            "position": 3
+        },
+        {
+            "title": "ENcast | AI-driven Forecast Data from AEM",
+            "link": "https://aem.eco/product/encast/",
+            "snippet": "Our proprietary ENcast forecast engine uses the largest array of high-definition forecast models and infuses hyperlocal real-time weather information.",
+            "position": 4
+        },
+        {
+            "title": "Superhuman Automated Forecasting | CAIS - Center for AI Safety",
+            "link": "https://safe.ai/blog/forecasting",
+            "snippet": "Superhuman Automated Forecasting. BLOG · AI Risks. Sep 9, 2024. 5 min read. View as PDF. Author: ... (Its prompt can be found by clicking on the gear icon ...",
+            "position": 5
+        },
+        {
+            "title": "Team Scheduling & Resource Planning Tool | Harvest Forecast",
+            "link": "https://www.getharvest.com/forecast",
+            "snippet": "Forecast helps you plan staffing needs, schedule your team across projects, and optimize time to ensure project success and a happy team. Try Forecast free.",
+            "sitelinks": [
+                {
+                    "title": "Harvest Forecast",
+                    "link": "https://www.getharvest.com/forecast/harvest-and-forecast"
+                },
+                {
+                    "title": "Pricing",
+                    "link": "https://www.getharvest.com/forecast/pricing"
+                },
+                {
+                    "title": "Webinars",
+                    "link": "https://www.getharvest.com/forecast/webinars"
+                },
+                {
+                    "title": "Harvest Time Tracking",
+                    "link": "https://www.getharvest.com/forecast/features"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Gong Forecast | Pinpoint Your Number and Paths to Target",
+            "link": "https://www.gong.io/forecast/",
+            "snippet": "See how Gong Forecast can help your team drive forecast accuracy and confidently hit your numbers. ... real-time decisions. What is the ROI of implementing AI- ...",
+            "position": 7
+        },
+        {
+            "title": "Forecasting Functions for Time Series and Linear Models - Software",
+            "link": "https://pkg.robjhyndman.com/forecast/",
+            "snippet": "The R package forecast provides methods and tools for displaying and analysing univariate time series forecasts including exponential smoothing via state space ...",
+            "position": 8
+        },
+        {
+            "title": "Unified Forecast System",
+            "link": "https://ufs.epic.noaa.gov/",
+            "snippet": "The Unified Forecast System (UFS) is a community-based, coupled, comprehensive Earth modeling system. The UFS numerical applications span local to global ...",
+            "position": 9
+        },
+        {
+            "title": "Forecast International",
+            "link": "https://www.forecastinternational.com/",
+            "snippet": "With over 50 years of experience, we are the leading source of market intelligence for aerospace and defense professionals. Request a Demo. Markets we forecast.",
+            "sitelinks": [
+                {
+                    "title": "Capabilities",
+                    "link": "https://www.forecastinternational.com/fistore/category.cfm"
+                },
+                {
+                    "title": "Company History",
+                    "link": "https://www.forecastinternational.com/about.cfm"
+                },
+                {
+                    "title": "Intelligence Center",
+                    "link": "https://www.forecastinternational.com/fic/"
+                },
+                {
+                    "title": "Analytical Staff",
+                    "link": "https://www.forecastinternational.com/analysts.cfm"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Personalized real time automated tailored forecast instant delivery amazon"
+        },
+        {
+            "query": "Men personalized real time automated tailored forecast instant delivery"
+        },
+        {
+            "query": "Forecast app pricing"
+        },
+        {
+            "query": "Forecast project management"
+        },
+        {
+            "query": "Forecast app login"
+        },
+        {
+            "query": "Harvest Forecast"
+        },
+        {
+            "query": "Forecast AI"
+        },
+        {
+            "query": "AWS Forecast example"
+        }
+    ],
+    "credits": 1
+}

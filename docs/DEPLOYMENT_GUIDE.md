@@ -1,28 +1,28 @@
-# CompanyCanvas Application Deployment Guide Using Docker
+# Руководство по развертыванию приложения CompanyCanvas с использованием Docker
 
-This guide describes the steps to prepare a Docker image of your CompanyCanvas FastAPI application, test it locally, and subsequently deploy it on an Ubuntu virtual machine.
+Это руководство описывает шаги по подготовке Docker-образа вашего FastAPI приложения CompanyCanvas, его тестированию локально и последующему развертыванию на виртуальной машине Ubuntu.
 
-## 1. Project Preparation and Docker Files Locally
+## 1. Подготовка проекта и Docker-файлов локально
 
-Before starting, ensure that your CompanyCanvas project is ready and the main functionality works correctly when run locally.
+Перед началом убедитесь, что ваш проект CompanyCanvas готов, и основная функциональность работает корректно при локальном запуске.
 
-### 1.1. File `requirements.txt`
+### 1.1. Файл `requirements.txt`
 
-This file should contain all Python dependencies required for your application to work in production.
-- If you are using Poetry, create it with the command: `poetry export -f requirements.txt --output requirements.txt --without-hashes`
-- If you are using `pip freeze`: `pip freeze > requirements.txt`. In this case **make sure** to review the file and remove:
-    - Packages specific to your OS (e.g., `pywin32`).
-    - Packages used only for development and testing (e.g., `pytest`, `flake8`, `black`, `fastapi-cli`, `watchdog`, `watchfiles`, `typer`, `rich`, etc.).
-    - Unnecessary dependencies (e.g., if a `Flask` package accidentally included its dependencies, but your application uses `FastAPI`).
+Этот файл должен содержать все Python-зависимости, необходимые для работы вашего приложения в продакшене.
+- Если вы используете Poetry, создайте его командой: `poetry export -f requirements.txt --output requirements.txt --without-hashes`
+- Если вы используете `pip freeze`: `pip freeze > requirements.txt`. В этом случае **обязательно** просмотрите файл и удалите из него:
+    - Пакеты, специфичные для вашей ОС (например, `pywin32`).
+    - Пакеты, используемые только для разработки и тестирования (например, `pytest`, `flake8`, `black`, `fastapi-cli`, `watchdog`, `watchfiles`, `typer`, `rich` и т.д.).
+    - Ненужные зависимости (например, если случайно попал `Flask` со своими зависимостями, а приложение использует `FastAPI`).
 
-**Key dependencies that should remain (example list):**
-`fastapi`, `uvicorn`, `openai`, `python-dotenv`, `aiofiles`, `openpyxl`, `python-multipart`, `requests`, `beautifulsoup4`, `lxml`, `pandas` (if used for Excel processing), `scrapingbee` (if used), `google-search-results` (for Serper, if used) and other, directly used by your application.
+**Ключевые зависимости, которые должны остаться (примерный список):**
+`fastapi`, `uvicorn`, `openai`, `python-dotenv`, `aiofiles`, `openpyxl`, `python-multipart`, `requests`, `beautifulsoup4`, `lxml`, `pandas` (если используется для обработки Excel), `scrapingbee` (если используется), `google-search-results` (для Serper, если используется) и другие, непосредственно используемые вашим приложением.
 
-### 1.2. File `.dockerignore`
+### 1.2. Файл `.dockerignore`
 
-Create a `.dockerignore` file in the root of your project to exclude unnecessary files and directories from the Docker context and image. This will reduce the image size and speed up the build.
+Создайте файл `.dockerignore` в корне проекта, чтобы исключить ненужные файлы и директории из Docker-контекста и образа. Это уменьшит размер образа и ускорит сборку.
 
-Example content of `.dockerignore`:
+Пример содержимого `.dockerignore`:
 ```
 # Git
 .git
@@ -38,14 +38,14 @@ __pycache__/
 dist/
 build/
 *.log
-output/ # Data sessions should not be included in the image
+output/ # Данные сессий не должны попадать в образ
 
-# Virtual environments
+# Виртуальные окружения
 .venv/
 venv/
 env/
 
-# IDE / Editors
+# IDE / Редакторы
 .vscode/
 .idea/
 *.suo
@@ -59,116 +59,116 @@ env/
 Thumbs.db
 ```
 
-### 1.3. File `Dockerfile`
+### 1.3. Файл `Dockerfile`
 
-Create a `Dockerfile` (without extension) in the root of your project. This file describes how your Docker image will be built.
+Создайте файл `Dockerfile` (без расширения) в корне проекта. Этот файл описывает, как будет собираться ваш Docker-образ.
 
-Example content of `Dockerfile`:
+Пример содержимого `Dockerfile`:
 ```dockerfile
-# Use the official Python image as a base
+# Используем официальный образ Python как базовый
 FROM python:3.11-slim
 
-# Set the working directory in the container
+# Устанавливаем рабочую директорию в контейнере
 WORKDIR /app
 
-# Set environment variables for Python
+# Устанавливаем переменные окружения для Python
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Copy the dependencies file
+# Копируем файл с зависимостями
 COPY requirements.txt .
 
-# Upgrade pip and install dependencies
+# Обновляем pip и устанавливаем зависимости
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy necessary directories and files of the project to the working directory
+# Копируем необходимые директории и файлы проекта в рабочую директорию
 COPY ./backend /app/backend
 COPY ./frontend /app/frontend
 COPY ./src /app/src
-# Copy configuration files if they exist in the root and are needed by the application
+# Копируем конфигурационные файлы, если они есть в корне и нужны приложению
 COPY llm_config.yaml /app/llm_config.yaml
-# If there are other important files/directories in the root, add them here
+# Если есть другие важные файлы/директории в корне, добавьте их сюда
 # COPY main_script_if_any.py /app/
 
-# Open the port on which the application will run inside the container
+# Открываем порт, на котором будет работать приложение внутри контейнера
 EXPOSE 8000
 
-# Command to run the application
-# Make sure the path to your FastAPI application (instance app) is correct
+# Команда для запуска приложения
+# Убедитесь, что путь к вашему FastAPI приложению (экземпляру app) корректен
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
-- **Check the paths in the `COPY` commands**: they should match the structure of your project.
-- **Check the `CMD` command**: `backend.main:app` means that in the `backend` directory there is a file `main.py`, in which a FastAPI `app = FastAPI()` is created. Adjust if necessary.
+- **Проверьте пути в командах `COPY`**: они должны соответствовать структуре вашего проекта.
+- **Проверьте команду `CMD`**: `backend.main:app` означает, что в директории `backend` есть файл `main.py`, в котором создан экземпляр FastAPI `app = FastAPI()`. Адаптируйте при необходимости.
 
-## 2. Local Build and Test Docker Image
+## 2. Локальная сборка и тестирование Docker-образа
 
-### 2.1. Build Image
-Open a terminal in the root directory of your project and run:
+### 2.1. Сборка образа
+Откройте терминал в корневой директории вашего проекта и выполните:
 ```bash
 docker build -t company-canvas-app .
 ```
-- `company-canvas-app` is the name of your local image. You can choose another one.
-- `.` indicates that the Dockerfile is in the current directory.
-If errors occur, carefully read them. Often they are related to problems in `requirements.txt` or incorrect paths in `Dockerfile`.
+- `company-canvas-app` - это имя вашего локального образа. Вы можете выбрать другое.
+- `.` указывает, что Dockerfile находится в текущей директории.
+Если возникнут ошибки, внимательно прочитайте их. Чаще всего они связаны с проблемами в `requirements.txt` или неправильными путями в `Dockerfile`.
 
-### 2.2. Local Run and Test Container
-After successful build, start the container:
+### 2.2. Локальный запуск и тестирование контейнера
+После успешной сборки запустите контейнер:
 ```bash
 docker run --rm -p 8080:8000 \
-  -e OPENAI_API_KEY="YOUR_OPENAI_KEY" \
-  -e SCRAPINGBEE_API_KEY="YOUR_SCRAPINGBEE_KEY" \
-  -e SERPER_API_KEY="YOUR_SERPER_KEY" \
+  -e OPENAI_API_KEY="ВАШ_OPENAI_КЛЮЧ" \
+  -e SCRAPINGBEE_API_KEY="ВАШ_SCRAPINGBEE_КЛЮЧ" \
+  -e SERPER_API_KEY="ВАШ_SERPER_КЛЮЧ" \
   company-canvas-app
 ```
-- **Replace placeholders** (`YOUR_..._KEY`) with your actual API keys.
-- Add other environment variables with the `-e VARIABLE_NAME="VALUE"` flag if your application requires them.
-- `--rm`: automatically removes the container after stopping (convenient for tests).
-- `-p 8080:8000`: forwards port 8080 of your computer to port 8000 inside the container.
+- **Замените плейсхолдеры** (`ВАШ_..._КЛЮЧ`) на ваши реальные API ключи.
+- Добавьте другие переменные окружения с флагом `-e ИМЯ_ПЕРЕМЕННОЙ="ЗНАЧЕНИЕ"`, если ваше приложение их требует.
+- `--rm`: автоматически удалит контейнер после остановки (удобно для тестов).
+- `-p 8080:8000`: пробрасывает порт 8080 вашего компьютера на порт 8000 внутри контейнера.
 
-**Testing:**
-1. Open in your browser `http://localhost:8080`.
-2. Ensure that the web interface loads.
-3. Test the main functionality: upload a file, run processing.
-4. Watch the terminal where `docker run` is running. There should be no errors related to configuration or API keys.
-5. Ensure that the results are correct.
-6. To stop the container, press `Ctrl+C` in the terminal.
+**Тестирование:**
+1. Откройте в браузере `http://localhost:8080`.
+2. Убедитесь, что веб-интерфейс загружается.
+3. Протестируйте основную функциональность: загрузите файл, запустите обработку.
+4. Следите за логами в терминале, где запущен `docker run`. Там не должно быть ошибок, связанных с конфигурацией или API ключами.
+5. Убедитесь, что результаты корректны.
+6. Чтобы остановить контейнер, нажмите `Ctrl+C` в терминале.
 
-## 3. Publishing Docker Image to Docker Hub
+## 3. Публикация Docker-образа на Docker Hub
 
-This allows you to easily download the image to your server.
+Это позволит легко скачать образ на ваш сервер.
 
-### 3.1. Create Docker Hub Account
-If you don't have one, register on [hub.docker.com](https://hub.docker.com/).
+### 3.1. Создайте аккаунт на Docker Hub
+Если у вас его нет, зарегистрируйтесь на [hub.docker.com](https://hub.docker.com/).
 
-### 3.2. Log in to Docker Hub from Terminal
+### 3.2. Войдите в Docker Hub из терминала
 ```bash
 docker login
 ```
-Enter your Docker ID and password (or Personal Access Token if 2FA is enabled).
+Введите ваш Docker ID и пароль (или Personal Access Token, если у вас включена 2FA).
 
-### 3.3. Tag Local Image
-Assign a tag to your local image in the format `YOUR_DOCKERHUB_USERNAME/REPOSITORY_NAME:VERSION`.
+### 3.3. Тегируйте локальный образ
+Присвойте вашему локальному образу тег в формате `ВАШ_DOCKERHUB_USERNAME/ИМЯ_РЕПОЗИТОРИЯ:ВЕРСИЯ`.
 ```bash
-docker tag company-canvas-app YOUR_DOCKERHUB_USERNAME/company-canvas-app:v06
+docker tag company-canvas-app ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06
 ```
-- Replace `YOUR_DOCKERHUB_USERNAME` with your username.
-- `company-canvas-app` after the slash is the name of the repository that will be created on Docker Hub.
-- **IMPORTANT**: Always use versioned tags (v01, v02, v03...), never use `latest` for production.
+- Замените `ВАШ_DOCKERHUB_USERNAME` на ваше имя пользователя.
+- `company-canvas-app` после слеша — это имя репозитория, которое будет создано на Docker Hub.
+- **ВАЖНО**: Всегда используйте версионные теги (v01, v02, v03...), никогда не используйте `latest` для продакшена.
 
-### 3.4. Upload Image to Docker Hub
+### 3.4. Загрузите образ на Docker Hub
 ```bash
-docker push YOUR_DOCKERHUB_USERNAME/company-canvas-app:v06
+docker push ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06
 ```
-Wait for the upload to complete.
+Дождитесь завершения загрузки.
 
-## 4. Deploy Docker Container to Ubuntu VM
+## 4. Развертывание Docker-контейнера на Ubuntu VM
 
-Connect to your Ubuntu VM via SSH.
+Подключитесь к вашей Ubuntu VM по SSH.
 
-### 4.1. Install Docker Engine (if not already installed)
-If the command `docker --version` is not found or available only through `sudo` and your user is not in the `docker` group:
-1. **Install Docker (official method):**
+### 4.1. Установка Docker Engine (если еще не установлен)
+Если команда `docker --version` не найдена или доступна только через `sudo` и ваш пользователь не в группе `docker`:
+1. **Установите Docker (официальный метод):**
    ```bash
    sudo apt-get update
    sudo apt-get install ca-certificates curl
@@ -182,170 +182,170 @@ If the command `docker --version` is not found or available only through `sudo` 
    sudo apt-get update
    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
    ```
-2. **Add your user to the `docker` group:**
+2. **Добавьте вашего пользователя в группу `docker`:**
    ```bash
    sudo usermod -aG docker $USER
    ```
-3. **IMPORTANT: Exit SSH session and log in again**, so changes to group membership take effect.
-4. **Check after re-login:**
+3. **ВАЖНО: Выйдите из SSH-сессии и зайдите снова**, чтобы изменения членства в группе применились.
+4. **Проверка после перелогина:**
    ```bash
-   docker --version  # Should work without sudo
-   groups $USER      # Should have group 'docker'
+   docker --version  # Должно работать без sudo
+   groups $USER      # Должна быть группа 'docker'
    ```
 
-### 4.2. Download Image from Docker Hub to VM
+### 4.2. Скачайте образ с Docker Hub на VM
 ```bash
-docker pull YOUR_DOCKERHUB_USERNAME/company-canvas-app:v06
+docker pull ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06
 ```
-- Replace `YOUR_DOCKERHUB_USERNAME` with your username.
+- Замените `ВАШ_DOCKERHUB_USERNAME` на ваше имя пользователя.
 
-### 4.3. Create Directory for Data Sessions
-This directory on the server will be mounted into the container to prevent data sessions from being lost during container restart.
+### 4.3. Создайте директорию для хранения данных сессий
+Эта директория на сервере будет смонтирована в контейнер, чтобы данные сессий не терялись при перезапуске контейнера.
 ```bash
 sudo mkdir -p /srv/company-canvas/output 
-# Give write permissions (e.g., to your user if they will run docker run)
-# Or, if you run Docker as root (not recommended for docker run without rootless mode), 
-# then Docker can write there. 
-# Safer to give permissions to a specific user or docker group:
+# Дайте права на запись (например, вашему пользователю, если он будет запускать docker run)
+# Или, если вы запускаете Docker от root (не рекомендуется для docker run без rootless mode), 
+# то Docker сможет писать туда. 
+# Безопаснее дать права конкретному пользователю или группе docker:
 sudo chown -R $USER:$USER /srv/company-canvas/output 
-# (Or another path you choose)
+# (Или другой путь, который вы выберете)
 ```
 
-### 4.4. Configure UFW Firewall
-Allow incoming connections on SSH and HTTP.
+### 4.4. Настройте брандмауэр UFW
+Разрешите входящие соединения на SSH и HTTP.
 ```bash
 sudo ufw allow ssh
-sudo ufw allow 80/tcp  # For HTTP
-# sudo ufw allow 443/tcp # If you plan to set up HTTPS later
-sudo ufw enable        # Enable if not already enabled
-sudo ufw status        # Check rules
+sudo ufw allow 80/tcp  # Для HTTP
+# sudo ufw allow 443/tcp # Если будете настраивать HTTPS позже
+sudo ufw enable        # Включить, если еще не включен
+sudo ufw status        # Проверить правила
 ```
 
-### 4.5. Run Docker Container on VM
+### 4.5. Запустите Docker-контейнер на VM
 ```bash
 docker run -d --restart unless-stopped -p 80:8000 \
-  -e OPENAI_API_KEY="YOUR_REAL_OPENAI_KEY" \
-  -e SCRAPINGBEE_API_KEY="YOUR_REAL_SCRAPINGBEE_KEY" \
-  -e SERPER_API_KEY="YOUR_REAL_SERPER_KEY" \
+  -e OPENAI_API_KEY="ВАШ_РЕАЛЬНЫЙ_OPENAI_КЛЮЧ" \
+  -e SCRAPINGBEE_API_KEY="ВАШ_РЕАЛЬНЫЙ_SCRAPINGBEE_КЛЮЧ" \
+  -e SERPER_API_KEY="ВАШ_РЕАЛЬНЫЙ_SERPER_КЛЮЧ" \
   --name company-canvas-prod \
   -v /srv/company-canvas/output:/app/output \
-  YOUR_DOCKERHUB_USERNAME/company-canvas-app:v06
+  ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06
 ```
-- **Replace placeholders** for API keys with your actual values.
-- `-d`: run in background (detached) mode.
-- `--restart unless-stopped`: automatic container restart.
-- `-p 80:8000`: forward port 80 of the server to port 8000 of the container. The application will be accessible via the server's IP address without specifying the port.
-- `--name company-canvas-prod`: name for your "production" container.
-- `-v /srv/company-canvas/output:/app/output`: mount directory for data. Make sure the path `/srv/company-canvas/output` (or your chosen path) exists on the server and permissions are correct.
+- **Замените плейсхолдеры** для API ключей на ваши реальные значения.
+- `-d`: запуск в фоновом (detached) режиме.
+- `--restart unless-stopped`: автоматический перезапуск контейнера.
+- `-p 80:8000`: проброс порта 80 сервера на порт 8000 контейнера. Приложение будет доступно по IP адресу сервера без указания порта.
+- `--name company-canvas-prod`: имя для вашего "боевого" контейнера.
+- `-v /srv/company-canvas/output:/app/output`: монтирование директории с данными. Убедитесь, что путь `/srv/company-canvas/output` (или ваш выбранный путь) существует на сервере и права доступа корректны.
 
-## 5. Check Work on Server
+## 5. Проверка работы на сервере
 
-1.  **Check Container Status:**
+1.  **Проверьте статус контейнера:**
     ```bash
     docker ps 
     ```
-    You should see the container `company-canvas-prod` with status `Up ...`.
-2.  **Check Container Logs:**
+    Вы должны увидеть контейнер `company-canvas-prod` со статусом `Up ...`.
+2.  **Проверьте логи контейнера:**
     ```bash
     docker logs company-canvas-prod
     ```
-    For real-time monitoring: `docker logs -f company-canvas-prod` (`Ctrl+C` to exit).
-    Ensure that Uvicorn started without errors.
-3.  **Access via Browser:**
-    Open in your browser `http://YOUR_SERVER_IP_ADDRESS` (e.g., `http://202.78.163.133`).
-    Your application should be accessible.
-4.  **Test Functionality:** Upload a file, run processing.
-5.  **Check Data Preservation:** Ensure that session files appear in the directory `/srv/company-canvas/output/sessions/` (or in your chosen path) on the server.
+    Для слежения за логами в реальном времени: `docker logs -f company-canvas-prod` (`Ctrl+C` для выхода).
+    Убедитесь, что Uvicorn запустился без ошибок.
+3.  **Доступ через браузер:**
+    Откройте в браузере `http://ВАШ_IP_АДРЕС_СЕРВЕРА` (например, `http://202.78.163.133`).
+    Ваше приложение должно быть доступно.
+4.  **Протестируйте функциональность:** Загрузите файл, запустите обработку.
+5.  **Проверьте сохранение данных:** Убедитесь, что файлы сессий появляются в директории `/srv/company-canvas/output/sessions/` (или в вашем выбранном пути) на сервере.
 
-## 6. Application Update
+## 6. Обновление приложения
 
-If you made changes to the code and want to update the application on the server:
-1. Make changes to the code locally.
-2. Rebuild the Docker image locally: `docker build -t company-canvas-app .`
-3. Tag the new image: `docker tag company-canvas-app YOUR_DOCKERHUB_USERNAME/company-canvas-app:v06` (or with a new version tag, e.g., `...:1.0.1`)
-4. Upload the new image to Docker Hub: `docker push YOUR_DOCKERHUB_USERNAME/company-canvas-app:v06` (or with a new tag).
-5. **On the Ubuntu VM:**
-   a. Download the updated image: `docker pull YOUR_DOCKERHUB_USERNAME/company-canvas-app:v06`
-   b. Stop the old container: `docker stop company-canvas-prod`
-   c. Delete the old container: `docker rm company-canvas-prod`
-   d. Start a new container with the same parameters `docker run ...`, using the updated image. (See point 4.5). Data in the mounted volume (`-v`) will remain unchanged.
+Если вы внесли изменения в код и хотите обновить приложение на сервере:
+1. Внесите изменения в код локально.
+2. Пересоберите Docker-образ локально: `docker build -t company-canvas-app .`
+3. Тегируйте новый образ: `docker tag company-canvas-app ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06` (или с новым тегом версии, например, `...:1.0.1`)
+4. Загрузите новый образ на Docker Hub: `docker push ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06` (или с новым тегом).
+5. **На сервере Ubuntu VM:**
+   a. Скачайте обновленный образ: `docker pull ВАШ_DOCKERHUB_USERNAME/company-canvas-app:v06`
+   b. Остановите старый контейнер: `docker stop company-canvas-prod`
+   c. Удалите старый контейнер: `docker rm company-canvas-prod`
+   d. Запустите новый контейнер с теми же параметрами `docker run ...`, используя обновленный образ. (См. пункт 4.5). Данные в смонтированном томе (`-v`) останутся нетронутыми.
 
-**Consider using Docker Compose for easier management of updates.**
+**Для более простого управления обновлениями рассмотрите использование Docker Compose.**
 
-This guide should help you in the future to deploy the project independently! 
+Это руководство должно помочь вам в будущем самостоятельно развертывать проект! 
 
-# Quick Deployment Instructions (Version 6)
+# Краткая инструкция по развертыванию (версия 6)
 
-This quick step-by-step guide is for quick deployment without unnecessary details.
+Это краткое пошаговое руководство для быстрого развертывания приложения без лишних деталей.
 
-## 1. Local Build and Publish Image
+## 1. Локальная сборка и публикация образа
 
 ```bash
-# Log in to Docker Hub
+# Залогиньтесь в Docker Hub
 docker login
 
-# Build local image
+# Соберите локальный образ
 docker build -t company-canvas-app .
 
-# Tag image with correct repository name and version
+# Тегируйте образ с правильным именем репозитория и версией
 docker tag company-canvas-app sergeykostichev/company-canvas-app:v06
 
-# Send image to Docker Hub
+# Отправьте образ в Docker Hub
 docker push sergeykostichev/company-canvas-app:v06
 ```
 
-## 2. Deployment on Virtual Machine
+## 2. Развертывание на виртуальной машине
 
 ```bash
-# Delete previous container (if exists)
+# Удалите предыдущий контейнер (если есть)
 docker stop company-canvas-prod
 docker rm company-canvas-prod
 
-# Download new image
+# Скачайте новый образ
 docker pull sergeykostichev/company-canvas-app:v06
 
-# Create directory for data (if not created)
+# Создайте директорию для данных (если еще не создана)
 sudo mkdir -p /srv/company-canvas/output
 sudo chown -R $USER:$USER /srv/company-canvas/output
 
-# Start new container with FULL image name
+# Запустите новый контейнер с ПОЛНЫМ именем образа
 docker run -d --restart unless-stopped -p 80:8000 \
-  -e OPENAI_API_KEY="your_openai_key" \
-  -e SERPER_API_KEY="your_serper_key" \
-  -e SCRAPINGBEE_API_KEY="your_scrapingbee_key" \
-  -e HUBSPOT_API_KEY="your_hubspot_key" \
-  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/your_portal_id/record/0-2/" \
+  -e OPENAI_API_KEY="ваш_openai_ключ" \
+  -e SERPER_API_KEY="ваш_serper_ключ" \
+  -e SCRAPINGBEE_API_KEY="ваш_scrapingbee_ключ" \
+  -e HUBSPOT_API_KEY="ваш_hubspot_ключ" \
+  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/ваш_portal_id/record/0-2/" \
   -e DEBUG="false" \
   --name company-canvas-prod \
   -v /srv/company-canvas/output:/app/output \
   sergeykostichev/company-canvas-app:v06
 ```
 
-## 3. Check Work
+## 3. Проверка работы
 
 ```bash
-# Check running containers
+# Проверьте работающие контейнеры
 docker ps
 
-# Check container logs
+# Проверьте логи контейнера
 docker logs company-canvas-prod
 
-# Watch logs in real time
+# Следите за логами в реальном времени
 docker logs -f company-canvas-prod
 ```
 
-Now the application should be accessible via the IP address of the virtual machine on port 80.
+Теперь приложение должно быть доступно по IP-адресу виртуальной машины на порту 80.
 
-## 4. Important Points
+## 4. Важные моменты
 
-**IMPORTANT**: 
-- Always use FULL image name: `sergeykostichev/company-canvas-app:v06`
-- DO NOT use abbreviated names like `company-canvas-app` - this will cause an error
-- When updating version, change tag number: v06 → v07 → v08 and so on
-- For production ALWAYS use `-d` (background mode) and port 80
+**ВНИМАНИЕ**: 
+- Всегда используйте ПОЛНОЕ имя образа: `sergeykostichev/company-canvas-app:v06`
+- НЕ используйте сокращенные имена типа `company-canvas-app` - это приведет к ошибке
+- При обновлении версии меняйте номер тега: v06 → v07 → v08 и т.д.
+- Для продакшена ВСЕГДА используйте `-d` (фоновый режим) и порт 80
 
-## 5. Web Interface Information
+## 5. Информация о веб-интерфейсе
 
-- Web interface automatically updates result table every 2 seconds
-- Update parameter is in file `frontend/app.js` (line 326, value 2000 ms)
-- Table automatically displays results when processing is successful 
+- Веб-интерфейс автоматически обновляет таблицу результатов каждые 2 секунды
+- Параметр обновления находится в файле `frontend/app.js` (строка 326, значение 2000 ms)
+- При успешной обработке таблица автоматически отобразит результаты 

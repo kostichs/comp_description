@@ -121,14 +121,24 @@ async def get_url_status_and_final_location_async(
                     return True, final_url_after_redirect, None
                 elif response.status == 403: # Forbidden часто означает, что сайт жив, но блокирует HEAD
                      logger.warning(f"[URL_CHECK] HEAD для {current_url_to_try} вернул 403. Пробуем GET.")
+                     
+                     # Проверяем был ли редирект даже при 403
+                     if final_url_after_redirect != current_url_to_try:
+                         logger.info(f"[URL_CHECK] Обнаружен редирект при 403 с {current_url_to_try} на {final_url_after_redirect}. Считаем сайт живым.")
+                         return True, final_url_after_redirect, None
+                     
                      async with session.get(current_url_to_try, timeout=client_timeout, allow_redirects=True, headers=common_headers) as get_response:
                         final_get_url = str(get_response.url)
                         logger.info(f"[URL_CHECK] GET (после 403) для {current_url_to_try}: статус {get_response.status}, финальный URL: {final_get_url}")
+                        
                         if 200 <= get_response.status < 400:
+                            return True, final_get_url, None
+                        elif get_response.status == 403 and final_get_url != current_url_to_try:
+                            # Даже если GET тоже вернул 403, но произошел редирект - сайт живой
+                            logger.info(f"[URL_CHECK] GET вернул 403, но произошел редирект на {final_get_url}. Считаем сайт живым.")
                             return True, final_get_url, None
                         else:
                             if attempt_num == 0 and processed_url.startswith("https://"): continue
-                            # return False, None, f"Статус GET (после 403) {get_response.status} для {current_url_to_try}"
                             last_aiohttp_error_message = f"Статус GET (после 403) {get_response.status} для {current_url_to_try}"
                             continue # К следующей попытке aiohttp
                 else: # Другие ошибки (404, 5xx и т.д.)
@@ -209,6 +219,9 @@ async def get_url_status_and_final_location_async(
                     return True, final_url_base, None
                 elif response.status == 500 and final_url_base != base_domain_url:
                     logger.info(f"[URL_CHECK] Статус 500 для базового домена {base_domain_url}, но есть редирект на {final_url_base}. Считаем успешным.")
+                    return True, final_url_base, None
+                elif response.status == 403 and final_url_base != base_domain_url:
+                    logger.info(f"[URL_CHECK] Статус 403 для базового домена {base_domain_url}, но есть редирект на {final_url_base}. Считаем успешным.")
                     return True, final_url_base, None
         except Exception as e_base:
             logger.warning(f"[URL_CHECK] Ошибка при проверке базового домена {base_domain_url}: {e_base}")
@@ -521,13 +534,28 @@ async def normalize_and_remove_duplicates(
     redirected_urls_updated_count = 0
     processing_messages = [] # Локальный список сообщений для этой операции
 
-    conn = aiohttp.TCPConnector(ssl=False) # Отключаем проверку SSL глобально для этой сессии aiohttp
+    # Создаем коннектор с ограничением соединений для валидации
+    conn = aiohttp.TCPConnector(
+        ssl=False,  # Отключаем проверку SSL глобально для этой сессии aiohttp
+        limit=10,   # Максимум 10 соединений всего
+        limit_per_host=2  # Максимум 2 соединения на хост
+    )
+    
+    # Семафор для ограничения одновременных проверок URL
+    max_concurrent_validations = 5  # Максимум 5 одновременных валидаций
+    semaphore = asyncio.Semaphore(max_concurrent_validations)
+    
+    async def validate_url_with_semaphore(original_url, session, scrapingbee_client):
+        """Валидация URL с семафором для ограничения одновременных соединений"""
+        async with semaphore:
+            return await get_url_status_and_final_location_async(original_url, session, scrapingbee_client=scrapingbee_client)
+    
     async with aiohttp.ClientSession(connector=conn) as session:
         tasks = []
         for index, row in df.iterrows():
             company_name = str(row[company_name_col])
             original_url = str(row[website_col])
-            tasks.append(get_url_status_and_final_location_async(original_url, session, scrapingbee_client=scrapingbee_client))
+            tasks.append(validate_url_with_semaphore(original_url, session, scrapingbee_client))
         
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
@@ -685,9 +713,9 @@ if __name__ == "__main__":
     if args.scrapingbee_api_key:
         try:
             sb_client = CustomScrapingBeeClient(api_key=args.scrapingbee_api_key)
-            logger.info("ScrapingBee client initialized for CLI.")
+            logger.info("ScrapingBee клиент инициализирован для CLI.")
         except Exception as e_sb_init:
-            logger.error(f"Failed to initialize ScrapingBee client: {e_sb_init}")
+            logger.error(f"Не удалось инициализировать ScrapingBee клиент: {e_sb_init}")
 
     loop = asyncio.get_event_loop()
     try:
