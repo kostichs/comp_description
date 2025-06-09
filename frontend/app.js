@@ -494,6 +494,15 @@ document.addEventListener('DOMContentLoaded', () => {
                                          ? sessionData.deduplication_info.final_count 
                                          : sessionData.total_companies;
                         updateProgressBar(finalCount, finalCount, true, sessionData);
+                        
+                        // 🔄 ОБНОВЛЯЕМ информацию о последней сессии на второй вкладке
+                        if (window.criteriaAnalysis && typeof window.criteriaAnalysis.refreshLatestSessionInfo === 'function') {
+                            console.log('🔄 Triggering latest session update on criteria tab...');
+                            window.criteriaAnalysis.refreshLatestSessionInfo();
+                        } else if (typeof window.refreshLatestSessionInfo === 'function') {
+                            console.log('🔄 Using global function to refresh latest session info...');
+                            window.refreshLatestSessionInfo();
+                        }
                     }
                     ensureResultsControlsAvailable();
                     makeResultsControlsVisible(true);

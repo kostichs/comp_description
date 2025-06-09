@@ -1,0 +1,75 @@
+{
+    "searchParameters": {
+        "q": "site:coinbase.com (\"PCI\" OR \"ISO\" OR \"GDPR\" OR \"KYC\" OR \"secure\" OR \"data\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "What is Know Your Customer (KYC)?",
+            "link": "https://www.coinbase.com/learn/crypto-taxes/what-is-know-your-customer-kyc",
+            "snippet": "... data), which is supplemented with government-issued documentation. Once the KYC process has started, financial institutions cross-reference a user's ...",
+            "position": 1
+        },
+        {
+            "title": "Data Privacy at Coinbase",
+            "link": "https://help.coinbase.com/en/coinbase/privacy-and-security/data-privacy/data-privacy-faq",
+            "snippet": "Protecting your data and your privacy are a key priority for Coinbase. That's why we keep you informed of how and why we collect, use, protect, and disclose ...",
+            "position": 2
+        },
+        {
+            "title": "Protecting Our Customers - Standing Up to Extortionists",
+            "link": "https://www.coinbase.com/blog/protecting-our-customers-standing-up-to-extortionists",
+            "snippet": "These insiders abused their access to customer support systems to steal the account data for a small subset of customers. No passwords, private ...",
+            "date": "May 15, 2025",
+            "position": 3
+        },
+        {
+            "title": "Identity verification and financial compliance",
+            "link": "https://www.coinbase.com/blog/identity-verification-and-financial-compliance",
+            "snippet": "Our identity verification (IDV) platform is a critical component of our overarching know-your-customer (KYC) ... The data elements and fonts are ...",
+            "date": "Mar 31, 2023",
+            "position": 4
+        },
+        {
+            "title": "Privacy data request FAQ",
+            "link": "https://help.coinbase.com/en/coinbase/privacy-and-security/data-privacy/gdpr-data-request-faq",
+            "snippet": "You may request access to and obtain a copy of your personal data stored by Coinbase. Specifically, you may request access to the following:",
+            "position": 5
+        },
+        {
+            "title": "Senior Manager, Head of KYC, Remote - USA",
+            "link": "https://www.coinbase.com/careers/positions/6772827",
+            "snippet": "Depending on your location, the General Data Protection Regulation (GDPR) and California Consumer Privacy Act (CCPA) may regulate the way we manage the data of ...",
+            "position": 6
+        },
+        {
+            "title": "How to keep your crypto secure",
+            "link": "https://www.coinbase.com/learn/crypto-basics/how-to-secure-crypto",
+            "snippet": "How to keep your crypto secure. You can dramatically improve your digital ... For information on how we use your data see www.coinbase.com/legal/privacy.",
+            "position": 7
+        },
+        {
+            "title": "What is Anti-Money Laundering (AML)?",
+            "link": "https://www.coinbase.com/learn/your-crypto/what-is-anti-money-laundering-aml",
+            "snippet": "The Role of Know Your Customer (KYC) and Customer Due Diligence (CDD) in AML ... This process involves collecting and analyzing data about customers to ensure ...",
+            "position": 8
+        },
+        {
+            "title": "Know-your-customer (KYC) verification",
+            "link": "https://www.coinbase.com/th/blog/know-your-customer-kyc-verification",
+            "snippet": "... data in transit and at rest. We also understand if this process may feel to ... KYC at that time. Recently, one of our international entities observed ...",
+            "position": 9
+        },
+        {
+            "title": "Microstrategy, Inc.",
+            "link": "https://links.coinbase.com/s/c/6Skbn_KkGJ3MeaY-WUaTc8B7twjBLK3WHNXrWg6T9cCZBp7GqezYV7SGTMuqoXf1azYGyHAXrC2neHAQ5NrIeMMR_gznBzKsWb21MtI6C_rD7o5PiAu4DO5YCIUr9KplXgaPDq1oH2ztZ8Nr8xSi7AX2mDecg16bwHAWek3_3C-ZbzUTNtInPCVoFCb-VoWsHuHt4_1X0soGN9EUoqg3Bwl1czJgVMp1SKBlz_OafIIpS2LcKw5vJyQzZqB-h04AMSHK-rQhrUDQXIQ7OeuylAM4YZDYRdMSzzOtv49jkik19UdTrIzTzeGyTJpF0qX2zTvFHp9zvcHaa5TqYX0yHOlZ3GNtVD8s2HVAs8yMW6HvwD6313YdHZbYoAhlwX4EG5r1zr9S27UFmgMqpfKSLlMXfMZ4WB3DT6Ay/vtJc92Z3gGUYo6bStoI5P-zhYAAaCnR7/8",
+            "snippet": "The company's core business revolves around providing advanced data analytics platforms that help organizations transform raw data into actionable insights, ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

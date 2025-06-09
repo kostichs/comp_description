@@ -1269,13 +1269,17 @@ class CriteriaAnalysis {
                 latestSessionInfoEl.textContent = `Latest session: ${latestSession.session_id} (${sessionDate}, ${companiesCount} companies)`;
                 latestSessionInfoEl.style.display = 'block';
                 checkbox.style.display = 'inline-block';
+                checkbox.disabled = false;
                 
                 this.latestSessionId = latestSession.session_id;
+                
+                console.log('🔄 Latest session info updated:', latestSession.session_id);
             } else {
                 latestSessionInfoEl.textContent = 'No completed sessions found';
                 latestSessionInfoEl.style.display = 'block';
                 checkbox.disabled = true;
                 checkbox.style.display = 'none';
+                this.latestSessionId = null;
             }
         } catch (error) {
             console.error('Error loading latest session info:', error);
@@ -1283,6 +1287,15 @@ class CriteriaAnalysis {
             latestSessionInfoEl.textContent = 'Error loading session information';
             latestSessionInfoEl.style.display = 'block';
         }
+    }
+    
+    // Глобальная функция для обновления из других компонентов
+    refreshLatestSessionInfo() {
+        console.log('🔄 Refreshing latest session info from external trigger');
+        // Небольшая задержка чтобы сервер успел обновить метаданные сессии
+        setTimeout(() => {
+            this.loadLatestSessionInfo();
+        }, 1000);
     }
 
     toggleLatestSessionMode(useLatestSession) {
@@ -1432,6 +1445,16 @@ function handleCriteriaFileDrop(event) {
 
 // Make class available globally
 window.CriteriaAnalysis = CriteriaAnalysis;
+
+// Глобальная функция для обновления информации о последней сессии (для вызова из других компонентов)
+window.refreshLatestSessionInfo = function() {
+    if (window.criteriaAnalysis && typeof window.criteriaAnalysis.refreshLatestSessionInfo === 'function') {
+        console.log('🔄 Global trigger: refreshing latest session info...');
+        window.criteriaAnalysis.refreshLatestSessionInfo();
+    } else {
+        console.log('⚠️ CriteriaAnalysis not initialized yet');
+    }
+};
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {

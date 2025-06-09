@@ -1,0 +1,92 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Multiplayer Video Games - Official EA Site",
+            "link": "https://www.ea.com/games/library/multiplayer",
+            "snippet": "Or, team up with friends in another hit from our multiplayer game library! ... Service Updates Security · Your Privacy Choices. Cookie Preferences. © 2025 ...",
+            "position": 1
+        },
+        {
+            "title": "What is the Friend's Pass?",
+            "link": "https://www.ea.com/games/split-fiction/split-fiction/news/what-is-the-friends-pass",
+            "snippet": "One user must own the full game in order for the co-op player to play the full game. ... Online Service Updates · Notice at Collection. Sales ...",
+            "date": "Feb 20, 2025",
+            "position": 2
+        },
+        {
+            "title": "Friend's Pass",
+            "link": "https://www.ea.com/games/it-takes-two/it-takes-two/features/itt-friends-pass",
+            "snippet": "In addition, if they've joined a game session and the game was saved, it ... Online Service Updates · Notice at Collection. Sales tax may apply for your ...",
+            "position": 3
+        },
+        {
+            "title": "Buy Split Fiction - Electronic Arts",
+            "link": "https://www.ea.com/games/split-fiction/split-fiction",
+            "snippet": "One user must own the full game in order for the co-op player to play the full game. ... Online Service Updates · Notice at Collection. Sales tax may apply ...",
+            "position": 4
+        },
+        {
+            "title": "Multiplayer Game Modes & Maps",
+            "link": "https://www.ea.com/news/game-modes-and-maps",
+            "snippet": "Multiplayer Game Modes & Maps. Copied to clipboard. https://www.ea.com/news ... Service Updates Security · Your Privacy Choices. Cookie Preferences. © 2025 ...",
+            "position": 5
+        },
+        {
+            "title": "It Takes Two Features",
+            "link": "https://www.ea.com/games/it-takes-two/it-takes-two/features",
+            "snippet": "One user must own the full game in order for the co-op player to play the full game. ... Online Service Updates · Notice at Collection. Sales tax may apply ...",
+            "position": 6
+        },
+        {
+            "title": "Split Fiction Is Available Now!",
+            "link": "https://www.ea.com/games/split-fiction/split-fiction/news/split-fiction-is-available-now",
+            "snippet": "One user must own the full game in order for the co-op player to play the full game. ... Online Service Updates · Notice at Collection. Sales ...",
+            "date": "Mar 6, 2025",
+            "position": 7
+        },
+        {
+            "title": "Dragon Age: Inquisition Unveils Cooperative Multiplayer",
+            "link": "https://www.ea.com/news/dragon-age-inquisition-unveils-cooperative-multiplayer",
+            "snippet": "The F1 25 Q&A: Creative Director Gavin Cooper on their biggest game ever ... Service Updates Security · Your Privacy Choices. Cookie Preferences. © 2025 ...",
+            "position": 8
+        },
+        {
+            "title": "Split Fiction Friend's Pass - Xbox",
+            "link": "https://www.ea.com/games/split-fiction/split-fiction/features/friends-pass-xbox",
+            "snippet": "Yes, both players need a Xbox Game Pass Core (previously Xbox Live Gold) or platform's service subscription to play online co-op. Players on PC do not need a ...",
+            "position": 9
+        },
+        {
+            "title": "Play A Way Out with a Friend, Even if They Don't Own the ...",
+            "link": "https://www.ea.com/news/a-way-out-friends-pass",
+            "snippet": "A Way Out lets you team up with a buddy from your friend list for its split-screen, co-op adventure, even when they don't own the game themselves.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Video game multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Multiplayer service game ps4"
+        },
+        {
+            "query": "Best multiplayer service game"
+        }
+    ],
+    "credits": 1
+}

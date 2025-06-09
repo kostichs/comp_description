@@ -1,0 +1,95 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Team up for new adventures in SWORD ART ONLINE ...",
+            "link": "https://en.bandainamcoent.eu/sword-art-online/news/team-new-adventures-sword-art-online-fractured-daydream-available-now",
+            "snippet": "This title is the first-ever large-scale, live-service, multiplayer adventure title in the Sword Art Online video game series. Buy now. In the ...",
+            "date": "Oct 4, 2024",
+            "position": 1
+        },
+        {
+            "title": "ELDEN RING: Introduction to the Multiplayer System",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-introduction-the-multiplayer-system",
+            "snippet": "There is a rich multiplayer system available to you if you play online, and this article will help you learn how to use it. Broadly speaking, ...",
+            "date": "Feb 21, 2022",
+            "position": 2
+        },
+        {
+            "title": "SWORD ART ONLINE Videogames",
+            "link": "https://en.bandainamcoent.eu/sword-art-online",
+            "snippet": "Link Start in the universe of Sword art Online. Discover the latest news, videos and images of the official games.",
+            "position": 3
+        },
+        {
+            "title": "SWORD ART ONLINE Fractured Daydream",
+            "link": "https://en.bandainamcoent.eu/sword-art-online/sword-art-online-fractured-daydream",
+            "snippet": "... multiplayer co-op action! Defeat high difficulty bosses in Raids. True to the SWORD ART ONLINE series, join a raid party and prepare for a fight with high ...",
+            "position": 4
+        },
+        {
+            "title": "Join the Open Network Test of SWORD ART ONLINE ...",
+            "link": "https://en.bandainamcoent.eu/sword-art-online/news/join-the-open-network-test-of-sword-art-online-fractured-daydream",
+            "snippet": "SWORD ART ONLINE Fractured Daydream is a multiplayer-focused adventure based on the popular SWORD ART ONLINE series, releasing worldwide on ...",
+            "date": "Aug 28, 2024",
+            "position": 5
+        },
+        {
+            "title": "SWORD ART ONLINE Fractured Daydream show more ...",
+            "link": "https://en.bandainamcoent.eu/sword-art-online/news/sword-art-online-fractured-daydream-show-more-gameplay-its-system-trailer",
+            "snippet": "SWORD ART ONLINE Fractured Daydream unveils an extensive look at its gameplay and the two game modes that await in this large-scale multiplayer game.",
+            "date": "Sep 20, 2024",
+            "position": 6
+        },
+        {
+            "title": "CODE VEIN - Introduction to Online Multiplayer",
+            "link": "https://en.bandainamcoent.eu/code-vein/news/code-vein-introduction-online-multiplayer",
+            "snippet": "The online player matching is very simple. Under the Field Menu, open Multiplayer and select \"Send a rescue signal to other Revenants.\" That's ...",
+            "date": "Jul 30, 2019",
+            "position": 7
+        },
+        {
+            "title": "FromSoftware and Bandai Namco reveal ELDEN RING ...",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/fromsoftware-and-bandai-namco-reveal-elden-ring-nightreign",
+            "snippet": "ELDEN RING NIGHTREIGN will be a multiplayer-focused return to Roundtable Hold, set in a universe parallel to the events of ELDEN RING.",
+            "date": "Dec 13, 2024",
+            "position": 8
+        },
+        {
+            "title": "DRAGON BALL: Sparking! ZERO - GAMEPLAY SHOWCASE",
+            "link": "https://en.bandainamcoent.eu/dragon-ball/news/dragon-ball-sparking-zero-gameplay-showcase",
+            "snippet": "... online multiplayer and an offline single player mode in mind. However, we have always wanted for as many people as possible enjoy the game ...",
+            "date": "Jun 13, 2024",
+            "position": 9
+        },
+        {
+            "title": "'EACH PAC FOR THEMSELVES' MULTIPLAYER GAME ...",
+            "link": "https://en.bandainamcoent.eu/pac-man/news/each-pac-themselves-multiplayer-game-pac-man-mega-tunnel-battle-chomp-champs-available",
+            "snippet": "... multiplayer featuring cross-play on consoles and PC for 64 ... PAC-MAN Mega Tunnel Battle: Chomp Champs is an online-only PAC-MAN eating ...",
+            "date": "May 10, 2024",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service android"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        }
+    ],
+    "credits": 1
+}

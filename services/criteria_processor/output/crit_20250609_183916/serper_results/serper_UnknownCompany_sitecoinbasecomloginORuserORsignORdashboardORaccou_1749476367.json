@@ -1,0 +1,73 @@
+{
+    "searchParameters": {
+        "q": "site:coinbase.com (\"login\" OR \"user\" OR \"sign\" OR \"dashboard\" OR \"account\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Coinbase - Sign In",
+            "link": "https://accounts.coinbase.com/signin",
+            "snippet": "Coinbase is a secure online platform for buying, selling, transferring, and storing digital currency.",
+            "position": 1
+        },
+        {
+            "title": "Coinbase - Sign In",
+            "link": "https://www.coinbase.com/dashboard",
+            "snippet": "Something went wrong. Please refresh your page and try again after few minutes. Your funds are safe.",
+            "position": 2
+        },
+        {
+            "title": "Coinbase - Sign In",
+            "link": "https://login.coinbase.com/",
+            "snippet": "Coinbase is a secure online platform for buying, selling, transferring, and storing digital currency.",
+            "position": 3
+        },
+        {
+            "title": "Coinbase - Sign In",
+            "link": "https://login.coinbase.com/signin",
+            "snippet": "Sign in to Coinbase. Email. Continue. OR. Sign in with Passkey. Sign in with Google. Sign in with Apple. Sign in with Wallet.",
+            "position": 4
+        },
+        {
+            "title": "Sign in to Coinbase Commerce",
+            "link": "https://beta.commerce.coinbase.com/self-managed/sign-in",
+            "snippet": "Create account. Sign in to Coinbase Commerce. Email. Password. Sign in. Click here to access your active application for Coinbase-managed Commerce.",
+            "position": 5
+        },
+        {
+            "title": "Manage your account (Futures)",
+            "link": "https://help.coinbase.com/en/coinbase/trading-and-funding/derivatives/futures-manage-account",
+            "snippet": "Sign in to your Coinbase app Coinbase logo . · Select Transfer. · Select Deposit cash to add cash to your account.",
+            "position": 6
+        },
+        {
+            "title": "Coinbase Advanced dashboard overview",
+            "link": "https://help.coinbase.com/en/coinbase/trading-and-funding/advanced-trade/dashboard-overview",
+            "snippet": "Sign in. Help. US... How to protect your account - learn about security best practices and how to keep your account safe. ... Coinbase Advanced dashboard ...",
+            "position": 7
+        },
+        {
+            "title": "Access your Coinbase Prime account",
+            "link": "https://help.coinbase.com/en/prime/get-started/access-account",
+            "snippet": "Click on the link within the email to create an account password. Go to prime.coinbase.com/login. Sign in using your new password and email address. Verify your ...",
+            "position": 8
+        },
+        {
+            "title": "Getting started with your Exchange account",
+            "link": "https://help.coinbase.com/en/exchange/getting-started/getting-started-with-your-exchange-account",
+            "snippet": "Documentation. Get help. US... Sign in. Help. US... How to protect your account - learn about security best practices and how to keep your account safe.",
+            "position": 9
+        },
+        {
+            "title": "Coinbase - Sign Up",
+            "link": "https://coinbase.com/signup",
+            "snippet": "Create your account. Access all that Coinbase has to offer with a single account. Email. Continue. OR. Sign up with Google. Sign up with Apple ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -89,9 +89,10 @@ def process_single_company_for_product(args):
                 product_results["qualified_audiences"].append(audience)
                 log_info(f"✅ [{product}] {company_name} квалифицирована для: {audience}")
         
-        # If no qualified audiences, record this in All_Results
+        # If no qualified audiences, record this as NOT QUALIFIED (failed qualification)
         if not product_results["qualified_audiences"]:
-            log_info(f"❌ [{product}] {company_name} не квалифицирована")
+            log_info(f"❌ [{product}] {company_name} не квалифицирована - НЕ ДОШЛА до анализа критериев")
+            record["Qualified_Products"] = "NOT QUALIFIED - Failed Qualification Questions"
             record["All_Results"] = product_results
             return [record]
         
@@ -128,9 +129,16 @@ def process_single_company_for_product(args):
             audience_results["mandatory_criteria"] = mandatory_detailed
             
             if not mandatory_passed:
-                log_info(f"❌ [{product}] {company_name} mandatory НЕ пройдены для {audience}")
+                log_info(f"❌ [{product}] {company_name} mandatory НЕ пройдены для {audience} - НЕ ДОШЛА до NTH")
                 audience_results["mandatory_status"] = "Failed"
+                audience_results["final_status"] = "Failed Mandatory"
                 product_results["detailed_results"][audience] = audience_results
+                
+                # Create NOT QUALIFIED record for failed mandatory
+                failed_mandatory_record = record.copy()
+                failed_mandatory_record["Qualified_Products"] = f"NOT QUALIFIED - Failed Mandatory Criteria for {audience}"
+                failed_mandatory_record["All_Results"] = product_results
+                results_list.append(failed_mandatory_record)
                 continue
             
             log_info(f"✅ [{product}] {company_name} mandatory пройдены для {audience}")
@@ -180,35 +188,43 @@ def process_single_company_for_product(args):
             # ВСЕГДА добавляем detailed_results для каждой проверенной аудитории
             product_results["detailed_results"][audience] = audience_results
             
+            # ИСПРАВЛЕНИЕ ЛОГИКИ: если компания дошла до NTH, сохраняем результаты ВСЕГДА
+            # независимо от счета (даже если nth_score = 0)
+            
             if nth_score > 0:
                 # SUCCESS! This is a QUALIFIED result
                 audience_results["final_status"] = "Qualified"
-                
-                # Create readable text format for POSITIVE results
-                qualified_text_parts = [
-                    f"QUALIFIED: {audience}",
-                    f"NTH Score: {nth_score:.3f}",
-                    f"Total NTH Criteria: {nth_total}",
-                    f"Passed: {nth_passed}",
-                    f"ND (No Data): {nth_nd}"
-                ]
-                
-                qualified_text = "\n".join(qualified_text_parts)
-                
-                # Create a copy of the record for this qualification
-                qualified_record = record.copy()
-                qualified_record["Qualified_Products"] = qualified_text
-                qualified_record["All_Results"] = product_results
-                results_list.append(qualified_record)
-                
-                log_info(f"🎉 [{product}] {company_name} QUALIFIED для {audience} (Score: {nth_score:.3f})")
+                status_text = "QUALIFIED"
+                log_message = f"🎉 [{product}] {company_name} QUALIFIED для {audience} (Score: {nth_score:.3f})"
             else:
-                # Set failed status for audiences that don't qualify
-                audience_results["final_status"] = "Failed"
+                # This is a completed analysis with 0 score - still show full results
+                audience_results["final_status"] = "Not Qualified" 
+                status_text = "NOT QUALIFIED"
+                log_message = f"❌ [{product}] {company_name} NOT QUALIFIED для {audience} (Score: {nth_score:.3f}) - но анализ завершен"
+            
+            # Create readable text format for ALL completed NTH analyses
+            result_text_parts = [
+                f"{status_text}: {audience}",
+                f"NTH Score: {nth_score:.3f}",
+                f"Total NTH Criteria: {nth_total}",
+                f"Passed: {nth_passed}",
+                f"ND (No Data): {nth_nd}"
+            ]
+            
+            result_text = "\n".join(result_text_parts)
+            
+            # Create a copy of the record for this completed analysis
+            result_record = record.copy()
+            result_record["Qualified_Products"] = result_text
+            result_record["All_Results"] = product_results
+            results_list.append(result_record)
+            
+            log_info(log_message)
         
-        # If no successful qualifications, return the negative record
+        # If no results at all (no audiences analyzed), return the base record
         if not results_list:
             record["All_Results"] = product_results
+            record["Qualified_Products"] = "NO AUDIENCES ANALYZED"
             results_list.append(record)
         
         return results_list

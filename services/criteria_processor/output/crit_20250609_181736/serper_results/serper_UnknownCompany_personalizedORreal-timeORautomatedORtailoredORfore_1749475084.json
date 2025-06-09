@@ -1,0 +1,180 @@
+{
+    "searchParameters": {
+        "q": "\"personalized\" OR \"real-time\" OR \"automated\" OR \"tailored\" OR \"forecast\" OR \"instant delivery\"",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Forecast App: AI Project & Resource Management Software",
+            "link": "https://www.forecast.app/",
+            "snippet": "AI Project & Resource Management Software. Forecast helps operational leaders plan, run and track projects in one place to optimize productivity.",
+            "position": 1
+        },
+        {
+            "title": "Time Series Forecasting Service - AWS - Amazon.com",
+            "link": "https://aws.amazon.com/forecast/",
+            "snippet": "More Retail built an automated ordering system with Amazon Forecast. More Retail built an automated ordering system with Amazon Forecast · Missing alt text ...",
+            "position": 2
+        },
+        {
+            "title": "Forecast Pro: Better Decisions Demand Forecast Accuracy",
+            "link": "https://www.forecastpro.com/",
+            "snippet": "Forecast Pro is powerful and accurate forecasting software, designed for business forecasters across virtually all industries.",
+            "date": "Oct 8, 2024",
+            "sitelinks": [
+                {
+                    "title": "Pricing",
+                    "link": "https://www.forecastpro.com/pricing/"
+                },
+                {
+                    "title": "Learn More",
+                    "link": "https://www.forecastpro.com/solutions/forecast-pro/"
+                },
+                {
+                    "title": "Company",
+                    "link": "https://www.forecastpro.com/company/"
+                },
+                {
+                    "title": "Literature & White Papers",
+                    "link": "https://www.forecastpro.com/resources/literature-white-papers/"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Team Scheduling & Resource Planning Tool | Harvest Forecast",
+            "link": "https://www.getharvest.com/forecast",
+            "snippet": "Forecast helps you plan staffing needs, schedule your team across projects, and optimize time to ensure project success and a happy team. Try Forecast free.",
+            "sitelinks": [
+                {
+                    "title": "Harvest Forecast",
+                    "link": "https://www.getharvest.com/forecast/harvest-and-forecast"
+                },
+                {
+                    "title": "Pricing",
+                    "link": "https://www.getharvest.com/forecast/pricing"
+                },
+                {
+                    "title": "Webinars",
+                    "link": "https://www.getharvest.com/forecast/webinars"
+                },
+                {
+                    "title": "Harvest Time Tracking",
+                    "link": "https://www.getharvest.com/forecast/features"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Forecast Tool - Acquisition Gateway",
+            "link": "https://acquisitiongateway.gov/forecast",
+            "snippet": "Welcome to Forecast Tool ... The goal of this tool is to provide a nationwide dashboard of upcoming federal contracting opportunities. All ...",
+            "position": 5
+        },
+        {
+            "title": "Superhuman Automated Forecasting | CAIS - Center for AI Safety",
+            "link": "https://safe.ai/blog/forecasting",
+            "snippet": "Superhuman Automated Forecasting. BLOG · AI Risks. Sep 9, 2024. 5 min read. View as PDF. Author: ... (Its prompt can be found by clicking on the gear icon ...",
+            "position": 6
+        },
+        {
+            "title": "Gong Forecast | Pinpoint Your Number and Paths to Target",
+            "link": "https://www.gong.io/forecast/",
+            "snippet": "See how Gong Forecast can help your team drive forecast accuracy and confidently hit your numbers. ... real-time decisions. What is the ROI of implementing AI- ...",
+            "position": 7
+        },
+        {
+            "title": "SAS Forecast Server Automates Business Forecasting",
+            "link": "https://www.sas.com/en_us/software/forecast-server.html",
+            "snippet": "More advanced users can access even more capabilities using the SAS programming language. SAS Forecast Server showing automated forecasting screenshot ...",
+            "position": 8
+        },
+        {
+            "title": "Automated Insights - Stats Perform",
+            "link": "https://www.statsperform.com/automated-insights/",
+            "snippet": "Automated, contextual bite-sized facts and information to illuminate your storytelling, drive fan conversations and enrich betting experiences.",
+            "position": 9
+        },
+        {
+            "title": "Salt Lake County—3 Day Forecast - Utah Air Quality",
+            "link": "https://air.utah.gov/forecast.php",
+            "snippet": "The health forecast helps to determine how the highest pollution level of the day will affect people with various health conditions. Click on the “Health ...",
+            "sitelinks": [
+                {
+                    "title": "Utah County",
+                    "link": "https://air.utah.gov/forecast.php?id=ln"
+                },
+                {
+                    "title": "Davis",
+                    "link": "https://air.utah.gov/forecast.php?id=bv"
+                },
+                {
+                    "title": "Weber County",
+                    "link": "https://air.utah.gov/forecast.php?id=hv"
+                },
+                {
+                    "title": "Box Elder",
+                    "link": "https://air.utah.gov/forecast.php?id=bg"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "peopleAlsoAsk": [
+        {
+            "question": "How much does an Amazon Forecast cost?",
+            "snippet": "Pricing tables\nForecast Explanations per month\nPrice per 1000 explanations\nFirst 50K explanations\n$2.00\nNext 950K explanations\n$0.80\nNext 9.9M explanations\n$0.25\nOver 10M explanations\n$0.15",
+            "title": "Time Series Forecasting Service – Amazon Forecast Pricing - AWS",
+            "link": "https://aws.amazon.com/forecast/pricing/"
+        },
+        {
+            "question": "What are the four types of forecasting models?",
+            "snippet": "FOUR COMMON TYPES OF FORECASTING MODELS\nTime series model.\nEconometric model.\nJudgmental forecasting model.\nThe Delphi method.",
+            "title": "Forecasting Models (4 Types With Examples) | Indeed.com",
+            "link": "https://www.indeed.com/career-advice/career-development/forecasting-models"
+        },
+        {
+            "question": "What is Amazon Forecast Service?",
+            "snippet": "Amazon Forecast is a fully managed deep learning service for time-series forecasting. By providing Amazon Forecast with historical time-series data, you can predict future points in the series. Time-series forecasting is useful in multiple domains, including retail, financial planning, supply chain, and healthcare.",
+            "title": "Amazon Forecast Documentation",
+            "link": "https://docs.aws.amazon.com/forecast/"
+        },
+        {
+            "question": "Is Amazon Forecast no longer available?",
+            "snippet": "Amazon Forecast is no longer available to new customers. You can now specify a custom forecast frequency. For more information, see Creating a Predictor. You can now create a What-if Analysis to explore different scenarios.",
+            "title": "Document History for Amazon Forecast",
+            "link": "https://docs.aws.amazon.com/forecast/latest/dg/doc-history.html"
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Personalized real time automated tailored forecast instant delivery amazon"
+        },
+        {
+            "query": "Men personalized real time automated tailored forecast instant delivery"
+        },
+        {
+            "query": "Forecast app pricing"
+        },
+        {
+            "query": "Forecast app login"
+        },
+        {
+            "query": "Forecast project management"
+        },
+        {
+            "query": "Harvest Forecast"
+        },
+        {
+            "query": "AWS Forecast example"
+        },
+        {
+            "query": "Amazon Forecast pricing"
+        }
+    ],
+    "credits": 1
+}
