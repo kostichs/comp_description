@@ -481,10 +481,7 @@
                     <h3 style="margin: 0 0 15px 0; color: #333; font-size: 16px;">📁 Criteria Files</h3>
                     
                     <!-- Drag & Drop Zone for Criteria Files -->
-                    <div id="criteria-drop-zone" style="border: 2px dashed #28a745; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; background-color: #f8fff8; transition: all 0.3s ease;" 
-                         ondragover="event.preventDefault(); this.style.backgroundColor='#e8f5e8'; this.style.borderColor='#20c997';" 
-                         ondragleave="this.style.backgroundColor='#f8fff8'; this.style.borderColor='#28a745';"
-                         ondrop="event.preventDefault(); this.style.backgroundColor='#f8fff8'; this.style.borderColor='#28a745'; handleCriteriaFileDrop(event);">
+                    <div id="criteria-drop-zone" style="border: 2px dashed #28a745; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; background-color: #f8fff8; transition: all 0.3s ease;">
                         <p style="margin: 5px 0; color: #28a745; font-weight: bold; font-size: 14px;">Drop CSV Files</p>
                     </div>
                     
@@ -493,7 +490,7 @@
                     </div>
                     
                     <div id="selected-criteria-display" style="margin-bottom: 15px; padding: 10px; background: #e8f5e8; border-radius: 4px; display: none;">
-                        <strong style="font-size: 12px;">Selected Files:</strong>
+                        <strong style="font-size: 12px;">Selected Products:</strong>
                         <div id="selected-criteria-list" style="margin-top: 5px; font-size: 12px;"></div>
                     </div>
                     
@@ -540,9 +537,9 @@
                     
                     <input type="file" id="criteria-file" name="file" accept=".csv,.xlsx,.xls" required style="display: none;">
                     
-                    <div id="selected-criteria-display" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; display: none;">
-                        <strong>Selected Criteria Files:</strong>
-                        <div id="selected-criteria-list" style="margin-top: 5px;"></div>
+                    <div id="selected-products-display" style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px; display: none;">
+                        <strong>Selected Products:</strong>
+                        <div id="selected-products-list" style="margin-top: 5px;"></div>
                     </div>
                 </form>
 
@@ -558,7 +555,7 @@
                     
                     <div style="margin-top: 15px;">
                         <button id="cancel-criteria-btn" style="display: none;">❌ Cancel</button>
-                        <button id="refresh-criteria-btn">Refresh</button>
+                        <button id="refresh-status-btn">Refresh</button>
                         <button id="download-results-btn-main" style="display: none; background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">Download Full Results</button>
                     </div>
                 </div>

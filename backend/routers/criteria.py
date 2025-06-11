@@ -666,56 +666,63 @@ async def get_criteria_files():
     files = []
     all_products = set()
     
-    for file_path in criteria_dir.glob("*.csv"):
-        # Исключаем backup файлы из отображения (на случай если они остались от старых версий)
-        if ".backup_" in file_path.name or ".deleted_" in file_path.name:
-            continue
-        try:
-            # Читаем весь файл для правильного подсчета строк
-            df = pd.read_csv(file_path)
-            
-            # ФИЛЬТРАЦИЯ ПУСТЫХ СТРОК для правильного подсчета
-            # Основные колонки для критериев
-            main_columns = ['Product', 'Criteria', 'Target Audience']
-            existing_columns = [col for col in main_columns if col in df.columns]
-            
-            if existing_columns:
-                # Удаляем строки где ВСЕ основные колонки пустые
-                df_filtered = df.dropna(subset=existing_columns, how='all')
-                df_filtered = df_filtered[df_filtered[existing_columns].ne('').any(axis=1)]
-                actual_rows = len(df_filtered)
-            else:
-                # Если нет основных колонок, считаем все непустые строки
-                actual_rows = len(df.dropna(how='all'))
-            
-            # Извлекаем продукты из файла
-            file_products = []
-            if 'Product' in df.columns:
-                file_products = df['Product'].unique().tolist()
-                # Убираем NaN значения
-                file_products = [p for p in file_products if pd.notna(p) and str(p).strip()]
-                all_products.update(file_products)
-            
-            files.append({
-                "filename": file_path.name,
-                "full_path": str(file_path),
-                "size": file_path.stat().st_size,
-                "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
-                "rows_preview": min(5, actual_rows),  # Показываем до 5 строк для preview
-                "total_rows": actual_rows,  # РЕАЛЬНОЕ количество строк с данными
-                "columns": list(df.columns) if not df.empty else [],
-                "products": file_products  # Продукты в этом файле
-            })
-        except Exception as e:
-            logger.error(f"Error reading criteria file {file_path}: {e}")
-            files.append({
-                "filename": file_path.name,
-                "full_path": str(file_path),
-                "size": file_path.stat().st_size,
-                "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
-                "error": str(e),
-                "products": []
-            })
+    # Поддерживаем как CSV, так и XLSX файлы
+    for pattern in ["*.csv", "*.xlsx"]:
+        for file_path in criteria_dir.glob(pattern):
+            # Исключаем backup файлы из отображения (на случай если они остались от старых версий)
+            if ".backup_" in file_path.name or ".deleted_" in file_path.name:
+                continue
+            try:
+                # Читаем файл в зависимости от расширения
+                if file_path.suffix.lower() == '.csv':
+                    df = pd.read_csv(file_path)
+                elif file_path.suffix.lower() == '.xlsx':
+                    df = pd.read_excel(file_path)
+                else:
+                    continue  # Пропускаем неподдерживаемые файлы
+                
+                # ФИЛЬТРАЦИЯ ПУСТЫХ СТРОК для правильного подсчета
+                # Основные колонки для критериев
+                main_columns = ['Product', 'Criteria', 'Target Audience']
+                existing_columns = [col for col in main_columns if col in df.columns]
+                
+                if existing_columns:
+                    # Удаляем строки где ВСЕ основные колонки пустые
+                    df_filtered = df.dropna(subset=existing_columns, how='all')
+                    df_filtered = df_filtered[df_filtered[existing_columns].ne('').any(axis=1)]
+                    actual_rows = len(df_filtered)
+                else:
+                    # Если нет основных колонок, считаем все непустые строки
+                    actual_rows = len(df.dropna(how='all'))
+                
+                # Извлекаем продукты из файла
+                file_products = []
+                if 'Product' in df.columns:
+                    file_products = df['Product'].unique().tolist()
+                    # Убираем NaN значения
+                    file_products = [p for p in file_products if pd.notna(p) and str(p).strip()]
+                    all_products.update(file_products)
+                
+                files.append({
+                    "filename": file_path.name,
+                    "full_path": str(file_path),
+                    "size": file_path.stat().st_size,
+                    "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
+                    "rows_preview": min(5, actual_rows),  # Показываем до 5 строк для preview
+                    "total_rows": actual_rows,  # РЕАЛЬНОЕ количество строк с данными
+                    "columns": list(df.columns) if not df.empty else [],
+                    "products": file_products  # Продукты в этом файле
+                })
+            except Exception as e:
+                logger.error(f"Error reading criteria file {file_path}: {e}")
+                files.append({
+                    "filename": file_path.name,
+                    "full_path": str(file_path),
+                    "size": file_path.stat().st_size,
+                    "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
+                    "error": str(e),
+                    "products": []
+                })
     
     return {
         "files": files,

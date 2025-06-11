@@ -108,7 +108,16 @@ class CriteriaAnalysis {
         // Bind criteria file management
         const refreshCriteriaBtn = document.getElementById('refresh-criteria-btn');
         if (refreshCriteriaBtn) {
-            refreshCriteriaBtn.addEventListener('click', () => this.loadCriteriaFiles());
+            refreshCriteriaBtn.addEventListener('click', () => {
+                console.log('🔄 Refresh button clicked - reloading criteria files and updating interface');
+                this.loadCriteriaFiles();
+            });
+        }
+
+        // Bind refresh status button
+        const refreshStatusBtn = document.getElementById('refresh-status-btn');
+        if (refreshStatusBtn) {
+            refreshStatusBtn.addEventListener('click', () => this.checkStatus());
         }
 
         // Bind criteria editor buttons
@@ -132,6 +141,9 @@ class CriteriaAnalysis {
 
         // Setup drag & drop for company files
         this.setupCompanyDragDrop();
+        
+        // Setup drag & drop for criteria files
+        this.setupCriteriaDragDrop();
     }
 
     setupCompanyDragDrop() {
@@ -179,6 +191,72 @@ class CriteriaAnalysis {
                 }
             });
         }
+    }
+
+    setupCriteriaDragDrop() {
+        const criteriaDropZone = document.getElementById('criteria-drop-zone');
+        
+        if (!criteriaDropZone) {
+            console.error('❌ Criteria drop zone not found!');
+            return;
+        }
+        
+        console.log('✅ Setting up criteria drag & drop handlers');
+        
+        criteriaDropZone.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            criteriaDropZone.style.backgroundColor = '#e8f5e8';
+            criteriaDropZone.style.borderColor = '#20c997';
+        });
+        
+        criteriaDropZone.addEventListener('dragleave', (event) => {
+            criteriaDropZone.style.backgroundColor = '#f8fff8';
+            criteriaDropZone.style.borderColor = '#28a745';
+        });
+        
+        criteriaDropZone.addEventListener('drop', (event) => {
+            console.log('🎯 Drop event on criteria zone!');
+            event.preventDefault();
+            criteriaDropZone.style.backgroundColor = '#f8fff8';
+            criteriaDropZone.style.borderColor = '#28a745';
+            
+            // Process dropped files
+            this.handleCriteriaFileDrop(event);
+        });
+    }
+
+    handleCriteriaFileDrop(event) {
+        console.log('🎯 handleCriteriaFileDrop called from class method!');
+        
+        const files = event.dataTransfer.files;
+        console.log('📁 Files dropped:', files.length);
+        
+        if (files.length === 0) {
+            console.log('⚠️ No files in drop event');
+            return;
+        }
+        
+        // Log file details
+        for (let i = 0; i < files.length; i++) {
+            console.log(`📄 File ${i + 1}: ${files[i].name} (${files[i].size} bytes, type: ${files[i].type})`);
+        }
+        
+        // Process all files sequentially  
+        const processFiles = async () => {
+            for (let file of files) {
+                console.log(`🔄 Processing file: ${file.name}`);
+                await this.uploadCriteriaFile(file);
+            }
+            
+            // После загрузки всех файлов, полностью обновляем интерфейс
+            console.log('🔄 All criteria files uploaded, refreshing complete interface');
+            await this.loadCriteriaFiles();
+        };
+        
+        processFiles().catch(error => {
+            console.error('❌ Error processing dropped criteria files:', error);
+            alert(`Error processing files: ${error.message}`);
+        });
     }
 
     async handleUpload(event) {
@@ -920,16 +998,34 @@ class CriteriaAnalysis {
     }
 
     updateSelectedCriteriaDisplay() {
-        const container = document.getElementById('selected-criteria-display');
-        const listContainer = document.getElementById('selected-criteria-list');
+        // Обновляем отображение в sidebar (основной список продуктов для выбора)
+        const sidebarContainer = document.getElementById('selected-criteria-display');
+        const sidebarListContainer = document.getElementById('selected-criteria-list');
         
-        if (this.selectedCriteria.length > 0) {
-            container.style.display = 'block';
-            listContainer.innerHTML = this.selectedCriteria.map(product => 
-                `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${product}</span>`
-            ).join('');
-        } else {
-            container.style.display = 'none';
+        if (sidebarContainer && sidebarListContainer) {
+            if (this.selectedCriteria.length > 0) {
+                sidebarContainer.style.display = 'block';
+                sidebarListContainer.innerHTML = this.selectedCriteria.map(product => 
+                    `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${product}</span>`
+                ).join('');
+            } else {
+                sidebarContainer.style.display = 'none';
+            }
+        }
+        
+        // Обновляем отображение в форме (дополнительный display)
+        const formContainer = document.getElementById('selected-products-display');
+        const formListContainer = document.getElementById('selected-products-list');
+        
+        if (formContainer && formListContainer) {
+            if (this.selectedCriteria.length > 0) {
+                formContainer.style.display = 'block';
+                formListContainer.innerHTML = this.selectedCriteria.map(product => 
+                    `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${product}</span>`
+                ).join('');
+            } else {
+                formContainer.style.display = 'none';
+            }
         }
     }
 
@@ -1156,12 +1252,15 @@ class CriteriaAnalysis {
     }
 
     async uploadCriteriaFile(file) {
+        console.log(`🔄 uploadCriteriaFile started for: ${file.name}`);
         try {
             // Validate file type
             if (!file.name.endsWith('.csv')) {
+                console.log('❌ File validation failed: not a CSV file');
                 alert('Only CSV files are supported for criteria upload.');
                 return;
             }
+            console.log('✅ File validation passed: CSV file');
 
             const formData = new FormData();
             formData.append('filename', file.name);
@@ -1202,6 +1301,9 @@ class CriteriaAnalysis {
                 columns: headers,
                 data: data
             };
+            
+            console.log(`📤 Sending POST request to /api/criteria/files for ${file.name}`);
+            console.log(`📊 Payload: ${headers.length} columns, ${data.length} rows`);
 
             const response = await fetch('/api/criteria/files', {
                 method: 'POST',
@@ -1210,18 +1312,22 @@ class CriteriaAnalysis {
                 },
                 body: JSON.stringify(payload)
             });
+            
+            console.log(`📥 Response status: ${response.status} ${response.statusText}`);
 
             const result = await response.json();
 
             if (!response.ok) {
+                console.log(`❌ Server error: ${result.detail || 'Unknown error'}`);
                 throw new Error(result.detail || 'Failed to upload criteria file');
             }
 
+            console.log(`✅ Upload successful: ${result.filename}`);
             alert(`Criteria file uploaded successfully: ${result.filename} with ${data.length} rows`);
-            await this.loadCriteriaFiles(); // Refresh file list and products
+            // Не вызываем loadCriteriaFiles здесь - это будет сделано в handleCriteriaFileDrop после загрузки всех файлов
 
         } catch (error) {
-            console.error('Error uploading criteria file:', error);
+            console.error('❌ Error uploading criteria file:', error);
             alert(`Error uploading file: ${error.message}`);
         }
     }
@@ -1487,19 +1593,7 @@ class CriteriaAnalysis {
     }
 }
 
-// Global function for HTML drag & drop handler
-function handleCriteriaFileDrop(event) {
-    event.preventDefault();
-    
-    const files = event.dataTransfer.files;
-    if (files.length === 0) return;
-    
-    if (window.criteriaAnalysis) {
-        for (let file of files) {
-            window.criteriaAnalysis.uploadCriteriaFile(file);
-        }
-    }
-}
+// Global function removed - now using class method setupCriteriaDragDrop()
 
 // Make class available globally
 window.CriteriaAnalysis = CriteriaAnalysis;
