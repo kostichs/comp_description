@@ -68,22 +68,22 @@ if not SCRAPINGBEE_API_KEY:
 
 # Deep analysis via ScrapingBee
 USE_SCRAPINGBEE_DEEP_ANALYSIS = True  # Master switch for the new feature
-SCRAPE_TOP_N_RESULTS = 10  # Number of Google results to scrape
+SCRAPE_TOP_N_RESULTS = 5  # Number of Google results to scrape
 
 # Async ScrapingBee configuration
 ASYNC_SCRAPING_CONFIG = {
     'enable_async_scraping': True,           # Use async ScrapingBee client for better performance
-    'max_concurrent_scrapes': 5,            # Concurrent scraping requests per criterion
-    'scraping_rate_limit_delay': 0.2,       # Delay between requests (seconds)
+    'max_concurrent_scrapes': 8,             # Увеличиваем с 5 до 8 для лучшей производительности  
+    'scraping_rate_limit_delay': 0.2,        # Delay between requests (seconds)
     'scraping_timeout': 120,                # Request timeout (seconds)
     'fallback_to_sync': True                 # Fallback to sync scraping if async fails
 }
 
 # Async GPT configuration
 ASYNC_GPT_CONFIG = {
-    'enable_async_gpt': False,               # ВРЕМЕННО ОТКЛЮЧАЕМ - async версия может работать некорректно
-    'max_concurrent_gpt_requests': 10,       # Concurrent GPT requests per company
-    'gpt_rate_limit_delay': 0.1,            # Delay between requests (seconds)
+    'enable_async_gpt': False,               # ОТКЛЮЧАЕМ обратно - async версия дает плохие результаты
+    'max_concurrent_gpt_requests': 15,       # Увеличиваем с 10 до 15 для лучшей производительности
+    'gpt_rate_limit_delay': 0.1,             # Delay between requests (seconds)
     'gpt_timeout': 60,                       # Request timeout (seconds)
     'fallback_to_sync': True                 # Fallback to sync GPT if async fails
 }

@@ -62,6 +62,17 @@ class ProcessingStateManager:
             "total_companies": 0,
             "processed_companies": 0,
             "failed_companies": 0,
+            "total_criteria": 0,
+            "processed_criteria": 0,
+            "passed_criteria": 0,
+            "failed_criteria": 0,
+            "nd_criteria": 0,
+            "criteria_breakdown": {
+                "general": {"total": 0, "processed": 0, "passed": 0},
+                "qualification": {"total": 0, "processed": 0, "passed": 0},
+                "mandatory": {"total": 0, "processed": 0, "passed": 0},
+                "nth": {"total": 0, "processed": 0, "passed": 0}
+            },
             "circuit_breaker_events": [],
             "last_circuit_breaker_event": None
         }
@@ -254,24 +265,106 @@ class ProcessingStateManager:
             log_error(f"❌ Ошибка отметки компании: {e}")
     
     def update_totals(self, total_products: int, total_companies: int):
-        """
-        Обновить общие счетчики
+        """Обновляет общее количество продуктов и компаний"""
+        self._current_state["total_products"] = total_products
+        self._current_state["total_companies"] = total_companies
+        self._current_state["updated_at"] = datetime.now().isoformat()
+        
+        # Сохраняем состояние в файл
+        try:
+            with open(self.progress_file, 'w', encoding='utf-8') as f:
+                json.dump(self._current_state, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            log_error(f"❌ Ошибка сохранения состояния: {e}")
+    
+    def initialize_criteria_totals(self, products_data: dict, companies_count: int, general_criteria: list = None):
+        """Инициализирует общее количество критериев для отслеживания прогресса"""
+        total_criteria = 0
+        criteria_breakdown = {
+            "general": {"total": 0, "processed": 0, "passed": 0},
+            "qualification": {"total": 0, "processed": 0, "passed": 0},
+            "mandatory": {"total": 0, "processed": 0, "passed": 0},
+            "nth": {"total": 0, "processed": 0, "passed": 0}
+        }
+        
+        # ИСПРАВЛЕНИЕ: General критерии передаются отдельно и считаются правильно
+        if general_criteria:
+            general_count = len(general_criteria)
+            criteria_breakdown["general"]["total"] = general_count
+            # General критерии проверяются один раз для каждой компании
+            total_criteria += general_count * companies_count
+            log_info(f"📊 General критерии: {general_count} критериев × {companies_count} компаний = {general_count * companies_count}")
+        
+        for product_name, product_data in products_data.items():
+            # Не берем general критерии из products_data - они передаются отдельно
+            
+            # Qualification criteria (для каждой компании × продукт)
+            if "qualification_questions" in product_data:
+                qual_count = sum(len(audiences) for audiences in product_data["qualification_questions"].values())
+                criteria_breakdown["qualification"]["total"] += qual_count * companies_count
+                total_criteria += qual_count * companies_count
+                log_info(f"📊 {product_name} Qualification критерии: {qual_count} критериев × {companies_count} компаний = {qual_count * companies_count}")
+            
+            # Mandatory criteria (для каждой компании × продукт × аудитория)  
+            if "mandatory_df" in product_data and not product_data["mandatory_df"].empty:
+                mandatory_count = len(product_data["mandatory_df"])
+                criteria_breakdown["mandatory"]["total"] += mandatory_count * companies_count
+                total_criteria += mandatory_count * companies_count
+                log_info(f"📊 {product_name} Mandatory критерии: {mandatory_count} критериев × {companies_count} компаний = {mandatory_count * companies_count}")
+            
+            # NTH criteria (для каждой компании × продукт × аудитория)
+            if "nth_df" in product_data and not product_data["nth_df"].empty:
+                nth_count = len(product_data["nth_df"])
+                criteria_breakdown["nth"]["total"] += nth_count * companies_count
+                total_criteria += nth_count * companies_count
+                log_info(f"📊 {product_name} NTH критерии: {nth_count} критериев × {companies_count} компаний = {nth_count * companies_count}")
+        
+        self._current_state["total_criteria"] = total_criteria
+        self._current_state["criteria_breakdown"] = criteria_breakdown
+        self._current_state["updated_at"] = datetime.now().isoformat()
+        
+        # Сохраняем состояние в файл
+        try:
+            with open(self.progress_file, 'w', encoding='utf-8') as f:
+                json.dump(self._current_state, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            log_error(f"❌ Ошибка сохранения состояния: {e}")
+        
+        log_info(f"📊 Инициализированы счетчики критериев: {total_criteria} общий, breakdown: {criteria_breakdown}")
+    
+    def record_criterion_result(self, criterion_type: str, result: str):
+        """Записывает результат обработки критерия
         
         Args:
-            total_products: Общее количество продуктов
-            total_companies: Общее количество компаний
+            criterion_type: 'general', 'qualification', 'mandatory', 'nth'
+            result: 'Pass'/'Passed', 'Fail'/'Failed'/'Not Passed', 'ND', 'Error'
         """
-        try:
-            with self._lock:
-                self._current_state.update({
-                    "total_products": total_products,
-                    "total_companies": total_companies
-                })
-                
-                log_debug(f"📊 Totals updated: {total_products} products, {total_companies} companies")
-                
-        except Exception as e:
-            log_error(f"❌ Ошибка обновления счетчиков: {e}")
+        self._current_state["processed_criteria"] += 1
+        self._current_state["criteria_breakdown"][criterion_type]["processed"] += 1
+        
+        # Нормализуем результат
+        if result in ["Pass", "Passed", "Yes"]:
+            self._current_state["passed_criteria"] += 1
+            self._current_state["criteria_breakdown"][criterion_type]["passed"] += 1
+        elif result in ["ND", "No Data"]:
+            self._current_state["nd_criteria"] += 1
+        elif result in ["Fail", "Failed", "Not Passed", "No", "Error"]:
+            self._current_state["failed_criteria"] += 1
+        
+        self._current_state["updated_at"] = datetime.now().isoformat()
+        
+        # Сохраняем прогресс периодически (каждые 10 критериев или в конце)
+        if self._current_state["processed_criteria"] % 10 == 0:
+            self.save_progress()
+    
+    def get_criteria_progress_percentage(self) -> float:
+        """Возвращает процент выполнения по критериям"""
+        total = self._current_state["total_criteria"]
+        processed = self._current_state["processed_criteria"]
+        
+        if total > 0:
+            return min(100.0, (processed / total) * 100.0)
+        return 0.0
     
     def mark_completed(self, status: str = "completed"):
         """

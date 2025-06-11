@@ -1,0 +1,102 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"login\" OR \"sign in\" OR \"my account\" OR \"create account\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "About Login / Register | SUPPORT | Resident Evil Portal",
+            "link": "https://game.capcom.com/residentevil/sp/en/qa-login.html",
+            "snippet": "About Login / Register. CAPCOM ID registration is required to login to the Resident Evil Portal. For inquiries regarding CAPCOM ID, click here. Contact Us.",
+            "position": 1
+        },
+        {
+            "title": "A Unified Account for Capcom's Games and Web Services",
+            "link": "https://cid.capcom.com/en/",
+            "snippet": "... login after maintenance. Please update your stored recovery code to the new code and store it in a safe place. Please note that old recovery codes will no ...",
+            "position": 2
+        },
+        {
+            "title": "Login Campaign | CAPCOM:Shadaloo C.R.I.",
+            "link": "https://game.capcom.com/cfn/sfv/campaign/login?lang=en",
+            "snippet": "All players who login to Street Fighter V during the campaign period will receive a present!",
+            "position": 3
+        },
+        {
+            "title": "RESIDENT EVIL.NET | Resident Evil Portal",
+            "link": "https://game.capcom.com/residentevil/rev2/en/nsw/accountlink.html?site=pc",
+            "snippet": "To use RE NET, please log in or sign up for a CAPCOM ID. CAPCOM ID login / Register. CAPCOM ID is an account management service giving you convenient access ...",
+            "sitelinks": [
+                {
+                    "title": "To use RE NET, please log in or sign up for a CAPCOM ID. CAPCOM ID login / Register. CAPCOM ID is an account management service giving you convenient access ...",
+                    "link": "https://game.capcom.com/residentevil/rev2/en/nsw/accountlink.html?site=pc#:~:text=To%20use%20RE%20NET%2C%20please,service%20giving%20you%20convenient%20access"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Register for a CAPCOM ID in-game",
+            "link": "https://cid.capcom.com/en/guide/game/regist/",
+            "snippet": "Moving to the CAPCOM ID login screen. ... Next, press the button for your desired platform on the bottom of the page and proceed to the login/sign-in screen.",
+            "position": 5
+        },
+        {
+            "title": "Resident Evil Re:Verse WITH RESIDENT EVIL.NET",
+            "link": "https://game.capcom.com/residentevil/sp/en/reverse.html",
+            "snippet": "OVERVIEW. See your game progress, stats, info, records completion, and more! You must register/login to use the Overview page. Log in / Register ...",
+            "position": 6
+        },
+        {
+            "title": "Resident Evil Portal | CAPCOM",
+            "link": "https://game.capcom.com/residentevil/rev2/en/nsw/accountlink-form.html",
+            "snippet": "RE:LOGIN. CAPCOM ID authentication is required to access this page. Please click the button below to re-authenticate with your CAPCOM ID. Return ...",
+            "position": 7
+        },
+        {
+            "title": "RESIDENT EVIL.NET | Resident Evil Portal",
+            "link": "https://game.capcom.com/residentevil/rev2/en/xbox360/accountlink.html",
+            "snippet": "To use RE NET, please log in or sign up for a CAPCOM ID. CAPCOM ID login / Register. CAPCOM ID is an account management service giving you convenient access ...",
+            "sitelinks": [
+                {
+                    "title": "To use RE NET, please log in or sign up for a CAPCOM ID. CAPCOM ID login / Register. CAPCOM ID is an account management service giving you convenient access ...",
+                    "link": "https://game.capcom.com/residentevil/rev2/en/xbox360/accountlink.html#:~:text=To%20use%20RE%20NET%2C%20please,service%20giving%20you%20convenient%20access"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Resident Evil Revelations WITH RESIDENT EVIL.NET",
+            "link": "https://game.capcom.com/residentevil/sp/uk/rev.html",
+            "snippet": "See your game progress, stats, info, records completion, and more! You must register/login to use the Overview page. Log in / Register.",
+            "position": 9
+        },
+        {
+            "title": "Resident Evil Portal | CAPCOM",
+            "link": "https://game.capcom.com/residentevil/en/about-rev2-ps.html?site=pc",
+            "snippet": "Push \"Sign in to PSN℠\" a second time. 3. Enter your PSN ID and password on ... to use the game link features. CAPCOM ID login / Register. CAPCOM ID is ...",
+            "sitelinks": [
+                {
+                    "title": "Push \"Sign in to PSN℠\" a second time. 3. Enter your PSN ID and password on ... to use the game link features. CAPCOM ID login / Register. CAPCOM ID is ...",
+                    "link": "https://game.capcom.com/residentevil/en/about-rev2-ps.html?site=pc#:~:text=Push%20%22Sign%20in%20to%20PSN%E2%84%A0%22,PSN%20ID%20and%20password%20on&text=to%20use%20the%20game%20link,CAPCOM%20ID%20is"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Login sign in my account create account online"
+        },
+        {
+            "query": "Login sign in my account create account free"
+        },
+        {
+            "query": "Login sign in my account create account xbox"
+        }
+    ],
+    "credits": 1
+}

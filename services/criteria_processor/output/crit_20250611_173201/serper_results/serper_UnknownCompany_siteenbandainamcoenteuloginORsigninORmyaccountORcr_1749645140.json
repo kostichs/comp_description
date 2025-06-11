@@ -1,0 +1,90 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"login\" OR \"sign in\" OR \"my account\" OR \"create account\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "MY HERO ULTRA RUMBLE - Notice Regarding ...",
+            "link": "https://en.bandainamcoent.eu/my-hero-academia/news/my-hero-ultra-rumble-notice-regarding-suspension-of-sales-of-premium-login",
+            "snippet": "The \"Premium Login Bonus\" currently implemented will be suspended for a certain period of time starting from the following date and time.",
+            "date": "Jan 11, 2024",
+            "position": 1
+        },
+        {
+            "title": "Bandai Namco Europe | Official Site",
+            "link": "https://en.bandainamcoent.eu/",
+            "snippet": "Join our beta community and play pre-release! Create my account now. Explore more games. ELDEN RING NIGHTREIGN key art. ELDEN RING NIGHTREIGN LOGO. 30/05/2025.",
+            "position": 2
+        },
+        {
+            "title": "JUMP FORCE: New Year Log-in Bonus",
+            "link": "https://en.bandainamcoent.eu/jump-force/news/jump-force-new-year-log-bonus",
+            "snippet": "Thank you for playing Jump Force. The following is an announcement of a login bonus.",
+            "date": "Dec 23, 2021",
+            "position": 3
+        },
+        {
+            "title": "Join Our Community | Bandai Namco Europe",
+            "link": "https://en.bandainamcoent.eu/join-our-community",
+            "snippet": "Create your account now to enjoy all your services. CREATE MY ACCOUNT.",
+            "position": 4
+        },
+        {
+            "title": "Captain Tsubasa: Rise of New Champions - Latest updates ...",
+            "link": "https://en.bandainamcoent.eu/captain-tsubasa/news/captain-tsubasa-rise-of-new-champions-latest-updates-and-maintenance",
+            "snippet": "We are hosting a \"New Division Match Season Login Bonus\" alongside maintenance! You can earn rewards once per day when you log into the game, so ...",
+            "date": "Nov 4, 2020",
+            "position": 5
+        },
+        {
+            "title": "How to use my club points and codes?",
+            "link": "https://en.bandainamcoent.eu/how-use-my-club-points-and-codes",
+            "snippet": "Link my account and get points. I want to buy a game. Make a purchase and get points for it. How to use my points? epic vouchers. GET AN EXTRA DISCOUNT ON OUR ...",
+            "position": 6
+        },
+        {
+            "title": "ELDEN RING NIGHTREIGN – Patch Notes Version 1.01.2",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-nightreign-patch-notes-version-1012",
+            "snippet": "If the Regulation Ver. listed in the lower right corner of the title screen is not 1.01.3, please select LOGIN and apply the latest regulation ...",
+            "date": "1 day ago",
+            "position": 7
+        },
+        {
+            "title": "My Hero Ultra Rumble - Launch Content and Roadmap",
+            "link": "https://en.bandainamcoent.eu/my-hero-academia/news/my-hero-ultra-rumble-launch-content-and-roadmap?amp=",
+            "snippet": "Heroes, villains - get ready to play with your friends on September 28th (and September 29th CEST on Steam)! We'll be giving away special login bonuses ...",
+            "position": 8
+        },
+        {
+            "title": "Privacy Policy | Bandai Namco Europe",
+            "link": "https://en.bandainamcoent.eu/privacy-policy",
+            "snippet": "Login data: any information that we may use to accurately identify you or your account before authorising you to access account information ...",
+            "date": "Oct 17, 2024",
+            "position": 9
+        },
+        {
+            "title": "Shinobi Striker - Update Patch Version 2.09 - Bandai Namco",
+            "link": "https://en.bandainamcoent.eu/naruto/news/naruto-boruto-shinobi-striker-update-patch-version-209?amp=",
+            "snippet": "You can now receive login bonus! Earn different rewards depending on the number of days you log in. Claim your login rewards at Inn > Gift Box.",
+            "date": "Sep 26, 2019",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Login sign in my account create account online"
+        },
+        {
+            "query": "Login sign in my account create account free"
+        },
+        {
+            "query": "Login sign in my account create account xbox"
+        }
+    ],
+    "credits": 1
+}

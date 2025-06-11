@@ -1,0 +1,107 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Activision's 'Making Call of Duty' Livestream Series Returns to ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activisions-making-call-duty-livestream-series-returns-facebook",
+            "snippet": "E32017 serves as the worldwide multiplayer reveal for Call of Duty: WWII. Today's broadcast features a live interview with Sledgehammer Games studio head ...",
+            "position": 1
+        },
+        {
+            "title": "Contact Us",
+            "link": "https://www.activisionblizzard.com/contact-us",
+            "snippet": "For customer support relating to Activision games, please visit https://support.activision.com/contactus · For customer support relating to Blizzard games, ...",
+            "position": 2
+        },
+        {
+            "title": "Skylanders® SuperChargers Delivers Real-Time Online ...",
+            "link": "https://investor.activisionblizzard.com/static-files/c8e18d9b-2b5d-40fb-b0b2-8464a951e5f7",
+            "snippet": "For the first time, Portal Masters can compete in four-person online multiplayer racing or two- person co-op adventure between devices through Apple's Game ...",
+            "position": 3
+        },
+        {
+            "title": "Activision Blizzard | Home",
+            "link": "https://www.activisionblizzard.com/",
+            "snippet": "We create the most epic interactive gaming and entertainment experiences. Our platforms immerse players in new, unimagined worlds and offer countless ways to ...",
+            "sitelinks": [
+                {
+                    "title": "About Our Company",
+                    "link": "https://www.activisionblizzard.com/about-us"
+                },
+                {
+                    "title": "Careers",
+                    "link": "https://careers.activisionblizzard.com/"
+                },
+                {
+                    "title": "Our Iconic Franchises",
+                    "link": "https://www.activisionblizzard.com/games"
+                },
+                {
+                    "title": "Who We Are",
+                    "link": "https://www.activisionblizzard.com/who-we-are"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Call of Duty: Black Ops III Multiplayer Beta Available Now First ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-black-ops-iii-multiplayer-beta-available-now-first",
+            "snippet": "... online with up to four players (on PS4™ system, Xbox One, and PC), the deepest, most rewarding multiplayer ever offered in Call of Duty, and, a mind blowing ...",
+            "position": 5
+        },
+        {
+            "title": "New Call of Duty: Advanced Warfare Multiplayer Delivers ...",
+            "link": "https://investor.activisionblizzard.com/static-files/665de28a-87a4-429c-b02d-72ea6e73b9c9",
+            "snippet": "Players See How Power Changes Everything in Live Global Broadcast. SANTA ... multiplayer experience ever on both next generation and current generation systems.",
+            "position": 6
+        },
+        {
+            "title": "Senior Gameplay Engineer (Multiplayer) in Warsaw, Poland",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR024318EXTERNAL/Senior-Gameplay-Engineer-Multiplayer",
+            "snippet": "A deep understanding of latency, bandwidth and the general multiplayer game programming domain. Strong knowledge of C/C++ programming.",
+            "position": 7
+        },
+        {
+            "title": "Playing Our Part: A Welcoming Game Community",
+            "link": "https://newsroom.activisionblizzard.com/p/playing-our-part-a-welcoming-game",
+            "snippet": "At Activision Blizzard, we will continue to invest in healthy online communities — for our employees, for the people who play our games, and to ...",
+            "date": "Dec 15, 2022",
+            "position": 8
+        },
+        {
+            "title": "Call of Duty: Modern Warfare Is #1 Most ... - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-modern-warfare-1-most-played-call-duty-multiplayer",
+            "snippet": "... multiplayer hours played since release with nearly 300 million multiplayer matches. ... online gaming platform. Call of Duty: Modern ...",
+            "date": "Dec 18, 2019",
+            "position": 9
+        },
+        {
+            "title": "Producer- Live Ops, Call of Duty",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR024775EXTERNAL/Producer-Live-Ops-Call-of-Duty",
+            "snippet": "Oversee different production aspects of Call of Duty live operations including First Party submission strategy and planning, launch sequencing for monthly ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service xbox one"
+        }
+    ],
+    "credits": 1
+}

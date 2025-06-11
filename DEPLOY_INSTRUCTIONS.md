@@ -39,11 +39,11 @@ docker login
 
 ### 1.5. Тегирование и публикация
 ```bash
-# Тегировать образ (новая версия с Circuit Breaker: v10f)
-docker tag company-canvas-app sergeykostichev/company-canvas-app:v10f
+# Тегировать образ (новая версия v11a: UI improvements & file selection)
+docker tag company-canvas-app sergeykostichev/company-canvas-app:v11a
 
 # Отправить на Docker Hub
-docker push sergeykostichev/company-canvas-app:v10f
+docker push sergeykostichev/company-canvas-app:v11a
 ```
 
 ## Шаг 2: Развертывание на виртуальной машине
@@ -60,12 +60,12 @@ docker stop company-canvas-prod
 docker rm company-canvas-prod
 
 # Удалить старые образы (опционально, для экономии места)
-docker rmi sergeykostichev/company-canvas-app:v08g
+docker rmi sergeykostichev/company-canvas-app:v10f
 ```
 
 ### 2.3. Скачивание нового образа
 ```bash
-docker pull sergeykostichev/company-canvas-app:v10f
+docker pull sergeykostichev/company-canvas-app:v11a
 ```
 
 ### 2.4. Создание директорий для данных
@@ -96,7 +96,7 @@ docker run -d --restart unless-stopped -p 80:8000 \
   --name company-canvas-prod \
   -v /srv/company-canvas/output:/app/output \
   -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
-  sergeykostichev/company-canvas-app:v10f
+  sergeykostichev/company-canvas-app:v11a
 ```
 
 ### 2.6. Проверка работы
@@ -123,7 +123,7 @@ docker logs -f company-canvas-prod
 ## Решенные проблемы контейнеризации
 
 ### Проблема 1: Неправильный .dockerignore
-**Симптом**: контейнер не видел сессии во второй вкладке
+**Симптом**: контейнер не видел сессию во второй вкладке
 **Решение**: убрали исключения `output/` и `sessions_metadata.json` из .dockerignore
 
 ### Проблема 2: Относительные пути в контейнере
@@ -140,18 +140,22 @@ docker logs -f company-canvas-prod
 
 ## Важные изменения в текущей версии
 
-1. **Исправлена контейнеризация**: все пути адаптированы для Docker
-2. **Добавлено монтирование sessions_metadata.json**: метаданные сохраняются между перезапусками
-3. **Исправлены импорты**: устранены конфликты модулей в контейнере
-4. **Улучшена диагностика**: добавлены логи для отладки проблем
+1. **NEW: Кнопка "New session"**: полный сброс интерфейса и отмена текущего анализа
+2. **ENHANCED: Селективный выбор файлов критериев**: теперь можно выбрать конкретные файлы вместо всех продуктов
+3. **IMPROVED: Deep Analysis по умолчанию выключен**: пользователь сам решает включать или нет
+4. **REFINED: Профессиональный серый стиль**: убраны яркие цвета, деловой дизайн
+5. **BACKEND: Поддержка selected_criteria_files**: новый API параметр с обратной совместимостью
 
 ## Номера версий
 
 - **v08e**: первая попытка исправления контейнеризации
 - **v08f**: исправление путей для контейнера
 - **v08g**: исправление импортов и логики
-- **v08h**: текущая рабочая версия
-- При следующем обновлении используйте v08i
+- **v08h**: старая рабочая версия
+- **v10**: исправления отображения результатов и синхронизации сессий
+- **v10f**: Circuit Breaker Pattern и State Management
+- **v11a**: UI/UX улучшения и селективный выбор файлов критериев (текущая версия)
+При следующем обновлении используйте v11b
 
 ## Что делать, если что-то пошло не так
 

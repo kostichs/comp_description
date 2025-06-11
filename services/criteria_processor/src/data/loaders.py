@@ -287,8 +287,20 @@ def load_data(companies_file=None, load_all_companies=False, selected_products=N
         # Load all criteria files automatically
         df_criteria = load_all_criteria_files()
         
-        # НОВАЯ ЛОГИКА: Собираем все General критерии из всех файлов
-        log_info("🌐 Собираем все General критерии из всех файлов критериев...")
+        # Фильтруем продукты если указаны выбранные
+        all_available_products = df_criteria['Product'].unique()
+        
+        if selected_products:
+            # Фильтруем только выбранные продукты
+            products = [p for p in all_available_products if p in selected_products]
+            if not products:
+                raise ValueError(f"❌ Выбранные продукты {selected_products} не найдены среди доступных: {list(all_available_products)}")
+            log_info(f"🎯 Будем обрабатывать ТОЛЬКО выбранные продукты: {', '.join(products)} (из {len(all_available_products)} доступных)")
+        else:
+            products = all_available_products
+            log_info(f"🏭 Будем обрабатывать компании для ВСЕХ продуктов: {', '.join(products)}")
+        
+        # ПРОСТОЕ ИСПРАВЛЕНИЕ: собираем General критерии от всех файлов, но потом будем считать только для выбранных
         all_general_raw = df_criteria[df_criteria["Criteria Type"] == "General"]["Criteria"].dropna().tolist()
         
         # УМНАЯ ДЕДУПЛИКАЦИЯ General критериев
@@ -331,22 +343,9 @@ def load_data(companies_file=None, load_all_companies=False, selected_products=N
             return deduplicated
         
         all_general_criteria = deduplicate_general_criteria(all_general_raw)
-        log_info(f"✅ Найдено уникальных General критериев: {len(all_general_criteria)} (было {len(all_general_raw)})")
+        log_info(f"✅ Найдено уникальных General критериев для выбранных продуктов: {len(all_general_criteria)} (было {len(all_general_raw)})")
         for i, criteria in enumerate(all_general_criteria, 1):
             log_info(f"   {i}. {criteria}")
-        
-        # Фильтруем продукты если указаны выбранные
-        all_available_products = df_criteria['Product'].unique()
-        
-        if selected_products:
-            # Фильтруем только выбранные продукты
-            products = [p for p in all_available_products if p in selected_products]
-            if not products:
-                raise ValueError(f"❌ Выбранные продукты {selected_products} не найдены среди доступных: {list(all_available_products)}")
-            log_info(f"🎯 Будем обрабатывать ТОЛЬКО выбранные продукты: {', '.join(products)} (из {len(all_available_products)} доступных)")
-        else:
-            products = all_available_products
-            log_info(f"🏭 Будем обрабатывать компании для ВСЕХ продуктов: {', '.join(products)}")
         
         # Создаем структуру данных для выбранных продуктов
         all_products_data = {}
@@ -378,14 +377,14 @@ def load_data(companies_file=None, load_all_companies=False, selected_products=N
             }
         
         log_info("🚀 Все данные успешно загружены")
-        log_info(f"General критерии будут применяться ко всем компаниям")
+        log_info(f"General критерии (только для выбранных продуктов) будут применяться ко всем компаниям")
         log_info(f"🎯 Критерии для продуктов: {', '.join(products)}")
         
         return {
             "companies": companies_df,
-            "general_criteria": all_general_criteria,  # ВСЕ General из всех файлов
-            "products_data": all_products_data,  # Данные для ВСЕХ продуктов
-            "products": list(products)  # Список всех продуктов
+            "general_criteria": all_general_criteria,  # General критерии ТОЛЬКО от выбранных продуктов
+            "products_data": all_products_data,  # Данные для выбранных продуктов
+            "products": list(products)  # Список выбранных продуктов
         }
         
     except FileNotFoundError as e:

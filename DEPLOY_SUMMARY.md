@@ -1,14 +1,14 @@
 # Company Canvas Deployment Summary
 
-## Latest Version: v10 ✅
+## Latest Version: v11b ✅ (Hotfix)
 
 ### Quick Deployment (Current Version)
 ```bash
 # Stop old version
 docker stop company-canvas-prod && docker rm company-canvas-prod
 
-# Pull and start v10
-docker pull sergeykostichev/company-canvas-app:v10
+# Pull and start v11b (latest)
+docker pull sergeykostichev/company-canvas-app:v11b
 
 docker run -d --restart unless-stopped --name company-canvas-prod -p 80:8000 \
   -e OPENAI_API_KEY="YOUR_KEY" \
@@ -18,12 +18,40 @@ docker run -d --restart unless-stopped --name company-canvas-prod -p 80:8000 \
   -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/YOUR_PORTAL_ID/record/0-2/" \
   -v /srv/company-canvas/output:/app/output \
   -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
-  sergeykostichev/company-canvas-app:v10
+  sergeykostichev/company-canvas-app:v11b
 ```
 
 ## Version History
 
-### v10 (Current) - Results Display & Session Sync Fixes
+### v11b (Current) - Criteria Count Hotfix
+**Released:** June 11, 2025
+**Key Changes:**
+- 🐛 **CRITICAL FIX:** Criteria counter now shows correct count only for selected products
+- 📊 **FIXED:** Progress display shows actual criteria from selected files, not from all files
+- ⚡ **FIXED:** Eliminated hanging during criteria processor startup (loaders.py optimization)
+- 🎯 **IMPROVED:** State manager correctly calculates totals based on selected criteria files
+
+**Technical Fixes:**
+- Fixed `initialize_criteria_totals` method to count only selected products' criteria
+- Simplified criteria loading logic to prevent startup hang
+- Corrected progress tracking for partial product selection
+
+### v11a - UI/UX Improvements & File Selection Enhancement
+**Released:** June 11, 2025
+**Key Changes:**
+- 🔄 **NEW:** "New session" button for full interface reset and current analysis cancellation
+- 📁 **ENHANCED:** Selective criteria files processing - choose specific criteria files instead of all products
+- ⚙️ **IMPROVED:** Deep Analysis checkbox now disabled by default (user choice)
+- 🎨 **REFINED:** Professional gray styling for interface buttons (no more Christmas tree colors)
+- 🏗️ **BACKEND:** Added `selected_criteria_files` parameter support with backward compatibility
+
+**Technical Improvements:**
+- File-based selection replaces hardcoded product checkboxes
+- New session functionality with confirmation dialog and complete state reset
+- Enhanced API support for both file-based and product-based selection
+- Professional UI styling aligned with business standards
+
+### v10 - Results Display & Session Sync Fixes
 **Released:** December 2024
 **Key Changes:**
 - 🎯 **FIXED:** Results display logic - ALL completed NTH analyses now appear in "All Results"
@@ -64,20 +92,32 @@ docker run -d --restart unless-stopped --name company-canvas-prod -p 80:8000 \
 - ✅ **Validation:** LLM-powered result verification
 - ✅ **Criteria Analysis:** Full parallel processing with detailed results
 
-## Validation Checklist for v10
+## Validation Checklist for v11a
 After deployment, verify:
 
-1. **Results Display:**
-   - [ ] Companies with 0 NTH score show full analysis (not "NOT QUALIFIED")
-   - [ ] Failed qualification/mandatory show "NOT QUALIFIED" with reason
-   - [ ] All completed analyses appear in "All Results" column
+1. **New Session Functionality:**
+   - [ ] "New session" button appears in gray professional style
+   - [ ] Clicking shows confirmation dialog in Russian
+   - [ ] Confirming stops current analysis and resets interface completely
+   - [ ] All form fields, progress bars, and session info cleared
 
-2. **Session Sync:**
-   - [ ] Process companies on first tab
-   - [ ] Latest session info auto-updates on second tab (no F5 needed)
-   - [ ] "Use results from latest session" checkbox gets new data
+2. **File-Based Criteria Selection:**
+   - [ ] Criteria files list shows individual files with checkboxes
+   - [ ] Can select/deselect specific criteria files
+   - [ ] Only selected files are processed during analysis
+   - [ ] No hardcoded product limitations
 
-3. **Performance:**
+3. **UI/UX Improvements:**
+   - [ ] Deep Analysis checkbox unchecked by default
+   - [ ] Professional gray styling throughout interface
+   - [ ] No bright orange/Christmas colors
+
+4. **Backward Compatibility:**
+   - [ ] All v10 functionality still works
+   - [ ] Session results display correctly
+   - [ ] Auto-refresh still functions
+
+5. **Performance:**
    - [ ] Processing speed around 3 companies per minute
    - [ ] No API rate limiting errors in logs
    - [ ] Stable operation during long sessions

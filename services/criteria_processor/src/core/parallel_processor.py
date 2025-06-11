@@ -248,6 +248,15 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
             log_error(f"🔴 Circuit Breaker блокирует mandatory критерии для {audience}: {e}")
             return False  # Fail mandatory when circuit is open
     
+    # Получаем state_manager если доступен
+    state_manager = None
+    if session_id:
+        try:
+            from src.utils.state_manager import ProcessingStateManager
+            state_manager = ProcessingStateManager(session_id)
+        except Exception as e:
+            log_error(f"⚠️ Не удалось получить StateManager: {e}")
+    
     if ASYNC_GPT_CONFIG['enable_async_gpt'] and not mandatory_df.empty:
         log_info(f"🤖 Using async GPT for mandatory criteria: {audience}")
         try:
@@ -298,6 +307,9 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                                 criterion_info["result"] = "Pass"
                                 passed_mandatory += 1
                                 found_result = True
+                                # Отслеживаем результат
+                                if state_manager:
+                                    state_manager.record_criterion_result("mandatory", "Pass")
                                 break
                         except (ValueError, IndexError):
                             # Если не можем извлечь номер, пропускаем
@@ -305,6 +317,9 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                 
                 if not found_result:
                     criterion_info["result"] = "Fail"
+                    # Отслеживаем результат
+                    if state_manager:
+                        state_manager.record_criterion_result("mandatory", "Fail")
                 
                 detailed_mandatory_results.append(criterion_info)
             
@@ -343,6 +358,21 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                         "criteria_text": crit_text,
                         "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
                     }
+<<<<<<< HEAD
+                    
+                    # Отслеживаем результат
+                    if state_manager:
+                        if sync_value == "Passed":
+                            state_manager.record_criterion_result("mandatory", "Pass")
+                        elif sync_value == "Not Passed":
+                            state_manager.record_criterion_result("mandatory", "Fail")
+                        elif sync_value == "ND":
+                            state_manager.record_criterion_result("mandatory", "ND")
+                        else:
+                            state_manager.record_criterion_result("mandatory", "Error")
+                    
+=======
+>>>>>>> 95f7339 (fix criteria displaying and order)
                     detailed_mandatory_results.append(criterion_info)
                 
                 # Store detailed results
@@ -367,6 +397,21 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                 "criteria_text": crit_text,
                 "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
             }
+<<<<<<< HEAD
+            
+            # Отслеживаем результат
+            if state_manager:
+                if sync_value == "Passed":
+                    state_manager.record_criterion_result("mandatory", "Pass")
+                elif sync_value == "Not Passed":
+                    state_manager.record_criterion_result("mandatory", "Fail")
+                elif sync_value == "ND":
+                    state_manager.record_criterion_result("mandatory", "ND")
+                else:
+                    state_manager.record_criterion_result("mandatory", "Error")
+            
+=======
+>>>>>>> 95f7339 (fix criteria displaying and order)
             detailed_mandatory_results.append(criterion_info)
         
         # Store detailed results
@@ -389,6 +434,15 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
             company_info[f"NTH_Passed_{audience}"] = 0
             company_info[f"NTH_ND_{audience}"] = 0
             return
+    
+    # Получаем state_manager если доступен
+    state_manager = None
+    if session_id:
+        try:
+            from src.utils.state_manager import ProcessingStateManager
+            state_manager = ProcessingStateManager(session_id)
+        except Exception as e:
+            log_error(f"⚠️ Не удалось получить StateManager: {e}")
     
     if ASYNC_GPT_CONFIG['enable_async_gpt'] and not nth_df.empty:
         log_info(f"🤖 Using async GPT for NTH criteria: {audience}")
@@ -447,6 +501,9 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                                 criterion_info["result"] = "Pass"
                                 qualified_count += 1
                                 found_match = True
+                                # Отслеживаем результат
+                                if state_manager:
+                                    state_manager.record_criterion_result("nth", "Pass")
                                 break
                         except (ValueError, IndexError):
                             # Если не можем извлечь номер, используем старую логику
@@ -454,6 +511,9 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                 
                 if not found_match:
                     criterion_info["result"] = "Fail"
+                    # Отслеживаем результат
+                    if state_manager:
+                        state_manager.record_criterion_result("nth", "Fail")
                 
                 detailed_criteria_results.append(criterion_info)
             
@@ -513,6 +573,20 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                     if sync_value == "Passed":
                         qualified_count += 1
                     
+<<<<<<< HEAD
+                    # Отслеживаем результат
+                    if state_manager:
+                        if sync_value == "Passed":
+                            state_manager.record_criterion_result("nth", "Pass")
+                        elif sync_value == "Not Passed":
+                            state_manager.record_criterion_result("nth", "Fail")
+                        elif sync_value == "ND":
+                            state_manager.record_criterion_result("nth", "ND")
+                        else:
+                            state_manager.record_criterion_result("nth", "Error")
+                    
+=======
+>>>>>>> 95f7339 (fix criteria displaying and order)
                     detailed_criteria_results.append(criterion_info)
                 
                 # Store detailed results if not already set by sync function
@@ -542,6 +616,20 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
             if sync_value == "Passed":
                 qualified_count += 1
             
+<<<<<<< HEAD
+            # Отслеживаем результат
+            if state_manager:
+                if sync_value == "Passed":
+                    state_manager.record_criterion_result("nth", "Pass")
+                elif sync_value == "Not Passed":
+                    state_manager.record_criterion_result("nth", "Fail")
+                elif sync_value == "ND":
+                    state_manager.record_criterion_result("nth", "ND")
+                else:
+                    state_manager.record_criterion_result("nth", "Error")
+            
+=======
+>>>>>>> 95f7339 (fix criteria displaying and order)
             detailed_criteria_results.append(criterion_info)
         
         # Store detailed results if not already set by sync function
@@ -579,6 +667,11 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                 from src.utils.state_manager import ProcessingStateManager
                 state_manager = ProcessingStateManager(session_id)
                 state_manager.update_totals(len(products), len(companies_df))
+<<<<<<< HEAD
+                # Инициализируем счетчики критериев с general критериями в products_data
+                state_manager.initialize_criteria_totals(products_data, len(companies_df), general_criteria)
+=======
+>>>>>>> 95f7339 (fix criteria displaying and order)
             except Exception as e:
                 log_error(f"⚠️ Не удалось инициализировать StateManager: {e}")
         
@@ -601,6 +694,12 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                 # Store detailed general criteria information
                 general_status[f"{company_name}_detailed"] = temp_general_info
                 
+                # Отслеживаем результаты general критериев
+                if state_manager:
+                    # Записываем результат для каждого general критерия
+                    for criterion in general_criteria:
+                        state_manager.record_criterion_result("general", "Passed" if general_passed else "Failed")
+                
                 if general_passed:
                     log_info("✅ General пройдены")
                 else:
@@ -613,7 +712,14 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
             except Exception as e:
                 log_error(f"❌ Ошибка проверки general критериев для {company_name}: {e}")
                 general_status[company_name] = False
+<<<<<<< HEAD
+                # Записываем ошибку в state manager
                 if state_manager:
+                    for criterion in general_criteria:
+                        state_manager.record_criterion_result("general", "Error")
+=======
+                if state_manager:
+>>>>>>> 95f7339 (fix criteria displaying and order)
                     state_manager.save_progress(0, index + 1, stage="general_criteria")
         
         # 2. ПРАВИЛЬНЫЙ ПОРЯДОК: Process each COMPANY through all PRODUCTS

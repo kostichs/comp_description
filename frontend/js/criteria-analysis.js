@@ -17,7 +17,11 @@ class CriteriaAnalysis {
     init() {
         this.bindEvents();
         // Автоматически загружаем список файлов критериев для боковой панели
-        this.loadCriteriaFiles();
+        this.loadCriteriaFiles().then(() => {
+            // Принудительное обновление чекбоксов при инициализации
+            console.log('🔄 Initial forced refresh of checkboxes');
+            this.displayCriteriaFiles();
+        });
         this.initLatestSessionCheckbox();
     }
 
@@ -108,9 +112,11 @@ class CriteriaAnalysis {
         // Bind criteria file management
         const refreshCriteriaBtn = document.getElementById('refresh-criteria-btn');
         if (refreshCriteriaBtn) {
-            refreshCriteriaBtn.addEventListener('click', () => {
-                console.log('🔄 Refresh button clicked - reloading criteria files and updating interface');
-                this.loadCriteriaFiles();
+            refreshCriteriaBtn.addEventListener('click', async () => {
+                console.log('🔄 Refresh button clicked - FORCED update of all components');
+                await this.loadCriteriaFiles();
+                this.displayCriteriaFiles();
+                console.log('✅ Forced refresh completed');
             });
         }
 
@@ -118,6 +124,12 @@ class CriteriaAnalysis {
         const refreshStatusBtn = document.getElementById('refresh-status-btn');
         if (refreshStatusBtn) {
             refreshStatusBtn.addEventListener('click', () => this.checkStatus());
+        }
+
+        // Обработчик для кнопки "Новая сессия"
+        const newSessionBtn = document.getElementById('new-session-btn');
+        if (newSessionBtn) {
+            newSessionBtn.addEventListener('click', () => this.startNewSession());
         }
 
         // Bind criteria editor buttons
@@ -251,6 +263,10 @@ class CriteriaAnalysis {
             // После загрузки всех файлов, полностью обновляем интерфейс
             console.log('🔄 All criteria files uploaded, refreshing complete interface');
             await this.loadCriteriaFiles();
+            
+            // МГНОВЕННОЕ обновление чекбоксов продуктов
+            console.log('🔄 Force refreshing product checkboxes...');
+            this.displayCriteriaFiles(); // Принудительно перерисовываем чекбоксы
         };
         
         processFiles().catch(error => {
@@ -277,7 +293,8 @@ class CriteriaAnalysis {
         formData.append('file', fileInput.files[0]);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
         formData.append('use_deep_analysis', useDeepAnalysis);
-        formData.append('selected_products', JSON.stringify(this.selectedCriteria));
+        // Отправляем выбранные файлы критериев вместо продуктов
+        formData.append('selected_criteria_files', JSON.stringify(this.selectedCriteria));
 
         try {
             this.showStatus('Uploading file...');
@@ -391,28 +408,119 @@ class CriteriaAnalysis {
     }
 
     async checkStatus() {
-        if (!this.currentSessionId) return;
+        if (!this.currentSessionId) {
+            console.log('No session ID for status check');
+            return;
+        }
 
         try {
-            const response = await fetch(`/api/criteria/sessions/${this.currentSessionId}/status`);
-            const result = await response.json();
+            // Используем новый эндпоинт для детального прогресса
+            const response = await fetch(`/api/criteria/sessions/${this.currentSessionId}/progress`);
+            const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.detail || 'Status check error');
+                throw new Error(data.detail || 'Status check failed');
             }
 
-            const status = result.status;
-            this.showStatus(this.getStatusMessage(status), this.getStatusType(status));
+            console.log('Progress data:', data);
 
-            if (status === 'completed') {
+            // Обновляем прогресс бар с процентом
+            this.updateProgressBar(data.percentage || 0);
+            
+            // Создаем детальное сообщение о прогрессе
+            let statusMessage = data.message || 'Processing...';
+            
+            if (data.detailed_progress && data.progress) {
+                // Добавляем детальную информацию о критериях
+                if (data.progress.criteria && data.progress.criteria !== "0/0") {
+                    statusMessage += `\n📊 Criteria: ${data.progress.criteria}`;
+                }
+                
+                // Добавляем информацию о компаниях
+                if (data.progress.companies && data.progress.companies !== "0/0") {
+                    statusMessage += `\n🏢 Companies: ${data.progress.companies}`;
+                }
+                
+                // Добавляем breakdown по типам критериев
+                if (data.criteria_summary) {
+                    statusMessage += `\n📋 ${data.criteria_summary}`;
+                }
+                
+                // Добавляем текущую информацию
+                if (data.current && data.current.company && data.current.product) {
+                    statusMessage += `\n🔄 Processing: ${data.current.company} → ${data.current.product}`;
+                }
+                
+                // Добавляем информацию об аудитории
+                if (data.current && data.current.audience) {
+                    statusMessage += ` (${data.current.audience})`;
+                }
+            }
+
+            if (data.status === 'processing') {
+                this.showStatus(statusMessage, 'processing');
+                // Продолжаем проверять статус
+                setTimeout(() => this.checkStatus(), 3000); // Проверяем каждые 3 секунды
+            } else if (data.status === 'completed') {
+                this.showStatus('✅ Analysis completed successfully!', 'completed');
+                this.updateProgressBar(100);
                 this.stopStatusChecking();
-                this.loadResults();
-            } else if (status === 'failed' || status === 'cancelled') {
+                // Автоматически загружаем результаты при завершении
+                setTimeout(() => this.loadResults(), 1000);
+            } else if (data.status === 'failed') {
+                const errorMsg = data.error || 'Analysis failed';
+                this.showStatus(`❌ Analysis failed: ${errorMsg}`, 'error');
+                this.updateProgressBar(0);
                 this.stopStatusChecking();
+            } else if (data.status === 'cancelled') {
+                this.showStatus('🛑 Analysis cancelled', 'error');
+                this.updateProgressBar(0);
+                this.stopStatusChecking();
+            } else {
+                this.showStatus(`Status: ${data.status}`, 'info');
             }
 
         } catch (error) {
             console.error('Status check error:', error);
+            // Fallback to simple status check
+            try {
+                const fallbackResponse = await fetch(`/api/criteria/sessions/${this.currentSessionId}/status`);
+                const fallbackData = await fallbackResponse.json();
+                
+                if (fallbackResponse.ok) {
+                    this.showStatus(this.getStatusMessage(fallbackData.status), 
+                                  fallbackData.status === 'processing' ? 'processing' : 'info');
+                    
+                    if (fallbackData.status === 'processing') {
+                        setTimeout(() => this.checkStatus(), 5000);
+                    } else {
+                        this.stopStatusChecking();
+                    }
+                } else {
+                    this.showStatus(`Status check failed: ${error.message}`, 'error');
+                }
+            } catch (fallbackError) {
+                this.showStatus(`Status check failed: ${error.message}`, 'error');
+                this.stopStatusChecking();
+            }
+        }
+    }
+
+    updateProgressBar(percentage) {
+        const progressBar = document.querySelector('#criteria-progress div');
+        if (progressBar) {
+            progressBar.style.width = `${percentage}%`;
+            progressBar.style.transition = 'width 0.3s ease';
+            
+            // Добавляем текст с процентами
+            if (percentage > 0) {
+                progressBar.textContent = `${percentage}%`;
+                progressBar.style.textAlign = 'center';
+                progressBar.style.lineHeight = '20px';
+                progressBar.style.color = 'white';
+                progressBar.style.fontSize = '12px';
+                progressBar.style.fontWeight = 'bold';
+            }
         }
     }
 
@@ -484,7 +592,6 @@ class CriteriaAnalysis {
         const columnsToShow = [
             { key: 'Company_Name', label: 'Company' },
             { key: 'Description', label: 'Description' },
-            { key: 'Product', label: 'Product' },
             { key: 'All_Results', label: 'All Results' },
             { key: 'Qualified_Products', label: 'Qualified Products' }
         ];
@@ -746,6 +853,95 @@ class CriteriaAnalysis {
         }
     }
 
+    async startNewSession() {
+        // Подтверждение от пользователя
+        const confirmed = confirm('Вы уверены что хотите начать новую сессию? Текущий анализ будет остановлен.');
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            // Отменяем текущую сессию если она есть
+            if (this.currentSessionId) {
+                console.log('Cancelling current session:', this.currentSessionId);
+                
+                const cancelResponse = await fetch(`/api/criteria/sessions/${this.currentSessionId}/cancel`, {
+                    method: 'POST'
+                });
+
+                if (cancelResponse.ok) {
+                    console.log('Current session cancelled successfully');
+                } else {
+                    console.warn('Failed to cancel current session, but continuing with reset');
+                }
+            }
+
+            // Останавливаем все активные процессы
+            this.stopStatusChecking();
+
+            // Сбрасываем состояние интерфейса
+            this.resetInterface();
+
+            // Показываем успешное сообщение
+            this.showStatus('Готово к новому анализу! Выберите файл и настройки.', 'success');
+            
+        } catch (error) {
+            console.error('Error starting new session:', error);
+            this.showStatus(`Ошибка при создании новой сессии: ${error.message}`, 'error');
+        }
+    }
+
+    resetInterface() {
+        // Сбрасываем текущую сессию
+        this.currentSessionId = null;
+        
+        // Очищаем все элементы статуса
+        document.getElementById('criteria-session-id').textContent = '';
+        document.getElementById('criteria-status-text').textContent = '';
+        
+        // Скрываем секцию статуса
+        const statusSection = document.getElementById('criteria-status');
+        if (statusSection) {
+            statusSection.style.display = 'none';
+        }
+        
+        // Сбрасываем прогресс бар
+        const progressBar = document.getElementById('criteria-progress');
+        if (progressBar) {
+            progressBar.style.display = 'none';
+            const progressFill = progressBar.querySelector('div');
+            if (progressFill) {
+                progressFill.style.width = '0%';
+            }
+        }
+        
+        // Скрываем кнопки отмены и загрузки
+        const cancelBtn = document.getElementById('cancel-criteria-btn');
+        if (cancelBtn) cancelBtn.style.display = 'none';
+        
+        const downloadBtn = document.getElementById('download-results-btn-main');
+        if (downloadBtn) downloadBtn.style.display = 'none';
+        
+        // Сбрасываем панель результатов
+        this.resetResultsPanel();
+        
+        // Очищаем форму загрузки файла
+        const fileInput = document.getElementById('criteria-file');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+        
+        const fileNameDisplay = document.getElementById('criteria-fileNameDisplay');
+        if (fileNameDisplay) {
+            fileNameDisplay.textContent = '';
+        }
+        
+        // Перезагружаем файлы критериев для обновления состояния
+        this.loadCriteriaFiles();
+        
+        console.log('Interface reset completed');
+    }
+
     async downloadResults() {
         const sessionId = document.getElementById('criteria-session-id').textContent;
         if (!sessionId) {
@@ -861,11 +1057,28 @@ class CriteriaAnalysis {
                 throw new Error('Failed to load criteria files');
             }
 
+            console.log('🔄 loadCriteriaFiles: API response received');
+            console.log('   📁 Files count:', result.files ? result.files.length : 0);
+
             this.criteriaFiles = result.files;
-            this.availableProducts = result.products || [];
+            this.availableProducts = result.products || []; // Сохраняем для совместимости
             
-            // Автоматически выбираем все продукты по умолчанию
-            this.selectedCriteria = [...this.availableProducts];
+            // Сохраняем предыдущие выборы файлов если они были
+            const previouslySelected = [...this.selectedCriteria];
+            console.log('   🔒 Previously selected files:', previouslySelected);
+            
+            // Умная логика выбора файлов
+            if (previouslySelected.length > 0) {
+                // Сохраняем предыдущий выбор + добавляем новые файлы
+                const currentFilenames = this.criteriaFiles.map(f => f.filename);
+                const newFiles = currentFilenames.filter(f => !previouslySelected.includes(f));
+                this.selectedCriteria = [...previouslySelected.filter(f => currentFilenames.includes(f)), ...newFiles];
+            } else {
+                // Автоматически выбираем все файлы по умолчанию (первый запуск)
+                this.selectedCriteria = this.criteriaFiles.map(f => f.filename);
+            }
+            
+            console.log('   ✅ Final selected files:', this.selectedCriteria);
             
             this.displayCriteriaFiles();
 
@@ -878,87 +1091,99 @@ class CriteriaAnalysis {
     displayCriteriaFiles() {
         const container = document.getElementById('criteria-files-list');
         
-        if (!this.availableProducts || this.availableProducts.length === 0) {
-            container.innerHTML = '<p style="color: #6c757d;">No products found in criteria files</p>';
+        // ПРИНУДИТЕЛЬНАЯ ОЧИСТКА контейнера
+        container.innerHTML = '';
+        
+        console.log('🔄 displayCriteriaFiles called');
+        console.log('   📁 Available files:', this.criteriaFiles.length);
+        console.log('   ✅ Selected criteria:', this.selectedCriteria);
+        
+        if (!this.criteriaFiles || this.criteriaFiles.length === 0) {
+            container.innerHTML = '<p style="color: #6c757d;">No criteria files found</p>';
             return;
         }
 
-        // Отображаем продукты для выбора
-        const productsList = document.createElement('div');
-        productsList.style.cssText = 'margin-bottom: 20px;';
-        
-        const productsTitle = document.createElement('h4');
-        productsTitle.textContent = 'Select Products to Analyze:';
-        productsTitle.style.cssText = 'margin-bottom: 10px; color: #333;';
-        productsList.appendChild(productsTitle);
-        
-        const productsGrid = document.createElement('div');
-        productsGrid.style.cssText = 'display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));';
-
-        this.availableProducts.forEach(product => {
-            const productItem = document.createElement('div');
-            productItem.style.cssText = 'display: flex; align-items: center; padding: 8px; background: white; border: 1px solid #ddd; border-radius: 4px;';
-            
-            const isSelected = this.selectedCriteria.includes(product);
-            if (isSelected) {
-                productItem.style.backgroundColor = '#e3f2fd';
-                productItem.style.borderColor = '#2196f3';
-            }
-
-            productItem.innerHTML = `
-                <input type="checkbox" ${isSelected ? 'checked' : ''} 
-                       onchange="criteriaAnalysis.toggleProductSelection('${product}', this.checked)"
-                       style="margin-right: 8px;">
-                <strong>${product}</strong>
-            `;
-
-            productsGrid.appendChild(productItem);
-        });
-        
-        productsList.appendChild(productsGrid);
-
-        // Отображаем файлы критериев (только для редактирования)
+        // Отображаем файлы критериев С ЧЕКБОКСАМИ для выбора
         const filesList = document.createElement('div');
         filesList.style.cssText = 'display: grid; gap: 10px;';
         
         const filesTitle = document.createElement('h4');
-        filesTitle.textContent = 'Criteria Files Management:';
-        filesTitle.style.cssText = 'margin: 20px 0 10px 0; color: #333;';
+        filesTitle.textContent = 'Select Criteria Files to Use:';
+        filesTitle.style.cssText = 'margin: 0 0 15px 0; color: #333;';
         filesList.appendChild(filesTitle);
 
         this.criteriaFiles.forEach(file => {
+            console.log(`   🎯 Creating file item for: ${file.filename}`);
+            
             const fileItem = document.createElement('div');
             fileItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 4px;';
 
-            fileItem.innerHTML = `
-                <div>
-                    <strong>${file.filename}</strong>
-                    <br>
-                    <small style="color: #6c757d;">
-                        ${file.total_rows || 0} rows | Modified: ${new Date(file.modified).toLocaleDateString()}
-                    </small>
-                    ${file.products && file.products.length > 0 ? 
-                        `<br><small style="color: #007bff;">Products: ${file.products.join(', ')}</small>` : ''}
-                    ${file.error ? `<br><small style="color: #dc3545;">Error: ${file.error}</small>` : ''}
-                </div>
-                <div style="display: flex; gap: 5px;">
-                    <button onclick="criteriaAnalysis.editCriteriaFile('${file.filename}')" 
-                            style="background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">
-                        Edit
-                    </button>
-                    <button onclick="criteriaAnalysis.deleteCriteriaFile('${file.filename}')" 
-                            style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">
-                        Delete
-                    </button>
-                </div>
+            // Проверяем выбран ли этот файл (по имени файла)
+            const isSelected = this.selectedCriteria.includes(file.filename);
+            console.log(`      File ${file.filename} selected: ${isSelected}`);
+            
+            if (isSelected) {
+                fileItem.style.backgroundColor = '#e3f2fd';
+                fileItem.style.borderColor = '#2196f3';
+            }
+
+            // Левая часть с чекбоксом и информацией о файле
+            const leftPart = document.createElement('div');
+            leftPart.style.cssText = 'display: flex; align-items: center; flex: 1;';
+            
+            // Создаем чекбокс для выбора файла
+            const checkboxId = `file-checkbox-${file.filename.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = checkboxId;
+            checkbox.checked = isSelected;
+            checkbox.style.cssText = 'margin-right: 12px; transform: scale(1.2);';
+            
+            // ПРАВИЛЬНЫЙ биндинг события для файла
+            checkbox.addEventListener('change', (e) => {
+                console.log(`🎯 File checkbox changed for ${file.filename}: ${e.target.checked}`);
+                this.toggleFileSelection(file.filename, e.target.checked);
+            });
+            
+            // Информация о файле
+            const fileInfo = document.createElement('div');
+            fileInfo.innerHTML = `
+                <strong>${file.filename}</strong>
+                <br>
+                <small style="color: #6c757d;">
+                    ${file.total_rows || 0} rows | Modified: ${new Date(file.modified).toLocaleDateString()}
+                </small>
+                ${file.products && file.products.length > 0 ? 
+                    `<br><small style="color: #007bff;">Products: ${file.products.join(', ')}</small>` : ''}
+                ${file.error ? `<br><small style="color: #dc3545;">Error: ${file.error}</small>` : ''}
+            `;
+            
+            leftPart.appendChild(checkbox);
+            leftPart.appendChild(fileInfo);
+            
+            // Правая часть с кнопками управления
+            const rightPart = document.createElement('div');
+            rightPart.style.cssText = 'display: flex; gap: 5px; margin-left: 10px;';
+            rightPart.innerHTML = `
+                <button onclick="criteriaAnalysis.editCriteriaFile('${file.filename}')" 
+                        style="background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">
+                    Edit
+                </button>
+                <button onclick="criteriaAnalysis.deleteCriteriaFile('${file.filename}')" 
+                        style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px;">
+                    Delete
+                </button>
             `;
 
+            fileItem.appendChild(leftPart);
+            fileItem.appendChild(rightPart);
             filesList.appendChild(fileItem);
         });
 
-        container.innerHTML = '';
-        container.appendChild(productsList);
+        // ПРИНУДИТЕЛЬНОЕ добавление в DOM
         container.appendChild(filesList);
+        
+        console.log('✅ displayCriteriaFiles completed, DOM updated');
         
         this.updateSelectedCriteriaDisplay();
     }
@@ -968,18 +1193,18 @@ class CriteriaAnalysis {
         container.innerHTML = `<p style="color: #dc3545;">Error: ${message}</p>`;
     }
 
-    toggleProductSelection(product, selected) {
-        console.log('=== DEBUG: toggleProductSelection ===');
-        console.log('product:', product);
+    toggleFileSelection(filename, selected) {
+        console.log('=== DEBUG: toggleFileSelection ===');
+        console.log('filename:', filename);
         console.log('selected:', selected);
         console.log('Before change - this.selectedCriteria:', this.selectedCriteria);
         
         if (selected) {
-            if (!this.selectedCriteria.includes(product)) {
-                this.selectedCriteria.push(product);
+            if (!this.selectedCriteria.includes(filename)) {
+                this.selectedCriteria.push(filename);
             }
         } else {
-            const index = this.selectedCriteria.indexOf(product);
+            const index = this.selectedCriteria.indexOf(filename);
             if (index > -1) {
                 this.selectedCriteria.splice(index, 1);
             }
@@ -991,22 +1216,16 @@ class CriteriaAnalysis {
         this.updateSelectedCriteriaDisplay();
     }
 
-    // Backward compatibility
-    toggleCriteriaSelection(filename, selected) {
-        // This method is deprecated but kept for any old references
-        console.warn('toggleCriteriaSelection is deprecated, use toggleProductSelection instead');
-    }
-
     updateSelectedCriteriaDisplay() {
-        // Обновляем отображение в sidebar (основной список продуктов для выбора)
+        // Обновляем отображение в sidebar (основной список файлов для выбора)
         const sidebarContainer = document.getElementById('selected-criteria-display');
         const sidebarListContainer = document.getElementById('selected-criteria-list');
         
         if (sidebarContainer && sidebarListContainer) {
             if (this.selectedCriteria.length > 0) {
                 sidebarContainer.style.display = 'block';
-                sidebarListContainer.innerHTML = this.selectedCriteria.map(product => 
-                    `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${product}</span>`
+                sidebarListContainer.innerHTML = this.selectedCriteria.map(filename => 
+                    `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${filename}</span>`
                 ).join('');
             } else {
                 sidebarContainer.style.display = 'none';
@@ -1020,8 +1239,9 @@ class CriteriaAnalysis {
         if (formContainer && formListContainer) {
             if (this.selectedCriteria.length > 0) {
                 formContainer.style.display = 'block';
-                formListContainer.innerHTML = this.selectedCriteria.map(product => 
-                    `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${product}</span>`
+                formContainer.querySelector('strong').textContent = 'Selected Files:'; // Меняем заголовок
+                formListContainer.innerHTML = this.selectedCriteria.map(filename => 
+                    `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${filename}</span>`
                 ).join('');
             } else {
                 formContainer.style.display = 'none';
@@ -1210,6 +1430,9 @@ class CriteriaAnalysis {
             alert(`File saved successfully! ${result.rows_saved} rows saved.`);
             this.cancelEdit();
             await this.loadCriteriaFiles(); // Refresh file list and products
+            
+            // МГНОВЕННОЕ обновление чекбоксов продуктов
+            this.displayCriteriaFiles();
 
         } catch (error) {
             console.error('Error saving criteria file:', error);
@@ -1244,6 +1467,9 @@ class CriteriaAnalysis {
             
             // Reload criteria files to update available products
             await this.loadCriteriaFiles();
+            
+            // МГНОВЕННОЕ обновление чекбоксов продуктов
+            this.displayCriteriaFiles();
 
         } catch (error) {
             console.error('Error deleting criteria file:', error);
@@ -1255,62 +1481,21 @@ class CriteriaAnalysis {
         console.log(`🔄 uploadCriteriaFile started for: ${file.name}`);
         try {
             // Validate file type
-            if (!file.name.endsWith('.csv')) {
-                console.log('❌ File validation failed: not a CSV file');
-                alert('Only CSV files are supported for criteria upload.');
+            if (!file.name.endsWith('.csv') && !file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+                console.log('❌ File validation failed: not a supported file type');
+                alert('Only CSV and Excel files are supported for criteria upload.');
                 return;
             }
-            console.log('✅ File validation passed: CSV file');
+            console.log('✅ File validation passed: supported file type');
 
             const formData = new FormData();
-            formData.append('filename', file.name);
+            formData.append('file', file);
             
-            // Read file content
-            const fileContent = await this.readFileAsText(file);
-            const lines = fileContent.split('\n').filter(line => line.trim());
-            
-            if (lines.length < 2) {
-                alert('File must have at least 2 lines (header + data).');
-                return;
-            }
+            console.log(`📤 Sending POST request to /api/criteria/upload for ${file.name}`);
 
-            // Parse CSV with proper handling of quoted fields
-            const parsedData = this.parseCSV(fileContent);
-            
-            if (parsedData.length < 2) {
-                alert('File must have at least header and one data row.');
-                return;
-            }
-
-            const headers = parsedData[0];
-            const data = [];
-            
-            for (let i = 1; i < parsedData.length; i++) {
-                const values = parsedData[i];
-                if (values.length > 0) {
-                    const row = {};
-                    headers.forEach((header, index) => {
-                        row[header] = values[index] || '';
-                    });
-                    data.push(row);
-                }
-            }
-
-            const payload = {
-                filename: file.name,
-                columns: headers,
-                data: data
-            };
-            
-            console.log(`📤 Sending POST request to /api/criteria/files for ${file.name}`);
-            console.log(`📊 Payload: ${headers.length} columns, ${data.length} rows`);
-
-            const response = await fetch('/api/criteria/files', {
+            const response = await fetch('/api/criteria/upload', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
+                body: formData
             });
             
             console.log(`📥 Response status: ${response.status} ${response.statusText}`);
@@ -1323,8 +1508,12 @@ class CriteriaAnalysis {
             }
 
             console.log(`✅ Upload successful: ${result.filename}`);
-            alert(`Criteria file uploaded successfully: ${result.filename} with ${data.length} rows`);
-            // Не вызываем loadCriteriaFiles здесь - это будет сделано в handleCriteriaFileDrop после загрузки всех файлов
+            alert(`Criteria file uploaded successfully: ${result.filename}`);
+            
+            // МГНОВЕННОЕ обновление после загрузки КАЖДОГО файла
+            console.log('🔄 INSTANT refresh after file upload...');
+            await this.loadCriteriaFiles();
+            this.displayCriteriaFiles();
 
         } catch (error) {
             console.error('❌ Error uploading criteria file:', error);
@@ -1523,7 +1712,7 @@ class CriteriaAnalysis {
         formData.append('session_id', this.latestSessionId);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
         formData.append('use_deep_analysis', useDeepAnalysis);
-        formData.append('selected_products', JSON.stringify(this.selectedCriteria));
+        formData.append('selected_criteria_files', JSON.stringify(this.selectedCriteria));
 
         // Debug: Show what's in FormData
         console.log('FormData contents:');

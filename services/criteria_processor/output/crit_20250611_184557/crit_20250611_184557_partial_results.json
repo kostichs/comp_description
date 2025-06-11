@@ -1,0 +1,166 @@
+[
+  {
+    "Company_Name": "Activision Blizzard",
+    "Official_Website": "activisionblizzard.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/activision-blizzard",
+    "Description": "1. **Basic Company Information:**\n\n - **Company Name:** Activision Blizzard, Inc.\n\n - **Founding Year:** July 9, 2008\n\n - **Headquarters Location:** Santa Monica, California, USA\n\n - **Founders:** The company was formed through the merger of Activision, Inc. and Vivendi Games.\n\n - **Ownership Background:** Initially, Activision Blizzard was a publicly traded company. In October 2023, Microsoft Corporation completed its acquisition of Activision Blizzard for approximately $75.4 billion, making it a subsidiary under Microsoft's gaming division. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n\n - **Official Homepage URL:** https://www.activisionblizzard.com/\n\n2. **Products and Technology:**\n\n - **Core Products & Services:**\n\n - **Call of Duty Series:** A first-person shooter franchise with annual releases since 2003.\n\n - **World of Warcraft:** A massively multiplayer online role-playing game (MMORPG) launched in 2004.\n\n - **Diablo Series:** An action role-playing game series, with the first installment released in 1996.\n\n - **Overwatch:** A team-based first-person shooter game released in 2016.\n\n - **Candy Crush Saga:** A popular mobile puzzle game launched in 2012.\n\n - **Underlying Technologies:** Activision Blizzard utilizes proprietary game engines and platforms tailored for each franchise. For instance, the Call of Duty series employs the IW engine, while Blizzard's games often use the proprietary Blizzard Engine. The company also operates Battle.net, an online gaming platform and digital distribution service.\n\n3. **Market and Customer Information:**\n\n - **Customer Types:** Primarily B2C (Business-to-Consumer), offering games directly to individual players.\n\n - **Industries Served:** Interactive entertainment and esports.\n\n - **Geographic Markets:** Activision Blizzard operates globally, with significant markets in North America, Europe, and Asia-Pacific.\n\n4. **Financial and HR Details:**\n\n - **Revenue History:**\n\n - **Fiscal Year 2022:** $7.53 billion in net revenues. ([investopedia.com](https://www.investopedia.com/how-activision-blizzard-makes-money-4799286?utm_source=openai))\n\n - **Fiscal Year 2021:** $8.80 billion in net revenues. ([investopedia.com](https://www.investopedia.com/how-activision-blizzard-makes-money-4799286?utm_source=openai))\n\n - **Funding Rounds:** No specific data found on funding rounds.\n\n - **Employee Count:** Approximately 13,000 employees as of 2022. ([globaldata.com](https://www.globaldata.com/company-profile/activision-blizzard-inc/?utm_source=openai))\n\n5. **Strategic Information:**\n\n - **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n\n - **Strategic Initiatives:**\n\n - **Acquisition by Microsoft:** Completed in October 2023, this strategic move aimed to bolster Microsoft's gaming portfolio. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Acquisition_of_Activision_Blizzard_by_Microsoft?utm_source=openai))\n\n - **Esports Ventures:** Establishment of professional gaming leagues such as the Overwatch League and Call of Duty League. ([activisionblizzard.com](https://www.activisionblizzard.com/about-us/?utm_source=openai))\n\n - **Key Competitors:** Electronic Arts, Take-Two Interactive, Ubisoft, and other major game developers and publishers.\n\n - **Overall Summary:** Activision Blizzard stands as a leading entity in the gaming industry, offering a diverse portfolio of successful franchises. The acquisition by Microsoft is expected to further enhance its market position and drive innovation in gaming experiences.\n\n6. **Additional Business Information:**\n\n - **Professional Open Positions:** No specific data found on current professional open positions.\n\n - **Working Languages:** Primarily English, with localization in multiple languages for global markets.\n\n7. **Technical and Compliance Information:**\n\n - **User Portal/Login System:** Activision Blizzard operates Battle.net, an online gaming platform that requires user accounts for access to games, social features, and digital purchases.\n\n - **Compliance Standards:** The company adheres to industry-standard security measures, including SSL encryption for secure transactions. Specific compliance certifications such as PCI DSS, ISO 27001, or GDPR adherence are not explicitly detailed in the available sources.",
+    "Timestamp": "2025-06-09",
+    "HubSpot_Company_ID": "https://app.hubspot.com/contacts/4202168/record/0-2/4833748489",
+    "All_Results": {
+      "WAAP": {
+        "product": "WAAP",
+        "general_status": true,
+        "general_criteria": {
+          "passed": true,
+          "passed_count": 1,
+          "total_count": 1,
+          "detailed_criteria": [
+            {
+              "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+              "result": "Pass"
+            }
+          ]
+        },
+        "qualification_results": {
+          "IT Service Providers": "No",
+          "Financial Services Enterprises": "No",
+          "Telecommunications Providers": "No",
+          "Adult and Dating Platforms (Large)": "No",
+          "Betting Platforms": "No",
+          "Retail": "No"
+        },
+        "qualified_audiences": [],
+        "detailed_results": {}
+      }
+    },
+    "Qualified_Products": "=== WAAP ===\nNOT QUALIFIED - Failed Qualification Questions"
+  },
+  {
+    "Company_Name": "Capcom",
+    "Official_Website": "capcom.com",
+    "LinkedIn_URL": "https://www.linkedin.com/company/capcom",
+    "Description": "1. **Basic Company Information:**\n * **Company Name:** Capcom Co., Ltd.\n * **Founding Year:** May 30, 1979\n * **Headquarters Location:** 3-1-3 Uchihirano-machi, Chuo-ku, Osaka 540-0037, Japan\n * **Founders:** Kenzo Tsujimoto\n * **Ownership Background:** Capcom Co., Ltd. is a publicly traded company listed on the Tokyo Stock Exchange under the ticker symbol 9697. The Tsujimoto family holds a 22.71% ownership stake. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n * **Official Homepage URL:** [http://www.capcom.com/](http://www.capcom.com/)\n\n2. **Products and Technology:**\n * **Core Products & Services:**\n - **Resident Evil Series:** Launched in 1996, this survival horror franchise has sold over 170 million units as of March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Monster Hunter Series:** Introduced in 2004, this action role-playing series has achieved sales exceeding 120 million units by March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Street Fighter Series:** Debuted in 1987, this fighting game series has sold over 56 million units as of March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Mega Man Series:** Started in 1987, this action-platformer series has sold over 43 million units by March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Devil May Cry Series:** Launched in 2001, this action-adventure series has sold over 33 million units as of March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Dead Rising Series:** Introduced in 2006, this action-adventure series has sold over 18 million units by March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Dragon's Dogma Series:** Debuted in 2012, this action role-playing series has sold over 13 million units as of March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Ace Attorney Series:** Started in 2001, this visual novel adventure series has sold over 13 million units by March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Marvel vs. Capcom Series:** Launched in 1996, this crossover fighting game series has sold over 12 million units as of March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - **Onimusha Series:** Introduced in 2001, this action-adventure series has sold over 8.7 million units by March 31, 2025. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n * **Underlying Technologies:** Capcom utilizes its proprietary RE Engine for game development, enabling high-quality graphics and performance across multiple platforms. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n\n3. **Market and Customer Information:**\n * **Customer Types:** Primarily B2C (Business-to-Consumer), targeting individual gamers.\n * **Industries Served:** Video game industry, including home console gaming, PC gaming, mobile gaming, and arcade gaming.\n * **Geographic Markets:** Capcom operates globally, with subsidiaries in East Asia (Hong Kong), Europe (London, England), and North America (San Francisco, California). ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n\n4. **Financial and HR Details:**\n * **Revenue History:**\n - **Fiscal Year Ended March 31, 2024:** Net sales of 152,410 million yen (approximately $1.01 billion USD). ([capcom.co.jp](https://www.capcom.co.jp/ir/english/company/info.html?utm_source=openai))\n * **Funding Rounds:** No specific data found on funding rounds.\n * **Employee Count:** As of March 31, 2024, Capcom employed 3,531 individuals. ([capcom.co.jp](https://www.capcom.co.jp/ir/english/company/info.html?utm_source=openai))\n\n5. **Strategic Information:**\n * **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n * **Strategic Initiatives:**\n - In July 2023, Capcom acquired Tokyo-based computer graphics studio Swordcanes Studio. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n - In July 2024, Capcom acquired Taiwan-based computer graphics studio Minimum Studios. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n * **Key Competitors:** Major competitors include other leading video game developers and publishers such as Nintendo, Sony Interactive Entertainment, and Square Enix.\n * **Overall Summary:** Capcom is a prominent Japanese video game developer and publisher known for its successful franchises. The company continues to expand its global presence and diversify its portfolio through strategic acquisitions and the development of new titles.\n\n6. **Additional Business Information:**\n * **Professional Open Positions:** No specific data found on current professional open positions.\n * **Working Languages:** The primary working language is Japanese, with English used for international communications and documentation.\n\n7. **Technical and Compliance Information:**\n * **User Portal/Login System:** Capcom's official website features a user portal where customers can create accounts to access services such as game purchases, support, and community forums.\n * **Compliance Standards:** No specific data found on compliance standards.\n\n**Sources:**\n- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Capcom?utm_source=openai))\n- ([capcom.co.jp](https://www.capcom.co.jp/ir/english/company/info.html?utm_source=openai))\n- ([dnb.com](https://www.dnb.com/business-directory/company-profiles.capcom_co_ltd.47e85a68d95ad99e75efce29dbc14710.html?utm_source=openai))",
+    "Timestamp": "2025-06-09",
+    "HubSpot_Company_ID": "https://app.hubspot.com/contacts/4202168/record/0-2/5135216680",
+    "All_Results": {
+      "WAAP": {
+        "product": "WAAP",
+        "general_status": true,
+        "general_criteria": {
+          "passed": true,
+          "passed_count": 1,
+          "total_count": 1,
+          "detailed_criteria": [
+            {
+              "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+              "result": "Pass"
+            }
+          ]
+        },
+        "qualification_results": {
+          "IT Service Providers": "No",
+          "Financial Services Enterprises": "No",
+          "Telecommunications Providers": "No",
+          "Adult and Dating Platforms (Large)": "No",
+          "Betting Platforms": "No",
+          "Retail": "Yes"
+        },
+        "qualified_audiences": [
+          "Retail"
+        ],
+        "detailed_results": {
+          "Retail": {
+            "audience": "Retail",
+            "qualification_status": "Passed",
+            "mandatory_status": "Failed",
+            "mandatory_criteria": [
+              {
+                "criteria_text": "The website includes shopping cart functionality or a \"Buy Now\"/\"Add to Cart\" system",
+                "result": "Fail"
+              },
+              {
+                "criteria_text": "Has login system",
+                "result": "Unknown"
+              },
+              {
+                "criteria_text": "The website includes shopping cart functionality or a \"Buy Now\"/\"Add to Cart\" system",
+                "result": "Fail"
+              },
+              {
+                "criteria_text": "Has login system",
+                "result": "Unknown"
+              }
+            ],
+            "nth_results": {},
+            "final_status": "Failed Mandatory"
+          }
+        }
+      }
+    },
+    "Qualified_Products": "=== WAAP ===\nNOT QUALIFIED - Failed Mandatory Criteria for Retail"
+  },
+  {
+    "Company_Name": "Bandai Namco Entertainment",
+    "Official_Website": "en.bandainamcoent.eu",
+    "LinkedIn_URL": "https://www.linkedin.com/company/bandai-namco-entertainment-america",
+    "Description": "1. **Basic Company Information:**\n * **Company Name:** Bandai Namco Entertainment Inc.\n * **Founding Year:** June 1, 1955 (as Namco Ltd.)\n * **Headquarters Location:** Bandai Namco Mirai Research Institute, 5-37-8 Shiba, Minato-ku, Tokyo, Japan 108-0014\n * **Founders:** Masaya Nakamura (founder of Namco Ltd.)\n * **Ownership Background:** Bandai Namco Entertainment Inc. is a subsidiary of Bandai Namco Holdings Inc., a publicly traded company listed on the Tokyo Stock Exchange under the ticker symbol 7832.\n * **Official Homepage URL:** [https://www.bandainamcoent.co.jp/english/](https://www.bandainamcoent.co.jp/english/)\n\n2. **Products and Technology:**\n * **Core Products & Services:**\n - **Pac-Man Series:** Launched in 1980, this iconic arcade game features the character Pac-Man navigating mazes to consume dots while avoiding ghosts.\n - **Tekken Series:** Debuted in 1994, Tekken is a fighting game franchise known for its diverse character roster and complex combat mechanics.\n - **Soulcalibur Series:** First released in 1995, this weapon-based fighting game series is renowned for its fluid gameplay and rich lore.\n - **Tales Series:** Starting with \"Tales of Phantasia\" in 1995, this role-playing game series is celebrated for its engaging narratives and real-time battle systems.\n - **Ace Combat Series:** Launched in 1995, this flight simulation game series offers immersive aerial combat experiences.\n - **Taiko no Tatsujin (Taiko Master):** Introduced in 2001, this rhythm game challenges players to drum along to various songs, blending traditional Japanese instruments with modern music.\n - **The Idolmaster Series:** Beginning in 2005, this simulation game series allows players to manage and train aspiring pop idols.\n - **Dark Souls Series:** Starting in 2011, this action role-playing game series is known for its challenging gameplay and intricate world-building.\n * **Underlying Technologies:** Bandai Namco Entertainment utilizes proprietary game engines and collaborates with external developers to leverage various technologies, including Unreal Engine for certain titles.\n\n3. **Market and Customer Information:**\n * **Customer Types:** Primarily B2C (Business-to-Consumer), offering products directly to individual consumers.\n * **Industries Served:** Entertainment, specifically video games, toys, and multimedia content.\n * **Geographic Markets:** Operates globally, with significant presence in Japan, the Americas, Europe, and Asia-Pacific regions.\n\n4. **Financial and HR Details:**\n * **Revenue History:**\n - **Fiscal Year Ending March 31, 2024:** ¥1.502 trillion (approximately $10.3 billion)\n - **Fiscal Year Ending March 31, 2025 (Projected):** ¥1.15 trillion (approximately $7.46 billion)\n * **Funding Rounds:** No specific data found on funding rounds.\n * **Employee Count:** As of April 1, 2024, Bandai Namco Entertainment Inc. employs 790 individuals.\n\n5. **Strategic Information:**\n * **Major Clients or Case Studies:** No specific data found on major clients or case studies.\n * **Strategic Initiatives:**\n - **IP Axis Strategy:** Focuses on leveraging intellectual property to enhance fan engagement and value creation through initiatives like IPxFan, IPxValue, and IPxWorld.\n - **IP Metaverse:** Investments in creating a virtual space where fans can interact with various IPs.\n - **New IP Creation:** Ongoing efforts to develop original intellectual properties.\n * **Key Competitors:** Major competitors include other global video game publishers such as Capcom, Square Enix, and Konami.\n * **Overall Summary:** Bandai Namco Entertainment Inc. stands as a leading global entertainment company with a diverse portfolio of successful franchises. Through strategic initiatives and a focus on intellectual property, the company continues to expand its market presence and engage with fans worldwide.\n\n6. **Additional Business Information:**\n * **Professional Open Positions:** No specific data found on current professional open positions.\n * **Working Languages:** Primarily Japanese and English, accommodating its global operations.\n\n7. **Technical and Compliance Information:**\n * **User Portal/Login System:** Bandai Namco Entertainment's official website features a user portal where customers can create accounts to access exclusive content, manage game purchases, and participate in community forums.\n * **Compliance Standards:** The company adheres to industry-standard security measures, including SSL encryption for secure transactions. Specific compliance certifications such as PCI DSS, ISO 27001, or GDPR adherence are not explicitly stated on the official website.\n\n**Sources:**\n- ([bandainamcoent.co.jp](https://www.bandainamcoent.co.jp/english/overview?utm_source=openai))\n- ([bandainamco.co.jp](https://www.bandainamco.co.jp/en/ir/library/president_message2024.html?utm_source=openai))\n- ([gameworldobserver.com](https://gameworldobserver.com/2024/11/07/bandai-namco-profit-growth-record-earnings-fy25?utm_source=openai))\n- ([bandainamco.co.jp](https://www.bandainamco.co.jp/en/ir/library/integratedreports2024.html?utm_source=openai))\n- ([en.wikipedia.org](https://en.wikipedia.org/wiki/Bandai_Namco_Entertainment?utm_source=openai))",
+    "Timestamp": "2025-06-09",
+    "HubSpot_Company_ID": "https://app.hubspot.com/contacts/4202168/record/0-2/34866710629",
+    "All_Results": {
+      "WAAP": {
+        "product": "WAAP",
+        "general_status": true,
+        "general_criteria": {
+          "passed": true,
+          "passed_count": 1,
+          "total_count": 1,
+          "detailed_criteria": [
+            {
+              "criteria_text": "The company does not have headquarters in Mainlaind China, Iran or Russia.",
+              "result": "Pass"
+            }
+          ]
+        },
+        "qualification_results": {
+          "IT Service Providers": "No",
+          "Financial Services Enterprises": "No",
+          "Telecommunications Providers": "No",
+          "Adult and Dating Platforms (Large)": "No",
+          "Betting Platforms": "No",
+          "Retail": "Yes"
+        },
+        "qualified_audiences": [
+          "Retail"
+        ],
+        "detailed_results": {
+          "Retail": {
+            "audience": "Retail",
+            "qualification_status": "Passed",
+            "mandatory_status": "Failed",
+            "mandatory_criteria": [
+              {
+                "criteria_text": "The website includes shopping cart functionality or a \"Buy Now\"/\"Add to Cart\" system",
+                "result": "Fail"
+              },
+              {
+                "criteria_text": "Has login system",
+                "result": "Unknown"
+              },
+              {
+                "criteria_text": "The website includes shopping cart functionality or a \"Buy Now\"/\"Add to Cart\" system",
+                "result": "Fail"
+              },
+              {
+                "criteria_text": "Has login system",
+                "result": "Unknown"
+              }
+            ],
+            "nth_results": {},
+            "final_status": "Failed Mandatory"
+          }
+        }
+      }
+    },
+    "Qualified_Products": "=== WAAP ===\nNOT QUALIFIED - Failed Mandatory Criteria for Retail"
+  }
+]

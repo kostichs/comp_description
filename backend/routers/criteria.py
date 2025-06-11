@@ -35,7 +35,7 @@ if str(CRITERIA_PROCESSOR_PATH) not in sys.path:
 # Импортируем правильные пути из data_io.py
 from src.data_io import SESSIONS_DIR, SESSIONS_METADATA_FILE
 
-def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 12, selected_products: List[str] = None):
+def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 12, selected_products: List[str] = None, selected_criteria_files: List[str] = None):
     """Запускаем criteria_processor как отдельный процесс"""
     import subprocess
     import shutil
@@ -92,17 +92,47 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
             cmd.append("--parallel")
             cmd.extend(["--max-concurrent", str(max_concurrent)])
         
-        # Добавляем выбранные продукты
-        if selected_products:
+        # НОВАЯ ЛОГИКА: Обрабатываем выбранные файлы критериев
+        if selected_criteria_files:
+            # Преобразуем имена файлов в продукты
+            # Читаем файлы критериев и извлекаем продукты только из выбранных файлов
+            criteria_dir = CRITERIA_PROCESSOR_PATH / "criteria"
+            selected_products_from_files = []
+            
+            for filename in selected_criteria_files:
+                file_path = criteria_dir / filename
+                if file_path.exists():
+                    try:
+                        if file_path.suffix.lower() == '.csv':
+                            import pandas as pd
+                            df = pd.read_csv(file_path)
+                            if 'Product' in df.columns:
+                                file_products = df['Product'].unique().tolist()
+                                file_products = [p for p in file_products if pd.notna(p) and str(p).strip()]
+                                selected_products_from_files.extend(file_products)
+                                logger.info(f"From file {filename} extracted products: {file_products}")
+                    except Exception as e:
+                        logger.error(f"Error reading criteria file {filename}: {e}")
+            
+            # Удаляем дубликаты
+            selected_products_from_files = list(set(selected_products_from_files))
+            logger.info(f"Final products from selected files: {selected_products_from_files}")
+            
+            if selected_products_from_files:
+                cmd.append("--selected-products")
+                cmd.append(",".join(selected_products_from_files))
+                logger.info(f"Adding products from selected files to command: {selected_products_from_files}")
+            
+        # Fallback к старой логике с selected_products
+        elif selected_products:
             cmd.append("--selected-products")
             cmd.append(",".join(selected_products))
             logger.info(f"Adding selected products to command: {selected_products}")
         else:
-            logger.info("No selected products specified - will process all products")
+            logger.info("No selected products or files specified - will process all products")
         
         # Log the full command for debugging
         logger.info(f"Executing command: {' '.join(cmd)}")
-        logger.info(f"Selected products parameter: {selected_products}")
         
         # Add Circuit Breaker support (enabled by default, can be disabled via env var)
         import os
@@ -165,7 +195,8 @@ async def run_criteria_analysis_task(
     use_deep_analysis: bool = False,
     use_parallel: bool = True,
     max_concurrent: int = 12,
-    selected_products: List[str] = None
+    selected_products: List[str] = None,
+    selected_criteria_files: List[str] = None
 ):
     """Асинхронная задача для запуска анализа критериев"""
     log_info = None
@@ -189,7 +220,8 @@ async def run_criteria_analysis_task(
             use_deep_analysis,
             use_parallel,
             max_concurrent,
-            selected_products
+            selected_products,
+            selected_criteria_files
         )
         
         # Проверяем результат выполнения процесса
@@ -230,7 +262,8 @@ async def create_criteria_analysis(
     use_deep_analysis: bool = Form(False),
     use_parallel: bool = Form(True),
     max_concurrent: int = Form(12),
-    selected_products: str = Form("[]")  # JSON string of selected products
+    selected_products: str = Form("[]"),  # Backward compatibility
+    selected_criteria_files: str = Form("[]")  # NEW: JSON string of selected criteria files
 ):
     """
     Создает новую сессию анализа критериев
@@ -265,14 +298,24 @@ async def create_criteria_analysis(
         # Log basic file info
         logger.info(f"Uploaded file: {file.filename} ({len(content)} bytes)")
         
-        # Parse selected products from JSON string
+        # Parse selected criteria files or fallback to selected products
         import json
         try:
-            selected_products_list = json.loads(selected_products) if selected_products else []
+            selected_criteria_files_list = json.loads(selected_criteria_files) if selected_criteria_files != "[]" else []
         except json.JSONDecodeError:
+            selected_criteria_files_list = []
+        
+        # Fallback to selected_products for backward compatibility
+        if not selected_criteria_files_list:
+            try:
+                selected_products_list = json.loads(selected_products) if selected_products else []
+            except json.JSONDecodeError:
+                selected_products_list = []
+        else:
             selected_products_list = []
         
-        logger.info(f"Selected products for analysis: {selected_products_list}")
+        logger.info(f"Selected criteria files for session analysis: {selected_criteria_files_list}")
+        logger.info(f"Selected products (fallback) for session analysis: {selected_products_list}")
 
         # Создаем метаданные сессии
         criteria_sessions[session_id] = {
@@ -286,7 +329,8 @@ async def create_criteria_analysis(
             "use_deep_analysis": use_deep_analysis,
             "use_parallel": use_parallel,
             "max_concurrent": max_concurrent,
-            "selected_products": selected_products_list
+            "selected_products": selected_products_list,
+            "selected_criteria_files": selected_criteria_files_list
         }
         
         # Запускаем анализ в фоновой задаче
@@ -298,7 +342,8 @@ async def create_criteria_analysis(
                 use_deep_analysis,
                 use_parallel,
                 max_concurrent,
-                selected_products_list
+                selected_products_list,
+                selected_criteria_files_list
             )
         )
         criteria_tasks[session_id] = task
@@ -325,7 +370,8 @@ async def create_criteria_analysis_from_session(
     use_deep_analysis: bool = Form(False),
     use_parallel: bool = Form(True),
     max_concurrent: int = Form(12),
-    selected_products: str = Form("[]")  # JSON string of selected products
+    selected_products: str = Form("[]"),  # Backward compatibility
+    selected_criteria_files: str = Form("[]")  # NEW: JSON string of selected criteria files
 ):
     """
     Создает новую сессию анализа критериев используя результаты из существующей сессии
@@ -338,14 +384,24 @@ async def create_criteria_analysis_from_session(
     - **selected_products**: JSON string выбранных продуктов для анализа
     """
     try:
-        # Parse selected products from JSON string
+        # Parse selected criteria files or fallback to selected products
         import json
         try:
-            selected_products_list = json.loads(selected_products) if selected_products else []
+            selected_criteria_files_list = json.loads(selected_criteria_files) if selected_criteria_files != "[]" else []
         except json.JSONDecodeError:
+            selected_criteria_files_list = []
+        
+        # Fallback to selected_products for backward compatibility
+        if not selected_criteria_files_list:
+            try:
+                selected_products_list = json.loads(selected_products) if selected_products else []
+            except json.JSONDecodeError:
+                selected_products_list = []
+        else:
             selected_products_list = []
         
-        logger.info(f"Selected products for session analysis: {selected_products_list}")
+        logger.info(f"Selected criteria files for session analysis: {selected_criteria_files_list}")
+        logger.info(f"Selected products (fallback) for session analysis: {selected_products_list}")
         
         # Получаем информацию о существующей сессии
         import json
@@ -413,7 +469,8 @@ async def create_criteria_analysis_from_session(
             "use_deep_analysis": use_deep_analysis,
             "use_parallel": use_parallel,
             "max_concurrent": max_concurrent,
-            "selected_products": selected_products_list
+            "selected_products": selected_products_list,
+            "selected_criteria_files": selected_criteria_files_list
         }
         
         # Запускаем анализ в фоновой задаче
@@ -425,7 +482,8 @@ async def create_criteria_analysis_from_session(
                 use_deep_analysis,
                 use_parallel,
                 max_concurrent,
-                selected_products_list
+                selected_products_list,
+                selected_criteria_files_list
             )
         )
         criteria_tasks[new_session_id] = task
@@ -488,7 +546,10 @@ async def get_criteria_session_results(session_id: str):
     # Ищем файлы результатов в папке сессии
     session_results_dir = CRITERIA_PROCESSOR_PATH / "output" / session_id
     
+    logger.info(f"Looking for results in: {session_results_dir}")
+    
     if not session_results_dir.exists():
+        logger.error(f"Session results directory not found: {session_results_dir}")
         return {
             "session_id": session_id, 
             "status": "completed",
@@ -501,12 +562,25 @@ async def get_criteria_session_results(session_id: str):
     
     # Поиск CSV и JSON файлов с результатами в папке сессии
     for pattern in ["*.csv", "*.json"]:
-        result_files.extend(session_results_dir.glob(pattern))
+        found_files = list(session_results_dir.glob(pattern))
+        result_files.extend(found_files)
+        logger.info(f"Found {len(found_files)} files with pattern {pattern}: {[f.name for f in found_files]}")
     
-    # Возвращаем последние созданные файлы из папки сессии
+    logger.info(f"Total result files found: {len(result_files)}")
+    
+    # Возвращаем результирующие файлы, отдавая приоритет файлам с результатами
     if result_files:
-        # Берем самый свежий файл из папки сессии
-        latest_file = max(result_files, key=os.path.getctime)
+        # Приоритет файлам с "results" или "analysis" в названии
+        results_files = [f for f in result_files if any(keyword in f.name.lower() for keyword in ['results', 'analysis'])]
+        
+        if results_files:
+            # Из файлов результатов берем самый свежий
+            latest_file = max(results_files, key=lambda f: f.stat().st_mtime)
+            logger.info(f"Selected results file: {latest_file.name} from {len(results_files)} result files")
+        else:
+            # Если нет файлов с результатами, берем самый свежий из всех
+            latest_file = max(result_files, key=lambda f: f.stat().st_mtime)
+            logger.info(f"No dedicated results files found, selected: {latest_file.name}")
         
         try:
             if latest_file.suffix == '.csv':
@@ -563,6 +637,9 @@ async def get_criteria_session_results(session_id: str):
                 with open(latest_file, 'r', encoding='utf-8') as f:
                     results = json.load(f)
             
+            logger.info(f"Results loaded successfully: {len(results) if isinstance(results, list) else 1} records from {latest_file.name}")
+            logger.info(f"Sample data (first record): {results[0] if isinstance(results, list) and len(results) > 0 else 'No records'}")
+            
             return {
                 "session_id": session_id,
                 "status": "completed",
@@ -573,9 +650,12 @@ async def get_criteria_session_results(session_id: str):
             
         except Exception as e:
             logger.error(f"Error reading results file {latest_file}: {e}")
-            raise HTTPException(status_code=500, detail="Failed to read results")
+            logger.error(f"File details: {latest_file.stat()}")
+            raise HTTPException(status_code=500, detail=f"Failed to read results: {str(e)}")
     
     else:
+        logger.error(f"No result files found in {session_results_dir}")
+        logger.error(f"Directory contents: {list(session_results_dir.iterdir()) if session_results_dir.exists() else 'Directory does not exist'}")
         return {
             "session_id": session_id, 
             "status": "completed",
@@ -847,6 +927,42 @@ async def create_criteria_file(file_data: dict):
         logger.error(f"Error creating criteria file {filename}: {e}")
         raise HTTPException(status_code=500, detail=f"Error creating file: {str(e)}")
 
+@router.post("/upload")
+async def upload_criteria_file(file: UploadFile = File(...)):
+    """Загрузить файл критериев через multipart/form-data"""
+    criteria_dir = CRITERIA_PROCESSOR_PATH / "criteria"
+    
+    # Проверяем формат файла
+    if not file.filename.endswith(('.csv', '.xlsx', '.xls')):
+        raise HTTPException(
+            status_code=400, 
+            detail="Unsupported file format. Use CSV or Excel files."
+        )
+    
+    file_path = criteria_dir / file.filename
+    
+    if file_path.exists():
+        raise HTTPException(status_code=400, detail="File already exists")
+    
+    try:
+        # Сохраняем загруженный файл
+        async with aiofiles.open(file_path, 'wb') as f:
+            content = await file.read()
+            await f.write(content)
+        
+        logger.info(f"Uploaded criteria file: {file.filename}")
+        
+        return {
+            "message": "File uploaded successfully",
+            "filename": file.filename,
+            "size": len(content),
+            "timestamp": datetime.now().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error uploading criteria file {file.filename}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error uploading file: {str(e)}")
+
 @router.delete("/files/{filename}")
 async def delete_criteria_file(filename: str):
     """Удалить файл критериев"""
@@ -893,5 +1009,204 @@ async def criteria_service_health():
         return {
             "service": "criteria_analysis", 
             "status": "unhealthy",
+            "error": str(e)
+        }
+
+@router.get("/sessions/{session_id}/progress")
+async def get_criteria_session_progress(session_id: str):
+    """Получить детальный прогресс анализа критериев с счетчиками"""
+    if session_id not in criteria_sessions:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    try:
+        # Проверяем, есть ли файл прогресса в output папке criteria_processor
+        progress_file = CRITERIA_PROCESSOR_PATH / "output" / session_id / f"{session_id}_progress.json"
+        
+        if not progress_file.exists():
+            # Если файла нет, проверим есть ли результаты - возможно процесс завершился без progress файла
+            session_data = criteria_sessions[session_id]
+            
+            # Проверяем есть ли результирующий CSV файл
+            output_dir = CRITERIA_PROCESSOR_PATH / "output" / session_id
+            result_files = []
+            if output_dir.exists():
+                result_files = list(output_dir.glob("*.csv"))
+            
+            # Если есть результаты но нет progress файла - процесс завершился некорректно
+            if result_files and session_data["status"] == "processing":
+                # Обновляем статус в памяти
+                criteria_sessions[session_id]["status"] = "completed"
+                criteria_sessions[session_id]["end_time"] = datetime.now().isoformat()
+                
+                return {
+                    "session_id": session_id,
+                    "status": "completed",
+                    "progress": {
+                        "criteria": "N/A",
+                        "companies": "N/A", 
+                        "processed": len(result_files),
+                        "failed": 0
+                    },
+                    "current": {
+                        "product": None,
+                        "company": None,
+                        "audience": None,
+                        "stage": "completed"
+                    },
+                    "percentage": 100,
+                    "message": f"Analysis completed! Found {len(result_files)} result files.",
+                    "detailed_progress": False,
+                    "note": "Process completed without progress tracking (legacy mode)"
+                }
+            
+            # Проверим не зависла ли задача слишком долго
+            start_time_str = session_data.get("start_time")
+            if start_time_str and session_data["status"] == "processing":
+                try:
+                    start_time = datetime.fromisoformat(start_time_str.replace('Z', '+00:00'))
+                    time_elapsed = datetime.now() - start_time.replace(tzinfo=None)
+                    
+                    # Если прошло больше 30 минут без progress файла - считаем что процесс завис
+                    if time_elapsed.total_seconds() > 1800:  # 30 минут
+                        criteria_sessions[session_id]["status"] = "failed"
+                        criteria_sessions[session_id]["error"] = "Process timeout - no progress detected"
+                        criteria_sessions[session_id]["end_time"] = datetime.now().isoformat()
+                        
+                        return {
+                            "session_id": session_id,
+                            "status": "failed",
+                            "progress": {
+                                "criteria": "0/0",
+                                "companies": "0/0",
+                                "processed": 0,
+                                "failed": 0
+                            },
+                            "current": {
+                                "product": None,
+                                "company": None,
+                                "audience": None,
+                                "stage": "timeout"
+                            },
+                            "percentage": 0,
+                            "message": "Analysis timed out - process may have crashed during initialization",
+                            "detailed_progress": False,
+                            "error": "Process timeout after 30 minutes"
+                        }
+                except Exception:
+                    pass
+            
+            # Стандартная обработка для инициализации
+            return {
+                "session_id": session_id,
+                "status": session_data["status"],
+                "progress": {
+                    "criteria": "0/0",
+                    "companies": "0/0",
+                    "processed": 0,
+                    "failed": 0
+                },
+                "current": {
+                    "product": None,
+                    "company": None,
+                    "audience": None,
+                    "stage": "initialization"
+                },
+                "percentage": 0,
+                "message": "Initializing...",
+                "detailed_progress": False
+            }
+        
+        # Читаем детальный прогресс из файла ProcessingStateManager
+        import json
+        with open(progress_file, 'r', encoding='utf-8') as f:
+            progress_data = json.load(f)
+        
+        # Рассчитываем процент выполнения
+        total_companies = progress_data.get("total_companies", 0)
+        processed_companies = progress_data.get("processed_companies", 0)
+        total_criteria = progress_data.get("total_criteria", 0)
+        processed_criteria = progress_data.get("processed_criteria", 0)
+        
+        # Приоритет для критериев, если они доступны
+        if total_criteria > 0:
+            percentage = min(100, int((processed_criteria / total_criteria) * 100))
+        elif total_companies > 0:
+            percentage = min(100, int((processed_companies / total_companies) * 100))
+        else:
+            percentage = 0
+        
+        # Создаем описательное сообщение
+        current_stage = progress_data.get("current_stage", "unknown")
+        current_product = progress_data.get("current_product")
+        current_company = progress_data.get("current_company")
+        
+        if current_stage == "general_criteria":
+            message = "Checking general criteria..."
+        elif current_stage == "product_start":
+            message = f"Starting analysis for {current_product}"
+        elif current_stage == "processing":
+            if current_company:
+                message = f"Analyzing {current_company} for {current_product or 'products'}"
+            else:
+                message = "Processing companies..."
+        elif current_stage == "product_completed":
+            message = f"Completed {current_product}"
+        else:
+            message = f"Stage: {current_stage}"
+        
+        # Создаем информацию о критериях
+        criteria_breakdown = progress_data.get("criteria_breakdown", {})
+        criteria_summary = ""
+        if criteria_breakdown:
+            for crit_type, stats in criteria_breakdown.items():
+                if stats.get("total", 0) > 0:
+                    criteria_summary += f"{crit_type.title()}: {stats.get('processed', 0)}/{stats.get('total', 0)} "
+        
+        return {
+            "session_id": session_id,
+            "status": progress_data.get("status", "unknown"),
+            "progress": {
+                "criteria": f"{processed_criteria}/{total_criteria}" if total_criteria > 0 else "0/0",
+                "companies": f"{processed_companies}/{total_companies}",
+                "processed": processed_companies,
+                "failed": progress_data.get("failed_companies", 0)
+            },
+            "current": {
+                "product": current_product,
+                "company": current_company,
+                "audience": progress_data.get("current_audience"),
+                "stage": current_stage
+            },
+            "percentage": percentage,
+            "message": message,
+            "criteria_breakdown": criteria_breakdown,
+            "criteria_summary": criteria_summary.strip(),
+            "detailed_progress": True,
+            "last_updated": progress_data.get("updated_at"),
+            "circuit_breaker_events": len(progress_data.get("circuit_breaker_events", []))
+        }
+        
+    except Exception as e:
+        logger.error(f"Error reading progress for session {session_id}: {e}")
+        # Fallback к базовой информации
+        session_data = criteria_sessions[session_id]
+        return {
+            "session_id": session_id,
+            "status": session_data["status"],
+            "progress": {
+                "criteria": "0/0",
+                "companies": "0/0",
+                "processed": 0,
+                "failed": 0
+            },
+            "current": {
+                "product": None,
+                "company": None,
+                "audience": None,
+                "stage": "error"
+            },
+            "percentage": 0,
+            "message": f"Error reading progress: {str(e)}",
+            "detailed_progress": False,
             "error": str(e)
         } 

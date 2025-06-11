@@ -1,0 +1,76 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "ELDEN RING NIGHTREIGN – Patch Notes Version 1.01.2",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-nightreign-patch-notes-version-1012",
+            "snippet": "Fixed a bug where some non-direct attacks of specific weapons' skills would inflict the attribute attack power and status ailment of the weapon.",
+            "date": "1 day ago",
+            "position": 1
+        },
+        {
+            "title": "Advanced Tips for ELDEN RING NIGHTREIGN",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/advanced-tips-elden-ring-nightreign",
+            "snippet": "For smaller enemies a jumping attack helps you close the gap while the enemy is stunned after being pulled, and for large enemies a jumping ...",
+            "date": "Jun 2, 2025",
+            "position": 2
+        },
+        {
+            "title": "BLEACH REBIRTH OF SOULS - Patch Version 1.10",
+            "link": "https://en.bandainamcoent.eu/bleach/news/bleach-rebirth-of-souls-patch-version-110?amp",
+            "snippet": "In Awakened state, if you cancel the Special Flash Attack late when it hits, the Signature Move will hit at the root, so you can get a big ...",
+            "date": "23 hours ago",
+            "position": 3
+        },
+        {
+            "title": "DRAGON BALL: Sparking! ZERO: Combos and Features",
+            "link": "https://en.bandainamcoent.eu/dragon-ball/news/dragon-ball-sparking-zero-combos-and-features",
+            "snippet": "This move can be followed by multiple Rush combos or Smash Attack. Z-Burst Dash. When you press [R2/RT] + [✖/A] + [✖/A], you will ...",
+            "date": "Aug 27, 2024",
+            "position": 4
+        },
+        {
+            "title": "Elden Ring – Patch Notes Version 1.14 - Bandai Namco",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-patch-notes-version-114?amp",
+            "snippet": "Decreased the attack range of some non-weapon-based attacks. Improved the visibility of some attack effects. PvP-exclusive balance adjustments.",
+            "date": "Sep 10, 2024",
+            "position": 5
+        },
+        {
+            "title": "ELDEN RING NIGHTREIGN – Starter Guide for PS5",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-nightreign-starter-guide-ps5?amp=",
+            "snippet": "Pressing the [R2] button immediately after guarding an enemy attack will create a guard counter attack that can easily break the enemy's stance.",
+            "date": "Jun 2, 2025",
+            "position": 6
+        },
+        {
+            "title": "FREEDOM WARS Remastered – Patch Note Update (April ...",
+            "link": "https://en.bandainamcoent.eu/freedom-wars/news/freedom-wars-remastered-patch-note-update-april-30-2025?amp",
+            "snippet": "Fixed a bug where the lock-on would be disengaged when performing a weak attack with a spear while locked onto an enemy. Fixed Bug Where ...",
+            "date": "Apr 29, 2025",
+            "position": 7
+        },
+        {
+            "title": "BLEACH Rebirth of Souls - Starter Guide",
+            "link": "https://en.bandainamcoent.eu/bleach/news/bleach-rebirth-of-souls-starter-guide",
+            "snippet": "Use Quick Attack and Flash Attack combos, or knock your enemy back using an R2 follow-up attack, then hold down R2 when ”NOW OR NEVER” is ...",
+            "date": "Mar 21, 2025",
+            "position": 8
+        },
+        {
+            "title": "Combat or Stealth? Play Unknown 9: Awakening Your Way",
+            "link": "https://en.bandainamcoent.eu/unknown-9/news/combat-or-stealth-play-unknown-9-awakening-your-way",
+            "snippet": "While Heavy Umbric Attacks are effective when fighting a crowd, a Light Umbric Attack works well when you want to zero in on a single enemy and ...",
+            "date": "Aug 13, 2024",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

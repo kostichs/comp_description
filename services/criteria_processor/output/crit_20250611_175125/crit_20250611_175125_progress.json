@@ -1,0 +1,19 @@
+{
+  "session_id": "crit_20250611_175125",
+  "created_at": "2025-06-11T17:51:28.201041",
+  "updated_at": "2025-06-11T17:51:45.674732",
+  "status": "completed",
+  "current_product_index": 0,
+  "current_company_index": 3,
+  "current_product": null,
+  "current_company": null,
+  "current_audience": null,
+  "current_stage": "general_criteria",
+  "total_products": 2,
+  "total_companies": 3,
+  "processed_companies": 6,
+  "failed_companies": 0,
+  "circuit_breaker_events": [],
+  "last_circuit_breaker_event": null,
+  "completed_at": "2025-06-11T17:51:45.674732"
+}

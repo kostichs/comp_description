@@ -1,0 +1,41 @@
+# Команды для обновления до версии v11d
+# КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: results endpoint теперь правильно находит и отображает результаты в UI
+
+# 1. Остановить контейнер
+docker stop company-canvas-app || echo "Container not running"
+
+# 2. Удалить старый контейнер
+docker rm company-canvas-app || echo "Container not found"
+
+# 3. Скачать новую версию v11d
+docker pull sergeykostichev/company-canvas-app:v11d
+
+# 4. Запустить новый контейнер с версией v11d
+docker run -d \
+  --name company-canvas-app \
+  -p 80:8000 \
+  -e SCRAPINGBEE_API_KEY= \
+  -e HUBSPOT_API_KEY= \
+  -e OPENAI_API_KEY= \
+  --restart unless-stopped \
+  sergeykostichev/company-canvas-app:v11d
+
+# 5. Проверить статус
+echo "Waiting 10 seconds for container to start..."
+sleep 10
+docker ps | grep company-canvas-app
+
+# 6. Проверить логи
+echo "Recent logs:"
+docker logs --tail 20 company-canvas-app
+
+echo "v11d deployment completed!"
+echo "URL: http://YOUR_VM_IP"
+echo ""
+echo "КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ v11d:"
+echo "✅ Results endpoint использует правильный метод поиска файлов (stat().st_mtime)"
+echo "✅ Добавлено детальное логирование поиска результатов"
+echo "✅ Исправлено отображение результатов в UI после завершения анализа"
+echo "✅ Теперь результаты БУДУТ показываться в интерфейсе!"
+echo ""
+echo "Проверьте завершенный анализ - теперь результаты должны отображаться!" 

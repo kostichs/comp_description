@@ -1,0 +1,61 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com/ (inurl:api OR inurl:docs OR inurl:developer)",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Activision Acquires Infinity Ward Developer Of Critically ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-acquires-infinity-ward-developer-critically-acclaimed",
+            "snippet": "Activision Acquires Infinity Ward Developer Of Critically Acclaimed PC Game Call Of Duty™.",
+            "position": 1
+        },
+        {
+            "title": "Mobile Game Developer King Acquires Artificial Intelligence ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/mobile-game-developer-king-acquires-artificial-intelligence",
+            "snippet": "Peltarion is a Swedish artificial intelligence (AI) software company and developer of a no-code, machine learning operations platform that ...",
+            "date": "Jun 13, 2022",
+            "position": 2
+        },
+        {
+            "title": "Activision Acquires Mobile Game Developer Digital Legends",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-acquires-mobile-game-developer-digital-legends",
+            "snippet": "Activision today announced the acquisition of Barcelona-based mobile game developer Digital Legends.",
+            "date": "Oct 28, 2021",
+            "position": 3
+        },
+        {
+            "title": "Activision Publishing Acquires U.K. Game Developer ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-publishing-acquires-uk-game-developer-freestylegames",
+            "snippet": "(Nasdaq: ATVI) today announced that it has acquired FreeStyleGames, a premier U.K.-based video game developer specializing in music-based games.",
+            "date": "Sep 12, 2008",
+            "position": 4
+        },
+        {
+            "title": "Activision Acquires Game Developer Toys For Bob",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-acquires-game-developer-toys-bob",
+            "snippet": "Under the terms of the agreement, Toys For Bob has become a wholly owned subsidiary of Activision and the company's management team and key ...",
+            "date": "May 3, 2005",
+            "position": 5
+        },
+        {
+            "title": "Activision Acquires Game Developer Vicarious Visions",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-acquires-game-developer-vicarious-visions",
+            "snippet": "Vicarious Visions has developed five games that have sold more than one million-units each and is currently co-developing the highly anticipated ...",
+            "date": "Jan 20, 2005",
+            "position": 6
+        },
+        {
+            "title": "Activision Acquires U.K. Game Developer Bizarre Creations",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-acquires-uk-game-developer-bizarre-creations",
+            "snippet": "With more than 10 years' experience in the racing genre, Bizarre Creations is the developer of the innovative multi-million unit franchise ...",
+            "date": "Sep 26, 2007",
+            "position": 7
+        }
+    ],
+    "credits": 1
+}
