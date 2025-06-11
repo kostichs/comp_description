@@ -1,0 +1,86 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"real-time\" OR \"live\" OR \"broadcast\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Activision's 'Making Call of Duty' Livestream Series Returns to ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activisions-making-call-duty-livestream-series-returns-facebook",
+            "snippet": "Today's episode will be broadcast via Facebook Live at 10:30 am PT on Activision's Facebook Page. The series goes deep behind the scenes of game development to ...",
+            "position": 1
+        },
+        {
+            "title": "Call of Duty: NEXT Showcase Broadcast Event to Unveil ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-next-showcase-broadcast-event-unveil-franchise-lineup",
+            "snippet": "The highly anticipated live broadcast event, bringing together top streamers and creators from around the world, will showcase Call of Duty: Modern Warfare III ...",
+            "date": "Sep 29, 2023",
+            "position": 2
+        },
+        {
+            "title": "Producer- Live Ops, Call of Duty",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR024775EXTERNAL/Producer-Live-Ops-Call-of-Duty",
+            "snippet": "Oversee different production aspects of Call of Duty live operations including First Party submission strategy and planning, launch sequencing for monthly ...",
+            "position": 3
+        },
+        {
+            "title": "Blizzard Entertainment Establishes State-of-the-Art Live-Event ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/blizzard-entertainment-establishes-state-art-live-event",
+            "snippet": "Cutting-edge entertainment venue with a legendary past will host a steady schedule of premier live ... live-event experience for local attendees and broadcast ...",
+            "position": 4
+        },
+        {
+            "title": "Activision and Xbox Partner to Bring Landmark Call of Duty ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-and-xbox-partner-bring-landmark-call-dutyr-esports",
+            "snippet": "... live-streamed spectacular to be broadcast to the masses. \"More people play Call of Duty multiplayer every day than watch the average regular season game of ...",
+            "position": 5
+        },
+        {
+            "title": "Guitar Hero® Live Puts Fans in the Game with Crowd- ...",
+            "link": "https://investor.activisionblizzard.com/static-files/24b59225-7256-4574-ab32-2e4f226dd452",
+            "snippet": "\"Guitar Hero Live gives you the thrill of being a rock star by playing in front of real crowds or awesome music videos, so we wanted to give fans the ...",
+            "position": 6
+        },
+        {
+            "title": "The Call of Duty: Mobile Tournament Goes Live and In- ...",
+            "link": "https://newsroom.activisionblizzard.com/p/the-call-of-duty-mobile-tournament",
+            "snippet": "We'll be broadcasting live both on YouTube as well as in-game ... Yeh adds: “The first-class event and broadcast production will feel ...",
+            "date": "Dec 13, 2022",
+            "position": 7
+        },
+        {
+            "title": "Who We Are",
+            "link": "https://www.activisionblizzard.com/who-we-are",
+            "snippet": "In 1994, Blizzard released its first breakthrough hit, a real-time strategy game called Warcraft®: Orcs & Humans. 1996. 1996: “We think this internet thing ...",
+            "position": 8
+        },
+        {
+            "title": "Bungie and Activision Unveil Destiny 2 Gameplay with New ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/bungie-and-activision-unveil-destiny-2-gameplay-new-action",
+            "snippet": "Bungie and Activision unveil Destiny 2 gameplay with new, action-packed, character-driven story and a breadth of activities in a live broadcast.",
+            "position": 9
+        },
+        {
+            "title": "Activision Announces Vigilante 8®: Arcade for Xbox Live Arcade",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-vigilante-8r-arcade-xbox-live-arcade",
+            "snippet": "The title is scheduled for release via download on Xbox LIVE Arcade for Xbox 360 this spring and has not yet been rated by the ESRB. For more information and ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Real time live broadcast youtube"
+        },
+        {
+            "query": "Real time live broadcast free"
+        },
+        {
+            "query": "Real time live broadcast app"
+        }
+    ],
+    "credits": 1
+}

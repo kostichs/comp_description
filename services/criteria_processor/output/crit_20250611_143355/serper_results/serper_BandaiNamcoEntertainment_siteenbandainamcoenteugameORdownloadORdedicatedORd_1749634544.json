@@ -1,0 +1,84 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "All Games",
+            "link": "https://en.bandainamcoent.eu/games",
+            "snippet": "11/10/2024. Search for a game. Submit. Category. Category, Action, Anime, RPG, Fighting, JRPG, Adventure, Horror, Kids game, Management, Music/Dance, Racing ...",
+            "position": 1
+        },
+        {
+            "title": "Register a Bandai Namco Game",
+            "link": "https://en.bandainamcoent.eu/register-bandai-namco-game",
+            "snippet": "Latest game news. MOBILE SUIT GUNDAM SEED BATTLE DESTINY REMASTERED Is Now Available Worldwide On Nintendo Switch And Pc · Dragon Ball DAIMA Pack is now ...",
+            "position": 2
+        },
+        {
+            "title": "THE PATRICK STAR GAME | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/sponge-bob/the-patrick-star-game",
+            "snippet": "THE PATRICK STAR GAME ... Become the Star of the show, put your silliest ideas into action, and enjoy the physics-based chaos that unfolds all around you! Patrick ...",
+            "position": 3
+        },
+        {
+            "title": "ONE PIECE ODYSSEY | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/one-piece/one-piece-odyssey",
+            "snippet": "This Deluxe Edition includes: - Full game (Digital only); - Deluxe Pack (Two Jewelry accessories, the Sniper King traveling outfit); - Adventure Expansion Pack ...",
+            "position": 4
+        },
+        {
+            "title": "ELDEN RING NIGHTREIGN | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/elden-ring/elden-ring-nightreign",
+            "snippet": "ELDEN RING NIGHTREIGN is a standalone adventure within the ELDEN RING universe, crafted to offer players a new gaming experience by reimagining the game's core",
+            "position": 5
+        },
+        {
+            "title": "PARK BEYOND | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/park-beyond/park-beyond",
+            "snippet": "Whether you love to manage finances and visitor experience or just create fun and cozy parks, the game has something in store just for you! Park Beyond ...",
+            "position": 6
+        },
+        {
+            "title": "My Hero Ultra Rumble - Download",
+            "link": "https://en.bandainamcoent.eu/my-hero-academia/my-hero-ultra-rumble/download",
+            "snippet": "Latest game news. Revenants unite in CODE VEIN II, the next major action ... Register a game · Join the CLUB! Languages English. Languages. English · Français ...",
+            "position": 7
+        },
+        {
+            "title": "SHADOW LABYRINTH | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/pac-man/shadow-labyrinth",
+            "snippet": "Wishlist on your favourite platform. Wishlist now to stay tuned for the latest updates about this video game! Steam PlayStation.",
+            "position": 8
+        },
+        {
+            "title": "SPYxANYA: Operation Memories | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/spy-x-family/spyxanya-operation-memories",
+            "snippet": "Enjoy A Variety Of Mini-Games. Play over 15 mini-games, both inspired from the anime series and originally designed for the game!",
+            "position": 9
+        },
+        {
+            "title": "GOD EATER 3 | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/god-eater/god-eater-3",
+            "snippet": "First GOD EATER game imagined and conceived for new generation home consoles. Dynamic slayer fights with high speed action. Brand new fields to roam. New ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop mac"
+        },
+        {
+            "query": "Game download dedicated desktop xbox"
+        },
+        {
+            "query": "Game download dedicated desktop android"
+        }
+    ],
+    "credits": 1
+}

@@ -457,7 +457,7 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
         check_nth_criteria(company_info, audience, nth_df, session_id, use_deep_analysis)
 
 
-def run_parallel_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False, max_concurrent_companies=12):
+def run_parallel_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False, max_concurrent_companies=12, selected_products=None):
     """
     Запускает анализ с параллельной обработкой компаний внутри каждого продукта.
     СОХРАНЯЕТ порядок: все компании проходят продукт 1, потом все компании проходят продукт 2, и т.д.
@@ -474,7 +474,8 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
         log_info("📋 Загружаем данные...")
         data_dict = load_data(
             companies_file=companies_file,
-            load_all_companies=load_all_companies
+            load_all_companies=load_all_companies,
+            selected_products=selected_products
         )
         
         companies_df = data_dict["companies"]

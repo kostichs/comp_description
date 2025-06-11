@@ -1,0 +1,73 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"global\" OR \"worldwide\" OR \"coverage\" OR \"international\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Activision Blizzard | Location",
+            "link": "https://www.activisionblizzard.com/location",
+            "snippet": "International Offices · Publishing. Sydney, Australia. São Paulo, Brazil. Mississauga, Canada. Shanghai, China. Berlin, Germany. Cork, Ireland. Dublin, Ireland.",
+            "position": 1
+        },
+        {
+            "title": "Activision Blizzard Further Accelerates Global Growth Strategy ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-blizzard-further-accelerates-global-growth-strategy",
+            "snippet": "The new division will further accelerate Activision Blizzard's global growth strategy by leveraging its iconic content and creating new ways for audiences to ...",
+            "position": 2
+        },
+        {
+            "title": "Who We Are",
+            "link": "https://www.activisionblizzard.com/who-we-are",
+            "snippet": "Our esports vision is to be the most innovative, scalable, and valuable developer of global competitive entertainment. ... worldwide. 2003. 2003: Activision ...",
+            "position": 3
+        },
+        {
+            "title": "Counsel in Santa Monica, California, United States ...",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025234EXTERNAL/Counsel",
+            "snippet": "Located in our global headquarters in Santa Monica, we encompass equal parts agility, creativity and rigor to enhance the employee and player experience. To ...",
+            "position": 4
+        },
+        {
+            "title": "Project Coordinator, Global Analytics - Temporary",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025425EXTERNAL/Project-Coordinator-Global-Analytics-Temporary",
+            "snippet": "The Global Analytics Project Coordinator will be responsible for ... As a leading worldwide developer, publisher and distributor of interactive ...",
+            "position": 5
+        },
+        {
+            "title": "Senior Employee Relations Specialist (Hybrid)",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025143EXTERNAL/Senior-Employee-Relations-Specialist-Hybrid",
+            "snippet": "Located in our global headquarters in Santa Monica, we encompass equal parts agility, creativity, and rigor to enhance the employee and player experience.",
+            "position": 6
+        },
+        {
+            "title": "Activision Blizzard | About",
+            "link": "https://www.activisionblizzard.com/about-us",
+            "snippet": "Activision is a leading worldwide developer, publisher, and distributor ... International, and Arena World Championship. Consumer Product Logo. Consumer ...",
+            "position": 7
+        },
+        {
+            "title": "Benefits",
+            "link": "https://careers.activisionblizzard.com/benefits",
+            "snippet": "Disability Insurance. You are provided a core level of short- and long-term disability coverage at 60% and 50% of your salary, respectively. You can buy-up ...",
+            "position": 8
+        },
+        {
+            "title": "Corporate Administration jobs",
+            "link": "https://careers.activisionblizzard.com/c/corporate-administration-jobs",
+            "snippet": "The Global Analytics Project Coordinator will be responsible for supporting the entire Global Analytics team from an operational standpoint. Tasks included ...",
+            "position": 9
+        },
+        {
+            "title": "Senior Manager, Accounting in Playa Vista, California ...",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR023985EXTERNAL/Senior-Manager-Accounting",
+            "snippet": "As a Senior Manager of Accounting you will play a critical role in the Activision Blizzard controllership as well as the worldwide Finance Team. ... global ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

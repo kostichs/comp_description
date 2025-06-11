@@ -35,7 +35,7 @@ if str(CRITERIA_PROCESSOR_PATH) not in sys.path:
 # Импортируем правильные пути из data_io.py
 from src.data_io import SESSIONS_DIR, SESSIONS_METADATA_FILE
 
-def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 12):
+def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 12, selected_products: List[str] = None):
     """Запускаем criteria_processor как отдельный процесс"""
     import subprocess
     import shutil
@@ -91,6 +91,18 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
         if use_parallel:
             cmd.append("--parallel")
             cmd.extend(["--max-concurrent", str(max_concurrent)])
+        
+        # Добавляем выбранные продукты
+        if selected_products:
+            cmd.append("--selected-products")
+            cmd.append(",".join(selected_products))
+            logger.info(f"Adding selected products to command: {selected_products}")
+        else:
+            logger.info("No selected products specified - will process all products")
+        
+        # Log the full command for debugging
+        logger.info(f"Executing command: {' '.join(cmd)}")
+        logger.info(f"Selected products parameter: {selected_products}")
         
         # Add Circuit Breaker support (enabled by default, can be disabled via env var)
         import os
@@ -152,7 +164,8 @@ async def run_criteria_analysis_task(
     load_all_companies: bool = False,
     use_deep_analysis: bool = False,
     use_parallel: bool = True,
-    max_concurrent: int = 12
+    max_concurrent: int = 12,
+    selected_products: List[str] = None
 ):
     """Асинхронная задача для запуска анализа критериев"""
     log_info = None
@@ -175,7 +188,8 @@ async def run_criteria_analysis_task(
             session_id,
             use_deep_analysis,
             use_parallel,
-            max_concurrent
+            max_concurrent,
+            selected_products
         )
         
         # Проверяем результат выполнения процесса
@@ -215,7 +229,8 @@ async def create_criteria_analysis(
     load_all_companies: bool = Form(False),
     use_deep_analysis: bool = Form(False),
     use_parallel: bool = Form(True),
-    max_concurrent: int = Form(12)
+    max_concurrent: int = Form(12),
+    selected_products: str = Form("[]")  # JSON string of selected products
 ):
     """
     Создает новую сессию анализа критериев
@@ -247,14 +262,18 @@ async def create_criteria_analysis(
             content = await file.read()
             await f.write(content)
         
-        # Проверяем кодировку загруженного файла
-        try:
-            from services.criteria_processor.src.utils.encoding_handler import get_file_info
-            file_info = get_file_info(str(input_file_path))
-            logger.info(f"Uploaded file info: {file_info}")
-        except Exception as e:
-            logger.warning(f"Could not detect encoding for uploaded file: {e}")
+        # Log basic file info
+        logger.info(f"Uploaded file: {file.filename} ({len(content)} bytes)")
         
+        # Parse selected products from JSON string
+        import json
+        try:
+            selected_products_list = json.loads(selected_products) if selected_products else []
+        except json.JSONDecodeError:
+            selected_products_list = []
+        
+        logger.info(f"Selected products for analysis: {selected_products_list}")
+
         # Создаем метаданные сессии
         criteria_sessions[session_id] = {
             "session_id": session_id,
@@ -266,7 +285,8 @@ async def create_criteria_analysis(
             "load_all_companies": load_all_companies,
             "use_deep_analysis": use_deep_analysis,
             "use_parallel": use_parallel,
-            "max_concurrent": max_concurrent
+            "max_concurrent": max_concurrent,
+            "selected_products": selected_products_list
         }
         
         # Запускаем анализ в фоновой задаче
@@ -277,7 +297,8 @@ async def create_criteria_analysis(
                 load_all_companies,
                 use_deep_analysis,
                 use_parallel,
-                max_concurrent
+                max_concurrent,
+                selected_products_list
             )
         )
         criteria_tasks[session_id] = task
@@ -303,7 +324,8 @@ async def create_criteria_analysis_from_session(
     load_all_companies: bool = Form(False),
     use_deep_analysis: bool = Form(False),
     use_parallel: bool = Form(True),
-    max_concurrent: int = Form(12)
+    max_concurrent: int = Form(12),
+    selected_products: str = Form("[]")  # JSON string of selected products
 ):
     """
     Создает новую сессию анализа критериев используя результаты из существующей сессии
@@ -313,8 +335,18 @@ async def create_criteria_analysis_from_session(
     - **use_deep_analysis**: Использовать ли глубокий анализ
     - **use_parallel**: Параллельная обработка компаний (включена по умолчанию)
     - **max_concurrent**: Максимальное количество одновременно обрабатываемых компаний (по умолчанию 12)
+    - **selected_products**: JSON string выбранных продуктов для анализа
     """
     try:
+        # Parse selected products from JSON string
+        import json
+        try:
+            selected_products_list = json.loads(selected_products) if selected_products else []
+        except json.JSONDecodeError:
+            selected_products_list = []
+        
+        logger.info(f"Selected products for session analysis: {selected_products_list}")
+        
         # Получаем информацию о существующей сессии
         import json
         
@@ -380,7 +412,8 @@ async def create_criteria_analysis_from_session(
             "load_all_companies": load_all_companies,
             "use_deep_analysis": use_deep_analysis,
             "use_parallel": use_parallel,
-            "max_concurrent": max_concurrent
+            "max_concurrent": max_concurrent,
+            "selected_products": selected_products_list
         }
         
         # Запускаем анализ в фоновой задаче
@@ -391,7 +424,8 @@ async def create_criteria_analysis_from_session(
                 load_all_companies,
                 use_deep_analysis,
                 use_parallel,
-                max_concurrent
+                max_concurrent,
+                selected_products_list
             )
         )
         criteria_tasks[new_session_id] = task
@@ -623,13 +657,15 @@ async def cancel_criteria_analysis(session_id: str):
 
 @router.get("/files")
 async def get_criteria_files():
-    """Получить список всех файлов критериев"""
+    """Получить список всех файлов критериев с информацией о продуктах"""
     criteria_dir = CRITERIA_PROCESSOR_PATH / "criteria"
     
     if not criteria_dir.exists():
-        return {"files": []}
+        return {"files": [], "products": []}
     
     files = []
+    all_products = set()
+    
     for file_path in criteria_dir.glob("*.csv"):
         # Исключаем backup файлы из отображения (на случай если они остались от старых версий)
         if ".backup_" in file_path.name or ".deleted_" in file_path.name:
@@ -652,6 +688,14 @@ async def get_criteria_files():
                 # Если нет основных колонок, считаем все непустые строки
                 actual_rows = len(df.dropna(how='all'))
             
+            # Извлекаем продукты из файла
+            file_products = []
+            if 'Product' in df.columns:
+                file_products = df['Product'].unique().tolist()
+                # Убираем NaN значения
+                file_products = [p for p in file_products if pd.notna(p) and str(p).strip()]
+                all_products.update(file_products)
+            
             files.append({
                 "filename": file_path.name,
                 "full_path": str(file_path),
@@ -659,7 +703,8 @@ async def get_criteria_files():
                 "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
                 "rows_preview": min(5, actual_rows),  # Показываем до 5 строк для preview
                 "total_rows": actual_rows,  # РЕАЛЬНОЕ количество строк с данными
-                "columns": list(df.columns) if not df.empty else []
+                "columns": list(df.columns) if not df.empty else [],
+                "products": file_products  # Продукты в этом файле
             })
         except Exception as e:
             logger.error(f"Error reading criteria file {file_path}: {e}")
@@ -668,10 +713,14 @@ async def get_criteria_files():
                 "full_path": str(file_path),
                 "size": file_path.stat().st_size,
                 "modified": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
-                "error": str(e)
+                "error": str(e),
+                "products": []
             })
     
-    return {"files": files}
+    return {
+        "files": files,
+        "products": sorted(list(all_products))  # Все уникальные продукты
+    }
 
 @router.get("/files/{filename}")
 async def get_criteria_file_content(filename: str):

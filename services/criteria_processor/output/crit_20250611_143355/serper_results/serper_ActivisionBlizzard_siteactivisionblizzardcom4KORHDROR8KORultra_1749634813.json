@@ -1,0 +1,79 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"4K\" OR \"HDR\" OR \"8K\" OR \"ultra\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "New Call of Duty Tech Engine: Unleashing Four Areas ...",
+            "link": "https://newsroom.activisionblizzard.com/p/new-call-of-duty-tech-engine-unleashing",
+            "snippet": "“So, whether you're playing in HD, Ultra-HD, or 4K, we can still throw more resolution in a specific part of the screen, just to make sure ...",
+            "date": "Dec 12, 2022",
+            "position": 1
+        },
+        {
+            "title": "Activision Introduces Call of Duty, a New Brand of First-Person ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-introduces-call-duty-new-brand-first-person-action",
+            "snippet": "When gamers get their hands on Call of Duty, they will experience gripping battle sequences, ultra realistic environments, and in-the-trenches, non-stop ...",
+            "position": 2
+        },
+        {
+            "title": "Crash Bandicoot Makes His Way Four-Ward to Next-Gen ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/crash-bandicoot-makes-his-way-four-ward-next-gen-consoles-switch",
+            "snippet": "PlayStation® 5 and Xbox Series X versions of the game will run native 4K at 60FPS, while Xbox Series S versions will upscale to 4K. Requires 4K ...",
+            "date": "Feb 9, 2021",
+            "position": 3
+        },
+        {
+            "title": "Call of Duty: Modern Warfare 2 Campaign Remastered",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-modern-warfare-2-campaign-remastered-available-now",
+            "snippet": "The game includes the full campaign with stunning high-definition visuals – up to 4K resolution and HDR support on console; and uncapped ...",
+            "date": "Mar 31, 2020",
+            "position": 4
+        },
+        {
+            "title": "Evolution Complete! Blizzard Entertainment Announces ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/evolution-complete-blizzard-entertainment-announces-starcraftr",
+            "snippet": "The groundbreaking sci-fi real-time strategy game remastered in 4K Ultra High Definition, to include all content from the original award-winning ...",
+            "date": "Mar 27, 2017",
+            "position": 5
+        },
+        {
+            "title": "Fresh New Tracks From Electronic Music Superstars ...",
+            "link": "https://investor.activisionblizzard.com/static-files/5662186b-979a-4eed-ab6b-97d3b9e29eb0",
+            "snippet": "The Ultra Mix Pack is available on Xbox LIVE® Marketplace for the Xbox 360® video game and entertainment system from. Microsoft for 640 Microsoft Points and on ...",
+            "position": 6
+        },
+        {
+            "title": "Call of Duty: Black Ops 4 Delivers Game ... - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-black-ops-4-delivers-game-changing-experience-deepest",
+            "snippet": "Black Ops 4 on PC will have uncapped framerate, 4K resolution and HDR, support for ultra-wide monitors and the ability for players to ...",
+            "date": "May 17, 2018",
+            "position": 7
+        },
+        {
+            "title": "Soldier Of Fortune® II: Double Helix For The Xbox Infiltrates ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/soldier-fortuner-ii-double-helix-xbox-infiltrates-retail-outlets",
+            "snippet": "... ultra realistic damage modeling. New to the Xbox, Soldier of Fortune II: Double Helix also includes a random mission generator for both single and multi ...",
+            "position": 8
+        },
+        {
+            "title": "Activision Publishing and GameMill Publishing Get Fur-ocious ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-publishing-and-gamemill-publishing-get-fur-ocious",
+            "snippet": "Tull sports a never seen before color scheme and will be available for $34.99 MSRP. \" Kung Zhu™ is packed with pets that are cute but become ultra-cool and ...",
+            "position": 9
+        },
+        {
+            "title": "Blizzard Entertainment to Resurrect Diablo® II in 2021 for PC ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/blizzard-entertainment-resurrect-diablor-ii-2021-pc-and-consoles",
+            "snippet": "4K resolution and 7.1 Dolby Surround require platforms and equipment that support those features. **Cross-progression requires a linked Battle.",
+            "date": "Feb 19, 2021",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

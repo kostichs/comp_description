@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 from src.utils.config import validate_config
 from src.utils.logging import setup_logging, log_info, log_error
-from src.core.processor import run_analysis
+from src.core.processor import run_analysis, run_analysis_optimized, run_analysis_super_optimized
 from src.core.parallel_processor import run_parallel_analysis
 from src.core.recovery import resume_processing, get_resumable_sessions
 
@@ -50,6 +50,18 @@ def parse_arguments():
         action='store_true',
         help='Включить параллельную обработку компаний (быстрее, но больше нагрузка на API)'
     )
+    
+    parser.add_argument(
+        '--optimized',
+        action='store_true',
+        help='Использовать оптимизированный алгоритм: компания за компанией с асинхронностью'
+    )
+    
+    parser.add_argument(
+        '--super-optimized',
+        action='store_true',
+        help='СУПЕР-оптимизированный режим: несколько компаний + асинхронность (самый быстрый)'
+    )
 
     parser.add_argument(
         '--max-concurrent',
@@ -75,6 +87,12 @@ def parse_arguments():
         '--disable-circuit-breaker',
         action='store_true',
         help='Отключить Circuit Breaker (не рекомендуется)'
+    )
+    
+    parser.add_argument(
+        '--selected-products',
+        type=str,
+        help='Comma-separated list of selected products to analyze (e.g., "Product 1,Product 2")'
     )
     
     return parser.parse_args()
@@ -153,6 +171,12 @@ def main():
             from src.utils.config import CIRCUIT_BREAKER_CONFIG
             CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker'] = False
         
+        # Parse selected products
+        selected_products_list = None
+        if args.selected_products:
+            selected_products_list = [p.strip() for p in args.selected_products.split(',') if p.strip()]
+            log_info(f"🎯 Будут обрабатываться только выбранные продукты: {selected_products_list}")
+        
         # Валидация конфигурации
         log_info("Проверяем конфигурацию...")
         validate_config()
@@ -160,14 +184,34 @@ def main():
         # Запуск анализа с параметрами
         log_info("Начинаем анализ...")
         
-        if args.parallel:
+        if args.super_optimized:
+            log_info(f"🔥 СУПЕР-ОПТИМИЗИРОВАННЫЙ РЕЖИМ: {args.max_concurrent} компаний + асинхронность")
+            results = run_analysis_super_optimized(
+                companies_file=args.file,
+                load_all_companies=args.all_files,
+                session_id=args.session_id,
+                use_deep_analysis=args.deep_analysis,
+                max_concurrent_companies=args.max_concurrent,
+                selected_products=selected_products_list
+            )
+        elif args.optimized:
+            log_info("🚀 ОПТИМИЗИРОВАННЫЙ РЕЖИМ: компания за компанией с асинхронностью")
+            results = run_analysis_optimized(
+                companies_file=args.file,
+                load_all_companies=args.all_files,
+                session_id=args.session_id,
+                use_deep_analysis=args.deep_analysis,
+                selected_products=selected_products_list
+            )
+        elif args.parallel:
             log_info(f"🚀 ПАРАЛЛЕЛЬНЫЙ РЕЖИМ: max_concurrent={args.max_concurrent}")
             results = run_parallel_analysis(
                 companies_file=args.file,
                 load_all_companies=args.all_files,
                 session_id=args.session_id,
                 use_deep_analysis=args.deep_analysis,
-                max_concurrent_companies=args.max_concurrent
+                max_concurrent_companies=args.max_concurrent,
+                selected_products=selected_products_list
             )
         else:
             log_info("🐌 ОБЫЧНЫЙ РЕЖИМ: последовательная обработка")
@@ -175,7 +219,8 @@ def main():
                 companies_file=args.file,
                 load_all_companies=args.all_files,
                 session_id=args.session_id,
-                use_deep_analysis=args.deep_analysis
+                use_deep_analysis=args.deep_analysis,
+                selected_products=selected_products_list
             )
         
         log_info(f"Анализ завершен успешно! Обработано компаний: {len(results)}")

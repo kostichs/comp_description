@@ -1,0 +1,83 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"live\" OR \"event\" OR \"streaming\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Activision's 'Making Call of Duty' Livestream Series Returns to ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activisions-making-call-duty-livestream-series-returns-facebook",
+            "snippet": "The series goes deep behind the scenes of game development to deliver candid insights and an unfiltered look inside development live with fans. Hosted by Alison ...",
+            "position": 1
+        },
+        {
+            "title": "Blizzard Entertainment Establishes State-of-the-Art Live-Event ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/blizzard-entertainment-establishes-state-art-live-event",
+            "snippet": "Blizzard Entertainment today unveiled Blizzard Arena Los Angeles, a cutting-edge live-event destination for pro players, esports fans, and everyone else who ...",
+            "position": 2
+        },
+        {
+            "title": "Call of Duty: NEXT Showcase Broadcast Event to Unveil ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-next-showcase-broadcast-event-unveil-franchise-lineup",
+            "snippet": "The highly anticipated live broadcast event, bringing together top streamers and creators from around the world, will showcase Call of Duty: Modern Warfare III ...",
+            "date": "Sep 29, 2023",
+            "position": 3
+        },
+        {
+            "title": "Plays at Call of Duty®: Black Ops Launch Event",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/plays-call-dutyr-black-ops-launch-event",
+            "snippet": "Launch Event To Raise $1M for The Call of Duty Endowment Metallica played at the Call of Duty(R): Black Ops launch event at Santa Monica Airport's Hangar 8 ...",
+            "position": 4
+        },
+        {
+            "title": "Producer- Live Ops, Call of Duty",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR024775EXTERNAL/Producer-Live-Ops-Call-of-Duty",
+            "snippet": "Oversee different production aspects of Call of Duty live operations including First Party submission strategy and planning, launch sequencing for monthly ...",
+            "position": 5
+        },
+        {
+            "title": "Design Studio | Events 1 to 0 in Event Listing",
+            "link": "https://careers.activisionblizzard.com/events",
+            "snippet": "Upcoming events at Activision Blizzard - Design Studio. Join us to learn more about scheduled events hosted by Activision Blizzard - Design Studio.",
+            "position": 6
+        },
+        {
+            "title": "The Call of Duty: Mobile Tournament Goes Live and In- ...",
+            "link": "https://newsroom.activisionblizzard.com/p/the-call-of-duty-mobile-tournament",
+            "snippet": "... event partners, we've been able to make sense of a complicated ... We'll be broadcasting live both on YouTube as well as in-game, so ...",
+            "date": "Dec 13, 2022",
+            "position": 7
+        },
+        {
+            "title": "Guitar Hero® Live Puts Fans in the Game with Crowd- ...",
+            "link": "https://investor.activisionblizzard.com/static-files/24b59225-7256-4574-ab32-2e4f226dd452",
+            "snippet": "\"Guitar Hero Live gives you the thrill of being a rock star by playing in front of real crowds or awesome music videos, so we wanted to give fans the ...",
+            "position": 8
+        },
+        {
+            "title": "Call of Duty World League Championship ... - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-world-league-championship-most-viewed-call-duty",
+            "snippet": "Through MLG's proven live streaming capabilities and technology, CWL fans can watch the Black Ops III esports action on MLG.TV and in-game (Black Ops III PS4) ...",
+            "position": 9
+        },
+        {
+            "title": "Curse of Naxxramas™ Now Live . . . Er, Undead!",
+            "link": "https://investor.activisionblizzard.com/static-files/168a86d7-dcc9-4538-ae7b-44f1c449f49f",
+            "snippet": "Curse of Naxxramas™ Now Live . . . Er, Undead! First Hearthstone ... launch event, taking place now through early September. Curse of Naxxramas ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Live event streaming app"
+        },
+        {
+            "query": "Live event streaming youtube"
+        }
+    ],
+    "credits": 1
+}

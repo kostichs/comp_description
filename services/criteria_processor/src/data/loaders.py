@@ -260,12 +260,13 @@ def load_all_criteria_files():
     
     return combined_criteria
 
-def load_data(companies_file=None, load_all_companies=False):
+def load_data(companies_file=None, load_all_companies=False, selected_products=None):
     """Load all data files - updated for ALL PRODUCTS processing
     
     Args:
         companies_file: путь к конкретному файлу компаний (опционально)
         load_all_companies: если True, загружает все CSV файлы из папки data/
+        selected_products: список выбранных продуктов для обработки (если None - все продукты)
     """
     log_info(f"📋 Загружаем данные для ВСЕХ продуктов")
     
@@ -334,11 +335,20 @@ def load_data(companies_file=None, load_all_companies=False):
         for i, criteria in enumerate(all_general_criteria, 1):
             log_info(f"   {i}. {criteria}")
         
-        # ИСПРАВЛЕНО: Используем ВСЕ критерии для ВСЕХ продуктов
-        products = df_criteria['Product'].unique()
-        log_info(f"🏭 Будем обрабатывать компании для ВСЕХ продуктов: {', '.join(products)}")
+        # Фильтруем продукты если указаны выбранные
+        all_available_products = df_criteria['Product'].unique()
         
-        # Создаем структуру данных для всех продуктов
+        if selected_products:
+            # Фильтруем только выбранные продукты
+            products = [p for p in all_available_products if p in selected_products]
+            if not products:
+                raise ValueError(f"❌ Выбранные продукты {selected_products} не найдены среди доступных: {list(all_available_products)}")
+            log_info(f"🎯 Будем обрабатывать ТОЛЬКО выбранные продукты: {', '.join(products)} (из {len(all_available_products)} доступных)")
+        else:
+            products = all_available_products
+            log_info(f"🏭 Будем обрабатывать компании для ВСЕХ продуктов: {', '.join(products)}")
+        
+        # Создаем структуру данных для выбранных продуктов
         all_products_data = {}
         
         for product in products:

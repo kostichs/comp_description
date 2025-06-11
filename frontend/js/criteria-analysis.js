@@ -7,7 +7,8 @@ class CriteriaAnalysis {
         this.currentSessionId = null;
         this.statusCheckInterval = null;
         this.criteriaFiles = [];
-        this.selectedCriteria = [];
+        this.availableProducts = [];
+        this.selectedCriteria = [];  // Now stores selected product names
         this.currentEditingFile = null;
         this.criteriaData = null;
         this.init();
@@ -198,6 +199,7 @@ class CriteriaAnalysis {
         formData.append('file', fileInput.files[0]);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
         formData.append('use_deep_analysis', useDeepAnalysis);
+        formData.append('selected_products', JSON.stringify(this.selectedCriteria));
 
         try {
             this.showStatus('Uploading file...');
@@ -782,9 +784,10 @@ class CriteriaAnalysis {
             }
 
             this.criteriaFiles = result.files;
+            this.availableProducts = result.products || [];
             
-            // Автоматически выбираем все файлы критериев по умолчанию
-            this.selectedCriteria = this.criteriaFiles.map(file => file.filename);
+            // Автоматически выбираем все продукты по умолчанию
+            this.selectedCriteria = [...this.availableProducts];
             
             this.displayCriteriaFiles();
 
@@ -797,35 +800,68 @@ class CriteriaAnalysis {
     displayCriteriaFiles() {
         const container = document.getElementById('criteria-files-list');
         
-        if (!this.criteriaFiles || this.criteriaFiles.length === 0) {
-            container.innerHTML = '<p style="color: #6c757d;">No criteria files found</p>';
+        if (!this.availableProducts || this.availableProducts.length === 0) {
+            container.innerHTML = '<p style="color: #6c757d;">No products found in criteria files</p>';
             return;
         }
 
+        // Отображаем продукты для выбора
+        const productsList = document.createElement('div');
+        productsList.style.cssText = 'margin-bottom: 20px;';
+        
+        const productsTitle = document.createElement('h4');
+        productsTitle.textContent = 'Select Products to Analyze:';
+        productsTitle.style.cssText = 'margin-bottom: 10px; color: #333;';
+        productsList.appendChild(productsTitle);
+        
+        const productsGrid = document.createElement('div');
+        productsGrid.style.cssText = 'display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));';
+
+        this.availableProducts.forEach(product => {
+            const productItem = document.createElement('div');
+            productItem.style.cssText = 'display: flex; align-items: center; padding: 8px; background: white; border: 1px solid #ddd; border-radius: 4px;';
+            
+            const isSelected = this.selectedCriteria.includes(product);
+            if (isSelected) {
+                productItem.style.backgroundColor = '#e3f2fd';
+                productItem.style.borderColor = '#2196f3';
+            }
+
+            productItem.innerHTML = `
+                <input type="checkbox" ${isSelected ? 'checked' : ''} 
+                       onchange="criteriaAnalysis.toggleProductSelection('${product}', this.checked)"
+                       style="margin-right: 8px;">
+                <strong>${product}</strong>
+            `;
+
+            productsGrid.appendChild(productItem);
+        });
+        
+        productsList.appendChild(productsGrid);
+
+        // Отображаем файлы критериев (только для редактирования)
         const filesList = document.createElement('div');
         filesList.style.cssText = 'display: grid; gap: 10px;';
+        
+        const filesTitle = document.createElement('h4');
+        filesTitle.textContent = 'Criteria Files Management:';
+        filesTitle.style.cssText = 'margin: 20px 0 10px 0; color: #333;';
+        filesList.appendChild(filesTitle);
 
         this.criteriaFiles.forEach(file => {
             const fileItem = document.createElement('div');
             fileItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 4px;';
-            
-            const isSelected = this.selectedCriteria.includes(file.filename);
-            if (isSelected) {
-                fileItem.style.backgroundColor = '#e3f2fd';
-                fileItem.style.borderColor = '#2196f3';
-            }
 
             fileItem.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="checkbox" ${isSelected ? 'checked' : ''} 
-                           onchange="criteriaAnalysis.toggleCriteriaSelection('${file.filename}', this.checked)">
-                    <div>
-                        <strong>${file.filename}</strong>
-                        <br>                        <small style="color: #6c757d;">
-                            ${file.total_rows || 0} rows | Modified: ${new Date(file.modified).toLocaleDateString()}
-                        </small>
-                        ${file.error ? `<br><small style="color: #dc3545;">Error: ${file.error}</small>` : ''}
-                    </div>
+                <div>
+                    <strong>${file.filename}</strong>
+                    <br>
+                    <small style="color: #6c757d;">
+                        ${file.total_rows || 0} rows | Modified: ${new Date(file.modified).toLocaleDateString()}
+                    </small>
+                    ${file.products && file.products.length > 0 ? 
+                        `<br><small style="color: #007bff;">Products: ${file.products.join(', ')}</small>` : ''}
+                    ${file.error ? `<br><small style="color: #dc3545;">Error: ${file.error}</small>` : ''}
                 </div>
                 <div style="display: flex; gap: 5px;">
                     <button onclick="criteriaAnalysis.editCriteriaFile('${file.filename}')" 
@@ -843,6 +879,7 @@ class CriteriaAnalysis {
         });
 
         container.innerHTML = '';
+        container.appendChild(productsList);
         container.appendChild(filesList);
         
         this.updateSelectedCriteriaDisplay();
@@ -853,20 +890,33 @@ class CriteriaAnalysis {
         container.innerHTML = `<p style="color: #dc3545;">Error: ${message}</p>`;
     }
 
-    toggleCriteriaSelection(filename, selected) {
+    toggleProductSelection(product, selected) {
+        console.log('=== DEBUG: toggleProductSelection ===');
+        console.log('product:', product);
+        console.log('selected:', selected);
+        console.log('Before change - this.selectedCriteria:', this.selectedCriteria);
+        
         if (selected) {
-            if (!this.selectedCriteria.includes(filename)) {
-                this.selectedCriteria.push(filename);
+            if (!this.selectedCriteria.includes(product)) {
+                this.selectedCriteria.push(product);
             }
         } else {
-            const index = this.selectedCriteria.indexOf(filename);
+            const index = this.selectedCriteria.indexOf(product);
             if (index > -1) {
                 this.selectedCriteria.splice(index, 1);
             }
         }
         
+        console.log('After change - this.selectedCriteria:', this.selectedCriteria);
+        
         this.displayCriteriaFiles(); // Refresh display
         this.updateSelectedCriteriaDisplay();
+    }
+
+    // Backward compatibility
+    toggleCriteriaSelection(filename, selected) {
+        // This method is deprecated but kept for any old references
+        console.warn('toggleCriteriaSelection is deprecated, use toggleProductSelection instead');
     }
 
     updateSelectedCriteriaDisplay() {
@@ -875,8 +925,8 @@ class CriteriaAnalysis {
         
         if (this.selectedCriteria.length > 0) {
             container.style.display = 'block';
-            listContainer.innerHTML = this.selectedCriteria.map(filename => 
-                `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${filename}</span>`
+            listContainer.innerHTML = this.selectedCriteria.map(product => 
+                `<span style="display: inline-block; background: #007bff; color: white; padding: 2px 8px; border-radius: 10px; margin: 2px; font-size: 12px;">${product}</span>`
             ).join('');
         } else {
             container.style.display = 'none';
@@ -1063,7 +1113,7 @@ class CriteriaAnalysis {
 
             alert(`File saved successfully! ${result.rows_saved} rows saved.`);
             this.cancelEdit();
-            this.loadCriteriaFiles(); // Refresh file list
+            await this.loadCriteriaFiles(); // Refresh file list and products
 
         } catch (error) {
             console.error('Error saving criteria file:', error);
@@ -1094,15 +1144,10 @@ class CriteriaAnalysis {
                 throw new Error(result.detail || 'Failed to delete file');
             }
 
-            alert(`File deleted successfully. Backup created at: ${result.backup_location}`);
+            alert(`File deleted successfully`);
             
-            // Remove from selected criteria if it was selected
-            const index = this.selectedCriteria.indexOf(filename);
-            if (index > -1) {
-                this.selectedCriteria.splice(index, 1);
-            }
-            
-            this.loadCriteriaFiles(); // Refresh file list
+            // Reload criteria files to update available products
+            await this.loadCriteriaFiles();
 
         } catch (error) {
             console.error('Error deleting criteria file:', error);
@@ -1173,7 +1218,7 @@ class CriteriaAnalysis {
             }
 
             alert(`Criteria file uploaded successfully: ${result.filename} with ${data.length} rows`);
-            this.loadCriteriaFiles(); // Refresh file list
+            await this.loadCriteriaFiles(); // Refresh file list and products
 
         } catch (error) {
             console.error('Error uploading criteria file:', error);
@@ -1359,6 +1404,12 @@ class CriteriaAnalysis {
             return;
         }
 
+        // Debug logging
+        console.log('=== DEBUG: handleUploadFromSession ===');
+        console.log('this.selectedCriteria:', this.selectedCriteria);
+        console.log('this.availableProducts:', this.availableProducts);
+        console.log('JSON.stringify(this.selectedCriteria):', JSON.stringify(this.selectedCriteria));
+
         const formData = new FormData();
         const loadAllCheckbox = document.getElementById('load-all-companies');
         const useDeepAnalysis = document.getElementById('deep-analysis-checkbox').checked;
@@ -1366,6 +1417,13 @@ class CriteriaAnalysis {
         formData.append('session_id', this.latestSessionId);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
         formData.append('use_deep_analysis', useDeepAnalysis);
+        formData.append('selected_products', JSON.stringify(this.selectedCriteria));
+
+        // Debug: Show what's in FormData
+        console.log('FormData contents:');
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}:`, value);
+        }
 
         try {
             this.showStatus('Using results from latest session...');
