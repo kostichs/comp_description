@@ -42,6 +42,7 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
         # 1. Check General Criteria ONCE for all companies
         log_info(f"\nЭтап 1: Проверяем General критерии для ВСЕХ компаний...")
         general_status = {}
+        general_detailed_results = {}
         
         for index, company_row in companies_df.iterrows():
             company_data = company_row.to_dict()
@@ -53,6 +54,7 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
             temp_general_info = {}
             general_passed = check_general_criteria(description, temp_general_info, general_criteria)
             general_status[company_name] = general_passed
+            general_detailed_results[company_name] = temp_general_info
             
             if general_passed:
                 log_info("General пройдены")
@@ -83,10 +85,22 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
                     "Qualified_Products": "NOT QUALIFIED"  # По умолчанию негативный результат
                 }
                 
+                # Get detailed general results if available
+                company_general_info = general_detailed_results.get(company_name, {})
+                general_detailed = company_general_info.get("General_Detailed_Results", [])
+                general_passed_count = company_general_info.get("General_Passed_Count", 0)
+                general_total_count = company_general_info.get("General_Total_Count", len(general_criteria))
+                
                 # Initialize results for this product
                 product_results = {
                     "product": product,
                     "general_status": general_status.get(company_name, False),
+                    "general_criteria": {
+                        "passed": general_status.get(company_name, False),
+                        "passed_count": general_passed_count,
+                        "total_count": general_total_count,
+                        "detailed_criteria": general_detailed
+                    },
                     "qualification_results": {},
                     "qualified_audiences": [],
                     "detailed_results": {}
@@ -97,14 +111,24 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
                 if PROCESSING_CONFIG['use_general_desc_for_qualification']:
                     check_qualification_questions(description, temp_qualification_info, qualification_questions)
                 
-                # Record qualification results for ALL audiences
+                # Record qualification results for ALL audiences with detailed info
+                qualification_detailed = []
                 for audience in qualification_questions.keys():
                     qualification_result = temp_qualification_info.get(f"Qualification_{audience}", "No")
                     product_results["qualification_results"][audience] = qualification_result
                     
+                    qualification_detailed.append({
+                        "audience": audience,
+                        "question": qualification_questions[audience],
+                        "result": qualification_result
+                    })
+                    
                     if qualification_result == "Yes":
                         product_results["qualified_audiences"].append(audience)
                         log_info(f"Квалифицирована для {product}: {audience}")
+                
+                # Store detailed qualification results
+                product_results["qualification_criteria"] = qualification_detailed
                 
                 # If no qualified audiences, record this in All_Results
                 if not product_results["qualified_audiences"]:
@@ -122,6 +146,7 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
                         "audience": audience,
                         "qualification_status": "Passed",
                         "mandatory_status": "Not Started",
+                        "mandatory_criteria": [],
                         "nth_results": {},
                         "final_status": "Failed"
                     }
@@ -134,9 +159,52 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
                     }
                     mandatory_passed = check_mandatory_criteria(temp_mandatory_info, audience, product_data["mandatory_df"], session_id=session_id, use_deep_analysis=use_deep_analysis)
                     
+                    # Collect detailed mandatory results
+                    mandatory_detailed = []
+                    mandatory_df = product_data["mandatory_df"]
+                    mandatory_criteria = mandatory_df[mandatory_df["Target Audience"] == audience]
+                    
+                    for _, row in mandatory_criteria.iterrows():
+                        crit = row["Criteria"]
+                        result = temp_mandatory_info.get(f"Mandatory_{audience}_{crit}", "Unknown")
+                        mandatory_detailed.append({
+                            "criteria_text": crit,
+                            "result": result
+                        })
+                    
+                    audience_results["mandatory_criteria"] = mandatory_detailed
+                    
                     if not mandatory_passed:
                         log_info(f"Mandatory НЕ пройдены для {product} -> {audience}")
                         audience_results["mandatory_status"] = "Failed"
+                        audience_results["final_status"] = "Failed Mandatory"
+                        
+                        # CREATE TEXT RESULT FOR FAILED MANDATORY
+                        mandatory_details = []
+                        for mandatory_result in mandatory_detailed:
+                            criteria_text = mandatory_result["criteria_text"]
+                            result = mandatory_result["result"]
+                            mandatory_details.append(f"  • {criteria_text}: {result}")
+                        
+                        failed_text_parts = [
+                            f"FAILED MANDATORY: {audience}",
+                            f"Mandatory Status: Failed",
+                            "Mandatory Results:"
+                        ]
+                        
+                        if mandatory_details:
+                            failed_text_parts.extend(mandatory_details)
+                        else:
+                            failed_text_parts.append("No detailed mandatory results available")
+                        
+                        failed_text = "\n".join(failed_text_parts)
+                        
+                        # Add to Qualified_Products column
+                        if record["Qualified_Products"] == "NOT QUALIFIED":
+                            record["Qualified_Products"] = failed_text
+                        else:
+                            record["Qualified_Products"] += f"\n\n=== SEPARATOR ===\n\n{failed_text}"
+                        
                         product_results["detailed_results"][audience] = audience_results
                         continue
                     
@@ -157,55 +225,71 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
                     nth_passed = temp_nth_info.get(f"NTH_Passed_{audience}", 0)
                     nth_nd = temp_nth_info.get(f"NTH_ND_{audience}", 0)
                     
+                    # Collect detailed NTH results
+                    nth_detailed = []
+                    nth_df = product_data["nth_df"]
+                    nth_criteria = nth_df[nth_df["Target Audience"] == audience]
+                    
+                    for _, row in nth_criteria.iterrows():
+                        crit = row["Criteria"]
+                        result = temp_nth_info.get(f"NTH_{audience}_{crit}", "Unknown")
+                        nth_detailed.append({
+                            "criteria_text": crit,
+                            "result": result
+                        })
+                    
                     audience_results["nth_results"] = {
                         "score": nth_score,
                         "total_criteria": nth_total,
                         "passed_criteria": nth_passed,
                         "nd_criteria": nth_nd,
-                        "pass_rate": round(nth_passed / nth_total, 3) if nth_total > 0 else 0
+                        "pass_rate": round(nth_passed / nth_total, 3) if nth_total > 0 else 0,
+                        "detailed_criteria": nth_detailed
                     }
                     
+                    # SHOW ALL NTH RESULTS (regardless of score)
+                    # Set final status based on score
                     if nth_score > 0:
-                        # SUCCESS! This is a QUALIFIED result
                         audience_results["final_status"] = "Qualified"
-                        
-                        # Create readable text format for POSITIVE results column
-                        nth_details = []
-                        for nth_key, nth_value in temp_nth_info.items():
-                            if nth_key.startswith(f"NTH_{audience}_") and not nth_key.endswith(("_Score", "_Total", "_Passed", "_ND", "_ND_Rate")):
-                                criteria_name = nth_key.replace(f"NTH_{audience}_", "")
-                                nth_details.append(f"  • {criteria_name}: {nth_value}")
-                        
-                        # Create properly formatted text with line breaks for CSV
-                        qualified_text_parts = [
-                            f"QUALIFIED: {audience}",
-                            f"NTH Score: {nth_score:.3f}",
-                            f"Total NTH Criteria: {nth_total}",
-                            f"Passed: {nth_passed}",
-                            f"ND (No Data): {nth_nd}",
-                            "NTH Results:"
-                        ]
-                        
-                        # Add details on separate lines
-                        if nth_details:
-                            for detail in nth_details:
-                                qualified_text_parts.append(detail.strip())
-                        else:
-                            qualified_text_parts.append("No detailed results available")
-                        
-                        # Join with actual line breaks for proper CSV formatting
-                        qualified_text = "\n".join(qualified_text_parts)
-                        
-                        # If this is the first qualification for this record, replace default text
-                        if record["Qualified_Products"] == "NOT QUALIFIED":
-                            record["Qualified_Products"] = qualified_text
-                        else:
-                            # Append to existing qualifications with separator
-                            record["Qualified_Products"] += f"\n\n=== SEPARATOR ===\n\n{qualified_text}"
-                        
+                        status_label = "QUALIFIED"
                         log_info(f"КВАЛИФИЦИРОВАНА: {product} -> {audience} (Score: {nth_score:.3f})")
                     else:
-                        log_info(f"НЕ квалифицирована: {product} -> {audience} (Score: {nth_score:.3f})")
+                        audience_results["final_status"] = "Completed - Zero Score"
+                        status_label = "COMPLETED"
+                        log_info(f"Завершена обработка: {product} -> {audience} (Score: {nth_score:.3f})")
+                    
+                    # Create readable text format for ALL NTH results
+                    nth_details = []
+                    for nth_result in nth_detailed:
+                        criteria_text = nth_result["criteria_text"]
+                        result = nth_result["result"]
+                        nth_details.append(f"  • {criteria_text}: {result}")
+                    
+                    # Create properly formatted text with line breaks for CSV
+                    result_text_parts = [
+                        f"{status_label}: {audience}",
+                        f"Mandatory Status: Passed",
+                        f"NTH Score: {nth_score:.3f}",
+                        f"Total NTH Criteria: {nth_total}",
+                        f"Passed: {nth_passed}",
+                        f"ND (No Data): {nth_nd}",
+                        "NTH Results:"
+                    ]
+                    
+                    # Add details on separate lines
+                    if nth_details:
+                        result_text_parts.extend(nth_details)
+                    else:
+                        result_text_parts.append("No detailed NTH results available")
+                    
+                    # Join with actual line breaks for proper CSV formatting
+                    result_text = "\n".join(result_text_parts)
+                    
+                    # Add to Qualified_Products column
+                    if record["Qualified_Products"] == "NOT QUALIFIED":
+                        record["Qualified_Products"] = result_text
+                    else:
+                        record["Qualified_Products"] += f"\n\n=== SEPARATOR ===\n\n{result_text}"
                     
                     # Record detailed results
                     product_results["detailed_results"][audience] = audience_results
