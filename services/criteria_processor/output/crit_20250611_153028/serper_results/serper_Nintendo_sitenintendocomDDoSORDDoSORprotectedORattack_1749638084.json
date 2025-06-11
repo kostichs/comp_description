@@ -1,0 +1,89 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Attack Hole: Hero Edition",
+            "link": "https://www.nintendo.com/us/store/products/attack-hole-hero-edition-switch/?srsltid=AfmBOoog9pOWLdkqy9ieNwi-sc3ip32jLFuY5e80XFFxvj0X3TF8UqZc",
+            "snippet": "Attack Hole: Hero Edition ... Supported – Game behavior is consistent with Nintendo Switch. Swallow everything and become the biggest black hole!",
+            "currency": "$",
+            "price": 50,
+            "position": 1
+        },
+        {
+            "title": "Infantry Attack: Gold'n'Gun",
+            "link": "https://www.nintendo.com/us/store/products/infantry-attack-goldngun-70050000047981-switch/?srsltid=AfmBOorSpIFB7fzjgGX_zWMZxlehJasta5i_P6DRCU8VBGnUxQDy4jxW",
+            "snippet": "Buy Infantry Attack: Gold'n'Gun and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 1.49,
+            "position": 2
+        },
+        {
+            "title": "How to Connect a Wii U to the Internet Using Wi-Fi ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/16001/~/how-to-connect-a-wii-u-to-the-internet-using-wi-fi-protected-setup",
+            "snippet": "Select Wi-Fi Protected Setup. Select Push-Button Configuration. On the wireless access point, press and hold the WPS button until the LED blinks. A Setup ...",
+            "position": 3
+        },
+        {
+            "title": "Arcade Archives Rush'n Attack for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/arcade-archives-rushn-attack-switch/?srsltid=AfmBOopBgKBrh_sOz1YwtMxCKd-yKo4D1nexxmum1htLDvP_qVY_x8kc",
+            "snippet": "Rush'n Attack is an action game released by KONAMI in 1985. Infiltrate an enemy base and get past four obstacles to rescue your comrades!",
+            "currency": "$",
+            "price": 7.99,
+            "position": 4
+        },
+        {
+            "title": "Sleep Attack for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/sleep-attack-switch/?srsltid=AfmBOor8fK-VqjZjzk-CyVeMcsFSktx0Gcb3XJEulEzroSselFYTenac",
+            "snippet": "Build and place powerful turrets to attack invading enemies. Then rotate the battlefield to force foes down your preferred path of destruction. Be careful ...",
+            "currency": "$",
+            "price": 50,
+            "position": 5
+        },
+        {
+            "title": "Attack of the Karens for Nintendo Switch",
+            "link": "https://www.nintendo.com/en-ca/store/products/attack-of-the-karens-switch/?srsltid=AfmBOooNSc8lgA3cOCHT65NrzkIGsAB9FqoCwyJnRdBpLE41gvBSl2O0",
+            "snippet": "Attack of the Karens · Piloting the Manager X-15, embark on a mission to rid the world of evil cyborg Karens and save your city from entitlement forever!",
+            "position": 6
+        },
+        {
+            "title": "Uboat Attack: Cloverfield DLC",
+            "link": "https://www.nintendo.com/us/store/products/uboat-attack-cloverfield-dlc-70050000051318-switch/?srsltid=AfmBOor-uSlnamfv68ZIc50f5KrYQH7XjpfkZp_Z4qwxJfJlDDtlXHvy",
+            "snippet": "Uboat Attack: Cloverfield DLC ; Edition. Digital ; Board the mighty Cloverfield and tear down your enemies! A new fearsome vessel has joined the fight! With this ...",
+            "currency": "$",
+            "price": 1.49,
+            "position": 7
+        },
+        {
+            "title": "Air Jet Fighter Combat - Europe Fly Plane Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/air-jet-fighter-combat-europe-fly-plane-attack-switch/?srsltid=AfmBOoo3JgDjRKTUPcQjQ1F1VDYKeeDfnfsqPoXi2xw-alv99T17oawg",
+            "snippet": "Realistic overheating physics, honest breakdowns will complicate your missions. Welcome to Air Fighter Air Attack.",
+            "currency": "$",
+            "price": 50,
+            "position": 8
+        },
+        {
+            "title": "FRAG: Attack Mastery Pack",
+            "link": "https://www.nintendo.com/us/store/products/frag-attack-mastery-pack-70050000057121-switch/?srsltid=AfmBOoq-Agc46fxu4oYgUOghCj6UBBBxSYaxQf3JJacpT0kiQJQTG8mW",
+            "snippet": "FRAG: Attack Mastery Pack ; Version. Nintendo Switch ; Edition. Digital ; STRIKE FIRST WITH 4 NEW OFFENSIVE HEROES. Dominate the arena with new frontline heroes ...",
+            "currency": "$",
+            "price": 11.99,
+            "position": 9
+        },
+        {
+            "title": "Infantry Attack: Drone Squad",
+            "link": "https://www.nintendo.com/us/store/products/infantry-attack-drone-squad-70050000047985-switch/?srsltid=AfmBOoq6IOP0WpmA-X2YmtNWQNRu9iX-4nVWtNIJok7yzOwnw_3xC4yZ",
+            "snippet": "Infantry Attack: Drone Squad ; Edition. Digital ; Equip yourself with new drones and show your opponents who's the real boss! With this DLC you'll unlock: - UD-1 ...",
+            "currency": "$",
+            "price": 1.49,
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,95 @@
+{
+    "searchParameters": {
+        "q": "site:hoyoverse.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "\"Paralogism\" Version 5.6 Update Details - Genshin Impact",
+            "link": "https://genshin.hoyoverse.com/en/news/detail/155739",
+            "snippet": "After the Version 5.6 update, the first season of \"Imaginarium Theater\" will be available on June 1, 2025. Required Elemental Types: Electro, ...",
+            "date": "May 7, 2025",
+            "position": 1
+        },
+        {
+            "title": "Version 5.6 Update Maintenance Preview - Genshin Impact",
+            "link": "https://genshin.hoyoverse.com/m/en/news/detail/155716",
+            "snippet": "Version 5.6 Update Maintenance Preview. Date Posted May 5, 2025. Dear ... After this is complete, the game will update to a new version.",
+            "date": "May 5, 2025",
+            "position": 2
+        },
+        {
+            "title": "\"Day of the Flame's Return\" Version 5.5 Update Details",
+            "link": "https://genshin.hoyoverse.com/en/news/detail/155172",
+            "snippet": "Additionally, after Version 5.5 update until 2025/04/15 17:59, the \"Quick Start\" function will be available for Tribal Chronicles \"Mushroom ...",
+            "date": "Mar 26, 2025",
+            "position": 3
+        },
+        {
+            "title": "\"Moonlight Amidst Dreams\" Version 5.4 Update Details",
+            "link": "https://genshin.hoyoverse.com/en/news/detail/154285",
+            "snippet": "After the Version 5.4 update, the first season of \"Imaginarium Theater\" will be available on March 1, 2025. Required Elemental Types: Hydro, ...",
+            "date": "Feb 12, 2025",
+            "position": 4
+        },
+        {
+            "title": "Version 5.5 Update Maintenance Preview - Genshin Impact",
+            "link": "https://genshin.hoyoverse.com/m/en/news/detail/155094",
+            "snippet": "Version 5.5 Update Maintenance Preview. Date Posted Mar 24, 2025. Dear ... After this is complete, the game will update to a new version.",
+            "date": "Mar 24, 2025",
+            "position": 5
+        },
+        {
+            "title": "Version 5.7 Special Program Preview - Genshin Impact",
+            "link": "https://genshin.hoyoverse.com/m/en/news/detail/156646",
+            "snippet": "This special program will feature juicy details about new game content and developments in Version 5.7. It will also \"drop\" some redemption ...",
+            "date": "Jun 3, 2025",
+            "position": 6
+        },
+        {
+            "title": "Version 2.0 \"Where Clouds Embrace the Dawn\" Update Details",
+            "link": "https://zenless.hoyoverse.com/en-us/news/156753",
+            "snippet": "Below is the updated content and compensation for Version 2.0 \"Where Clouds Embrace the Dawn.\" [Update Start Time]. 2025/06/06 06:00 (UTC+8). It ...",
+            "date": "5 days ago",
+            "position": 7
+        },
+        {
+            "title": "Updates - Honkai Impact",
+            "link": "https://honkaiimpact3.hoyoverse.com/global/en-us/news/cate/516",
+            "snippet": "Planetary Rewind Version Update Announcement. Oct 17, 2024. Honkai Impact 3rd PC Launcher Update Info. Oct 17, 2024. Update Content Overview: v7.8 Events. Oct 8 ...",
+            "position": 8
+        },
+        {
+            "title": "Version 3.3 \"The Fall at Dawn's Rise\" Update | Honkai",
+            "link": "https://hsr.hoyoverse.com/en-us/news/156002",
+            "snippet": "Welcome to the Version 3.3 \"The Fall at Dawn's Rise\"! · Update and Compensation Details. □ Update Time. Begins at 2025/05/21 06:00:00 (UTC+8).",
+            "date": "May 21, 2025",
+            "position": 9
+        },
+        {
+            "title": "That Glitters\" Version 1.3 Update Details - Genshin Impact",
+            "link": "https://genshin.hoyoverse.com/en/news/detail/8498",
+            "snippet": "Below are the details of the Version 1.3 \"All That Glitters\" update and the update compensation. ... release an Energy Blast. An Energy Blast can be ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version android"
+        },
+        {
+            "query": "Release patch update version download"
+        },
+        {
+            "query": "Release patch update version free"
+        },
+        {
+            "query": "Release patch update version xbox"
+        }
+    ],
+    "credits": 1
+}

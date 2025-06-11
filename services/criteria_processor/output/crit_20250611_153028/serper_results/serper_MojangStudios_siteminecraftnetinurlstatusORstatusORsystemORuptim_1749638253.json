@@ -1,0 +1,80 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (inurl:status OR \"status\" OR \"system\" OR \"uptime\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Coordinate System Tutorial",
+            "link": "https://education.minecraft.net/en-us/lessons/coordinate-system-tutorial",
+            "snippet": "Learning objectives. This world will help the player become familiarized with the 3D coordinate system used in Minecraft Education Edition.",
+            "date": "Mar 4, 2025",
+            "position": 1
+        },
+        {
+            "title": "Circulatory System",
+            "link": "https://education.minecraft.net/lessons/circulatory-system",
+            "snippet": "This is a model of the circulatory system which goes over its major structures, and reviews the flow of blood throughout.",
+            "date": "Aug 19, 2021",
+            "position": 2
+        },
+        {
+            "title": "Fix your support system please!",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/360057750431-Fix-your-support-system-please",
+            "snippet": "Fix your support system please! Please for the love of everything, get ... It's been almost a year and their support system is still as bad as ever. 0 ...",
+            "position": 3
+        },
+        {
+            "title": "Building Systems",
+            "link": "https://education.minecraft.net/en-us/challenges/building-systems",
+            "snippet": "Build a system within Minecraft to learn more about how it works. Science; Art and Design. Available languages. English.",
+            "date": "May 23, 2025",
+            "position": 4
+        },
+        {
+            "title": "(Bedrock Parity) Re-Work the Villager System to be more ...",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/20236775693581--Bedrock-Parity-Re-Work-the-Villager-System-to-be-more-like-Java",
+            "snippet": "I understand that the Villager system is based on the mob spawning systems on bedrock. But come on, theres active differences between fun and ...",
+            "date": "Oct 9, 2023",
+            "position": 5
+        },
+        {
+            "title": "Changes to our bug reporting system",
+            "link": "https://www.minecraft.net/nl-nl/article/changes-to-minecraft-bug-reporting-system",
+            "snippet": "Our bug reporting system is changing in January, and you'll have until February 7 2025 to migrate your account to the new system.",
+            "date": "Jan 10, 2025",
+            "position": 6
+        },
+        {
+            "title": "System Requirements",
+            "link": "https://edusupport.minecraft.net/hc/en-us/articles/360047556591-System-Requirements",
+            "snippet": "This article provides information on the minimum requirements for each platform. Operating system requirements. These are the operating system ( ...",
+            "date": "Jul 23, 2024",
+            "position": 7
+        },
+        {
+            "title": "Sensors-in-monitoring-and-Control- ...",
+            "link": "https://education.minecraft.net/lessonsupportfiles/Sensors-in-monitoring-and-Control-Applications_notes.docx",
+            "snippet": "The sensor inputs this data into a computer system to be processed. Once the data has been processed, if necessary, an output can be triggered as a response.",
+            "position": 8
+        },
+        {
+            "title": "Known Issues and Solutions for the Minecraft Education ...",
+            "link": "https://edusupport.minecraft.net/hc/en-us/articles/4403674152340-Known-Issues-and-Solutions-for-the-Minecraft-Education-website",
+            "snippet": "Status: certification in progress. Solution: The app is safe to ... The profile system may default to your personal account. In some ...",
+            "date": "Oct 23, 2023",
+            "position": 9
+        },
+        {
+            "title": "Status Page",
+            "link": "https://edusupport.minecraft.net/hc/en-us/community/posts/13131046332820-Status-Page",
+            "snippet": "Could you all please create a status page that indicates whether or not your service endpoints are up? Given how often MCEE seems to have...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

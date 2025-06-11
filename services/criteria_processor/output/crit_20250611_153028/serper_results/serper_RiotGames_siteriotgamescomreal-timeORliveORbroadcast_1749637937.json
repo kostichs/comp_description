@@ -1,0 +1,105 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"real-time\" OR \"live\" OR \"broadcast\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Broadcast Terms - TOD - Riot Games",
+            "link": "https://tod.riotgames.com/broadcast-terms",
+            "snippet": "Company must identify a representative to receive real-time updates via Discord during the live Tournament feed. Other. All portions of the Broadcast must ...",
+            "position": 1
+        },
+        {
+            "title": "Live community events - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/sections/115002165607-Live-community-events",
+            "snippet": "Live community events. Events, apps, promos, & merch. League of Legends Basics · Account recovery, safety, & data · Ranked gameplay, honor, & rewards · Lag, low ...",
+            "position": 2
+        },
+        {
+            "title": "Improving the Esports Experience with Remote Broadcast ...",
+            "link": "https://www.riotgames.com/en/news/improving-the-esports-experience-with-project-stryker-and-aws",
+            "snippet": "Both facilities will support live esports broadcast production and operations for all of Riot's regional and global live esports events.",
+            "date": "Jul 20, 2022",
+            "position": 3
+        },
+        {
+            "title": "How Riot Delivers a Global Broadcast for Worlds 2022",
+            "link": "https://www.riotgames.com/en/news/riot-esports-delivering-custom-global-broadcasts-worlds-2022",
+            "snippet": "“Our broadcast days start a few days before anything goes live,” says Eamon Frasher, Manager of Live Broadcast Production. ... real-time.",
+            "date": "Nov 1, 2022",
+            "position": 4
+        },
+        {
+            "title": "Global Community Premiere of Arcane Season 2: Co ...",
+            "link": "https://www.riotgames.com/en/news/global-community-premiere-of-arcane-season-2-co-streaming-guidelines-and-rewards",
+            "snippet": "How: Co-stream the live broadcast directly from Riot Games' official Twitch channel or any of our official regional Twitch channels (full list ...",
+            "date": "Oct 28, 2024",
+            "position": 5
+        },
+        {
+            "title": "Seattle",
+            "link": "https://www.riotgames.com/en/work-with-us/offices/seattle",
+            "snippet": "Esports: This team, which is based out of a separate Remote Broadcast Center ... Games: Teams here work across our live titles, and games still in ...",
+            "position": 6
+        },
+        {
+            "title": "Game Designer II - League of Legends, Summoner's Rift ...",
+            "link": "https://www.riotgames.com/en/work-with-us/job/6493907/game-designer-ii-league-of-legends-summoners-rift-team-live-pod-los-angeles-usa",
+            "snippet": "As a Game Designer II on the League of Legends Summoner's Rift Team Live Pod, you will be responsible for optimizing the live game experience across several ...",
+            "position": 7
+        },
+        {
+            "title": "Broadcast Engineer II",
+            "link": "https://www.riotgames.com/el/j/6702501",
+            "snippet": "Experience in a live event production operation, preferably sports, within a broadcast team environment, working under strict time deadlines; Ability to ...",
+            "position": 8
+        },
+        {
+            "title": "Esports Production Manager, Regional Content Services",
+            "link": "https://www.riotgames.com/en/work-with-us/job/6348905/esports-production-manager-regional-content-services-mexico-city-mexico",
+            "snippet": "Oversee broadcast production teams to deliver resonate and compelling live broadcast and content that achieve product brand goals · implement broadcast strategy ...",
+            "position": 9
+        },
+        {
+            "title": "Offices",
+            "link": "https://www.riotgames.com/en/work-with-us/offices",
+            "snippet": "I don't live in any of the cities with a Riot office. Is there an opportunity to work remotely? We take a hybrid approach by entrusting teams to decide the ...",
+            "sitelinks": [
+                {
+                    "title": "Los Angeles, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/los-angeles"
+                },
+                {
+                    "title": "SF Bay Area, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/sf-bay-area"
+                },
+                {
+                    "title": "St. Louis, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/st-louis"
+                },
+                {
+                    "title": "Seoul, Korea",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/seoul"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Real time live broadcast youtube"
+        },
+        {
+            "query": "Real time live broadcast free"
+        },
+        {
+            "query": "Real time live broadcast app"
+        }
+    ],
+    "credits": 1
+}

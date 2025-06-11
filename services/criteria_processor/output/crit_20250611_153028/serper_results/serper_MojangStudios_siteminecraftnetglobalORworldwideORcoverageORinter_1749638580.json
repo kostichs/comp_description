@@ -1,0 +1,78 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"global\" OR \"worldwide\" OR \"coverage\" OR \"international\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Global build challenge: peace with nature",
+            "link": "https://education.minecraft.net/en-us/resources/global-build-challenge",
+            "snippet": "Join Minecraft and UNESCO in a global build competition to design sustainable solutions for your communities that help us live in harmony with nature.",
+            "position": 1
+        },
+        {
+            "title": "Worldwide works",
+            "link": "https://www.minecraft.net/en-us/article/worldwide-works",
+            "snippet": "Worldwide works. Geet_Builds creates lovely layered landscapes! A temple bursting out of the jungle like a mountain, a winding river through ...",
+            "date": "Apr 25, 2022",
+            "position": 2
+        },
+        {
+            "title": "Minecraft International Space Station",
+            "link": "https://education.minecraft.net/en-us/resources/science/international-space-station",
+            "snippet": "Study the International Space Station. 11 lessons. Explore the station in Minecraft then continue your learning with this set of ten hands-on lesson plans.",
+            "position": 3
+        },
+        {
+            "title": "Global Build Challenge 2021: Peace with Nature",
+            "link": "https://education.minecraft.net/en-us/lessons/global-build-challenge-2021-peace-with-nature",
+            "snippet": "Global Build Challenge 2021: Peace with Nature. Explore how we can achieve sustainable lifestyles. Apply knowledge and understanding by ...",
+            "date": "Sep 16, 2023",
+            "position": 4
+        },
+        {
+            "title": "See the Winning Projects from the Minecraft ...",
+            "link": "https://education.minecraft.net/en-us/blog/see-the-winning-projects-from-the-minecraft-education-global-build-championship",
+            "snippet": "This October, we launched the first-ever Minecraft Education Global Build Championship. This worldwide challenge invited students to imagine places where humans ...",
+            "position": 5
+        },
+        {
+            "title": "Join students around the world in the first-ever ...",
+            "link": "https://education.minecraft.net/en-us/blog/join-students-around-the-world-in-the-first-ever-minecraft-education-global-build-championship",
+            "snippet": "For the first-ever Minecraft Education Global Build Championship, we're inviting students around the world to develop creative environmental solutions that ...",
+            "position": 6
+        },
+        {
+            "title": "Announcing the 2021 Global Build Challenge Winners",
+            "link": "https://education.minecraft.net/en-us/blog/unesco-gbc-winners",
+            "snippet": "Special congratulations to our global finalists from: Inkster School, Canada; The Grammar School, Cyprus; Temple Hill International School, ...",
+            "date": "Jan 10, 2022",
+            "position": 7
+        },
+        {
+            "title": "Global Resources Reset and Sign-In Freeze",
+            "link": "https://edusupport.minecraft.net/hc/en-us/community/posts/15879446007188-Issue-with-Minecraft-Education-Global-Resources-Reset-and-Sign-In-Freeze",
+            "snippet": "Global Resources Reset: Upon opening Minecraft Education, I receive a message stating, \"Global resources reset, resources failed to load ...",
+            "date": "May 23, 2023",
+            "position": 8
+        },
+        {
+            "title": "Minecraft freezes on login and says restart global resources",
+            "link": "https://edusupport.minecraft.net/hc/en-us/community/posts/20012391470356-Minecraft-freezes-on-login-and-says-restart-global-resources",
+            "snippet": "It just stays there freeze and the message \"restart of global resources\", we have tried updating the operating system, installing and uninstalling several ...",
+            "date": "Oct 13, 2023",
+            "position": 9
+        },
+        {
+            "title": "2018 Global Minecraft Mentor program launches with over ...",
+            "link": "https://education.minecraft.net/en-us/blog/2018-global-minecraft-mentor-program-launches-with-over-300-educators",
+            "snippet": "We are excited to announce the second cohort of Global Minecraft Mentors, an inspiring group of 341 educators from 70 countries. The Minecraft Mentor ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,78 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (inurl:status OR \"status\" OR \"system\" OR \"uptime\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Ability System Component And Attributes",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-ability-system-component-and-gameplay-attributes-in-unreal-engine",
+            "snippet": "The Ability System Component ( UAbilitySystemComponent ) is the bridge between Actors and the Gameplay Ability System.",
+            "position": 1
+        },
+        {
+            "title": "Get Ability System Component | Unreal Engine 5.6 ...",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Ability/GetAbilitySystemComponent",
+            "snippet": "Tries to find an ability system component on the actor, will use AbilitySystemInterface or fall back to a component search.",
+            "position": 2
+        },
+        {
+            "title": "Gameplay Camera System | Unreal Engine 5.6 ...",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-camera-system",
+            "snippet": "The Gameplay Camera System is a general-purpose system that contains one or more camera rigs, along with their behaviors and transitions inside a data asset.",
+            "position": 3
+        },
+        {
+            "title": "Tasks Systems in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/tasks-systems-in-unreal-engine",
+            "snippet": "Tasks System is a job manager that provides the capability to execute your gameplay code asynchronously. It supports building and running a directed acyclic ...",
+            "position": 4
+        },
+        {
+            "title": "Why is user presence status not 'in-game' in Social Overlay ...",
+            "link": "https://eoshelp.epicgames.com/s/question/0D5QP000009NZg20AG/why-is-user-presence-status-not-ingame-in-social-overlayepic-launcher-for-their-friends-when-they-themselves-can-see-it?language=en_US",
+            "snippet": "... status through the project it doesn't seem like I'm missing ... We aren't using rich text, we just want the system to display which ...",
+            "date": "Mar 27, 2024",
+            "position": 5
+        },
+        {
+            "title": "Checking Brand Review Status",
+            "link": "https://eoshelp.epicgames.com/s/question/0D54z00007iIyumCAC/checking-brand-review-status?language=en_US",
+            "snippet": "Is there somewhere i can check its status?? Case Number ... Why is EAC throwing the error \"untrusted system file\"? Why am I ...",
+            "date": "Jul 19, 2022",
+            "position": 6
+        },
+        {
+            "title": "Product Offer in draft status",
+            "link": "https://eoshelp.epicgames.com/s/question/0D54z000096dbnKCAQ/product-offer-in-draft-status?language=en_US",
+            "snippet": "Trying to push to staging but can't seem to get past having our Offer in 'Draft' status which blocks the process. I believe I've entered all the required data, ...",
+            "date": "Apr 27, 2023",
+            "position": 7
+        },
+        {
+            "title": "Epic Games Public Status",
+            "link": "https://status.epicgames.com/",
+            "snippet": "Welcome to Epic Games Public's home for real-time and historical data on system performance.",
+            "position": 8
+        },
+        {
+            "title": "Is there a way to use the Epic Games Login system for my ...",
+            "link": "https://eoshelp.epicgames.com/s/question/0D54z00008E515JCAR/is-there-a-way-to-use-the-epic-games-login-system-for-my-own-nongame-web-page?language=en_US",
+            "snippet": "... status to my Discord Bot to provide a role to that user which will be the main login to access the account link system. Discord is where the ...",
+            "date": "Oct 13, 2022",
+            "position": 9
+        },
+        {
+            "title": "How do I use EOS with custom auth system?",
+            "link": "https://eoshelp.epicgames.com/s/question/0D54z00008E5TYgCAN/how-do-i-use-eos-with-custom-auth-system?language=en_US",
+            "snippet": "I already have my custom authorization system (login/pass) inside the game. ... What causes the error \"Request failed with status code 400\" when ...",
+            "date": "Oct 13, 2022",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

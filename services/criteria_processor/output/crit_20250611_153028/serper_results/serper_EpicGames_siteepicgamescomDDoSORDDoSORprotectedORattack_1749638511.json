@@ -1,0 +1,73 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "FDDoSDetection | Unreal Engine 5.6 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/NetCore/Net/Core/Misc/FDDoSDetection/__ctor",
+            "snippet": "The stronger the DDoS attack, the higher the severity state will escalate (based on the thresholds), and the stronger the limitations places on incoming ...",
+            "position": 1
+        },
+        {
+            "title": "FDDoSStateConfig | Unreal Engine 5.5 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/NetCore/Net/Core/Misc/FDDoSStateConfig",
+            "snippet": "Applies only the per-frame adjusted state (based on expected vs actual framerate), to active DDoS protection. Public function, void. ApplyState ( FDDoSState& ...",
+            "position": 2
+        },
+        {
+            "title": "FDDoSDetection | Unreal Engine 5.6 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/NetCore/Net/Core/Misc/FDDoSDetection",
+            "snippet": "Protected variable, TArray< FDDoSStateConfig >, DetectionSeverity, The different DDoS detection states, of escalating severity, depending on the strength of the ...",
+            "position": 3
+        },
+        {
+            "title": "Epic Online Services | Acceptable Use Policy",
+            "link": "https://onlineservices.epicgames.com/en-US/services/terms/aup",
+            "snippet": "The services have built-in technical limitations that are intended to prevent DDOS attacks and other forms of abuse. These technical limitations are ...",
+            "position": 4
+        },
+        {
+            "title": "Verse API reference page for the Attack function",
+            "link": "https://dev.epicgames.com/documentation/en-us/uefn/verse-api/fortnitedotcom/ai/fort_guard_actions/attack",
+            "snippet": "Learn technical details about the Attack function. ... The following attributes and effects determine how Attack behaves and how you can use it in your programs.",
+            "position": 5
+        },
+        {
+            "title": "Verse API reference page for the Attack function | Fortnite ...",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/ai/fort_guard_actions/attack",
+            "snippet": "Attributes and Effects. The following attributes and effects determine how Attack behaves and how you can use it in your programs.",
+            "position": 6
+        },
+        {
+            "title": "FFusionVoice::Attack | Unreal Engine 5.5 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/HarmonixDsp/HarmonixDsp/FusionSampler/FFusionVoice/Attack",
+            "snippet": "FFusionVoice::Attack. Start the note (call after preparing the voice). On ... cpp. void Attack(). Copy full snippet. void Attack(). Remarks. Start the note ...",
+            "position": 7
+        },
+        {
+            "title": "Set Mod Env Attack Time | Unreal Engine 5.5 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/BlueprintAPI/Synth/Components/Audio/SetModEnvAttackTime",
+            "snippet": "Navigation. Unreal Engine Blueprint API Reference > Synth > Components > Audio. Sets the envelope modulator attack time in msec.",
+            "position": 8
+        },
+        {
+            "title": "1v1 bed Attack 1067-6636-2086 by boodles",
+            "link": "https://www.epicgames.com/fortnite/en-US/creative/island-codes/1067-6636-2086",
+            "snippet": "1v1 bed Attack ... Jump on the other players bed to score! 1v1. 1067-6636-2086 ...",
+            "position": 9
+        },
+        {
+            "title": "Using Attack Items in Fortnite Creative",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/using-attack-items-in-fortnite-creative",
+            "snippet": "Offer these items when you want to give players unique and fun ways to battle each other. Attack items include: Cuddle Fish. Storm Flip. Junk Rift. Air Strike.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

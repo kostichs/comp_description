@@ -125,7 +125,7 @@ def process_single_company_for_product(args):
                 session_id=session_id, use_deep_analysis=use_deep_analysis
             )
             
-            # Get detailed mandatory results
+            # Get detailed mandatory results - они сохраняются в temp_mandatory_info функцией check_mandatory_criteria_batch
             mandatory_detailed = temp_mandatory_info.get(f"Mandatory_Detailed_{audience}", [])
             audience_results["mandatory_criteria"] = mandatory_detailed
             
@@ -157,7 +157,7 @@ def process_single_company_for_product(args):
                 session_id=session_id, use_deep_analysis=use_deep_analysis
             )
             
-            # Record NTH results
+            # Record NTH results - они сохраняются в temp_nth_info функцией check_nth_criteria_batch
             nth_score = temp_nth_info.get(f"NTH_Score_{audience}", 0)
             nth_total = temp_nth_info.get(f"NTH_Total_{audience}", 0)
             nth_passed = temp_nth_info.get(f"NTH_Passed_{audience}", 0)
@@ -181,10 +181,6 @@ def process_single_company_for_product(args):
                 "pass_rate": pass_rate,
                 "detailed_criteria": nth_detailed
             }
-            
-            # Update mandatory criteria with any additional details from temp_mandatory_info
-            if f"Mandatory_Detailed_{audience}" in temp_mandatory_info:
-                audience_results["mandatory_criteria"] = temp_mandatory_info[f"Mandatory_Detailed_{audience}"]
             
             # ВСЕГДА добавляем detailed_results для каждой проверенной аудитории
             product_results["detailed_results"][audience] = audience_results
@@ -260,6 +256,8 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
             
             if audience_mandatory_df.empty:
                 log_info(f"⚠️ No mandatory criteria found for audience: {audience}")
+                # Store empty detailed results when no criteria
+                company_info[f"Mandatory_Detailed_{audience}"] = []
                 return True  # Если нет mandatory критериев, считаем что passed
             
             log_info(f"📊 Filtering mandatory criteria: {len(mandatory_df)} total → {len(audience_mandatory_df)} for {audience}")
@@ -329,11 +327,51 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
             log_error(f"❌ Async mandatory analysis failed: {e}")
             if ASYNC_GPT_CONFIG['fallback_to_sync']:
                 log_info("🔄 Falling back to sync mandatory analysis...")
-                return check_mandatory_criteria(company_info, audience, mandatory_df, session_id, use_deep_analysis)
+                sync_result = check_mandatory_criteria(company_info, audience, mandatory_df, session_id, use_deep_analysis)
+                
+                # Create detailed results from sync function results
+                audience_mandatory_df = mandatory_df[mandatory_df['Target Audience'] == audience].copy()
+                detailed_mandatory_results = []
+                
+                for _, criterion_row in audience_mandatory_df.iterrows():
+                    crit_text = criterion_row.get("Criteria", "Unknown")
+                    # Try to get result from sync function
+                    sync_key = f"Mandatory_{audience}_{crit_text}"
+                    sync_value = company_info.get(sync_key, "Unknown")
+                    
+                    criterion_info = {
+                        "criteria_text": crit_text,
+                        "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
+                    }
+                    detailed_mandatory_results.append(criterion_info)
+                
+                # Store detailed results
+                company_info[f"Mandatory_Detailed_{audience}"] = detailed_mandatory_results
+                return sync_result
             return False
     else:
         # Use original sync function
-        return check_mandatory_criteria(company_info, audience, mandatory_df, session_id, use_deep_analysis)
+        sync_result = check_mandatory_criteria(company_info, audience, mandatory_df, session_id, use_deep_analysis)
+        
+        # Create detailed results from sync function results
+        audience_mandatory_df = mandatory_df[mandatory_df['Target Audience'] == audience].copy()
+        detailed_mandatory_results = []
+        
+        for _, criterion_row in audience_mandatory_df.iterrows():
+            crit_text = criterion_row.get("Criteria", "Unknown")
+            # Try to get result from sync function
+            sync_key = f"Mandatory_{audience}_{crit_text}"
+            sync_value = company_info.get(sync_key, "Unknown")
+            
+            criterion_info = {
+                "criteria_text": crit_text,
+                "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
+            }
+            detailed_mandatory_results.append(criterion_info)
+        
+        # Store detailed results
+        company_info[f"Mandatory_Detailed_{audience}"] = detailed_mandatory_results
+        return sync_result
 
 
 def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, use_deep_analysis=False):
@@ -364,6 +402,8 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                 company_info[f"NTH_Total_{audience}"] = 0
                 company_info[f"NTH_Passed_{audience}"] = 0
                 company_info[f"NTH_ND_{audience}"] = 0
+                # Store empty detailed results when no criteria
+                company_info[f"NTH_Detailed_{audience}"] = []
                 return
             
             log_info(f"📊 Filtering NTH criteria: {len(nth_df)} total → {len(audience_nth_df)} for {audience}")
@@ -452,26 +492,70 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
             if ASYNC_GPT_CONFIG['fallback_to_sync']:
                 log_info("🔄 Falling back to sync NTH analysis...")
                 check_nth_criteria(company_info, audience, nth_df, session_id, use_deep_analysis)
+                
+                # Create detailed results from sync function results
+                audience_nth_df = nth_df[nth_df['Target Audience'] == audience].copy()
+                detailed_criteria_results = []
+                qualified_count = 0
+                total_criteria = len(audience_nth_df)
+                
+                for _, criterion_row in audience_nth_df.iterrows():
+                    crit_text = criterion_row.get("Criteria", "Unknown")
+                    # Try to get result from sync function
+                    sync_key = f"NTH_{audience}_{crit_text}"
+                    sync_value = company_info.get(sync_key, "Unknown")
+                    
+                    criterion_info = {
+                        "criteria_text": crit_text,
+                        "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
+                    }
+                    
+                    if sync_value == "Passed":
+                        qualified_count += 1
+                    
+                    detailed_criteria_results.append(criterion_info)
+                
+                # Store detailed results if not already set by sync function
+                if f"NTH_Detailed_{audience}" not in company_info:
+                    company_info[f"NTH_Detailed_{audience}"] = detailed_criteria_results
     else:
         # Use original sync function
         check_nth_criteria(company_info, audience, nth_df, session_id, use_deep_analysis)
+        
+        # Create detailed results from sync function results
+        audience_nth_df = nth_df[nth_df['Target Audience'] == audience].copy()
+        detailed_criteria_results = []
+        qualified_count = 0
+        total_criteria = len(audience_nth_df)
+        
+        for _, criterion_row in audience_nth_df.iterrows():
+            crit_text = criterion_row.get("Criteria", "Unknown")
+            # Try to get result from sync function
+            sync_key = f"NTH_{audience}_{crit_text}"
+            sync_value = company_info.get(sync_key, "Unknown")
+            
+            criterion_info = {
+                "criteria_text": crit_text,
+                "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
+            }
+            
+            if sync_value == "Passed":
+                qualified_count += 1
+            
+            detailed_criteria_results.append(criterion_info)
+        
+        # Store detailed results if not already set by sync function
+        if f"NTH_Detailed_{audience}" not in company_info:
+            company_info[f"NTH_Detailed_{audience}"] = detailed_criteria_results
 
 
 def run_parallel_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False, max_concurrent_companies=12, selected_products=None):
     """
-    Запускает анализ с параллельной обработкой компаний внутри каждого продукта.
-    СОХРАНЯЕТ порядок: все компании проходят продукт 1, потом все компании проходят продукт 2, и т.д.
-    Поддерживает Circuit Breaker и State Management для устойчивости к сбоям.
+    Параллельный анализ: ПРАВИЛЬНЫЙ ПОРЯДОК - каждая компания через все продукты параллельно
     """
-    # Initialize State Manager
-    state_manager = None
-    if session_id:
-        state_manager = ProcessingStateManager(session_id)
-        log_info(f"💾 State Manager активирован для сессии: {session_id}")
-    
     try:
-        # Load all data (аналогично оригинальному процессору)
-        log_info("📋 Загружаем данные...")
+        # Load all data
+        log_info("🔄 Загружаем данные...")
         data_dict = load_data(
             companies_file=companies_file,
             load_all_companies=load_all_companies,
@@ -483,23 +567,24 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
         products_data = data_dict["products_data"]
         general_criteria = data_dict["general_criteria"]
         
-        # Update state manager with totals
-        if state_manager:
-            state_manager.update_totals(len(products), len(companies_df))
-            state_manager.save_progress(0, 0, stage="data_loaded")
-        
-        log_info(f"🚀 ПАРАЛЛЕЛЬНАЯ ОБРАБОТКА АКТИВИРОВАНА")
+        log_info(f"🏢 ИСПРАВЛЕННЫЙ ПАРАЛЛЕЛЬНЫЙ ПОРЯДОК: Каждая компания через все продукты")
         log_info(f"📊 Компаний: {len(companies_df)}")
-        log_info(f"📋 Продукты: {', '.join(products)}")
-        log_info(f"⚡ Максимум одновременных компаний: {max_concurrent_companies}")
+        log_info(f"📦 Продукты: {', '.join(products)}")
         log_info(f"🎯 Ожидаем записей: {len(companies_df)} × {len(products)} = {len(companies_df) * len(products)}")
         
-        # 1. Check General Criteria ONCE for all companies (последовательно, как и раньше)
-        log_info(f"\n📝 Этап 1: Проверяем General критерии для ВСЕХ компаний...")
-        general_status = {}
+        # Initialize state manager for this session  
+        state_manager = None
+        if session_id:
+            try:
+                from src.utils.state_manager import ProcessingStateManager
+                state_manager = ProcessingStateManager(session_id)
+                state_manager.update_totals(len(products), len(companies_df))
+            except Exception as e:
+                log_error(f"⚠️ Не удалось инициализировать StateManager: {e}")
         
-        if state_manager:
-            state_manager.save_progress(0, 0, stage="general_criteria_start")
+        # 1. Check General Criteria ONCE for all companies
+        log_info(f"\n🌐 Этап 1: Проверяем General критерии для ВСЕХ компаний...")
+        general_status = {}
         
         for index, company_row in companies_df.iterrows():
             company_data = company_row.to_dict()
@@ -526,156 +611,162 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                     state_manager.save_progress(0, index + 1, stage="general_criteria")
                     
             except Exception as e:
-                # Handle Circuit Breaker and other errors during general criteria
-                if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
-                    from src.utils.circuit_breaker import CircuitOpenException
-                    if isinstance(e, CircuitOpenException):
-                        log_error(f"🔴 Circuit Breaker открыт во время General критериев для {company_name}")
-                        # Mark as failed general criteria when circuit is open
-                        general_status[company_name] = False
-                        general_status[f"{company_name}_detailed"] = {}
-                        continue
-                
-                log_error(f"❌ Ошибка в General критериях для {company_name}: {e}")
+                log_error(f"❌ Ошибка проверки general критериев для {company_name}: {e}")
                 general_status[company_name] = False
-                general_status[f"{company_name}_detailed"] = {}
+                if state_manager:
+                    state_manager.save_progress(0, index + 1, stage="general_criteria")
         
-        # 2. Process each product (СОХРАНЯЕМ ПОРЯДОК ПРОДУКТОВ)
-        # Load existing results if resuming
+        # 2. ПРАВИЛЬНЫЙ ПОРЯДОК: Process each COMPANY through all PRODUCTS
         all_results = []
-        if state_manager:
-            all_results = state_manager.load_partial_results()
-            log_info(f"📂 Загружено {len(all_results)} существующих результатов")
-        
-        for product_index, product in enumerate(products, 1):
-            log_info(f"\n🎯 ПРОДУКТ {product_index}/{len(products)}: {product}")
-            log_info(f"⚡ Обрабатываем ВСЕ {len(companies_df)} компаний ПАРАЛЛЕЛЬНО для продукта {product}")
+
+        def process_single_company_all_products(company_args):
+            """
+            Обрабатывает ОДНУ компанию через ВСЕ продукты.
+            Возвращает ОДНУ объединенную запись с результатами по всем продуктам.
+            """
+            company_row, products_data, general_status, session_id, use_deep_analysis = company_args
             
-            if state_manager:
-                state_manager.save_progress(product_index, 0, product_name=product, stage="product_start")
+            company_data = company_row.to_dict()
+            company_name = company_data.get("Company_Name", "Unknown")
             
-            product_data = products_data[product]
+            log_info(f"🏢 Обрабатываем компанию: {company_name} через ВСЕ продукты: {', '.join(products)}")
             
-            # Подготавливаем аргументы для параллельной обработки
-            company_args = []
-            for index, company_row in companies_df.iterrows():
-                args = (company_row, product, product_data, general_status, session_id, use_deep_analysis)
-                company_args.append(args)
+            # Create ONE consolidated record for this company
+            consolidated_record = {
+                **company_data,  # Базовые данные компании
+                "All_Results": {},  # JSON со ВСЕМИ продуктами и результатами
+                "Qualified_Products": ""  # Текстовые результаты по всем продуктам
+            }
             
-            # ПАРАЛЛЕЛЬНАЯ ОБРАБОТКА компаний для текущего продукта с Circuit Breaker
-            product_results = []
-            circuit_breaker_triggered = False
+            all_products_results = {}
+            qualified_products_text = []
             
-            try:
-                with ThreadPoolExecutor(max_workers=max_concurrent_companies) as executor:
-                    # Отправляем все компании на обработку
-                    future_to_company = {
-                        executor.submit(process_single_company_for_product, args): args[0].get("Company_Name", f"Company_{i}")
-                        for i, args in enumerate(company_args)
-                    }
+            # Process this company through ALL products
+            for product in products:
+                try:
+                    log_info(f"  📦 {company_name} → {product}")
                     
-                    # Собираем результаты по мере завершения
-                    for future in as_completed(future_to_company):
-                        company_name = future_to_company[future]
-                        try:
-                            company_results = future.result()
-                            product_results.extend(company_results)
-                            log_info(f"✅ [{product}] {company_name} завершена")
-                            
-                            # Mark company as completed in state manager
-                            if state_manager:
+                    # Use the existing function for this company-product combination
+                    args = (company_row, product, products_data[product], general_status, session_id, use_deep_analysis)
+                    product_results = process_single_company_for_product(args)
+                    
+                    # Extract the product results from the returned list
+                    if product_results and len(product_results) > 0:
+                        # Get the All_Results from the first result (they should all be the same for this product)
+                        product_result = product_results[0]
+                        product_all_results = product_result.get("All_Results", {})
+                        product_qualified_text = product_result.get("Qualified_Products", "")
+                        
+                        # Store results for this product
+                        all_products_results[product] = product_all_results
+                        
+                        # Add to qualified products text
+                        if product_qualified_text and product_qualified_text != "NOT QUALIFIED":
+                            qualified_products_text.append(f"=== {product.upper()} ===\n{product_qualified_text}")
+                        else:
+                            qualified_products_text.append(f"=== {product.upper()} ===\nNOT QUALIFIED")
+                    
+                except Exception as e:
+                    log_error(f"  ❌ Ошибка обработки {company_name} для продукта {product}: {e}")
+                    all_products_results[product] = {"error": str(e)}
+                    qualified_products_text.append(f"=== {product.upper()} ===\nERROR: {str(e)}")
+            
+            # Consolidate all results
+            consolidated_record["All_Results"] = all_products_results
+            consolidated_record["Qualified_Products"] = "\n\n".join(qualified_products_text) if qualified_products_text else "NOT QUALIFIED"
+            
+            log_info(f"✅ Завершена обработка компании {company_name}: ОДНА консолидированная запись с {len(products)} продуктами")
+            return [consolidated_record]  # Return as list for consistency
+        
+        # ПАРАЛЛЕЛЬНАЯ ОБРАБОТКА компаний (каждая компания через ВСЕ продукты)
+        log_info(f"\n🚀 Этап 2: ПРАВИЛЬНЫЙ ПОРЯДОК - каждая компания через все продукты")
+        log_info(f"⚡ Компании: {len(companies_df)}")
+        log_info(f"📦 Продукты: {', '.join(products)}")
+        log_info(f"📊 Ожидаем записей: {len(companies_df)} (по одной на компанию с консолидированными результатами)")
+        
+        # Подготавливаем аргументы для параллельной обработки
+        company_args = []
+        for index, company_row in companies_df.iterrows():
+            args = (company_row, products_data, general_status, session_id, use_deep_analysis)
+            company_args.append(args)
+        
+        # ПАРАЛЛЕЛЬНАЯ ОБРАБОТКА компаний с Circuit Breaker
+        circuit_breaker_triggered = False
+        
+        try:
+            with ThreadPoolExecutor(max_workers=max_concurrent_companies) as executor:
+                # Отправляем все компании для обработки через ВСЕ продукты
+                future_to_company = {
+                    executor.submit(process_single_company_all_products, args): args[0].get("Company_Name", f"Company_{i}")
+                    for i, args in enumerate(company_args)
+                }
+                
+                # Собираем результаты по мере завершения
+                for future in as_completed(future_to_company):
+                    company_name = future_to_company[future]
+                    try:
+                        company_results = future.result()
+                        all_results.extend(company_results)
+                        log_info(f"🎉 Компания {company_name} завершена: {len(company_results)} записей")
+                        
+                        # Mark company as completed in state manager (для всех продуктов)
+                        if state_manager:
+                            for product in products:
                                 state_manager.mark_company_completed(company_name, product, success=True)
                                 
-                        except Exception as e:
-                            # Handle Circuit Breaker exceptions
-                            if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
-                                from src.utils.circuit_breaker import CircuitOpenException
-                                if isinstance(e, CircuitOpenException):
-                                    log_error(f"🔴 Circuit Breaker сработал для {company_name}: {e}")
-                                    circuit_breaker_triggered = True
-                                    if state_manager:
-                                        state_manager.record_circuit_breaker_event("triggered_during_processing", {
-                                            "product": product,
-                                            "company": company_name,
-                                            "error": str(e)
-                                        })
-                                    break  # Stop processing this product
-                            
-                            log_error(f"❌ [{product}] Ошибка обработки {company_name}: {e}")
-                            if state_manager:
-                                state_manager.mark_company_completed(company_name, product, success=False)
-                
-                # Save partial results after each product
-                if state_manager and product_results:
-                    state_manager.save_partial_results(product_results)
-                
-                # If circuit breaker triggered, pause processing
-                if circuit_breaker_triggered:
-                    log_error(f"🔴 Circuit Breaker прервал обработку продукта {product}")
-                    log_info(f"💾 Сохраняем частичные результаты...")
-                    
-                    if state_manager:
-                        state_manager.save_progress(product_index, 0, product_name=product, stage="paused_circuit_breaker")
-                        state_manager.save_partial_results(product_results)
-                        state_manager.mark_completed("paused")
-                    
-                    # Add partial results to total
-                    all_results.extend(product_results)
-                    
-                    # Save partial results and return
-                    save_results(all_results, product="partial", session_id=session_id)
-                    log_info(f"🛑 Обработка приостановлена из-за Circuit Breaker. Результаты сохранены.")
-                    return all_results
-                
-                # Normal completion of product
-                all_results.extend(product_results)
-                log_info(f"🎉 ПРОДУКТ {product} ЗАВЕРШЕН: обработано {len(product_results)} записей")
-                
-                if state_manager:
-                    state_manager.save_progress(product_index, len(companies_df), product_name=product, stage="product_completed")
-                    
-            except Exception as e:
-                log_error(f"💥 Критическая ошибка в продукте {product}: {e}")
-                
-                # Save what we have and continue or stop
-                if state_manager and product_results:
-                    state_manager.save_partial_results(product_results)
-                
-                all_results.extend(product_results)
-                
-                # Decide whether to continue or stop based on error type
-                if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
-                    from src.utils.circuit_breaker import CircuitOpenException
-                    if isinstance(e, CircuitOpenException):
-                        log_error("🔴 Circuit Breaker активирован на уровне продукта - останавливаем обработку")
+                    except Exception as e:
+                        # Handle Circuit Breaker exceptions
+                        if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:
+                            from src.utils.circuit_breaker import CircuitOpenException
+                            if isinstance(e, CircuitOpenException):
+                                log_error(f"🔴 Circuit Breaker сработал для {company_name}: {e}")
+                                circuit_breaker_triggered = True
+                                if state_manager:
+                                    state_manager.record_circuit_breaker_event("triggered_during_processing", {
+                                        "company": company_name,
+                                        "error": str(e)
+                                    })
+                                break  # Stop processing
+                        
+                        log_error(f"❌ Ошибка обработки компании {company_name}: {e}")
                         if state_manager:
-                            state_manager.mark_completed("failed_circuit_breaker")
-                        save_results(all_results, product="partial", session_id=session_id)
-                        return all_results
+                            for product in products:
+                                state_manager.mark_company_completed(company_name, product, success=False)
+            
+            # Save partial results
+            if state_manager and all_results:
+                state_manager.save_partial_results(all_results)
                 
-                # For other errors, continue with next product
-                log_info(f"⏭️ Продолжаем с следующего продукта...")
-                continue
+        except Exception as e:
+            log_error(f"❌ Критическая ошибка параллельной обработки: {e}")
+            if state_manager:
+                state_manager.record_circuit_breaker_event("critical_error", {
+                    "error": str(e),
+                    "stage": "parallel_processing"
+                })
         
-        log_info(f"\n🏁 АНАЛИЗ ЗАВЕРШЕН!")
-        log_info(f"📊 Итого записей: {len(all_results)}")
+        # Count qualified companies
+        qualified_count = sum(1 for result in all_results if result["Qualified_Products"] != "NOT QUALIFIED")
         
-        # Mark session as completed in state manager
+        # Save results
+        log_info("💾 Сохраняем результаты...")
+        json_path, csv_path = save_results(all_results, "PARALLEL_BY_COMPANIES", session_id=session_id)
+        
+        log_info(f"""
+🎉 Параллельная обработка завершена (КОНСОЛИДИРОВАННЫЕ РЕЗУЛЬТАТЫ):
+   🏢 Компании: {len(companies_df)}
+   📦 Продукты: {', '.join(products)}
+   📊 Записей (одна на компанию): {len(all_results)}
+   ✅ Компаний с квалификацией: {qualified_count}
+   📄 JSON результаты: {json_path}
+   📋 CSV результаты: {csv_path}""")
+        
+        # Mark session as completed
         if state_manager:
             state_manager.mark_completed("completed")
         
-        # 3. Save results (аналогично оригинальному процессору)
-        save_results(all_results, product="mixed", session_id=session_id)
-        
         return all_results
         
-    except KeyboardInterrupt:
-        log_info("❌ Анализ прерван пользователем")
-        if state_manager:
-            state_manager.mark_completed("cancelled")
-        raise
     except Exception as e:
-        log_error(f"💥 Критическая ошибка: {e}")
-        if state_manager:
-            state_manager.mark_completed("failed")
+        log_error(f"❌ Критическая ошибка параллельного анализа: {e}")
         raise 

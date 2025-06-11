@@ -1,0 +1,96 @@
+{
+    "searchParameters": {
+        "q": "site:en.bandainamcoent.eu (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "ELDEN RING: Introduction to the Multiplayer System",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/elden-ring-introduction-the-multiplayer-system",
+            "snippet": "For most players, getting started with multiplayer means inviting another player into their game to play alongside them cooperatively. You can invite a specific friend who is playing on the same platform or, if you prefer, try inviting a random person who has turned on their cooperative ...",
+            "date": "Feb 21, 2022",
+            "position": 1
+        },
+        {
+            "title": "DEATH NOTE Killer Within | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/death-note/death-note-killer-within",
+            "snippet": "DEATH NOTE Killer Within is an online social deduction game of life and death for up to 10 players. Players will be split into 2 teams, trying to figure out each other's identities to either eliminate L who threatens Kira's power, or seize the Death Note.",
+            "position": 2
+        },
+        {
+            "title": "FromSoftware and Bandai Namco reveal ELDEN RING ...",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/fromsoftware-and-bandai-namco-reveal-elden-ring-nightreign",
+            "snippet": "As Night Falls, We Rise in a New ELDEN RING Adventure. The world of ELDEN RING™ is getting a standalone multiplayer co-op action survival game that challenges players to band together in order to defeat the Nightlord. Developed by FromSoftware, Inc. and published by Bandai Namco Entertainment Inc., ...",
+            "date": "Dec 13, 2024",
+            "position": 3
+        },
+        {
+            "title": "GUNDAM EVOLUTION | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/gundam/gundam-evolution",
+            "snippet": "GUNDAM EVOLUTION is a free-to-play team-based first-person shooter featuring 6v6 PvP combat. The game will offer three objective-based game modes: Point Capture, Domination and Destruction. Each game mode presents a unique set of challenges that will require ...",
+            "position": 4
+        },
+        {
+            "title": "STANDALONE ADVENTURE GAME ELDEN RING ...",
+            "link": "https://en.bandainamcoent.eu/elden-ring/news/standalone-adventure-game-elden-ring-nightreign-launches-30th-may-preorders-now",
+            "snippet": "Rise Together to Conquer an All-New Co-Op Survival Adventure by FromSoftware set in the ELDEN RING Universe. ELDEN RING™ NIGHTREIGN , the standalone multiplayer co-op action survival game by FromSoftware, Inc. and published by Bandai Namco Entertainment Inc., will launch on 30th May.",
+            "date": "Feb 12, 2025",
+            "position": 5
+        },
+        {
+            "title": "'EACH PAC FOR THEMSELVES' MULTIPLAYER GAME ...",
+            "link": "https://en.bandainamcoent.eu/pac-man/news/each-pac-themselves-multiplayer-game-pac-man-mega-tunnel-battle-chomp-champs-available",
+            "snippet": "The title is the first multiplayer PAC-MAN game that is cross platform and features a Friend system that lets up to four players join the same match, track each other's progress, and spectate their friends' games. Game modes include Elimination Mode with arcade-style action where players of any rank can ...",
+            "date": "May 10, 2024",
+            "position": 6
+        },
+        {
+            "title": "DRAGON BALL: Sparking! ZERO: Game Modes Handbook",
+            "link": "https://en.bandainamcoent.eu/dragon-ball/news/dragon-ball-sparking-zero-game-modes-handbook",
+            "snippet": "Custom Battle is a game mode exclusive to DRAGON BALL: Sparking! ZERO: it allows players to create custom scenarios by using a wide range of options to create their dream scenario. There are several ways to enjoy this mode ...",
+            "date": "Oct 11, 2024",
+            "position": 7
+        },
+        {
+            "title": "SYNDUALITY Echo of Ada | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/synduality/synduality",
+            "snippet": "SYNDUALITY will also have multiplayer, with other Drifters joining players to help them in their missions or turn against them, hindering their progress or fighting to loot their precious resources. project-sin-icon. Shop now. Select your country.",
+            "position": 8
+        },
+        {
+            "title": "CODE VEIN - Introduction to Online Multiplayer",
+            "link": "https://en.bandainamcoent.eu/code-vein/news/code-vein-introduction-online-multiplayer",
+            "snippet": "As you explore online, you can be joined by not only a companion, but also another player to fight as a team. Rescue Signals. The online player matching is very simple. Under the Field Menu, open Multiplayer and select \"Send a rescue signal to other ...",
+            "date": "Jul 30, 2019",
+            "position": 9
+        },
+        {
+            "title": "PARK BEYOND | Official Website (EN)",
+            "link": "https://en.bandainamcoent.eu/park-beyond/park-beyond",
+            "snippet": "Park Beyond is a theme park simulation that gives you the freedom to create and manage the parks of your dreams! Whether you love to manage finances and visitor experience or just create fun and cozy parks, the game has something in store just for you! Park Beyond Update 2.0. In Park Beyond, you are the creative ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Multiplayer service game xbox one"
+        },
+        {
+            "query": "Multiplayer service game ps4"
+        },
+        {
+            "query": "Best multiplayer service game"
+        }
+    ],
+    "credits": 1
+}

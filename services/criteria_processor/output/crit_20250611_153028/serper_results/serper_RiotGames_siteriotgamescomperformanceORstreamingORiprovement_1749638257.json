@@ -1,0 +1,145 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"performance\" OR \"streaming\" OR \"iprovement\") (blog OR \"press\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Riot Tech Blog: Improving Performance by Streamlining ...",
+            "link": "https://www.riotgames.com/en/news/tech-blog-cpu-usage",
+            "snippet": "... improvement. This is the Riot Tech Blog so, from here on out, we're ... Global Community Premiere of Arcane Season 2: Co-Streaming...",
+            "date": "Jan 16, 2025",
+            "position": 1
+        },
+        {
+            "title": "Down The Rabbit Hole of Performance Monitoring",
+            "link": "https://technology.riotgames.com/news/down-rabbit-hole-performance-monitoring",
+            "snippet": "The improvement in frame time from patch 8.12 to 8.13 was 1.93ms ... It allows us to make performance extrapolations as well as accurately ...",
+            "date": "Aug 27, 2019",
+            "sitelinks": [
+                {
+                    "title": "Optimising Frame Rates",
+                    "link": "https://technology.riotgames.com/news/down-rabbit-hole-performance-monitoring#:~:text=Optimising%20Frame%20Rates"
+                },
+                {
+                    "title": "Deciding What To Measure",
+                    "link": "https://technology.riotgames.com/news/down-rabbit-hole-performance-monitoring#:~:text=Deciding%20What%20to%20Measure"
+                },
+                {
+                    "title": "Gathering More Data",
+                    "link": "https://technology.riotgames.com/news/down-rabbit-hole-performance-monitoring#:~:text=Gathering%20More%20Data"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "performance",
+            "link": "https://technology.riotgames.com/tags/performance",
+            "snippet": "In this article, I'll be focusing on that last topic - I'll be telling the technical story behind our search for optimal server performance. Full Story Posted ...",
+            "position": 3
+        },
+        {
+            "title": "Adjusting our League of Legends Esports Strategy in 2024",
+            "link": "https://www.riotgames.com/en/news/lol-esports-strategy-adjustments-2024",
+            "snippet": "... streaming integrations, driving 58% and 65% year-over-year ... Riot Tech Blog: Improving Performance by Streamlining League's... A ...",
+            "date": "Mar 14, 2024",
+            "position": 4
+        },
+        {
+            "title": "The Riot Games Tech Blog",
+            "link": "https://technology.riotgames.com/node?page=3",
+            "snippet": "This will be a high level overview of how we monitor game performance in League of Legends, how we detect when a performance degradation has slipped through QA ...",
+            "position": 5
+        },
+        {
+            "title": "VALORANT's 128-Tick Servers",
+            "link": "https://technology.riotgames.com/news/valorants-128-tick-servers",
+            "snippet": "However, we found in many cases changing from a replicated variable to an RPC offered a 100x to 10000x performance improvement! As an ...",
+            "date": "Aug 31, 2020",
+            "sitelinks": [
+                {
+                    "title": "Code Optimization",
+                    "link": "https://technology.riotgames.com/news/valorants-128-tick-servers#:~:text=Code%20Optimization,-When%20we%20think%20about%20hosting"
+                },
+                {
+                    "title": "Performance Budgets For...",
+                    "link": "https://technology.riotgames.com/news/valorants-128-tick-servers#:~:text=Performance%20Budgets%20for%20Subsystems"
+                },
+                {
+                    "title": "Real World Performance",
+                    "link": "https://technology.riotgames.com/news/valorants-128-tick-servers#:~:text=Real%20World%20Performance"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Creator-related Updates to our Privacy Notice and Terms of ...",
+            "link": "https://www.riotgames.com/en/news/creator-related-updates-riot-privacy-notice-terms-of-service",
+            "snippet": "Riot Tech Blog: Improving Performance by Streamlining League's... A ... Global Community Premiere of Arcane Season 2: Co-Streaming...",
+            "date": "Nov 26, 2024",
+            "position": 7
+        },
+        {
+            "title": "Building the Future of Sport at Riot Games",
+            "link": "https://www.riotgames.com/en/news/building-the-future-of-sport-at-riot-games",
+            "snippet": "... streaming. Riot's esports broadcasts are designed to entertain but ... PCU and AMA are our primary performance metrics because they ...",
+            "date": "Apr 19, 2023",
+            "sitelinks": [
+                {
+                    "title": "Why Riot Loves Esports",
+                    "link": "https://www.riotgames.com/en/news/building-the-future-of-sport-at-riot-games#:~:text=Why%20Riot%20Loves%20Esports"
+                },
+                {
+                    "title": "The Esports Business Is...",
+                    "link": "https://www.riotgames.com/en/news/building-the-future-of-sport-at-riot-games#:~:text=The%20Esports%20Business%20is%20Going%20to%20be%20More%20Like%20the%20Games%20Business%20than%20Traditional%20Sports"
+                },
+                {
+                    "title": "Fandom Next: Virtual Live...",
+                    "link": "https://www.riotgames.com/en/news/building-the-future-of-sport-at-riot-games#:~:text=Fandom%20NEXT%3A%20Virtual%20Live%20Event%20Experiences"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Random Acts of Optimization",
+            "link": "https://technology.riotgames.com/news/random-acts-optimization",
+            "snippet": "We continually improve LoL's performance to open up space for artists and designers to add cool new stuff: we're making it faster while they're ...",
+            "date": "Oct 22, 2015",
+            "position": 9
+        },
+        {
+            "title": "Peeking into VALORANT's Netcode",
+            "link": "https://technology.riotgames.com/news/peeking-valorants-netcode",
+            "snippet": "Just as important - we want to prevent network or performance problems that one player encounters from impacting the experiences of the nine ...",
+            "date": "Jul 28, 2020",
+            "sitelinks": [
+                {
+                    "title": "Technical Details",
+                    "link": "https://technology.riotgames.com/news/peeking-valorants-netcode#:~:text=Technical%20Details,-Let%27s%20now%20discuss%20some"
+                },
+                {
+                    "title": "Mitigating Peeker's...",
+                    "link": "https://technology.riotgames.com/news/peeking-valorants-netcode#:~:text=Mitigating%20Peeker%27s%20Advantage,-Peeker%27s%20advantage%20is%20an"
+                },
+                {
+                    "title": "Holder's Advantage...",
+                    "link": "https://technology.riotgames.com/news/peeking-valorants-netcode#:~:text=Holder%27s%20Advantage%3A%20Measuring%20Fairness%20Through%20Reaction%20Time"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Performance streaming improvement blog press review"
+        },
+        {
+            "query": "Best performance streaming improvement blog press"
+        }
+    ],
+    "credits": 1
+}

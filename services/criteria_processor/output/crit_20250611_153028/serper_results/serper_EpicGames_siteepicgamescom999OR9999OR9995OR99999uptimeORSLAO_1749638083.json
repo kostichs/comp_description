@@ -1,0 +1,84 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"99.9\" OR \"99.99\" OR \"99.95\" OR \"99.999\") (uptime OR SLA OR availability)",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "hCaptcha vs. Turnstile | Blog",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/hcaptcha-vs-turnstile",
+            "snippet": "The integrator decides which hCaptcha configuration to use, whether active, 99.9% passive, or entirely passive. ... SLA, unlike hCaptcha ...",
+            "date": "Dec 8, 2022",
+            "position": 1
+        },
+        {
+            "title": "Surviving Cloudflare Argo Outages With Zero Downtime ...",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/surviving-cloudflare-argo-outages-with-zero-downtime-hcaptcha-engineering-blog",
+            "snippet": "We maintained better than 99.99% uptime in 2018 despite heavy growth in popularity of the hCaptcha service. This was due to engineering our ...",
+            "date": "Jan 28, 2019",
+            "position": 2
+        },
+        {
+            "title": "Surviving Cloudflare Outages (hCaptcha Engineering Blog)",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/surviving-cloudflare-outages-hcaptcha-engineering-blog.html",
+            "snippet": "This proved to be a wise choice: we maintained better than 99.99% uptime in 2018 despite heavy growth in popularity of the hCaptcha service.",
+            "date": "Jan 24, 2019",
+            "position": 3
+        },
+        {
+            "title": "How hCaptcha Difficulty Settings Work | Blog",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/how-hcaptcha-difficulty-settings-work",
+            "snippet": "99.9% Passive. This option will auto-pass most low-risk users most of the time, but will start to show challenges in a variety of ...",
+            "date": "Apr 3, 2020",
+            "position": 4
+        },
+        {
+            "title": "hCaptcha Now One Million Publishers | Blog",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/hcaptcha-surpasses-one-million-publishers.html",
+            "snippet": "hCaptcha provides the industry's leading bot detection solution with >99.9% bot detection accuracy and virtually zero false positives. ‍ ...",
+            "date": "Apr 14, 2022",
+            "position": 5
+        },
+        {
+            "title": "Game Server & Hosting",
+            "link": "http://marketplace-website-node-launcher-prod.ol.epicgames.com/ue/marketplace/en-US/product/87e493718c57434d8421641bff3ea337",
+            "snippet": "... 99.99% availability.Cross-Platform Compatible: Supports all hardware platforms, including PC, consoles, VR, mobile, and web.Support: 24/7 ...",
+            "date": "Nov 13, 2024",
+            "position": 6
+        },
+        {
+            "title": "Blog",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com:2087/blog.html",
+            "snippet": "We maintained better than 99.99% uptime in 2018 despite heavy growth in popularity of the hCaptcha service. This was due to engineering our operations for ...",
+            "position": 7
+        },
+        {
+            "title": "Unity Multiplay Hosting & Matchmaking",
+            "link": "http://marketplace-website-node-launcher-prod.ol.epicgames.com/ue/marketplace/en-US/product/unity-gaming-services-sdk-for-unreal-engine/reviews",
+            "snippet": "... uptime SLA of 99.95%. Our scaler is also natively hybrid and supports multiple hosting options from bare-metal to most of cloud ...",
+            "date": "Sep 28, 2023",
+            "position": 8
+        },
+        {
+            "title": "Destiny 2: Año de la Profecía - Edición Definitiva",
+            "link": "https://store.epicgames.com/es-MX/p/destiny-2--year-of-prophecy-ultimate-edition",
+            "snippet": "Complemento. USD 99.99. Precompra. Agregar al carrito. A la lista de deseos. Recompensas de Epic. Obtén una devolución del 20%. Tipo de reembolso. Reembolsable.",
+            "currency": "$",
+            "price": 99.99,
+            "position": 9
+        },
+        {
+            "title": "Destiny 2: La Forma Final + Pase Anual",
+            "link": "https://store.epicgames.com/es-MX/p/destiny-2--the-final-shape-plus-annual-pass",
+            "snippet": "Complemento. USD 99.99. Cómpralo ya. Agregar al carrito. A la lista de deseos. Recompensas de Epic. Obtén una devolución del 20%. Tipo de reembolso.",
+            "currency": "$",
+            "price": 99.99,
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

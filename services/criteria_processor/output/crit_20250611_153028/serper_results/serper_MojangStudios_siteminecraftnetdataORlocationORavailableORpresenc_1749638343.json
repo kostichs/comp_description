@@ -1,0 +1,80 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"data\" OR \"location\" OR \"available\" OR \"presence\") (countries OR regions OR worldwide OR global)",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Announcing improved Realms regional support",
+            "link": "https://www.minecraft.net/en-us/article/improved-realms-regional-support",
+            "snippet": "Here is our updated list of data center regions: Washington ... data center that is best for their new location. Specific Region. You ...",
+            "date": "May 5, 2025",
+            "position": 1
+        },
+        {
+            "title": "Country Availability",
+            "link": "https://edusupport.minecraft.net/hc/en-us/articles/360047556651-Country-Availability",
+            "snippet": "To check if Minecraft Education is available in your country through the Microsoft 365 Admin Center, refer to the International Availability ...",
+            "date": "Oct 9, 2024",
+            "position": 2
+        },
+        {
+            "title": "[Bedrock] Be Able to Move Cached Resources to Global ...",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/360010846792--Bedrock-Be-Able-to-Move-Cached-Resources-to-Global-Resources",
+            "snippet": "I am an Xbox Series S user on Minecraft: Bedrock Edition Preview and I think I know why you do not have a “Download” button on the cached data. THE PACK MIGHT ...",
+            "position": 3
+        },
+        {
+            "title": "Data Driven Global Containers (GUIs)",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/27730232448781-Data-Driven-Global-Containers-GUIs",
+            "snippet": "Data Driven Global Containers (GUIs). A GUI command that creates an NBT-storage-like container that does not live in the world. Creating a GUI would be ...",
+            "position": 4
+        },
+        {
+            "title": "Global resources reset error",
+            "link": "https://edusupport.minecraft.net/hc/en-us/community/posts/21381155479060-Global-resources-reset-error",
+            "snippet": "Try deleting the resource pack on the device and reboot again. the easiest way to get to the correct location is with the Go command in Finder.",
+            "date": "Nov 29, 2023",
+            "position": 5
+        },
+        {
+            "title": "Data Explorers",
+            "link": "https://www.minecraft.net/en-us/marketplace/pdp/pathway-studios/data-explorers/c446c495-dc61-4e64-bdc0-681f93ea84c6",
+            "snippet": "Now available on Digital · Careers · Credits · Minecraft Experience Villager ... Data Explorers. Get This Item. Share. Details. Description. Show ...",
+            "rating": 4.2,
+            "ratingCount": 1276,
+            "position": 6
+        },
+        {
+            "title": "Minecraft freezes on login and says restart global resources",
+            "link": "https://edusupport.minecraft.net/hc/en-us/community/posts/20012391470356-Minecraft-freezes-on-login-and-says-restart-global-resources",
+            "snippet": "The easiest way to get to the correct location is with the Go command in Finder. so just press Command-Shift-G and then paste the target ...",
+            "date": "Oct 13, 2023",
+            "position": 7
+        },
+        {
+            "title": "Minecraft CloudCraft Teacher Lesson Plan",
+            "link": "https://education.minecraft.net/lessonsupportfiles/0643386635955325-Minecraft%20Cloudcraft%20Teacher%20Lesson%20Plan%20rev%2010-14-22.pdf",
+            "snippet": "material available for your students to access as a paper or digital ... Let's look at what is required to run a data center. Do: Play Video. Advance ...",
+            "position": 8
+        },
+        {
+            "title": "\"Global Resources Reset Resources Failed to Load ...",
+            "link": "https://edusupport.minecraft.net/hc/en-us/community/posts/21253968108820--Global-Resources-Reset-Resources-Failed-to-Load-Previously-error-message",
+            "snippet": "Try deleteing the resourse pack on the device and start it over. The easiest way to get to the correct location is with the Go command in Finder.",
+            "date": "Nov 25, 2023",
+            "position": 9
+        },
+        {
+            "title": "Global build challenge: peace with nature",
+            "link": "https://education.minecraft.net/en-us/resources/global-build-challenge",
+            "snippet": "Students build their sustainable solutions in the custom 'Peace with Nature' world available in the in-game lesson library for Minecraft Education. Learn ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,91 @@
+{
+    "searchParameters": {
+        "q": "site:neteasegames.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Storm Arena BETA TEST On Android Notice",
+            "link": "https://www.neteasegames.com/news/20230612/37000_797120.html",
+            "snippet": "Wasabi can attack enemies multiple times with his boomerangs. His Water Getaway skill lets him sneak attack enemies or quietly leave the fray.",
+            "date": "Jan 24, 2019",
+            "position": 1
+        },
+        {
+            "title": "Mobile Shooter Disorder Opens Server in Americas Today ...",
+            "link": "https://www.neteasegames.com/news/20230612/37000_875152.html",
+            "snippet": "Players can design numerous team attack strategies based on the mode of choice, and match weapons and talent upgrade schemes, so as to get a ...",
+            "date": "Apr 10, 2020",
+            "position": 2
+        },
+        {
+            "title": "Infinite Lagrange - NetEase Games",
+            "link": "https://www.neteasegames.com/news/20230612/37000_1026626.html",
+            "snippet": "Hitting the enemy with unexpected torpedo attack, the SL9 Heavy Torpedo Corvette adopts the fighter combat logic: reciprocating attack, ...",
+            "date": "Jun 28, 2022",
+            "position": 3
+        },
+        {
+            "title": "LifeAfter: Season 5 Power of Mutation Launches Today!",
+            "link": "https://www.neteasegames.com/news/LifeAfter/20221209/36928_1056950.html",
+            "snippet": "The Mutation Core can endow firearms with different attack ... By selecting the correct attack property, you can deal a lot of damage to the enemy ...",
+            "date": "Dec 9, 2022",
+            "position": 4
+        },
+        {
+            "title": "NetEase Connect 2023",
+            "link": "https://www.neteasegames.com/NetEaseConnect2023/?ref=applespbevent.ru",
+            "snippet": "Explore the map, collect resources, and attack enemies to survive in the chaotic blockade. Uncover the truth behind the scenes! VIKINGARD.",
+            "date": "May 24, 2023",
+            "position": 5
+        },
+        {
+            "title": "Extraordinary Ones, an Anime-Themed MOBA ...",
+            "link": "https://www.neteasegames.com/news/20230612/37000_854029.html",
+            "snippet": "For instance, players can utilize the teleporter for surprise attack, or defeat jungle. monsters to gain special buffs and skills. For those ...",
+            "date": "Dec 2, 2019",
+            "position": 6
+        },
+        {
+            "title": "Order & Chaos: Guardians - NetEase Games",
+            "link": "https://www.neteasegames.com/news/20240119/37000_1133116.html",
+            "snippet": "... attack animations, and Pet system, all of which have been faithfully crafted to reflect the Order & Chaos series. Order & Chaos: Guardians ...",
+            "date": "Jan 19, 2024",
+            "position": 7
+        },
+        {
+            "title": "In Tom and Jerry",
+            "link": "https://www.neteasegames.com/news/20230612/37000_877896.html",
+            "snippet": "Players can set traps or throw a variety of paraphernalia to attack their target. Different drinks, fruit platters and cakes also provide ...",
+            "date": "Apr 3, 2020",
+            "position": 8
+        },
+        {
+            "title": "Identity Ⅴ embraces the Chinese New Year Version ...",
+            "link": "https://www.neteasegames.com/news/IdentityV/20220315/36926_999359.html",
+            "snippet": "When regulators are around the explosion center, the attack will be 2-second dizziness. All Thumbs: “Weeping Clown” is clumsy and terrible ...",
+            "date": "Jan 21, 2022",
+            "position": 9
+        },
+        {
+            "title": "LifeAfter Welcomes the Spring Festival: New Fun Events ...",
+            "link": "https://www.neteasegames.com/news/LifeAfter/20220315/36928_1000515.html",
+            "snippet": "At 8 p.m. on January 30, February 6 and February 13, Heimdall will release a special Infected to attack the Doomsday World! Don't forget to ...",
+            "date": "Jan 27, 2022",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Ddos ddos protected attack 2022"
+        },
+        {
+            "query": "Ddos ddos protected attack android"
+        }
+    ],
+    "credits": 1
+}

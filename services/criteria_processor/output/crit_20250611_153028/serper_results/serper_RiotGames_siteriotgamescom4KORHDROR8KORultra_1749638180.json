@@ -1,0 +1,77 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"4K\" OR \"HDR\" OR \"8K\" OR \"ultra\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "GKIDS Arcane: Season One 4K UHD Collector's Edition Set",
+            "link": "https://merch.riotgames.com/en-us/product/gkids-arcane-collectors-edition-set/",
+            "snippet": "... 4K resolution and mastered in Dolby Vision HDR. In addition to the 4K UHD version, the Collector's Edition includes standard Blu-ray discs. This limited-run ...",
+            "currency": "$",
+            "price": 149.99,
+            "position": 1
+        },
+        {
+            "title": "League Displays",
+            "link": "https://displays.riotgames.com/",
+            "snippet": "Fits your style and your screen. Now supports multiple, vertical, and ultra-wide displays.",
+            "position": 2
+        },
+        {
+            "title": "Arcane",
+            "link": "https://merch.riotgames.com/en-us/collection/arcane-collection/",
+            "snippet": "This product is not intended as a toy or children's product. This product is a collector's item intended for ages 14+. Add to Cart ...",
+            "currency": "$",
+            "price": 29.99,
+            "position": 3
+        },
+        {
+            "title": "Engineering Esports: The Tech That Powers Worlds",
+            "link": "https://technology.riotgames.com/news/engineering-esports-tech-powers-worlds",
+            "snippet": "This test is the first step on our path to 4K, and eventually 8K broadcasts. As part of the JPEG-XS test, Riot will leverage SMPTE 2110 both ...",
+            "date": "Oct 24, 2019",
+            "position": 4
+        },
+        {
+            "title": "Supported Resolutions in VALORANT",
+            "link": "https://support-valorant.riotgames.com/hc/en-us/articles/360049670134-Supported-Resolutions-in-VALORANT",
+            "snippet": "*Please note that if your screen supports 8K it will actually be converted to 4K while playing VALORANT. 16:10 aspect ratio*. 1280×800, 1440×900 ...",
+            "date": "Jun 17, 2020",
+            "position": 5
+        },
+        {
+            "title": "Adjusting our League of Legends Esports Strategy in 2024",
+            "link": "https://www.riotgames.com/en/news/lol-esports-strategy-adjustments-2024",
+            "snippet": "Three ultra-powerful 6-costs are about to enter the Convergence. And just like they did in Arcane, they're completely changing the game. Nov ...",
+            "date": "Mar 14, 2024",
+            "position": 6
+        },
+        {
+            "title": "Ultra Rapid Fire (URF) Mode in Wild Rift - Riot Games",
+            "link": "https://support-wildrift.riotgames.com/hc/en-us/articles/4410639921171-Ultra-Rapid-Fire-URF-Mode-in-Wild-Rift",
+            "snippet": "All champions in URF benefit from a global buff that puts the \"Ultra Rapid\" in Ultra Rapid Fire! It comes with a ton of effects you can see the specifics of by ...",
+            "date": "Sep 19, 2022",
+            "position": 7
+        },
+        {
+            "title": "Why We're Returning to the Esports World Cup ...",
+            "link": "https://www.riotgames.com/en/news/ewc-2025",
+            "snippet": "Three ultra-powerful 6-costs are about to enter the Convergence. And just like they did in Arcane, they're completely changing the game. Nov ...",
+            "date": "Feb 10, 2025",
+            "position": 8
+        },
+        {
+            "title": "Under the hood of the League Client's Hextech UI",
+            "link": "https://technology.riotgames.com/news/under-hood-league-client%E2%80%99s-hextech-ui",
+            "snippet": "... ultra fast loading experiences on mobile with Google AMP and so on. There is no doubt that a lot of hard work went into building this new ...",
+            "date": "Feb 14, 2017",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

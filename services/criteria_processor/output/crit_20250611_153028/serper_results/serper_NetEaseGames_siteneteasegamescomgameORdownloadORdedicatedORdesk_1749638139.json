@@ -1,0 +1,117 @@
+{
+    "searchParameters": {
+        "q": "site:neteasegames.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Game Portfolio",
+            "link": "https://www.neteasegames.com/m/game/hot/",
+            "snippet": "NetEase Games, the online games division of NetEase, Inc. (NASDAQ: NTES and HKEX: 9999), is a leading global developer and publisher of video game IP across ...",
+            "position": 1
+        },
+        {
+            "title": "NetEase Games",
+            "link": "https://www.neteasegames.com/m/",
+            "snippet": "NetEase Games, the online games division of NetEase, Inc. (NASDAQ: NTES and HKEX: 9999), is a leading global developer and publisher of video game IP.",
+            "sitelinks": [
+                {
+                    "title": "Game Portfolio",
+                    "link": "http://www.neteasegames.com/m/game/hot/"
+                },
+                {
+                    "title": "Contact US",
+                    "link": "https://www.neteasegames.com/m/contact.html"
+                },
+                {
+                    "title": "Playtest",
+                    "link": "https://www.neteasegames.com/playtest/"
+                },
+                {
+                    "title": "Business",
+                    "link": "https://www.neteasegames.com/business.html"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Enter A New Era of Urban Open World RPG with ANANTA",
+            "link": "https://www.neteasegames.com/news/20241205/37000_1198191.html",
+            "snippet": "As one of the world's largest incubators of quality online game content, NetEase Games is dedicated to supporting the growth of innovative ...",
+            "date": "Dec 5, 2024",
+            "position": 3
+        },
+        {
+            "title": "NetEase Games",
+            "link": "https://www.neteasegames.com/m/news/media/",
+            "snippet": "NetEase Games Launches Globally with Influencer Recruitment Plan! 07 Jan 2021 The All-new adventure role-playing game, Mist Forest launched Globally Today.",
+            "position": 4
+        },
+        {
+            "title": "NetEase Games",
+            "link": "https://account.neteasegames.com/",
+            "snippet": "Utilize your NetEase Games account to seamlessly log in across Android, iOS, PC, and consoles. If the game supports cross-platform login, you can access ...",
+            "position": 5
+        },
+        {
+            "title": "NetEase Games",
+            "link": "https://www.neteasegames.com/m/news/game/index_7.html",
+            "snippet": "NetEase Games, the online games division of NetEase, Inc. (NASDAQ: NTES and HKEX: 9999), is a leading global developer and publisher of video game IP across ...",
+            "position": 6
+        },
+        {
+            "title": "Sword of Justice",
+            "link": "https://www.neteasegames.com/news/20250529/37000_1237450.html",
+            "snippet": "Coming to PC and mobile (iOS and Android), players can pre-register for the game right now! Sword of Justice Announcement trailer: https ...",
+            "date": "May 29, 2025",
+            "position": 7
+        },
+        {
+            "title": "NetEase Games Reveals “Planet Party Time”",
+            "link": "https://www.neteasegames.com/news/20250430/37000_1231945.html",
+            "snippet": "NetEase Games · NetEase Games Reveals “Planet Party Time”: A Free-To-Play Social Simulation/Party Game, With Steam Test Beginning May 15.",
+            "date": "Apr 29, 2025",
+            "position": 8
+        },
+        {
+            "title": "News",
+            "link": "https://www.neteasegames.com/news/game/",
+            "snippet": "NetEase Games, the online games division of NetEase, Inc. (NASDAQ: NTES and HKEX: 9999), is a leading global developer and publisher of video game IP across ...",
+            "sitelinks": [
+                {
+                    "title": "Corporate News",
+                    "link": "https://www.neteasegames.com/m/news/Corporate/"
+                },
+                {
+                    "title": "Marvel Rivals Unveils Details...",
+                    "link": "https://www.neteasegames.com/news/20250407/37000_1225248.html"
+                },
+                {
+                    "title": "08 Mar 2025 FragPunk, the...",
+                    "link": "https://www.neteasegames.com/news/20250307/37000_1217062.html"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Marvel Rivals",
+            "link": "https://www.neteasegames.com/news/20240328/37000_1145895.html",
+            "snippet": "Fast and Fun 6v6 Action with Ever-Changing Game Dynamics: With intricate environments, fast-paced gameplay, and ever-changing battlefields, ...",
+            "date": "Mar 27, 2024",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop reddit"
+        },
+        {
+            "query": "Game download dedicated desktop android"
+        }
+    ],
+    "credits": 1
+}

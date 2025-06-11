@@ -1,0 +1,92 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"performance\" OR \"streaming\" OR \"iprovement\") (blog OR \"press\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Registration",
+            "link": "https://press.capcom.com/User/Registration",
+            "snippet": "The Capcom USA Press Center allows ... Type (mark all that apply). Website - lifestyle/news. Blog site. Community site/forum. Content creator (non-streaming)",
+            "position": 1
+        },
+        {
+            "title": "Capcom Press Center - Video Policy",
+            "link": "https://press.capcom.com/Video-Policy",
+            "snippet": "... streaming sites. The associated step-by-step commentary should be ... Press Room. Home · Latest assets · Products · Contact us. More. Register ...",
+            "date": "Jan 6, 2021",
+            "position": 2
+        },
+        {
+            "title": "Response within RE NET to the termination of Stadia's services",
+            "link": "https://game.capcom.com/residentevil/sp/en/news_info-202212201200.html",
+            "snippet": "Please check the following link for more information on Google's announcement. https://blog.google/products/stadia/message-on-stadia-streaming-strategy/.",
+            "position": 3
+        },
+        {
+            "title": "UMBRELLA CORPS.",
+            "link": "http://game.capcom.com/manual/bioUC/en-us/page.php?cat=9&subcat=1&platform=pc",
+            "snippet": "Press the START button at the Online Menu or in a match lobby to open the ... Use the following settings to optimize your PC's performance. Reducing ...",
+            "position": 4
+        },
+        {
+            "title": "Wyvern Riding | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/Multi-Platform/en/xone/page/6/7",
+            "snippet": "While Wyvern Riding, press to dismount and Launch the Monster forward. The monster will take damage and topple over if it collides with a wall or an obstacle.",
+            "position": 5
+        },
+        {
+            "title": "Accepting Quests | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/Multi-Platform/en/xone/page/6/1",
+            "snippet": "Press once you've joined a quest, or press at the quest gate to signal that you're ready, and then wait. Once ready, you won't be able to eat or change gear ...",
+            "position": 6
+        },
+        {
+            "title": "Basic Controls by Weapon - Sunbreak Official Web Manual",
+            "link": "https://game.capcom.com/manual/Multi-Platform/en/xone/page/3/5",
+            "snippet": "New to Monster Hunter? Multiplayer. Starting the Game. Title Menu · Save Data · Online Data Access · Online Features · Streaming Installation ... : Press the left ...",
+            "position": 7
+        },
+        {
+            "title": "Monster Hunter Puzzles Privacy Policy",
+            "link": "https://mobile.capcom.com/mhpuzzle/?tl=privacypolicy",
+            "snippet": "The Company will use information obtained from the customer for improvement of ... press \"Details Confirmation\" button to proceed to the confirmation page.",
+            "position": 8
+        },
+        {
+            "title": "Resident Evil 4 - Quest VR Games",
+            "link": "https://game.capcom.com/residentevil/fr/news-1651.html?ref=news_link_to_prev",
+            "snippet": "Performance may vary based on user location, device battery, temperature, internet connectivity and interference from other devices, plus other factors.",
+            "sitelinks": [
+                {
+                    "title": "Juegos de VR de Quest",
+                    "link": "https://www.meta.com/es-es/experiences/resident-evil-4/2637179839719680/"
+                },
+                {
+                    "title": "Tienda de Meta",
+                    "link": "https://www.meta.com/es-mx/experiences/resident-evil-4/2637179839719680/"
+                },
+                {
+                    "title": "Juegos",
+                    "link": "https://www.meta.com/es-la/experiences/resident-evil-4/2637179839719680/"
+                }
+            ],
+            "rating": 4.7,
+            "ratingCount": 12947,
+            "currency": "$",
+            "price": 39.99,
+            "position": 9
+        },
+        {
+            "title": "Basic Controls: During Quests | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/Multi-Platform/en/xone/page/3/3",
+            "snippet": "New to Monster Hunter? Multiplayer. Starting the Game. Title Menu · Save Data · Online Data Access · Online Features · Streaming Installation ... : Press the left ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

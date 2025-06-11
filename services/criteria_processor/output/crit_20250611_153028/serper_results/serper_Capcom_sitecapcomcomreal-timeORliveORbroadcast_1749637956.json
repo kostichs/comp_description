@@ -1,0 +1,73 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"real-time\" OR \"live\" OR \"broadcast\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "The Resident Evil Brand/Services survey is now live! | News",
+            "link": "https://game.capcom.com/residentevil/sp/en/news-4061.html",
+            "snippet": "The Resident Evil Brand/Services survey is now live! ... Ambassadors who completed the recent survey have been awarded 10 Ambassador Points on 8/9/2024. ... and ...",
+            "position": 1
+        },
+        {
+            "title": "Online Co-Op Multiplayer",
+            "link": "https://game.capcom.com/manual/bio6/en/page-51.html",
+            "snippet": "Use Xbox LIVE® to engage in multiplayer with players from around the world. You will need a broadband connection in order to access the Xbox LIVE service.",
+            "position": 2
+        },
+        {
+            "title": "co-streamer",
+            "link": "https://sf.esports.capcom.com/cpt/co-streamer/",
+            "snippet": "License to Capcom. Capcom may record, reproduce, host, cache, display, perform, distribute, broadcast, transmit and stream any part of your co-stream for the ...",
+            "position": 3
+        },
+        {
+            "title": "Quick Match and Custom Game | Resident Evil Resistance ...",
+            "link": "https://game.capcom.com/manual/resistance/en/ps4/page/1/3",
+            "snippet": "Broadcast Mode. When playing a Custom Game, the Mastermind can enable Broadcast Mode and use voice chat to speak directly to the Survivors. Doing so will ...",
+            "position": 4
+        },
+        {
+            "title": "CAPCOM: RESIDENT EVILR 6 | Official Web Manual",
+            "link": "https://game.capcom.com/manual/bio6/en/page-11.html",
+            "snippet": "SPECIAL FEATURES. View special content. Xbox LIVE Marketplace / PlayStation®Store. Download additional content.",
+            "position": 5
+        },
+        {
+            "title": "schedule",
+            "link": "https://sf.esports.capcom.com/cpt/2023/schedule/",
+            "snippet": "The tournament will start at 12:00 local time. From 17:00 local time, we will broadcast live on \"CAPCOM Fighters\". ONLINE. 8/12-13: OCEANIA.",
+            "position": 6
+        },
+        {
+            "title": "Capcom Video Policy",
+            "link": "https://www.capcom.com/video-policy/",
+            "snippet": "The associated step-by-step commentary should be tied to the live game play being shown, and should provide instructional or educational value, or other ...",
+            "position": 7
+        },
+        {
+            "title": "[Once a day] Aim for the full completion! Ambassador Card ...",
+            "link": "https://game.capcom.com/residentevil/sp/en/news-3232.html",
+            "snippet": "The Resident Evil Brand/Services survey is now live! Next Article. The Resident Evil figure survey is now live! Related Articles. [Special Announcement] Reset ...",
+            "position": 8
+        },
+        {
+            "title": "RESIDENT EVIL.NET | Resident Evil Portal",
+            "link": "https://game.capcom.com/residentevil/sp/uk/onlineevent-15244-ranking.html",
+            "snippet": "Iceman-live-de. Score:Lv:1/11'17\"15. Rank: 10. ポイント10倍かもね! Score:Lv:1/11'28\"19. <<; 1; 2 · 3 · 4 · >>. Related Events. Ongoing; Time Remaining::514:11.",
+            "position": 9
+        },
+        {
+            "title": "Iceborne Beta Official Web Manual | Multiplayer",
+            "link": "http://game.capcom.com/manual/MHWI/pre/en/xone/page/3/2",
+            "snippet": "To play online multiplayer, you must connect your Xbox One console to the internet, and sign in to Xbox Live. You must also be an Xbox Live Gold member to play ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

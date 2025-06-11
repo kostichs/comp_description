@@ -1,0 +1,73 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"global\" OR \"worldwide\" OR \"coverage\" OR \"international\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "GLOBAL STATS - RESIDENT EVIL 4",
+            "link": "https://game.capcom.com/residentevil/en/fourstats.html",
+            "snippet": "View other player's play progress worldwide in Global Stats! Check out this fun and intriguing play data! ... RESIDENT EVIL.NET. Expand your Resident Evil playing ...",
+            "position": 1
+        },
+        {
+            "title": "GLOBAL STATS - Resident Evil 2",
+            "link": "https://game.capcom.com/residentevil/sp/en/twostats.html",
+            "snippet": "Compete With Players Worldwide! ... online events, rankings, and challenges! Check Out Global Play Stats! View other player's play progress worldwide in Global ...",
+            "position": 2
+        },
+        {
+            "title": "GLOBAL STATS | Resident Evil Village WITH ...",
+            "link": "https://game.capcom.com/residentevil/en/villagestats.html",
+            "snippet": "View other player's play progress worldwide in Global Stats! Check out this fun and intriguing play data! ... RESIDENT EVIL.NET. Expand your Resident Evil playing ...",
+            "position": 3
+        },
+        {
+            "title": "RESIDENT EVIL 7 biohazard - GLOBAL STATS",
+            "link": "https://game.capcom.com/residentevil/uk/sevenrecord.html",
+            "snippet": "View other player's play progress worldwide in Global Stats! Check out this fun and intriguing play data! ... RESIDENT EVIL.NET. Expand your Resident Evil playing ...",
+            "position": 4
+        },
+        {
+            "title": "Resident Evil Resistance - WORLD RECORDS",
+            "link": "https://game.capcom.com/residentevil/sp/en/resistancestats.html",
+            "snippet": "GLOBAL / Worldwide Participants. 1218821: Participants within the 7 days. 2417 ... View other player's play progress worldwide in Global Stats! Check out this fun ...",
+            "position": 5
+        },
+        {
+            "title": "Resident Evil RE:VERSE - GLOBAL STATS",
+            "link": "https://game.capcom.com/residentevil/uk/reversestats.html",
+            "snippet": "View other player's play progress worldwide in Global Stats! Check out this fun and intriguing play data! ... RESIDENT EVIL.NET. Expand your Resident Evil playing ...",
+            "position": 6
+        },
+        {
+            "title": "GLOBAL STATS - RESIDENT EVIL 4",
+            "link": "https://game.capcom.com/residentevil/en/fourstats.html?category=2",
+            "snippet": "Challenge players worldwide in online events, rankings, and challenges! Check Out Global Play Stats! View other player's play progress worldwide in Global Stats ...",
+            "position": 7
+        },
+        {
+            "title": "GLOBAL STATS - Resident Evil Portal",
+            "link": "https://game.capcom.com/residentevil/sp/es/fourstats.html?category=2",
+            "snippet": "Challenge players worldwide in online events, rankings, and challenges! Check Out Global Play Stats! View other player's play progress worldwide in Global Stats ...",
+            "position": 8
+        },
+        {
+            "title": "RESIDENT EVIL.NET | Resident Evil Portal",
+            "link": "https://game.capcom.com/residentevil/en/worldrecord.html?name=2&title_id=1&hard_type=1&record_type=extra",
+            "snippet": "Challenge players worldwide in online events, rankings, and challenges! Check Out Global Play Stats! View other player's play progress worldwide in Global Stats ...",
+            "position": 9
+        },
+        {
+            "title": "International Coalition Forces | The Character Guides",
+            "link": "https://game.capcom.com/cfn/sfv/column/131285?lang=en",
+            "snippet": "International Coalition Forces ... Hello everyone! Today let's look at some nefarious scoundrels who have have managed to sneak into Shadaloo's secret base! These ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,108 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"real-time\" OR \"live\" OR \"broadcast\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Minecraft Live",
+            "link": "https://www.minecraft.net/en-us/live",
+            "snippet": "Minecraft Live is a virtual event that's accessed around the world. It's packed with news about our games, content creators, and more.",
+            "sitelinks": [
+                {
+                    "title": "Minecraft LIVE 2025 Recap",
+                    "link": "https://www.minecraft.net/en-us/article/minecraft-live-2025-recap"
+                },
+                {
+                    "title": "Minecraft LIVE Is back!",
+                    "link": "https://www.minecraft.net/en-us/article/minecraft-live-is-back-2025"
+                },
+                {
+                    "title": "Vibrant Visuals",
+                    "link": "https://www.minecraft.net/en-us/article/minecraft-vibrant-visuals"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Minecraft LIVE Is back 2025",
+            "link": "https://www.minecraft.net/en-us/article/minecraft-live-is-back-2025",
+            "snippet": "Minecraft LIVE is the show to watch to learn about everything happening in the world of Minecraft! Our next one will broadcast at 1PM ET on Saturday March 22!",
+            "date": "Mar 5, 2025",
+            "position": 2
+        },
+        {
+            "title": "A Minecraft Movie Live Event",
+            "link": "https://www.minecraft.net/en-us/article/a-minecraft-movie-live-event",
+            "snippet": "In this live event, it's up to you and other brave players to fight back against the piglins' onslaught! Plus, if you complete a total of five challenges and ...",
+            "date": "Mar 25, 2025",
+            "position": 3
+        },
+        {
+            "title": "Minecraft LIVE 2025 Recap",
+            "link": "https://www.minecraft.net/en-us/article/minecraft-live-2025-recap",
+            "snippet": "Minecraft LIVE is back! · Read on for all the details or just click the video above to watch in real-time. · Game Drops explained · Spring to Life!",
+            "date": "Mar 22, 2025",
+            "position": 4
+        },
+        {
+            "title": "Minecraft Live",
+            "link": "https://shop.minecraft.net/collections/minecraft-live",
+            "snippet": "You voted during Minecraft Live, and now you can sport the winner with exclusive designs from the Minecraft Shop. This collection features a Winner hoodie, ...",
+            "position": 5
+        },
+        {
+            "title": "Minecraft LIVE Is back",
+            "link": "https://www.minecraft.net/en-us/article/minecraft-live-is-back",
+            "snippet": "Revealing Minecraft LIVE 2024. Minecraft LIVE will be broadcast in English, along with English Audio Descriptions, American Sign Language ...",
+            "date": "Sep 18, 2024",
+            "position": 6
+        },
+        {
+            "title": "LIVE",
+            "link": "https://www.minecraft.net/en-us/marketplace/pdp/delisoft-studios/live/fd5d1448-c0b0-464e-bfe1-01d223d36e4f",
+            "snippet": "Bring the excitement of streaming to your adventures with LIVE! This collection features 12 unique and creative skins inspired by the personalities and ...",
+            "rating": 4.3,
+            "ratingCount": 6,
+            "position": 7
+        },
+        {
+            "title": "How to Live Inside a Bee?",
+            "link": "https://www.minecraft.net/en-us/marketplace/pdp?id=f19ee2a7-f0b3-4343-bf96-91a42d6ed529",
+            "snippet": "Have you ever wanted to live inside of a bee? Well now you can! Explore a world full of buzzy bees or befriend the rideable extra large bee.",
+            "rating": 4.3,
+            "ratingCount": 35,
+            "position": 8
+        },
+        {
+            "title": "Training Courses for Minecraft Educators",
+            "link": "https://education.minecraft.net/en-us/resources/training-for-educators",
+            "snippet": "EXPLORE TRAINING ON-DEMAND OR WITH A LIVE COHORT. Our professional learning program equips you to incorporate Minecraft Education into your teaching practice ...",
+            "position": 9
+        },
+        {
+            "title": "Live in a Dog, with a Dog!",
+            "link": "https://www.minecraft.net/en-us/marketplace/pdp/crackedcubes/live-in-a-dog,-with-a-dog!/183e6175-76ce-4331-8028-03ca8d32b401",
+            "snippet": "Woof! Have you ever wanted to live in a giant dog with your own pet dog? Embark on your overworld journey with your new best friend in tow.",
+            "rating": 4.1,
+            "ratingCount": 27,
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Real time live broadcast youtube"
+        },
+        {
+            "query": "Real time live broadcast free"
+        },
+        {
+            "query": "Real time live broadcast app"
+        }
+    ],
+    "credits": 1
+}

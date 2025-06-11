@@ -1,0 +1,78 @@
+{
+    "searchParameters": {
+        "q": "site:krafton.com (\"video\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "ANTICIPATED LIFE SIMULATION GAME INZOI REVEALS ...",
+            "link": "https://krafton.com/en/news/press/anticipated-life-simulation-game-inzoi-reveals-new-features-in-development-roadmap-video/",
+            "snippet": "In a new video, inZOI Producer and Director Hyungjun 'Kjun' Kim showcases the game's development direction, key features, and the development process.",
+            "date": "Apr 30, 2024",
+            "position": 1
+        },
+        {
+            "title": "PUBG Asset Usage and Video Agreement",
+            "link": "https://press.krafton.com/PUBG-Asset-Usage-and-Video-Agreement",
+            "snippet": "Close video player. End of video player. Close lightbox. View previous ... Asset Usage and Video Agreement · KRAFTON Press Room. © 2025 KRAFTON, Inc. All ...",
+            "position": 2
+        },
+        {
+            "title": "Subnautica 2's First Dev Vlog Kicks Off the Road to Early ...",
+            "link": "https://krafton.com/en/news/press/subnautica-2s-first-dev-vlog-kicks-off-the-road-to-early-access/",
+            "snippet": "In the video, Design Lead Anthony Gallegos invites new and returning players to join the Subnautica 2 Early Access journey. Unknown Worlds is also sharing ...",
+            "position": 3
+        },
+        {
+            "title": "KRAFTON INVESTS IN SHORT-FORM VIDEO PLATFORM ...",
+            "link": "https://www.krafton.com/en/news/press/krafton-invests-in-short-form-video-platform-spoon-labs-with-focus-on-dramatic-content/",
+            "snippet": "KRAFTON Inc. is making an equity investment of KRW 120 billion in Spoon Labs (CEO Hyukjae Choi), a global short-form video platform that specializes in ...",
+            "date": "Sep 11, 2024",
+            "position": 4
+        },
+        {
+            "title": "NEW STATE LORE CINEMATIC VIDEO SET IN THE PUBG ...",
+            "link": "https://press.krafton.com/KRAFTON-RELEASES-FALL-OF-TROI-A-PUBG-NEW-STATE-LORE-CINEMATIC-VIDEO-SE",
+            "snippet": "31, 2021 - KRAFTON, Inc. today released “Fall of Troi,” a lore-based video that ties directly to the events of PUBG: NEW STATE in the year 2050.",
+            "date": "Aug 31, 2021",
+            "position": 5
+        },
+        {
+            "title": "video-006 | KRAFTON",
+            "link": "https://krafton.com/en/home/attachment/video-006/",
+            "snippet": "video-006. Date2021. 07. 15. https://krafton.com/wp-content/uploads/2021/06/video-006.mp4. Attachments. No attachments.",
+            "position": 6
+        },
+        {
+            "title": "KRAFTON SHOWCASED AI MODEL 'CPC' BUILT WITH ...",
+            "link": "https://press.krafton.com/KRAFTON-SHOWCASED-AI-MODEL-CPC-BUILT-WITH-NVIDIA-ACE",
+            "snippet": "KRAFTON also presented video demonstrations of CPC technology in action within its games. In the case of PUBG IP Franchise, the video revealed 'PUBG Ally ...",
+            "position": 7
+        },
+        {
+            "title": "video-007 | KRAFTON",
+            "link": "https://krafton.com/en/home/attachment/video-007/",
+            "snippet": "Media error: Format(s) not supported or source(s) not found. Download File: https://krafton.com/wp-content/uploads/2021/06/video-007.mp4?_=1.",
+            "position": 8
+        },
+        {
+            "title": "PUBG UNIVERSE | KRAFTON",
+            "link": "https://www.krafton.com/en/more-experience/pubg-universe/",
+            "snippet": "Sergei Kalimnick, the boy who would one day create the Battlegrounds and learn that Death makes no mistakes. Watch Video. SHORT FILM. GROUND ...",
+            "date": "Nov 2, 2022",
+            "position": 9
+        },
+        {
+            "title": "STRIKING DISTANCE STUDIOS GOES ROGUE WITH ITS ...",
+            "link": "https://press.krafton.com/STRIKING-DISTANCE-STUDIOS-GOES-ROGUE-WITH-ITS-NEW-GAME-REDACTED",
+            "snippet": "Your browser can't play this video. Learn more. An error occurred. Try watching this video on www.youtube.com, or enable JavaScript if it is ...",
+            "date": "Aug 22, 2024",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

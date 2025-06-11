@@ -1,0 +1,78 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"video\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Make a Regrouping Video",
+            "link": "https://education.minecraft.net/en-us/lessons/make-a-regrouping-video",
+            "snippet": "Make a Regrouping Video. Students will use the blocks in the game to solve problems with regrouping and then make a video about it.",
+            "date": "Sep 15, 2023",
+            "position": 1
+        },
+        {
+            "title": "Round Numbers Video",
+            "link": "https://education.minecraft.net/en-us/lessons/round-numbers-video",
+            "snippet": "Round Numbers Video. Students will learn how to round to the nearest 10s and 100s by building math models in Minecraft. subjects.",
+            "date": "Sep 15, 2023",
+            "position": 2
+        },
+        {
+            "title": "AI Adventurers",
+            "link": "https://education.minecraft.net/it-it/lessons/ai-adventurers",
+            "snippet": "Get ready for AI Adventurers, our new animated video series that's sure to capture young imaginations! Join Agent and Chicken, two beloved ...",
+            "date": "Oct 7, 2024",
+            "position": 3
+        },
+        {
+            "title": "Bedrock Edition Video Settings and Performance",
+            "link": "https://help.minecraft.net/hc/en-us/articles/4410246518669-Optimizing-Performance-in-Minecraft-",
+            "snippet": "Adjust advanced video settings in Minecraft: Bedrock Edition. Launch Minecraft and select Settings > Video to access settings. Try experimenting with these ...",
+            "position": 4
+        },
+        {
+            "title": "Welcome to the Minecraft Official Site | Minecraft",
+            "link": "https://www.minecraft.net/",
+            "snippet": "Explore your own unique worlds, survive the night, and create anything you can imagine! Watch the sample video of Minecraft gameplay above.",
+            "position": 5
+        },
+        {
+            "title": "Minecraft Music Video",
+            "link": "https://education.minecraft.net/en-us/lessons/minecraft-music-video",
+            "snippet": "Students will collaborate to write, edit, produce, and perform in a Minecraft video. They will learn how to constructively work together.",
+            "date": "Dec 21, 2016",
+            "position": 6
+        },
+        {
+            "title": "New Video Setting",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/36527001245325-New-Video-Setting",
+            "snippet": "New Video Setting. Please add a new setting for Borderless Window instead of just either fullscreen and windowed. For anyone that streams the ...",
+            "date": "May 11, 2025",
+            "position": 7
+        },
+        {
+            "title": "Lights, Camera, Minecraft! (Using OBS to Capture Student ...",
+            "link": "https://education.minecraft.net/en-us/blog/lights--camera--minecraft-using-obs-to-capture-student-work",
+            "snippet": "After the student has recorded a video, use video editing software like iMovie (or similar) to make it presentable for YouTube. Here you can edit out bloopers, ...",
+            "position": 8
+        },
+        {
+            "title": "Troubleshooting Video and Graphics Issues in Minecraft",
+            "link": "https://help.minecraft.net/hc/en-us/articles/4409137348877-Get-help-with-Minecraft-Java-Edition-video-and-graphics-issues",
+            "snippet": "If you have performance issues or receive an error message saying Pixel format not accelerated, you may have outdated video card drivers or software.",
+            "position": 9
+        },
+        {
+            "title": "Learn to play Minecraft Education video playlist",
+            "link": "https://edusupport.minecraft.net/hc/en-us/articles/360047116612-Learn-to-play-Minecraft-Education-video-playlist",
+            "snippet": "Learn to play Minecraft Education · Learn to play Minecraft Education video playlist · Try Minecraft Education for free · Sign Into Minecraft ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}
