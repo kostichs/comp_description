@@ -143,9 +143,17 @@ def process_single_company_for_product(args):
                 audience_results["final_status"] = "Failed Mandatory"
                 product_results["detailed_results"][audience] = audience_results
                 
-                # Create NOT QUALIFIED record for failed mandatory
+                # Create detailed NOT QUALIFIED record for failed mandatory
                 failed_mandatory_record = record.copy()
-                failed_mandatory_record["Qualified_Products"] = f"NOT QUALIFIED - Failed Mandatory Criteria for {audience}"
+                
+                # Формируем детальный текст с иконками
+                details = format_mandatory_details_with_icons(mandatory_detailed)
+                text_parts = [f"{audience}:"]
+                if details:
+                    text_parts.extend(details)
+                qualified_text = "\n".join(text_parts)
+                
+                failed_mandatory_record["Qualified_Products"] = qualified_text
                 failed_mandatory_record["All_Results"] = product_results
                 results_list.append(failed_mandatory_record)
                 continue
@@ -858,3 +866,19 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
     except Exception as e:
         log_error(f"❌ Критическая ошибка параллельного анализа: {e}")
         raise 
+
+# Новая общая функция для форматирования mandatory критериев с иконками
+def format_mandatory_details_with_icons(details):
+    formatted_list = []
+    if not details:
+        return formatted_list
+    for item in details:
+        text = item.get("criteria_text", "N/A")
+        result = item.get("result", "unknown").lower()
+        icon = "⚠️"
+        if result == "pass":
+            icon = "✅"
+        elif result == "fail":
+            icon = "❌"
+        formatted_list.append(f"  {icon} {text}")
+    return formatted_list 

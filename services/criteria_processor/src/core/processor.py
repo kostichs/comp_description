@@ -153,24 +153,12 @@ async def process_company_all_products_async(company_data, products_data, genera
                     audience_results["final_status"] = "Failed Mandatory"
                     
                     # CREATE TEXT RESULT FOR FAILED MANDATORY
-                    mandatory_details = []
-                    for mandatory_result in mandatory_detailed:
-                        criteria_text = mandatory_result["criteria_text"]
-                        result = mandatory_result["result"]
-                        mandatory_details.append(f"  • {criteria_text}: {result}")
+                    details = format_mandatory_details_with_icons(mandatory_detailed)
+                    text_parts = [f"{audience}:"]
+                    if details:
+                        text_parts.extend(details)
                     
-                    failed_text_parts = [
-                        f"FAILED MANDATORY: {audience}",
-                        f"Mandatory Status: Failed",
-                        "Mandatory Results:"
-                    ]
-                    
-                    if mandatory_details:
-                        failed_text_parts.extend(mandatory_details)
-                    else:
-                        failed_text_parts.append("No detailed mandatory results available")
-                    
-                    failed_text = "\n".join(failed_text_parts)
+                    failed_text = "\n".join(text_parts)
                     
                     # Add to Qualified_Products column
                     if record["Qualified_Products"] == "NOT QUALIFIED":
@@ -683,24 +671,12 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
                         audience_results["final_status"] = "Failed Mandatory"
                         
                         # CREATE TEXT RESULT FOR FAILED MANDATORY
-                        mandatory_details = []
-                        for mandatory_result in mandatory_detailed:
-                            criteria_text = mandatory_result["criteria_text"]
-                            result = mandatory_result["result"]
-                            mandatory_details.append(f"  • {criteria_text}: {result}")
+                        details = format_mandatory_details_with_icons(mandatory_detailed)
+                        text_parts = [f"{audience}:"]
+                        if details:
+                            text_parts.extend(details)
                         
-                        failed_text_parts = [
-                            f"FAILED MANDATORY: {audience}",
-                            f"Mandatory Status: Failed",
-                            "Mandatory Results:"
-                        ]
-                        
-                        if mandatory_details:
-                            failed_text_parts.extend(mandatory_details)
-                        else:
-                            failed_text_parts.append("No detailed mandatory results available")
-                        
-                        failed_text = "\n".join(failed_text_parts)
+                        failed_text = "\n".join(text_parts)
                         
                         # Add to Qualified_Products column
                         if record["Qualified_Products"] == "NOT QUALIFIED":
@@ -827,4 +803,20 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
         
     except Exception as e:
         log_error(f"Критическая ошибка анализа: {e}")
-        raise 
+        raise
+
+# Новая общая функция для форматирования mandatory критериев с иконками
+def format_mandatory_details_with_icons(details):
+    formatted_list = []
+    if not details:
+        return formatted_list
+    for item in details:
+        text = item.get("criteria_text", "N/A")
+        result = item.get("result", "unknown").lower()
+        icon = "⚠️"
+        if result == "pass":
+            icon = "✅"
+        elif result == "fail":
+            icon = "❌"
+        formatted_list.append(f"  {icon} {text}")
+    return formatted_list 

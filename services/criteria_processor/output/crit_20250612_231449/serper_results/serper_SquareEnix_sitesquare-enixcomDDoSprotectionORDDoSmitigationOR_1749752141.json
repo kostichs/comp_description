@@ -1,0 +1,82 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"DDoS protection\" OR \"DDoS mitigation\" OR \"protected against DDoS\" OR \"attack prevention\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Currently Unplayable... - FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/498034",
+            "snippet": "Currently Unplayable... The servers are crashing every 1-5min, unable to do anything - please, get some DDoS protection or something -.",
+            "date": "May 7, 2024",
+            "position": 1
+        },
+        {
+            "title": "DDOS attack - FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=6456683",
+            "snippet": "No MMO is going to invest hundreds of millions into DDoS protection when these attacks don't cost them anywhere near that much. The big tech ...",
+            "date": "May 10, 2024",
+            "position": 2
+        },
+        {
+            "title": "Is Square Enix DDoSing themselves ... - FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/510586",
+            "snippet": "DDoS \"Protection\" is more about mitigating the effects of it rather than actually preventing it. 2) The ultimate equation, is it even worth ...",
+            "date": "Sep 15, 2024",
+            "position": 3
+        },
+        {
+            "title": "Card Unavailable and DDoS Attack...What a lovey day to be in Eorzea.",
+            "link": "https://forum.square-enix.com/ffxiv/threads/498029",
+            "snippet": "Get your assets offline, and FIX THE PROBLEM. The only time you can truly test if ddos mitigation works, is if you dont put your servers down.",
+            "date": "May 7, 2024",
+            "position": 4
+        },
+        {
+            "title": "Booted from Primal - FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/514429",
+            "snippet": "This yet another failure of ddos mitigation? Kisa34's Avatar · Kisa34 said:Player 01-06-2025 10:19 AM. (2). Yep. Every single NA Data Center is ...",
+            "date": "Jan 6, 2025",
+            "position": 5
+        },
+        {
+            "title": "Servers down? - FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/505548/?page=6",
+            "snippet": "They all went down at once (which is not how a DDoS attack typically unfolds, but perhaps it has to do with how their DDoS mitigation works) ...",
+            "date": "Jul 16, 2024",
+            "position": 6
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum - Square Enix",
+            "link": "https://forum.square-enix.com/ffxiv/threads/511300",
+            "snippet": "I don't know what DDOS protection they have or lacking, but it's difficult to 100% protect yourself from DDOS attacks. Eraden's Avatar.",
+            "date": "Oct 5, 2024",
+            "position": 7
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum - Square Enix",
+            "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=2389258",
+            "snippet": "I'm sure all of these targeted companies are investing as much on DDoS mitigation as is wise for their business to do. With how much money they milk from ...",
+            "position": 8
+        },
+        {
+            "title": "The constant disconnects - FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/334140/?page=17",
+            "snippet": "... DDoS protection scheme. Fragile-Dream's Avatar · Fragile-Dream said:Player 07-05-2017 10:32 PM. (1). This sadly doesnt fixes my issue. I am ...",
+            "date": "Jul 5, 2017",
+            "position": 9
+        },
+        {
+            "title": "Square quit blaming 2002 on the user's internet connection and take ...",
+            "link": "https://forum.square-enix.com/ffxiv/threads/449895",
+            "snippet": "Not sure if this is supposed a ddos mitigation mechanism, but it is just taking a big toll on their customers. The client itself disconnects ...",
+            "date": "Dec 12, 2021",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

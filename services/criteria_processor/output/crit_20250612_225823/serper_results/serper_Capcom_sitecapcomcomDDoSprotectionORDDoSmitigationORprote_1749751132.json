@@ -1,0 +1,19 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"DDoS protection\" OR \"DDoS mitigation\" OR \"protected against DDoS\" OR \"attack prevention\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Monster Hunter: World Beta Test - Beginner's Guide",
+            "link": "https://game.capcom.com/manual/MHW/pre/en/ps4/page/4/1",
+            "snippet": "This melody effect increases your movement speed. Play it as an encore to add deflected attack prevention. Health Increase. Health Increase. Wind Pressure ...",
+            "position": 1
+        }
+    ],
+    "credits": 1
+}
