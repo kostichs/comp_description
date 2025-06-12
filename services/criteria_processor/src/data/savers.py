@@ -18,7 +18,7 @@ from src.utils.config import OUTPUT_DIR
 from src.utils.logging import log_info
 from src.utils.encoding_handler import save_csv_with_encoding, save_text_with_encoding
 
-def save_results(results, product, timestamp=None, session_id=None, write_to_hubspot_criteria=False):
+def save_results(results, product, timestamp=None, session_id=None, write_to_hubspot_criteria=False, original_file_path=None):
     """Save results to both JSON and CSV files in session-specific directory"""
     if not timestamp:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -144,6 +144,41 @@ def save_results(results, product, timestamp=None, session_id=None, write_to_hub
             log_info(f"❌ Ошибка HubSpot интеграции: {e}")
     else:
         log_info("📝 HubSpot интеграция отключена")
+    
+    # Объединение исходного файла с результатами
+    if original_file_path and os.path.exists(original_file_path):
+        try:
+            # Импортируем функцию объединения из основного проекта
+            sys.path.insert(0, project_root)
+            from src.data_io import merge_original_with_results
+            
+            # Создаем путь для объединенного файла
+            merged_file_path = csv_path.replace('.csv', '_merged.csv')
+            
+            # Объединяем исходный файл с результатами
+            merge_success = merge_original_with_results(
+                original_file_path=original_file_path,
+                results_file_path=csv_path,
+                output_file_path=merged_file_path
+            )
+            
+            if merge_success:
+                log_info(f"📋 Создан объединенный файл: {merged_file_path}")
+                # Заменяем основной файл результатов объединенным
+                import shutil
+                shutil.move(merged_file_path, csv_path)
+                log_info(f"📋 Основной файл результатов заменен объединенным: {csv_path}")
+            else:
+                log_info("⚠️ Не удалось создать объединенный файл, оставляем исходный файл результатов")
+                
+        except Exception as e:
+            log_info(f"❌ Ошибка при объединении файлов: {e}")
+            log_info("⚠️ Оставляем исходный файл результатов без объединения")
+    else:
+        if original_file_path:
+            log_info(f"⚠️ Исходный файл не найден: {original_file_path}")
+        else:
+            log_info("📝 Путь к исходному файлу не указан - пропускаем объединение")
     
     return json_path, csv_path
 

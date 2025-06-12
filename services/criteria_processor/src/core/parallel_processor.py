@@ -804,7 +804,7 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
         
         # Save results
         log_info("💾 Сохраняем результаты...")
-        json_path, csv_path = save_results(all_results, "PARALLEL_BY_COMPANIES", session_id=session_id)
+        json_path, csv_path = save_results(all_results, "PARALLEL_BY_COMPANIES", session_id=session_id, original_file_path=companies_file)
         
         # Finalize search data saving
         if session_id:

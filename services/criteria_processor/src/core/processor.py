@@ -381,7 +381,7 @@ async def run_analysis_optimized_async(companies_file=None, load_all_companies=F
         
         # Save results
         log_info("💾 Сохраняем результаты...")
-        json_path, csv_path = save_results(all_results, "OPTIMIZED_ALL_PRODUCTS", session_id=session_id)
+        json_path, csv_path = save_results(all_results, "OPTIMIZED_ALL_PRODUCTS", session_id=session_id, original_file_path=companies_file)
         
         # Finalize search data saving
         if session_id:
@@ -481,7 +481,7 @@ async def run_analysis_super_optimized_async(companies_file=None, load_all_compa
         
         # Save results
         log_info("💾 Сохраняем результаты...")
-        json_path, csv_path = save_results(all_results, "SUPER_OPTIMIZED_ALL_PRODUCTS", session_id=session_id)
+        json_path, csv_path = save_results(all_results, "SUPER_OPTIMIZED_ALL_PRODUCTS", session_id=session_id, original_file_path=companies_file)
         
         # Finalize search data saving
         if session_id:
@@ -808,7 +808,7 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
         
         # Save results
         log_info("Сохраняем результаты...")
-        json_path, csv_path = save_results(all_results, "ALL_PRODUCTS", session_id=session_id)
+        json_path, csv_path = save_results(all_results, "ALL_PRODUCTS", session_id=session_id, original_file_path=companies_file)
         
         # Finalize search data saving
         if session_id:

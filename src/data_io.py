@@ -437,4 +437,77 @@ def save_structured_data_incrementally(result: Dict[str, Any], output_path: str)
         return True
     except Exception as e:
         logging.error(f"Error saving structured data to {output_path}: {e}")
+        return False
+
+def merge_original_with_results(original_file_path: str, results_file_path: str, output_file_path: str) -> bool:
+    """
+    Объединяет исходный файл с результатами обработки.
+    Исходные колонки остаются на своих местах, результаты добавляются в новые колонки.
+    
+    Args:
+        original_file_path: Путь к исходному файлу
+        results_file_path: Путь к файлу с результатами
+        output_file_path: Путь для сохранения объединенного файла
+        
+    Returns:
+        bool: True если объединение прошло успешно
+    """
+    try:
+        # Загружаем исходный файл
+        if original_file_path.lower().endswith(('.xlsx', '.xls')):
+            original_df = pd.read_excel(original_file_path)
+        else:
+            original_df = pd.read_csv(original_file_path, encoding='utf-8-sig')
+        
+        # Загружаем файл с результатами
+        if results_file_path.lower().endswith(('.xlsx', '.xls')):
+            results_df = pd.read_excel(results_file_path)
+        else:
+            results_df = pd.read_csv(results_file_path, encoding='utf-8-sig')
+        
+        logging.info(f"Исходный файл: {original_df.shape[0]} строк, {original_df.shape[1]} колонок")
+        logging.info(f"Файл результатов: {results_df.shape[0]} строк, {results_df.shape[1]} колонок")
+        
+        # Проверяем, что количество строк совпадает
+        if original_df.shape[0] != results_df.shape[0]:
+            logging.warning(f"Количество строк не совпадает: исходный {original_df.shape[0]}, результаты {results_df.shape[0]}")
+            # Берем минимальное количество строк
+            min_rows = min(original_df.shape[0], results_df.shape[0])
+            original_df = original_df.iloc[:min_rows]
+            results_df = results_df.iloc[:min_rows]
+        
+        # Создаем объединенный DataFrame
+        # Начинаем с исходных данных
+        merged_df = original_df.copy()
+        
+        # Добавляем колонки из результатов, избегая дублирования
+        for col in results_df.columns:
+            if col not in merged_df.columns:
+                merged_df[col] = results_df[col]
+            else:
+                # Если колонка уже существует, добавляем с суффиксом
+                new_col_name = f"{col}_result"
+                counter = 1
+                while new_col_name in merged_df.columns:
+                    new_col_name = f"{col}_result_{counter}"
+                    counter += 1
+                merged_df[new_col_name] = results_df[col]
+                logging.info(f"Колонка '{col}' переименована в '{new_col_name}' для избежания дублирования")
+        
+        # Создаем директорию если её нет
+        os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+        
+        # Сохраняем объединенный файл
+        if output_file_path.lower().endswith(('.xlsx', '.xls')):
+            merged_df.to_excel(output_file_path, index=False)
+        else:
+            merged_df.to_csv(output_file_path, index=False, encoding='utf-8-sig')
+        
+        logging.info(f"Объединенный файл сохранен: {output_file_path}")
+        logging.info(f"Итоговый размер: {merged_df.shape[0]} строк, {merged_df.shape[1]} колонок")
+        
+        return True
+        
+    except Exception as e:
+        logging.error(f"Ошибка при объединении файлов: {e}")
         return False 

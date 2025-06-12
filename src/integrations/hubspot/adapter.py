@@ -315,6 +315,9 @@ class HubSpotPipelineAdapter(PipelineAdapter):
         # Запускаем стандартную обработку файла с нормализацией URL и удалением дубликатов
         logger.info(f"Normalizing URLs and removing duplicates in input file: {input_file_path}")
         
+        # ВАЖНО: Сохраняем путь к ОРИГИНАЛЬНОМУ файлу для объединения
+        original_input_file_path = str(input_file_path)
+        
         try:
             # Создаем временный файл для обработанных данных
             processed_file_path = session_dir_path / f"processed_{Path(input_file_path).name}"
@@ -576,6 +579,33 @@ class HubSpotPipelineAdapter(PipelineAdapter):
             
             all_results.extend(std_results)
             # Результаты уже сохранены в CSV внутри process_companies_batch
+
+        # Объединение исходного файла с результатами
+        try:
+            from src.data_io import merge_original_with_results
+            
+            # Создаем путь для объединенного файла
+            merged_file_path = str(output_csv_path).replace('.csv', '_merged.csv')
+            
+            # Объединяем исходный файл с результатами
+            merge_success = merge_original_with_results(
+                original_file_path=original_input_file_path,
+                results_file_path=str(output_csv_path),
+                output_file_path=merged_file_path
+            )
+            
+            if merge_success:
+                logger.info(f"Создан объединенный файл: {merged_file_path}")
+                # Заменяем основной файл результатов объединенным
+                import shutil
+                shutil.move(merged_file_path, str(output_csv_path))
+                logger.info(f"Основной файл результатов заменен объединенным: {output_csv_path}")
+            else:
+                logger.warning("Не удалось создать объединенный файл, оставляем исходный файл результатов")
+                
+        except Exception as e:
+            logger.error(f"Ошибка при объединении файлов: {e}")
+            logger.warning("Оставляем исходный файл результатов без объединения")
 
         logger.info(f"HubSpotPipelineAdapter finished. Total successes: {success_count}, Total failures: {failure_count}")
         return success_count, failure_count, all_results

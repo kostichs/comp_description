@@ -409,7 +409,34 @@ class PipelineAdapter:
             write_to_hubspot=write_to_hubspot
         )
         
-        # 4. Подсчет успехов/ошибок
+        # 4. Объединение исходного файла с результатами
+        try:
+            from src.data_io import merge_original_with_results
+            
+            # Создаем путь для объединенного файла
+            merged_file_path = str(output_csv_path).replace('.csv', '_merged.csv')
+            
+            # Объединяем исходный файл с результатами
+            merge_success = merge_original_with_results(
+                original_file_path=str(input_file_path),
+                results_file_path=str(output_csv_path),
+                output_file_path=merged_file_path
+            )
+            
+            if merge_success:
+                logger.info(f"Создан объединенный файл: {merged_file_path}")
+                # Заменяем основной файл результатов объединенным
+                import shutil
+                shutil.move(merged_file_path, str(output_csv_path))
+                logger.info(f"Основной файл результатов заменен объединенным: {output_csv_path}")
+            else:
+                logger.warning("Не удалось создать объединенный файл, оставляем исходный файл результатов")
+                
+        except Exception as e:
+            logger.error(f"Ошибка при объединении файлов: {e}")
+            logger.warning("Оставляем исходный файл результатов без объединения")
+        
+        # 5. Подсчет успехов/ошибок
         success_count = len([r for r in results if not r.get("error")])
         failure_count = len(results) - success_count
         
