@@ -24,6 +24,7 @@ from src.data.savers import save_results
 from src.utils.logging import log_info, log_error
 from src.utils.config import PROCESSING_CONFIG, ASYNC_GPT_CONFIG, CIRCUIT_BREAKER_CONFIG
 from src.utils.state_manager import ProcessingStateManager
+from src.data.search_data_saver import initialize_search_data_saver, finalize_search_data_saving
 
 # Import async components
 from src.llm.async_gpt_analyzer import run_async_gpt_analysis_sync
@@ -597,6 +598,11 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
     Параллельный анализ: ПРАВИЛЬНЫЙ ПОРЯДОК - каждая компания через все продукты параллельно
     """
     try:
+        # Initialize search data saver for this session
+        if session_id:
+            initialize_search_data_saver(session_id)
+            log_info(f"🔧 Initialized search data saver for session: {session_id}")
+        
         # Load all data
         log_info("🔄 Загружаем данные...")
         data_dict = load_data(
@@ -799,6 +805,11 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
         # Save results
         log_info("💾 Сохраняем результаты...")
         json_path, csv_path = save_results(all_results, "PARALLEL_BY_COMPANIES", session_id=session_id)
+        
+        # Finalize search data saving
+        if session_id:
+            saved_search_files = finalize_search_data_saving()
+            log_info(f"📄 Saved search data files: {len(saved_search_files)}")
         
         log_info(f"""
 🎉 Параллельная обработка завершена (КОНСОЛИДИРОВАННЫЕ РЕЗУЛЬТАТЫ):

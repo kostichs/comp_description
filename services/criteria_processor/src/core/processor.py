@@ -19,6 +19,7 @@ from src.formatters.json_format import create_structured_output
 from src.data.savers import save_results
 from src.utils.logging import log_info, log_error
 from src.utils.config import PROCESSING_CONFIG, USE_SCRAPINGBEE_DEEP_ANALYSIS
+from src.data.search_data_saver import initialize_search_data_saver, finalize_search_data_saving
 
 async def process_company_all_products_async(company_data, products_data, general_criteria, session_id=None, use_deep_analysis=False):
     """
@@ -332,6 +333,11 @@ async def run_analysis_optimized_async(companies_file=None, load_all_companies=F
     Оптимизированный анализ: каждая компания обрабатывается для всех продуктов асинхронно
     """
     try:
+        # Initialize search data saver for this session
+        if session_id:
+            initialize_search_data_saver(session_id)
+            log_info(f"🔧 Initialized search data saver for session: {session_id}")
+        
         # Load all data
         log_info("🔄 Загружаем данные...")
         data_dict = load_data(
@@ -377,6 +383,11 @@ async def run_analysis_optimized_async(companies_file=None, load_all_companies=F
         log_info("💾 Сохраняем результаты...")
         json_path, csv_path = save_results(all_results, "OPTIMIZED_ALL_PRODUCTS", session_id=session_id)
         
+        # Finalize search data saving
+        if session_id:
+            saved_search_files = finalize_search_data_saving()
+            log_info(f"📄 Saved search data files: {len(saved_search_files)}")
+        
         log_info(f"""
 🎉 Оптимизированная обработка завершена:
    📦 Продукты: {', '.join(products)}
@@ -408,6 +419,11 @@ async def run_analysis_super_optimized_async(companies_file=None, load_all_compa
     СУПЕР-оптимизированный анализ: обрабатывает несколько компаний одновременно + каждая компания асинхронно для всех продуктов
     """
     try:
+        # Initialize search data saver for this session
+        if session_id:
+            initialize_search_data_saver(session_id)
+            log_info(f"🔧 Initialized search data saver for session: {session_id}")
+        
         # Load all data
         log_info("🔄 Загружаем данные...")
         data_dict = load_data(
@@ -467,6 +483,11 @@ async def run_analysis_super_optimized_async(companies_file=None, load_all_compa
         log_info("💾 Сохраняем результаты...")
         json_path, csv_path = save_results(all_results, "SUPER_OPTIMIZED_ALL_PRODUCTS", session_id=session_id)
         
+        # Finalize search data saving
+        if session_id:
+            saved_search_files = finalize_search_data_saving()
+            log_info(f"📄 Saved search data files: {len(saved_search_files)}")
+        
         log_info(f"""
 🎉 СУПЕР-оптимизированная обработка завершена:
    📦 Продукты: {', '.join(products)}
@@ -498,6 +519,11 @@ def run_analysis_super_optimized(companies_file=None, load_all_companies=False, 
 def run_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False, selected_products=None):
     """Run analysis: separate record for each company-product combination"""
     try:
+        # Initialize search data saver for this session
+        if session_id:
+            initialize_search_data_saver(session_id)
+            log_info(f"🔧 Initialized search data saver for session: {session_id}")
+        
         # Load all data
         log_info("Загружаем данные...")
         data_dict = load_data(
@@ -783,6 +809,11 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
         # Save results
         log_info("Сохраняем результаты...")
         json_path, csv_path = save_results(all_results, "ALL_PRODUCTS", session_id=session_id)
+        
+        # Finalize search data saving
+        if session_id:
+            saved_search_files = finalize_search_data_saving()
+            log_info(f"📄 Saved search data files: {len(saved_search_files)}")
         
         log_info(f"""
 Обработка завершена:

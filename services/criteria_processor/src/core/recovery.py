@@ -8,6 +8,7 @@ from pathlib import Path
 from src.utils.logging import log_info, log_error, log_debug
 from src.utils.state_manager import ProcessingStateManager
 from src.core.parallel_processor import run_parallel_analysis
+from src.data.search_data_saver import initialize_search_data_saver, finalize_search_data_saving
 
 
 def resume_processing(session_id: str, 
@@ -82,6 +83,10 @@ def resume_processing(session_id: str,
         })
         
         log_info(f"🚀 Возобновляем обработку с сохраненного места...")
+        
+        # Initialize search data saver for resumed session
+        initialize_search_data_saver(session_id)
+        log_info(f"🔧 Initialized search data saver for resumed session: {session_id}")
         
         # Resume actual processing
         # Note: The run_parallel_analysis function will automatically load 

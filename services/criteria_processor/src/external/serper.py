@@ -10,6 +10,7 @@ import requests
 from src.utils.config import SERPER_API_KEY, SERPER_API_URL, SERPER_MAX_RETRIES, SERPER_RETRY_DELAY, DEBUG_SERPER, OUTPUT_DIR, USE_SCRAPINGBEE_DEEP_ANALYSIS, SCRAPE_TOP_N_RESULTS
 from src.utils.logging import log_info, log_error, log_debug
 from src.external.scrapingbee_client import scrape_website_text
+from src.data.search_data_saver import save_serper_search_data
 
 def save_serper_result(session_id, company_name, query, data):
     """Saves Serper results to a file in the session directory."""
@@ -81,6 +82,8 @@ def perform_google_search(query, session_id=None, company_name=None, retries=Non
             
             if session_id and company_name:
                 save_serper_result(session_id, company_name, query, response_json)
+                # Также сохраняем в markdown через SearchDataSaver
+                save_serper_search_data(company_name, query, response_json)
             
             # Debug output if enabled
             if DEBUG_SERPER:

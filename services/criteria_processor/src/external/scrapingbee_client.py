@@ -14,6 +14,7 @@ from src.utils.signals_processor import (
     extract_content_metadata
 )
 from urllib.parse import urlparse
+from src.data.search_data_saver import save_scrapingbee_data
 
 
 def _sanitize_filename(name: str) -> str:
@@ -122,6 +123,9 @@ def scrape_website_text(url: str, session_id: str, company_name: str, serper_que
         }, serper_query)
 
         scraped_text = data.get('text')
+        
+        # Также сохраняем в markdown через SearchDataSaver
+        save_scrapingbee_data(company_name, url, scraped_text or "", serper_query, response.status_code)
 
         if data.get("error"):
             log_error(f"❌ ScrapingBee API error for {url}: {data.get('message')}")
@@ -158,18 +162,26 @@ def scrape_website_text(url: str, session_id: str, company_name: str, serper_que
 
     except requests.exceptions.RequestException as e:
         log_error(f"❌ Failed to scrape {url}: {e}")
+        error_msg = f"RequestException: {str(e)}"
         save_scrapingbee_result(session_id, company_name, url, {
             "status_code": e.response.status_code if e.response is not None else "N/A",
-            "error": f"RequestException: {str(e)}"
+            "error": error_msg
         }, serper_query)
+        # Также сохраняем ошибку в markdown
+        save_scrapingbee_data(company_name, url, "", serper_query, 
+                             e.response.status_code if e.response is not None else 0, error_msg)
         return None
     except json.JSONDecodeError:
         log_error(f"❌ Failed to decode JSON response from ScrapingBee for {url}. Response: {response.text if response else 'No response'}")
+        error_msg = "JSONDecodeError"
         save_scrapingbee_result(session_id, company_name, url, {
             "status_code": response.status_code if response is not None else 'N/A',
-            "error": "JSONDecodeError",
+            "error": error_msg,
             "response_body": response.text if response is not None else "N/A"
         }, serper_query)
+        # Также сохраняем ошибку в markdown
+        save_scrapingbee_data(company_name, url, "", serper_query, 
+                             response.status_code if response is not None else 0, error_msg)
         return None 
 
 def scrape_multiple_urls_with_signals(search_results: List[Dict], criterion: pd.Series, session_id: str, company_name: str, serper_query: str) -> str:
