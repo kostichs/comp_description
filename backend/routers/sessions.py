@@ -118,4 +118,56 @@ async def get_session_results_file(session_id: str):
         }
     except Exception as e:
         logger.error(f"Error getting results file for session {session_id}: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e)) 
+        raise HTTPException(status_code=500, detail=str(e))
+
+def cleanup_old_sessions(max_sessions: int = 10) -> None:
+    """
+    Очищает старые сессии, оставляя только последние N завершенных
+    
+    Args:
+        max_sessions: Максимальное количество сессий для хранения
+    """
+    try:
+        logger.info(f"🧹 Начинаем очистку старых сессий (оставляем {max_sessions})")
+        metadata = load_session_metadata()
+        
+        # Фильтруем только completed сессии с существующими папками
+        valid_sessions = []
+        for session in metadata:
+            session_id = session.get("session_id")
+            session_dir = SESSIONS_DIR / session_id
+            
+            if session_dir.exists() and session.get("status") == "completed":
+                # Убеждаемся что есть поле created_time
+                if "created_time" not in session and "timestamp_created" in session:
+                    session["created_time"] = session["timestamp_created"]
+                valid_sessions.append(session)
+        
+        # Сортируем по времени создания (новые сверху)
+        valid_sessions.sort(key=lambda x: x.get("created_time", ""), reverse=True)
+        
+        # Если сессий больше максимума, удаляем старые
+        if len(valid_sessions) > max_sessions:
+            sessions_to_remove = valid_sessions[max_sessions:]
+            logger.info(f"📊 Найдено {len(sessions_to_remove)} сессий для удаления")
+            
+            import shutil
+            for session in sessions_to_remove:
+                session_id = session.get("session_id")
+                session_dir = SESSIONS_DIR / session_id
+                
+                # Удаляем папку сессии
+                if session_dir.exists():
+                    shutil.rmtree(session_dir)
+                    logger.info(f"🗑️ Удалена папка сессии: {session_id}")
+            
+            # Обновляем метаданные, оставляя только актуальные сессии
+            updated_metadata = [s for s in metadata if s.get("session_id") not in 
+                              [old_s.get("session_id") for old_s in sessions_to_remove]]
+            save_session_metadata(updated_metadata)
+            logger.info(f"✅ Метаданные обновлены, оставлено {len(updated_metadata)} сессий")
+        else:
+            logger.info(f"✅ Очистка не требуется, активных сессий ({len(valid_sessions)}) <= {max_sessions}")
+            
+    except Exception as e:
+        logger.error(f"❌ Ошибка при очистке старых сессий: {e}", exc_info=True) 

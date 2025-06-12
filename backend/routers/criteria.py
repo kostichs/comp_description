@@ -17,6 +17,8 @@ import pandas as pd
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, BackgroundTasks
 from starlette.background import BackgroundTask
 from fastapi.responses import FileResponse, JSONResponse
+from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR, SESSIONS_METADATA_FILE
+from .sessions import cleanup_old_sessions  # Добавляем импорт функции очистки
 
 # Добавляем путь к criteria_processor в sys.path СРАЗУ
 CRITERIA_PROCESSOR_PATH = Path(__file__).parent.parent.parent / "services" / "criteria_processor"
@@ -289,6 +291,9 @@ async def create_criteria_analysis(
     - **max_concurrent**: Максимальное количество одновременно обрабатываемых компаний (по умолчанию 12)
     """
     try:
+        # Очищаем старые сессии перед запуском нового анализа
+        cleanup_old_sessions(max_sessions=10)
+        
         # Проверяем формат файла
         if not file.filename.endswith(('.csv', '.xlsx', '.xls')):
             raise HTTPException(
@@ -400,6 +405,9 @@ async def create_criteria_analysis_from_session(
     - **selected_products**: JSON string выбранных продуктов для анализа
     """
     try:
+        # Очищаем старые сессии перед запуском нового анализа
+        cleanup_old_sessions(max_sessions=10)
+        
         # Parse selected criteria files or fallback to selected products
         import json
         try:
