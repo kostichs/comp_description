@@ -792,10 +792,9 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                         all_results.extend(company_results)
                         log_info(f"🎉 Компания {company_name} завершена: {len(company_results)} записей")
                         
-                        # Mark company as completed in state manager (для всех продуктов)
+                        # Mark company as completed in state manager (только один раз на компанию)
                         if state_manager:
-                            for product in products:
-                                state_manager.mark_company_completed(company_name, product, success=True)
+                            state_manager.mark_company_completed(company_name, "ALL_PRODUCTS", success=True)
                                 
                     except Exception as e:
                         # Handle Circuit Breaker exceptions
@@ -813,8 +812,7 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                         
                         log_error(f"❌ Ошибка обработки компании {company_name}: {e}")
                         if state_manager:
-                            for product in products:
-                                state_manager.mark_company_completed(company_name, product, success=False)
+                            state_manager.mark_company_completed(company_name, "ALL_PRODUCTS", success=False)
             
             # Save partial results
             if state_manager and all_results:

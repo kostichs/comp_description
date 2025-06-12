@@ -259,7 +259,18 @@ class ProcessingStateManager:
                 else:
                     self._current_state["failed_companies"] += 1
                 
-                log_debug(f"✅ Company marked completed: {company_name} ({product})")
+                # Обновляем время и сохраняем состояние в файл
+                self._current_state["updated_at"] = datetime.now().isoformat()
+                self._current_state["current_company"] = company_name
+                
+                # Сохраняем прогресс в файл сразу
+                try:
+                    with open(self.progress_file, 'w', encoding='utf-8') as f:
+                        json.dump(self._current_state, f, ensure_ascii=False, indent=2)
+                except Exception as save_error:
+                    log_error(f"❌ Ошибка сохранения прогресса: {save_error}")
+                
+                log_debug(f"✅ Company marked completed: {company_name} ({product}) - Progress saved")
                 
         except Exception as e:
             log_error(f"❌ Ошибка отметки компании: {e}")
