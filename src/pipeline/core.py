@@ -545,24 +545,24 @@ async def _process_single_company_async(
         #         logger.error(f"{run_stage_log} - Error saving result to CSV: {e}", exc_info=True)
         # ---- КОНЕЦ БЛОКА ДЛЯ КОММЕНТИРОВАНИЯ ----
         
-        # Если задан output_json_path, сохраняем structured_data в JSON инкрементально
-        if output_json_path and structured_data:
-            try:
-                # Создаем словарь с результатами для сохранения
-                result_data_for_json = {
-                    "name": company_name,
-                    "structured_data": structured_data,
-                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
-                }
-                
-                # Вызываем без await, так как функция не асинхронная
-                save_structured_data_incrementally(
-                    result_data_for_json, 
-                    output_json_path
-                )
-                logger.info(f"{run_stage_log} - Structured data saved to {output_json_path}")
-            except Exception as e:
-                logger.error(f"{run_stage_log} - Error saving structured data: {e}", exc_info=True)
+        # Сохранение structured_data в JSON перенесено в result_saver для избежания дублирования
+        # if output_json_path and structured_data:
+        #     try:
+        #         # Создаем словарь с результатами для сохранения
+        #         result_data_for_json = {
+        #             "name": company_name,
+        #             "structured_data": structured_data,
+        #             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        #         }
+        #         
+        #         # Вызываем без await, так как функция не асинхронная
+        #         save_structured_data_incrementally(
+        #             result_data_for_json, 
+        #             output_json_path
+        #         )
+        #         logger.info(f"{run_stage_log} - Structured data saved to {output_json_path}")
+        #     except Exception as e:
+        #         logger.error(f"{run_stage_log} - Error saving structured data: {e}", exc_info=True)
         
         # 8. Сохранение в HubSpot, если клиент доступен и запись разрешена
         if hubspot_client and found_homepage_url and description_text and write_to_hubspot:

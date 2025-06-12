@@ -468,6 +468,16 @@ def merge_original_with_results(original_file_path: str, results_file_path: str,
         logging.info(f"Исходный файл: {original_df.shape[0]} строк, {original_df.shape[1]} колонок")
         logging.info(f"Файл результатов: {results_df.shape[0]} строк, {results_df.shape[1]} колонок")
         
+        # Удаляем пустые столбцы из исходного файла
+        original_df = original_df.loc[:, ~original_df.columns.str.contains('^Unnamed')]
+        original_df = original_df.dropna(axis=1, how='all')  # Удаляем полностью пустые столбцы
+        
+        # Удаляем пустые столбцы из файла результатов
+        results_df = results_df.loc[:, ~results_df.columns.str.contains('^Unnamed')]
+        results_df = results_df.dropna(axis=1, how='all')  # Удаляем полностью пустые столбцы
+        
+        logging.info(f"После очистки пустых столбцов - Исходный файл: {original_df.shape[1]} колонок, Файл результатов: {results_df.shape[1]} колонок")
+        
         # Проверяем, что количество строк совпадает
         if original_df.shape[0] != results_df.shape[0]:
             logging.warning(f"Количество строк не совпадает: исходный {original_df.shape[0]}, результаты {results_df.shape[0]}")
