@@ -1,5 +1,5 @@
 /**
- * Router for navigating between company generation and criteria analysis pages
+ * Router for navigating between description generation and criteria analysis pages
  */
 
 class Router {

@@ -300,6 +300,38 @@ def cleanup_old_sessions(max_sessions: int = 10) -> None:
     except Exception as e:
         logger.error(f"❌ Ошибка при очистке старых сессий: {e}")
 
+def cleanup_temp_sessions(max_sessions: int = 10) -> None:
+    """
+    Очищает старые temp сессии из temp/criteria_analysis, оставляя только последние N сессий
+    """
+    try:
+        temp_path = Path("temp/criteria_analysis")
+        if not temp_path.exists():
+            return
+            
+        # Получаем список всех папок
+        sessions = []
+        for session_dir in temp_path.iterdir():
+            if session_dir.is_dir():
+                sessions.append({
+                    "path": session_dir,
+                    "modified": session_dir.stat().st_mtime
+                })
+        
+        # Если сессий больше максимума, удаляем старые
+        if len(sessions) > max_sessions:
+            # Сортируем по времени модификации (новые сверху)
+            sessions.sort(key=lambda x: x["modified"], reverse=True)
+            
+            # Удаляем старые сессии
+            for session in sessions[max_sessions:]:
+                shutil.rmtree(session["path"])
+                logger.info(f"🗑️ Удалена старая temp сессия: {session['path'].name}")
+            
+            logger.info(f"✅ Очистка temp завершена, оставлено {max_sessions} последних сессий")
+    except Exception as e:
+        logger.error(f"❌ Ошибка при очистке старых temp сессий: {e}")
+
 @router.post("/analyze")
 async def create_criteria_analysis(
     background_tasks: BackgroundTasks,
@@ -324,6 +356,7 @@ async def create_criteria_analysis(
     try:
         # Очищаем старые сессии перед запуском нового анализа
         cleanup_old_sessions(max_sessions=10)
+        cleanup_temp_sessions(max_sessions=10)
         
         # Проверяем формат файла
         if not file.filename.endswith(('.csv', '.xlsx', '.xls')):
@@ -438,6 +471,7 @@ async def create_criteria_analysis_from_session(
     try:
         # Очищаем старые сессии перед запуском нового анализа
         cleanup_old_sessions(max_sessions=10)
+        cleanup_temp_sessions(max_sessions=10)
         
         # Parse selected criteria files or fallback to selected products
         import json
