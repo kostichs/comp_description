@@ -462,7 +462,7 @@ class CriteriaAnalysis {
                 // Продолжаем проверять статус
                 setTimeout(() => this.checkStatus(), 3000); // Проверяем каждые 3 секунды
             } else if (data.status === 'completed') {
-                this.showStatus('✅ Analysis completed successfully!', 'completed');
+                this.showStatus('Analysis completed successfully!', 'completed');
                 this.updateProgressBar(100);
                 this.stopStatusChecking();
                 // Автоматически загружаем результаты при завершении
@@ -883,7 +883,7 @@ class CriteriaAnalysis {
             this.resetInterface();
 
             // Показываем успешное сообщение
-            this.showStatus('Готово к новому анализу! Выберите файл и настройки.', 'success');
+            this.showStatus('Session was successfully reset', 'success');
             
         } catch (error) {
             console.error('Error starting new session:', error);

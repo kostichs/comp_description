@@ -287,37 +287,50 @@ class ProcessingStateManager:
             "nth": {"total": 0, "processed": 0, "passed": 0}
         }
         
-        # ИСПРАВЛЕНИЕ: General критерии передаются отдельно и считаются правильно
+        # General критерии проверяются ОДИН РАЗ для всех компаний
         if general_criteria:
             general_count = len(general_criteria)
-            criteria_breakdown["general"]["total"] = general_count
-            # General критерии проверяются один раз для каждой компании
+            criteria_breakdown["general"]["total"] = general_count * companies_count
             total_criteria += general_count * companies_count
             log_info(f"📊 General критерии: {general_count} критериев × {companies_count} компаний = {general_count * companies_count}")
         
+        # Подсчитываем критерии для каждого продукта
         for product_name, product_data in products_data.items():
-            # Не берем general критерии из products_data - они передаются отдельно
+            product_total = 0
             
-            # Qualification criteria (для каждой компании × продукт)
+            # Qualification criteria - проверяются для каждой компании
             if "qualification_questions" in product_data:
-                qual_count = sum(len(audiences) for audiences in product_data["qualification_questions"].values())
-                criteria_breakdown["qualification"]["total"] += qual_count * companies_count
-                total_criteria += qual_count * companies_count
-                log_info(f"📊 {product_name} Qualification критерии: {qual_count} критериев × {companies_count} компаний = {qual_count * companies_count}")
+                # Считаем общее количество вопросов квалификации для этого продукта
+                qual_count = sum(len(questions) for questions in product_data["qualification_questions"].values())
+                product_qual_total = qual_count * companies_count
+                criteria_breakdown["qualification"]["total"] += product_qual_total
+                total_criteria += product_qual_total
+                product_total += product_qual_total
+                log_info(f"📊 {product_name} Qualification: {qual_count} критериев × {companies_count} компаний = {product_qual_total}")
             
-            # Mandatory criteria (для каждой компании × продукт × аудитория)  
+            # Mandatory criteria - проверяются только для квалифицированных компаний
             if "mandatory_df" in product_data and not product_data["mandatory_df"].empty:
                 mandatory_count = len(product_data["mandatory_df"])
-                criteria_breakdown["mandatory"]["total"] += mandatory_count * companies_count
-                total_criteria += mandatory_count * companies_count
-                log_info(f"📊 {product_name} Mandatory критерии: {mandatory_count} критериев × {companies_count} компаний = {mandatory_count * companies_count}")
+                # Предполагаем что в среднем 50% компаний пройдут квалификацию
+                estimated_qualified = max(1, companies_count // 2)
+                product_mandatory_total = mandatory_count * estimated_qualified
+                criteria_breakdown["mandatory"]["total"] += product_mandatory_total
+                total_criteria += product_mandatory_total
+                product_total += product_mandatory_total
+                log_info(f"📊 {product_name} Mandatory: {mandatory_count} критериев × ~{estimated_qualified} квалифицированных компаний = {product_mandatory_total}")
             
-            # NTH criteria (для каждой компании × продукт × аудитория)
+            # NTH criteria - проверяются только для компаний прошедших mandatory
             if "nth_df" in product_data and not product_data["nth_df"].empty:
                 nth_count = len(product_data["nth_df"])
-                criteria_breakdown["nth"]["total"] += nth_count * companies_count
-                total_criteria += nth_count * companies_count
-                log_info(f"📊 {product_name} NTH критерии: {nth_count} критериев × {companies_count} компаний = {nth_count * companies_count}")
+                # Предполагаем что в среднем 30% компаний дойдут до NTH
+                estimated_nth = max(1, companies_count // 3)
+                product_nth_total = nth_count * estimated_nth
+                criteria_breakdown["nth"]["total"] += product_nth_total
+                total_criteria += product_nth_total
+                product_total += product_nth_total
+                log_info(f"📊 {product_name} NTH: {nth_count} критериев × ~{estimated_nth} компаний до NTH = {product_nth_total}")
+            
+            log_info(f"📊 {product_name} ИТОГО: {product_total} критериев")
         
         self._current_state["total_criteria"] = total_criteria
         self._current_state["criteria_breakdown"] = criteria_breakdown
@@ -330,7 +343,7 @@ class ProcessingStateManager:
         except Exception as e:
             log_error(f"❌ Ошибка сохранения состояния: {e}")
         
-        log_info(f"📊 Инициализированы счетчики критериев: {total_criteria} общий, breakdown: {criteria_breakdown}")
+        log_info(f"📊 ОБЩИЙ ИТОГ критериев: {total_criteria} (реалистичная оценка с учетом фильтрации)")
     
     def record_criterion_result(self, criterion_type: str, result: str):
         """Записывает результат обработки критерия

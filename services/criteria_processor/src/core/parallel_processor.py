@@ -655,7 +655,7 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                 from src.utils.state_manager import ProcessingStateManager
                 state_manager = ProcessingStateManager(session_id)
                 state_manager.update_totals(len(products), len(companies_df))
-                # Инициализируем счетчики критериев с general критериями в products_data
+                # Инициализируем счетчики критериев с реалистичными оценками
                 state_manager.initialize_criteria_totals(products_data, len(companies_df), general_criteria)
             except Exception as e:
                 log_error(f"⚠️ Не удалось инициализировать StateManager: {e}")
