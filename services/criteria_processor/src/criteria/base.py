@@ -32,4 +32,4 @@ Respond with exactly one of: "Passed", "Not Passed", or "ND" (if insufficient da
             
     except Exception as e:
         log_error(f"❌ Ошибка получения ответа: {e}")
-        return None, str(e) 
+        return "ND", str(e) 

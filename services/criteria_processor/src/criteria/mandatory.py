@@ -39,6 +39,11 @@ def check_mandatory_criteria(company_info, audience, mandatory_df, session_id=No
             # Считаем ошибки как ND для статистики
             nd_count += 1
         else:
+            # Дополнительная проверка на None
+            if result is None:
+                log_error(f"❌ Получен None результат для Mandatory {audience} {crit}")
+                result = "ND"
+            
             log_info(f"➡️  {result}", console=False)
             company_info[f"Mandatory_{audience}_{crit}"] = result
             

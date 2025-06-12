@@ -7,7 +7,7 @@ from openai import OpenAI
 from src.utils.config import OPENAI_API_KEY, CIRCUIT_BREAKER_CONFIG
 from src.utils.logging import log_debug, log_error, log_info
 
-def get_openai_response(prompt, max_tokens=500, model="gpt-3.5-turbo"):
+def get_openai_response(prompt, max_tokens=500, model="gpt-4o"):
     """Get response from OpenAI API with Circuit Breaker and retry logic"""
     # Import circuit breaker here to avoid circular imports
     if CIRCUIT_BREAKER_CONFIG['enable_circuit_breaker']:

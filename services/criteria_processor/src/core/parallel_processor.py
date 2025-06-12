@@ -358,7 +358,6 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                         "criteria_text": crit_text,
                         "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
                     }
-<<<<<<< HEAD
                     
                     # Отслеживаем результат
                     if state_manager:
@@ -371,8 +370,6 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                         else:
                             state_manager.record_criterion_result("mandatory", "Error")
                     
-=======
->>>>>>> 95f7339 (fix criteria displaying and order)
                     detailed_mandatory_results.append(criterion_info)
                 
                 # Store detailed results
@@ -397,7 +394,6 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                 "criteria_text": crit_text,
                 "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
             }
-<<<<<<< HEAD
             
             # Отслеживаем результат
             if state_manager:
@@ -410,8 +406,6 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                 else:
                     state_manager.record_criterion_result("mandatory", "Error")
             
-=======
->>>>>>> 95f7339 (fix criteria displaying and order)
             detailed_mandatory_results.append(criterion_info)
         
         # Store detailed results
@@ -573,7 +567,6 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                     if sync_value == "Passed":
                         qualified_count += 1
                     
-<<<<<<< HEAD
                     # Отслеживаем результат
                     if state_manager:
                         if sync_value == "Passed":
@@ -585,8 +578,6 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                         else:
                             state_manager.record_criterion_result("nth", "Error")
                     
-=======
->>>>>>> 95f7339 (fix criteria displaying and order)
                     detailed_criteria_results.append(criterion_info)
                 
                 # Store detailed results if not already set by sync function
@@ -616,7 +607,6 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
             if sync_value == "Passed":
                 qualified_count += 1
             
-<<<<<<< HEAD
             # Отслеживаем результат
             if state_manager:
                 if sync_value == "Passed":
@@ -628,8 +618,6 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                 else:
                     state_manager.record_criterion_result("nth", "Error")
             
-=======
->>>>>>> 95f7339 (fix criteria displaying and order)
             detailed_criteria_results.append(criterion_info)
         
         # Store detailed results if not already set by sync function
@@ -667,11 +655,8 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                 from src.utils.state_manager import ProcessingStateManager
                 state_manager = ProcessingStateManager(session_id)
                 state_manager.update_totals(len(products), len(companies_df))
-<<<<<<< HEAD
                 # Инициализируем счетчики критериев с general критериями в products_data
                 state_manager.initialize_criteria_totals(products_data, len(companies_df), general_criteria)
-=======
->>>>>>> 95f7339 (fix criteria displaying and order)
             except Exception as e:
                 log_error(f"⚠️ Не удалось инициализировать StateManager: {e}")
         
@@ -712,14 +697,11 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
             except Exception as e:
                 log_error(f"❌ Ошибка проверки general критериев для {company_name}: {e}")
                 general_status[company_name] = False
-<<<<<<< HEAD
                 # Записываем ошибку в state manager
                 if state_manager:
                     for criterion in general_criteria:
                         state_manager.record_criterion_result("general", "Error")
-=======
                 if state_manager:
->>>>>>> 95f7339 (fix criteria displaying and order)
                     state_manager.save_progress(0, index + 1, stage="general_criteria")
         
         # 2. ПРАВИЛЬНЫЙ ПОРЯДОК: Process each COMPANY through all PRODUCTS
