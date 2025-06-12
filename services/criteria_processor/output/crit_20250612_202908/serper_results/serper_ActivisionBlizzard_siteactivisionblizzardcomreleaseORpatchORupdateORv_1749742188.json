@@ -1,0 +1,88 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press Releases",
+            "link": "https://www.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. November 3, 2023 ... Please follow this link [https://www.activision.com/legal/ap-eula] in order to see these changes. ×. Privacy Policy Update.",
+            "position": 1
+        },
+        {
+            "title": "Newsroom",
+            "link": "https://www.activisionblizzard.com/newsroom.For",
+            "snippet": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We ...",
+            "position": 2
+        },
+        {
+            "title": "Press Releases - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. October 3, 2023. Joyful Chaos Wherever You Go! Warcraft Rumble™ Launches at BlizzCon on November 3. Additional Formats. PDF Version. September 29 ...",
+            "position": 3
+        },
+        {
+            "title": "Deadline extended: an update on the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the",
+            "snippet": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the ...",
+            "date": "Jul 19, 2023",
+            "position": 4
+        },
+        {
+            "title": "End-of-year Blizzard Update",
+            "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update",
+            "snippet": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update.",
+            "date": "Dec 22, 2022",
+            "position": 5
+        },
+        {
+            "title": "Activision Announces Free Upgrade to Next-Gen for Call of Duty",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-free-upgrade-next-gen-call-duty-advanced",
+            "snippet": "... version for Xbox One, all-in-one games and entertainment system from ... release include unanticipated product delays and other factors identified in ...",
+            "position": 6
+        },
+        {
+            "title": "The Future Arrives May 24—Overwatch™ Prepares for Battle ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/future-arrives-may-24-overwatchtm-prepares-battle-pc-ps4tm-and",
+            "snippet": "... release. Following the head-start period on May 3-4 for those who have ... And there's more to come in the future: Blizzard plans to patch in new heroes and maps ...",
+            "position": 7
+        },
+        {
+            "title": "The Fairytale Continues With The Release ... - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/fairytale-continues-release-activisions-shrek-2tm-video-game",
+            "snippet": "... release of the Shrek 2™ video game from Activision, Inc ... \"The Shrek 2 video game offers fans an expanded version of Shrek's world ...",
+            "position": 8
+        },
+        {
+            "title": "Timeline: An infographic history of Activision Blizzard",
+            "link": "https://newsroom.activisionblizzard.com/p/timeline-an-infographic-history-of",
+            "snippet": "A March Update on the Microsoft Deal · From Activision Blizzard CEO Bobby Kotick. Mar 28, 2023 • Activision Blizzard. 7. Share this post.",
+            "date": "Oct 26, 2023",
+            "position": 9
+        },
+        {
+            "title": "World of Warcraft®: Mists of Pandaria™ Arrives September 25",
+            "link": "https://investor.activisionblizzard.com/static-files/8a21bd88-a253-48b9-94b1-3f9489e81e60",
+            "snippet": "In addition, for the first time, World of Warcraft players have the option to purchase a special Digital Deluxe version ... obligation to update ...",
+            "date": "Sep 25, 2024",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version download"
+        },
+        {
+            "query": "Release patch update version free"
+        },
+        {
+            "query": "Release patch update version xbox"
+        }
+    ],
+    "credits": 1
+}

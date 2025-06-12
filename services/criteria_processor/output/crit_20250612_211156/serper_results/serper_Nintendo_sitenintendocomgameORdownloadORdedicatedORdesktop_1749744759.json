@@ -1,0 +1,89 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Mom Hid My Game! for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/mom-hid-my-game-switch/?srsltid=AfmBOor_gNfQj9qezU7wzM9wyYgYdYE_-cQGAa23y3kKSo3K1nG0Z4uf",
+            "snippet": "Take back to hunting for consoles hidden by Mom! Let's find the game console Mom hid! Is it inside the chest or on the shelf? Could it be under the sofa, too?",
+            "currency": "$",
+            "price": 50,
+            "position": 1
+        },
+        {
+            "title": "Fighters Pass - Super Smash Bros. Ultimate for Nintendo Switch",
+            "link": "https://smashbros.nintendo.com/buy/dlc/",
+            "snippet": "Fighters Pass. Smash Bros Ultimate Digital. Already have the game? Purchase the Fighters Pass to get the first five DLC packs.",
+            "currency": "$",
+            "price": 50,
+            "position": 2
+        },
+        {
+            "title": "Mario Kart™ 8 Deluxe for Nintendo Switch™ – Official Site",
+            "link": "https://mariokart8.nintendo.com/",
+            "snippet": "Buy the digital version and download it directly to your system! ... Each Nintendo Switch Game Voucher may be redeemed for one game offered as part of the catalog ...",
+            "currency": "$",
+            "price": 50,
+            "position": 3
+        },
+        {
+            "title": "Game Builder Tycoon for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/game-builder-tycoon-switch/?srsltid=AfmBOoo3123sCopL5ILhRnBWYVVCk7IaoUqmOsE3RN8K9tBJQPWnoj_f",
+            "snippet": "Experience the thrill of running your own studio in Game Builder Tycoon. Design outstanding games by selecting key elements such as art, features, quests, ...",
+            "currency": "$",
+            "price": 9.99,
+            "position": 4
+        },
+        {
+            "title": "Lil Gator Game for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/lil-gator-game-switch/",
+            "snippet": "A no-pressure adventure game! Lil Gator game focuses on adventure and play, don't let a health bar hold you back from reaching your goal! Software description ...",
+            "currency": "$",
+            "price": 50,
+            "position": 5
+        },
+        {
+            "title": "Game Boy™ - Nintendo Switch Online - Nintendo Official Site",
+            "link": "https://www.nintendo.com/us/store/products/game-boy-nintendo-switch-online-switch/?srsltid=AfmBOooXdD_nU1TcrfGBfA_bWvNuy9y4XHPA4mw3dJUaWJ6XtRD0Lhbv",
+            "snippet": "Choose from Game Boy, Game Boy Pocket, and Game ... Nintendo Classics - Super Mario Bros.™ 3 desktop metal display (for Nintendo Switch Online members only).",
+            "position": 6
+        },
+        {
+            "title": "Hitchhiker - A Mystery Game for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/hitchhiker-a-mystery-game-switch/?srsltid=AfmBOoq0qn8T0AEE5iM0swh70qhXnQ_VgW7Zu_OsOuUcuXxNmLjWMaV1",
+            "snippet": "Hitchhiker is a mystery game set along lost highways, where your goal is to solve the puzzle of your own backstory.",
+            "currency": "$",
+            "price": 19.99,
+            "position": 7
+        },
+        {
+            "title": "Willy's Wonderland - The Game for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/willys-wonderland-the-game-switch/?srsltid=AfmBOorkVOZIH0Lz2slxwN6gvnEyq2iYBr3Z-18DBUEXG5HC050ZoscP",
+            "snippet": "Willy's Wonderland – The Game is a 2.5D beat 'em up game based on the cult film of the same name, in which a group of Animatronics come to life and slaughter ...",
+            "currency": "$",
+            "price": 4.99,
+            "position": 8
+        },
+        {
+            "title": "Download Does Not Progress While in Sleep Mode on ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/56286/~/download-does-not-progress-while-in-sleep-mode-on-nintendo-switch",
+            "snippet": "Steps for when you try to download content on your Nintendo Switch console while it is in sleep mode, but the download does not appear to begin or progress.",
+            "position": 9
+        },
+        {
+            "title": "Mouse Trap - The Board Game for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/mouse-trap-the-board-game-switch/?srsltid=AfmBOoqcv7qP150MwU9SyCXihNJw0h-X3eFR2xyb9L0G7uniMEMs3z1R",
+            "snippet": "It's the chaotic board game you remember! Join your friends and race to collect the most cheese. Are you ready? Welcome to the cheese board of your dreams.",
+            "currency": "$",
+            "price": 19.99,
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

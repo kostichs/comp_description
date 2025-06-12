@@ -1,0 +1,81 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Monster Hunter World - Multiplayer",
+            "link": "https://game.capcom.com/manual/MHW/en/xone/page/1/3",
+            "snippet": "Online multiplayer allows you to work together with other hunters to take down the most challenging monsters in the game. If you have Xbox Live friends ...",
+            "position": 1
+        },
+        {
+            "title": "Preparing for Multiplayer | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/MHRISE/en/steam/page/14/1",
+            "snippet": "Multiplayer requires an Internet connection. To play online, connect your PC to a network, and log in to Steam. Syncing Software Versions. To use the ...",
+            "position": 2
+        },
+        {
+            "title": "Preparing for Multiplayer | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/MHRISE/en/switch/page/14/1",
+            "snippet": "It's also possible to join Lobbies with specific connection conditions. Note: If you know the Lobby ID, you can join any Lobby directly. Online Multiplayer.",
+            "position": 3
+        },
+        {
+            "title": "Monster Hunter World - Multiplayer Quests",
+            "link": "https://game.capcom.com/manual/MHW/en/xone/page/4/2",
+            "snippet": "Online Sessions are like online rooms where players can gather to play together. To participate in online multiplayer, you must be in an Online Session.",
+            "position": 4
+        },
+        {
+            "title": "Accessing Multiplayer | Monster Hunter Stories 2",
+            "link": "https://game.capcom.com/manual/MHST2/en/switch/page/11/1",
+            "snippet": "Local Play is suitable for playing with those nearby, while Online Play is suitable for connecting with distant players. Note: You can access Multiplayer via ...",
+            "position": 5
+        },
+        {
+            "title": "Useful Multiplayer Functions | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/Multi-Platform/en/xone/page/13/4",
+            "snippet": "When a friend is engaged in online multiplayer, you can join their current Lobby directly from the Courier's Friends List. To become friends with someone, you ...",
+            "position": 6
+        },
+        {
+            "title": "Monster Hunter World - Multiplayer",
+            "link": "https://game.capcom.com/manual/MHW_PC/en/steam/page/1/3",
+            "snippet": "Online multiplayer allows you to work together with other hunters to take down the most challenging monsters in the game.",
+            "position": 7
+        },
+        {
+            "title": "MONSTER HUNTER GENERATIONS - Online Multiplayer",
+            "link": "https://game.capcom.com/manual/MH_Gen/en-UK/page-153.html",
+            "snippet": "Setting Up Online Multiplayer. 1. Touch the Hunters Hub icon on the World Map and select Multiplayer, talk to the Flight Cattendant, or travel ...",
+            "position": 8
+        },
+        {
+            "title": "Multiplayer | Monster Hunter Rise: Sunbreak Official Web ...",
+            "link": "https://game.capcom.com/manual/MHRISE/en/switch/page/1/2",
+            "snippet": "New to Monster Hunter? Multiplayer. Starting the Game. Title Menu · Save Data · Online Data Access · Online Features. Controls. Basic Controls: In-Game · Basic ...",
+            "position": 9
+        },
+        {
+            "title": "Multiplayer|Monster Hunter Wilds Beta Official Online Manual",
+            "link": "https://manual.capcom.com/mhwilds/beta/en/ps5/page/6/1",
+            "snippet": "Monster Hunter Wilds Beta Official Online Manual. ... In multiplayer, players join lobbies, which are used to connect them with ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        }
+    ],
+    "credits": 1
+}

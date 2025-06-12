@@ -1,0 +1,147 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press Releases",
+            "link": "https://www.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. November 3, 2023 ... Please follow this link [https://www.activision.com/legal/ap-eula] in order to see these changes. ×. Privacy Policy Update.",
+            "sitelinks": [
+                {
+                    "title": "PDF Version. November 3, 2023 ... Please follow this link [https://www.activision.com/legal/ap-eula] in order to see these changes. ×. Privacy Policy Update.",
+                    "link": "https://www.activisionblizzard.com/press-releases#:~:text=PDF%20Version,November%203%2C%202023&text=Privacy%20Policy%20Update"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Newsroom",
+            "link": "https://www.activisionblizzard.com/newsroom.For",
+            "snippet": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We ...",
+            "sitelinks": [
+                {
+                    "title": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We ...",
+                    "link": "https://www.activisionblizzard.com/newsroom.For#:~:text=End%2Dof%2Dyear%20Blizzard%20Update,We"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Press Releases - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. October 3, 2023. Joyful Chaos Wherever You Go! Warcraft Rumble™ Launches at BlizzCon on November 3. Additional Formats. PDF Version. September 29 ...",
+            "sitelinks": [
+                {
+                    "title": "PDF Version. October 3, 2023. Joyful Chaos Wherever You Go! Warcraft Rumble™ Launches at BlizzCon on November 3. Additional Formats. PDF Version. September 29 ...",
+                    "link": "https://investor.activisionblizzard.com/press-releases#:~:text=PDF%20Version,September%2029"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Deadline extended: an update on the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the",
+            "snippet": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the ...",
+            "date": "Jul 19, 2023",
+            "sitelinks": [
+                {
+                    "title": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the ...",
+                    "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the#:~:text=Deadline%20extended%3A%20an%20update%20on,agreed%20not%20to%20terminate%20the"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Activision Announces Free Upgrade to Next-Gen for Call of Duty",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-free-upgrade-next-gen-call-duty-advanced",
+            "snippet": "... version for Xbox One, all-in-one games and entertainment system from ... release include unanticipated product delays and other factors identified in ...",
+            "sitelinks": [
+                {
+                    "title": "... version for Xbox One, all-in-one games and entertainment system from ... release include unanticipated product delays and other factors identified in ...",
+                    "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-free-upgrade-next-gen-call-duty-advanced#:~:text=version%20for%20Xbox%20One%2C%20all%2Din%2Done,games%20and%20entertainment%20system%20from&text=release%20include%20unanticipated%20product%20delays,and%20other%20factors%20identified%20in"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "End-of-year Blizzard Update",
+            "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update",
+            "snippet": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update.",
+            "date": "Dec 22, 2022",
+            "sitelinks": [
+                {
+                    "title": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update.",
+                    "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update#:~:text=Hey%20everyone!%20It's%20been%20about,good%20time%20for%20an%20update."
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Activision To Release Call Of Duty October 29",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-release-call-duty-october-29",
+            "snippet": "(Nasdaq: ATVI) has confirmed October 29 as the release date for Call of Duty™ to invade retail outlets nationwide. The highly anticipated, first-person, WWII ...",
+            "sitelinks": [
+                {
+                    "title": "(Nasdaq: ATVI) has confirmed October 29 as the release date for Call of Duty™ to invade retail outlets nationwide. The highly anticipated, first-person, WWII ...",
+                    "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-release-call-duty-october-29#:~:text=(Nasdaq%3A%20ATVI)%20has%20confirmed%20October,The%20highly%20anticipated%2C%20first%2Dperson%2C%20WWII"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "The latest step in the UK for the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/uk-cma-microsoft-activision-blizzard-preliminary",
+            "snippet": "I want to share an important update on our planned merger with Microsoft. Today the UK regulatory authority, the CMA, issued a preliminary ...",
+            "date": "Sep 21, 2023",
+            "sitelinks": [
+                {
+                    "title": "I want to share an important update on our planned merger with Microsoft. Today the UK regulatory authority, the CMA, issued a preliminary ...",
+                    "link": "https://newsroom.activisionblizzard.com/p/uk-cma-microsoft-activision-blizzard-preliminary#:~:text=I%20want%20to%20share%20an,the%20CMA%2C%20issued%20a%20preliminary"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Raising Hell: id Software's DOOM 3 For PC Ships To Retail",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/raising-hell-id-softwares-doom-3-pc-ships-retail",
+            "snippet": "The next generation in PC gaming has arrived with the release of DOOM 3,\" said Todd Hollenshead, CEO, id Software. \"DOOM 3 is a total assault on your senses.",
+            "sitelinks": [
+                {
+                    "title": "The next generation in PC gaming has arrived with the release of DOOM 3,\" said Todd Hollenshead, CEO, id Software. \"DOOM 3 is a total assault on your senses.",
+                    "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/raising-hell-id-softwares-doom-3-pc-ships-retail#:~:text=The%20next%20generation%20in%20PC,total%20assault%20on%20your%20senses."
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Call of Duty: Infinite Warfare is #1 Top Selling Console Game ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-infinite-warfare-1-top-selling-console-game-year-date",
+            "snippet": "and · as of the date of this release, and neither · nor · assumes any obligation to update any such forward-looking statements. · or ...",
+            "sitelinks": [
+                {
+                    "title": "and · as of the date of this release, and neither · nor · assumes any obligation to update any such forward-looking statements. · or ...",
+                    "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-infinite-warfare-1-top-selling-console-game-year-date#:~:text=and&text=as%20of%20the%20date%20of,this%20release%2C%20and%20neither&text=nor&text=assumes%20any%20obligation%20to%20update,any%20such%20forward%2Dlooking%20statements.&text=or"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version xbox"
+        },
+        {
+            "query": "Release patch update version free"
+        },
+        {
+            "query": "Release patch update version download"
+        }
+    ],
+    "credits": 1
+}

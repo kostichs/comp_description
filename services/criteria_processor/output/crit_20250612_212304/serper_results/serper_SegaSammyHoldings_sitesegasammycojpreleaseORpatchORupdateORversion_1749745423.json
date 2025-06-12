@@ -1,0 +1,72 @@
+{
+    "searchParameters": {
+        "q": "site:segasammy.co.jp (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "News Release｜SEGA SAMMY HOLDINGS",
+            "link": "https://www.segasammy.co.jp/en/release/",
+            "snippet": "News Release. News Release. Search. AND OR. Feed. Whole period, FY2026, FY2025, FY2024, FY2023, FY2022, FY2021, FY2020, FY2019, FY2018, FY2017, FY2016, FY2015 ...",
+            "position": 1
+        },
+        {
+            "title": "Notice Regarding the Status of Acquisition of Treasury Stocks",
+            "link": "https://www.segasammy.co.jp/en/release/72952/",
+            "snippet": "News Release · Notice Regarding the Status of Acquisition of Treasury Stocks. News Release. Notice Regarding the Status of Acquisition of ...",
+            "date": "Jun 2, 2025",
+            "position": 2
+        },
+        {
+            "title": "IR｜News Release｜SEGA SAMMY HOLDINGS",
+            "link": "https://www.segasammy.co.jp/en/release/category/ir/page/54/?ct=IR&mf_page=1&imgsize=0",
+            "snippet": "News Release · IR. News Release. Search. AND OR. Feed. Whole period, FY2026, FY2025, FY2024, FY2023, FY2022, FY2021, FY2020, FY2019, FY2018, FY2017, FY2016 ...",
+            "position": 3
+        },
+        {
+            "title": "Notice regarding the Latest SEGA Football Management ...",
+            "link": "https://www.segasammy.co.jp/en/release/73039/",
+            "snippet": "Pre-register for the game's release via email or by adding it to your Wishlist on the PlayStation™Store or Steam. For further information ...",
+            "date": "Jun 4, 2025",
+            "position": 4
+        },
+        {
+            "title": "SEGA SAMMY CREATION Won Awards in Two Categories ...",
+            "link": "https://www.segasammy.co.jp/en/release/71138/",
+            "snippet": "News Release · SEGA SAMMY CREATION Won Awards in Two Categories at “2025 EKG Slot Awards”. News Release. SEGA SAMMY CREATION Won Awards in Two ...",
+            "date": "Mar 7, 2025",
+            "position": 5
+        },
+        {
+            "title": "Notice of Revision of Operating Results Forecast",
+            "link": "https://www.segasammy.co.jp/en/release/69054/",
+            "snippet": "HOME · News Release · Notice of Revision of Operating Results Forecast. News Release. Notice of Revision of Operating Results Forecast. IR. 2025/02/07.",
+            "position": 6
+        },
+        {
+            "title": "Results Presentation",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/20250512_q4_presentation_e.pdf",
+            "snippet": "Nintendo SwitchTM 2 version will be released on Jun. 5 in Japan ... • Release RAIDOU Remastered: The Mystery of the Soulless Army (Jun.",
+            "date": "May 12, 2025",
+            "position": 7
+        },
+        {
+            "title": "Company｜News Release｜SEGA SAMMY HOLDINGS",
+            "link": "https://www.segasammy.co.jp/en/release/category/company/",
+            "snippet": "News Release ; 2023/04/10 · ［When website performance issues occur］Request to Clear Browser Cache［Updated on November 16, 2023］ ; 2022/07/28 · Special ...",
+            "position": 8
+        },
+        {
+            "title": "Consolidated Financial Results",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/20241108_q2_tanshin_e.pdf",
+            "snippet": "As for the \"Sonic\" IP with the release of \"Sonic the Hedgehog 3\", the third movie title approaching in December, the Group will strategically ...",
+            "date": "Nov 8, 2024",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

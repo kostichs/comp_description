@@ -1,0 +1,18 @@
+﻿Company_Name,HubSpot_Company_ID,All_Results
+Test Company,34812325915,"{
+  ""AI"": {
+    ""product"": ""AI"",
+    ""general_status"": false,
+    ""general_criteria"": {
+      ""passed"": false,
+      ""passed_count"": 0,
+      ""total_count"": 1,
+      ""detailed_criteria"": [
+        {
+          ""criteria_text"": ""Test criteria"",
+          ""result"": ""Fail""
+        }
+      ]
+    }
+  }
+}"

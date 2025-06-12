@@ -1,0 +1,37 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com \"Add to Cart\", \"Checkout\" buttons",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "What are each of the steps from placing an order until ...",
+            "link": "https://www.nintendo.com/au/support/articles/what-are-each-of-the-steps-from-placing-an-order-until-shipment/?srsltid=AfmBOopyO6hU-iq9LOblQAZDn-ktXnXO5GFcfqDORj6TUgWncViT830c",
+            "snippet": "Click the Add to Cart button on the product ... If the content of the cart is correct, click the Proceed to Checkout button to enter the checkout process.",
+            "sitelinks": [
+                {
+                    "title": "Click the Add to Cart button on the product ... If the content of the cart is correct, click the Proceed to Checkout button to enter the checkout process.",
+                    "link": "https://www.nintendo.com/au/support/articles/what-are-each-of-the-steps-from-placing-an-order-until-shipment/?srsltid=AfmBOopyO6hU-iq9LOblQAZDn-ktXnXO5GFcfqDORj6TUgWncViT830c#:~:text=Click%20the%20Add%20to%20Cart,button%20on%20the%20product&text=If%20the%20content%20of%20the,to%20enter%20the%20checkout%20process."
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Nintendo Support - Nintendo",
+            "link": "https://www.nintendo.com/au/support/articles/?hardwareTags=Click%20%26%20Collect&hardwareTags=My%20Nintendo%20Store&srsltid=AfmBOoqPd8foPYmOY2nSRrF6Do5Z2anLqIU8v1XdwujW_9zCqY5HNgZY",
+            "snippet": "Click the Add to Cart ... If the content of the cart is correct, click the Proceed to Checkout button to enter the checkout process.",
+            "sitelinks": [
+                {
+                    "title": "Click the Add to Cart ... If the content of the cart is correct, click the Proceed to Checkout button to enter the checkout process.",
+                    "link": "https://www.nintendo.com/au/support/articles/?hardwareTags=Click+%26+Collect&hardwareTags=My+Nintendo+Store&srsltid=AfmBOoqPd8foPYmOY2nSRrF6Do5Z2anLqIU8v1XdwujW_9zCqY5HNgZY#:~:text=Click%20the%20Add%20to%20Cart&text=If%20the%20content%20of%20the,to%20enter%20the%20checkout%20process."
+                }
+            ],
+            "position": 2
+        }
+    ],
+    "credits": 1
+}

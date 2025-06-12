@@ -1,0 +1,66 @@
+{
+    "searchParameters": {
+        "q": "site:ubisoft.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "DDOS, DOS and Our Next Steps",
+            "link": "https://www.ubisoft.com/en-gb/game/rainbow-six/siege/news-updates/11Lg5ZRMqEOpi7Kzkk1RiN/ddos-dos-and-our-next-steps",
+            "snippet": "“Soft Booting” – A DDoS/DoS attack that degrades the network/server to the point that some players are dropped from the match. “Stressing” – A DDoS/DoS attack ...",
+            "position": 1
+        },
+        {
+            "title": "DDOS, DOS and Our Next Steps",
+            "link": "https://www.ubisoft.com/en-au/game/rainbow-six/siege/news-updates/11Lg5ZRMqEOpi7Kzkk1RiN/ddos-dos-and-our-next-steps",
+            "snippet": "“Soft Booting” – A DDoS/DoS attack that degrades the network/server to the point that some players are dropped from the match. “Stressing” – A ...",
+            "date": "Oct 29, 2019",
+            "position": 2
+        },
+        {
+            "title": "Rainbow Six Siege - Maintenance of online services",
+            "link": "https://www.ubisoft.com/help/article/000113337",
+            "snippet": "We will be performing an essential maintenance on June 12, 2025 from 5:00 AM. Expected downtime: 1 hour(s).",
+            "date": "6 hours ago",
+            "position": 3
+        },
+        {
+            "title": "Classified: Connectivity",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/3np0dmOyTZY3BVXe4qcRZQ/classified-connectivity",
+            "snippet": "Putting strategies in place to minimize unplanned downtime. Reducing the impact of game server DDOS. Tightening collaboration with other titles ...",
+            "date": "Nov 17, 2023",
+            "position": 4
+        },
+        {
+            "title": "Assault On Hereford | Event | Rainbow Six Siege",
+            "link": "https://www.ubisoft.com/en-gb/game/rainbow-six/siege/events/assault-on-hereford",
+            "snippet": "From February 6th to February 19th, Team Rainbow is under attack! It's time for you to dive into our brand-new scenario driven event: Assault on Hereford.",
+            "position": 5
+        },
+        {
+            "title": "Rainbow Six Siege Assault on Hereford Event Begins Today",
+            "link": "https://news.ubisoft.com/en-us/article/2F04A5vOnSDsXkP9EJAymn/rainbow-six-siege-assault-on-hereford-event-begins-today",
+            "snippet": "In the first round of Assault on Hereford, Team Rainbow must attack the outdoor section of the map while the Keres Legion defends in a secure ...",
+            "date": "Feb 6, 2025",
+            "position": 6
+        },
+        {
+            "title": "Skyscraper Attack Guide from a Pro Player! All 4 Sites Covered!",
+            "link": "https://www.ubisoft.com/en-us/help/rainbow-six-siege/video/skyscraper-attack-guide-from-a-pro-player-all-4-sites-covered/7187420f-4584-4676-9ca3-83824527ac55",
+            "snippet": "Ubisoft Cares about your privacy. YouTube has been deactivated. Do you accept the use of cookies to display and allow you to watch the video content?",
+            "position": 7
+        },
+        {
+            "title": "Rainbow Six Siege X Showcase – Everything You Need to ...",
+            "link": "https://news.ubisoft.com/en-us/article/55e9bGaVCdO52trbclOhpf/rainbow-six-siege-x-showcase-everything-you-need-to-know",
+            "snippet": "... attack enemy sectors while defending their own. Players can choose from a curated roster of 35 Operators - both Attackers and Defenders ...",
+            "date": "Mar 13, 2025",
+            "position": 8
+        }
+    ],
+    "credits": 1
+}

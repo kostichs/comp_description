@@ -593,11 +593,22 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
             company_info[f"NTH_Detailed_{audience}"] = detailed_criteria_results
 
 
-def run_parallel_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False, max_concurrent_companies=12, selected_products=None):
+def run_parallel_analysis(companies_file=None, load_all_companies=False, session_id=None, use_deep_analysis=False, max_concurrent_companies=12, selected_products=None, write_to_hubspot_criteria=False):
     """
     Параллельный анализ: ПРАВИЛЬНЫЙ ПОРЯДОК - каждая компания через все продукты параллельно
     """
     try:
+        # ДЕТАЛЬНОЕ ЛОГИРОВАНИЕ ПАРАМЕТРОВ
+        log_info(f"🔍 run_parallel_analysis ВЫЗВАНА С ПАРАМЕТРАМИ:")
+        log_info(f"   📄 companies_file: {companies_file}")
+        log_info(f"   📁 load_all_companies: {load_all_companies}")
+        log_info(f"   🆔 session_id: {session_id}")
+        log_info(f"   🔬 use_deep_analysis: {use_deep_analysis}")
+        log_info(f"   ⚡ max_concurrent_companies: {max_concurrent_companies}")
+        log_info(f"   🎯 selected_products: {selected_products}")
+        log_info(f"   🔗 write_to_hubspot_criteria: {write_to_hubspot_criteria}")
+        log_info(f"   📝 Тип write_to_hubspot_criteria: {type(write_to_hubspot_criteria)}")
+        
         # Initialize search data saver for this session
         if session_id:
             initialize_search_data_saver(session_id)
@@ -804,7 +815,15 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
         
         # Save results
         log_info("💾 Сохраняем результаты...")
-        json_path, csv_path = save_results(all_results, "PARALLEL_BY_COMPANIES", session_id=session_id, original_file_path=companies_file)
+        log_info(f"🔍 ПАРАМЕТРЫ ДЛЯ save_results:")
+        log_info(f"   📊 all_results: {len(all_results)} записей")
+        log_info(f"   📦 product: PARALLEL_BY_COMPANIES")
+        log_info(f"   🆔 session_id: {session_id}")
+        log_info(f"   🔗 write_to_hubspot_criteria: {write_to_hubspot_criteria}")
+        log_info(f"   📝 Тип write_to_hubspot_criteria: {type(write_to_hubspot_criteria)}")
+        log_info(f"   📄 companies_file: {companies_file}")
+        
+        json_path, csv_path = save_results(all_results, "PARALLEL_BY_COMPANIES", session_id=session_id, write_to_hubspot_criteria=write_to_hubspot_criteria, original_file_path=companies_file)
         
         # Finalize search data saving
         if session_id:

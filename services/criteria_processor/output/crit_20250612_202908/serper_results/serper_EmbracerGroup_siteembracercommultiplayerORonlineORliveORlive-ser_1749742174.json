@@ -1,0 +1,82 @@
+{
+    "searchParameters": {
+        "q": "site:embracer.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Embracer Group acquires Deca Games",
+            "link": "https://embracer.com/releases/embracer-group-acquires-deca-games/",
+            "snippet": "DECA Games, founded by Ken Go, who is also the seller, is a mobile asset care and live operations (“LiveOps”) expert within the Free-to-Play (“ ...",
+            "date": "Aug 13, 2020",
+            "position": 1
+        },
+        {
+            "title": "DECA Games",
+            "link": "https://embracer.com/about/operative-groups/deca-games/",
+            "snippet": "DECA Games is an ecosystem of mobile publishers and developers with an expertise in live operations of Free-to-Play games.",
+            "position": 2
+        },
+        {
+            "title": "Embracer Group announces its intention to transform into ...",
+            "link": "https://embracer.com/releases/embracer-group-announces-its-intention-to-transform-into-three-standalone-publicly-listed-entities-at-nasdaq-stockholm/",
+            "snippet": "Key published free-to-play games based on licensed IPs include Star Trek Online and D&D Neverwinter Online. “Middle-earth Enterprises ...",
+            "date": "Apr 22, 2024",
+            "position": 3
+        },
+        {
+            "title": "Embracer Group's Middle-earth Enterprises and Amazon ...",
+            "link": "https://embracer.com/releases/embracer-groups-middle-earth-enterprises-and-amazon-games-announce-new-the-lord-of-the-rings-game/",
+            "snippet": "... multiplayer online (MMO) game based on “The Lord of the Rings”. An open-world MMO adventure, the upcoming game takes place in J.R.R. ...",
+            "date": "May 15, 2023",
+            "position": 4
+        },
+        {
+            "title": "Embracer Group acquires mobile game developer Jufeng ...",
+            "link": "https://embracer.com/releases/embracer-group-acquires-mobile-game-developer-jufeng-studio-and-eight-mobile-titles/",
+            "snippet": "The studio is located in Beijing's central business district. The studio will initially focus on the live operations of the six existing IPs.",
+            "date": "Oct 14, 2021",
+            "position": 5
+        },
+        {
+            "title": "Embracer Group enters into agreement to acquire Perfect ...",
+            "link": "https://embracer.com/releases/embracer-group-enters-into-agreement-to-acquire-perfect-world-entertainment/",
+            "snippet": "... Multiplayer Online Games) at scale. The studio has a track record of ... These titles generate significant profits, and Embracer expects the live ...",
+            "date": "Dec 21, 2021",
+            "position": 6
+        },
+        {
+            "title": "Embracer Group acquires DECA Games",
+            "link": "https://embracer.com/wp-content/uploads/2020/08/Embracer-Group-acquires-DECA-Games.pdf",
+            "snippet": "▻ Live operations and mobile free-to-play expertise. ▻ >1.5 ... Live events and in-. Game promotions. Content creation and feature ...",
+            "date": "Aug 13, 2020",
+            "position": 7
+        },
+        {
+            "title": "Invitation to presentation of Embracer Group's Q4 and year- ...",
+            "link": "https://embracer.com/releases/invitation-to-presentation-of-embracer-groups-q4-and-year-end-report-5/",
+            "snippet": "Online: The presentation will be streamed live on Embracer Group's official YouTube channel and through a webcast. Teleconference: If you ...",
+            "date": "May 15, 2025",
+            "position": 8
+        },
+        {
+            "title": "Invitation to presentation of Embracer Group's Q2 report",
+            "link": "https://embracer.com/releases/invitation-to-presentation-of-embracer-groups-q2-report-5/",
+            "snippet": "Online: The presentation will be streamed live on Embracer Group's official YouTube channel and through a webcast. Teleconference: If you ...",
+            "date": "Nov 7, 2024",
+            "position": 9
+        },
+        {
+            "title": "Embracer Group acquires Nimble Giant Entertainment",
+            "link": "https://embracer.com/releases/embracer-group-acquires-nimble-giant-entertainment/",
+            "snippet": "... online First-Person shooter game mixing arena competition with time travel mechanics. The studio currently has a premium title in the ...",
+            "date": "Nov 18, 2020",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

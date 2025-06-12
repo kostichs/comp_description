@@ -1,0 +1,162 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Multiplayer Games | Play PC Games With Friends",
+            "link": "https://store.epicgames.com/en-US/c/multiplayer-games",
+            "snippet": "A multiplayer video game is a game that more than one person can play. ... Terms of service · Privacy policy · Safety & security · Store refund policy · Publisher ...",
+            "priceRange": "$6 to $70",
+            "position": 1
+        },
+        {
+            "title": "Games - Epic Online Services",
+            "link": "https://onlineservices.epicgames.com/en-US/services-games",
+            "snippet": "Build cross-platform multiplayer functionality in your game with voice chat ... Terms of service · Privacy policy · Safety & security. Back to top.",
+            "position": 2
+        },
+        {
+            "title": "Multiplayer Programming Quick Start for Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-programming-quick-start-for-unreal-engine",
+            "snippet": "Developing gameplay for a multiplayer game requires you to implement replication in your game's Actors. ... Terms of service · Privacy policy · Safety & security.",
+            "sitelinks": [
+                {
+                    "title": "2. Replicating The Player's...",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-programming-quick-start-for-unreal-engine#:~:text=2.%20Replicating%20the%20Player%27s%20Health%20with%20RepNotifies,-Players%20need%20a%20health%20value"
+                },
+                {
+                    "title": "3. Making The Player Respond...",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-programming-quick-start-for-unreal-engine#:~:text=3.%20Making%20the%20Player%20Respond%20to%20Damage,-Now%2C%20that%20you%20have"
+                },
+                {
+                    "title": "4. Creating A Projectile...",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-programming-quick-start-for-unreal-engine#:~:text=4.%20Creating%20a%20Projectile%20with%20Replication,-Inside%20the%20Unreal%20Editor%2C"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Epic Online Services: Services",
+            "link": "https://onlineservices.epicgames.com/en-US/services",
+            "snippet": "Hide-and-spook: Building a killer multiplayer experience for Midnight Ghost Hunt with Epic Online Services ... You can integrate the SDK with a video game that ...",
+            "sitelinks": [
+                {
+                    "title": "Download SDK",
+                    "link": "https://onlineservices.epicgames.com/en-US/sdk"
+                },
+                {
+                    "title": "Account",
+                    "link": "https://onlineservices.epicgames.com/en-US/services-account"
+                },
+                {
+                    "title": "Games",
+                    "link": "https://onlineservices.epicgames.com/en-US/services-games"
+                },
+                {
+                    "title": "Licensing",
+                    "link": "https://onlineservices.epicgames.com/en-US/licensing"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Ultimate Multiplayer System",
+            "link": "http://marketplace-website-node-launcher-prod.ol.epicgames.com/ue/marketplace/en-US/product/ultimate-multiplayer-system",
+            "snippet": "What is the Ultimate Multiplayer System?The Ultimate Multiplayer ... It helps you to access aws server resources, hosts your game server, setup voice chat service ...",
+            "rating": 4.8,
+            "ratingCount": 69,
+            "currency": "$",
+            "price": 499.99,
+            "position": 5
+        },
+        {
+            "title": "Networking and Multiplayer in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-and-multiplayer-in-unreal-engine",
+            "snippet": "Create a simple multiplayer game in C++. Managing Sessions. Travelling in Multiplayer. An overview of how travelling works in multiplayer.",
+            "sitelinks": [
+                {
+                    "title": "Multiplayer Programming...",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-programming-quick-start-for-unreal-engine"
+                },
+                {
+                    "title": "Travelling in Multiplayer",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/travelling-in-multiplayer-in-unreal-engine"
+                },
+                {
+                    "title": "Networking Overview",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-overview-for-unreal-engine"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Multiplayer Shootout | Unreal Engine 4.27 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-shootout?application_version=4.27",
+            "snippet": "If you are doing testing over a network and not a local multiplayer game ... When using a service like Steam, the player's Steam names will be displayed here ...",
+            "sitelinks": [
+                {
+                    "title": "Starting/playing The Game",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-shootout?application_version=4.27#:~:text=Starting%2FPlaying%20the%20Game,-This%20section%20covers%20how%20to"
+                },
+                {
+                    "title": "Hosting A Game",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-shootout?application_version=4.27#:~:text=Hosting%20a%20Game,-After%20the%20Main%20Menu%20has"
+                },
+                {
+                    "title": "Joining A Game",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-shootout?application_version=4.27#:~:text=Joining%20a%20Game,-From%20the%20Main%20Menu%2C"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "Multiplayer chaos and the supernatural reign supreme in ...",
+            "link": "https://store.epicgames.com/en-US/news/multiplayer-chaos-and-the-supernatural-reign-supreme-in-fbc-firebreak",
+            "snippet": "FBC: Firebreak has all the familiar pieces of a multiplayer game built to last. ... Terms of service · Privacy policy · Safety & security · Store ...",
+            "date": "May 14, 2025",
+            "position": 8
+        },
+        {
+            "title": "MMO Games | Download our Massively Multiplayer Online ...",
+            "link": "https://store.epicgames.com/en-US/c/mmo-games",
+            "snippet": "An MMO is a massively multiplayer online game. It's an umbrella term for ... Terms of service · Privacy policy · Safety & security · Store refund policy ...",
+            "sitelinks": [
+                {
+                    "title": "Browse",
+                    "link": "https://store.epicgames.com/en-US/c/mmo-games#:~:text=Browse,-Filter"
+                },
+                {
+                    "title": "Filter",
+                    "link": "https://store.epicgames.com/en-US/c/mmo-games#:~:text=Filter"
+                },
+                {
+                    "title": "Mmo Games Faq",
+                    "link": "https://store.epicgames.com/en-US/c/mmo-games#:~:text=MMO%20Games%20FAQ"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Co-Op Games | Download The Best Cooperative PC Games",
+            "link": "https://store.epicgames.com/en-US/c/co-op-games",
+            "snippet": "Base Game. Tom Clancy's Rainbow Six Siege X - Free Edition. Free. GoproWar ... PC multiplayer co-op could be played online, via a modem, or together in ...",
+            "priceRange": "$3 to $50",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Best multiplayer service game"
+        }
+    ],
+    "credits": 1
+}

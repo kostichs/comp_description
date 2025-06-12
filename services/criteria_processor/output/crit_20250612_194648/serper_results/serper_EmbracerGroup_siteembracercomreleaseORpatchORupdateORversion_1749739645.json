@@ -1,0 +1,88 @@
+{
+    "searchParameters": {
+        "q": "site:embracer.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press releases",
+            "link": "https://embracer.com/news-media/pressreleases/",
+            "snippet": "Update on the situation due to the war in Ukraine. Read more · March 8, 2022 • 13:30. Embracer Group completes the acquisition of Asmodee. Read more · Regulatory February 17, 2022 • 06:00. Embracer Group publishes Interim Report Q3 2021: OPERATIONAL EBIT INCREASED 86% TO SEK 1,119 MILLION. Read more · February 9, 2022 ...",
+            "position": 1
+        },
+        {
+            "title": "Embracer Group announces trading update for Q3",
+            "link": "https://embracer.com/releases/embracer-group-announces-trading-update-for-q3/",
+            "snippet": "INSIDE INFORMATION: This trading update covers the period of Q3 FY 2024/25, which ended 31 December 2024. Embracer Group AB (“Embracer”) has experienced a stronger-than-expected performance during this period, based on preliminary figures. Net sales for the quarter are expected to amount to ...",
+            "date": "Jan 29, 2025",
+            "position": 2
+        },
+        {
+            "title": "Embracer to spin off Coffee Stain Group",
+            "link": "https://embracer.com/releases/embracer-to-spin-off-coffee-stain-group-remaining-business-to-be-renamed-fellowship-entertainment/",
+            "snippet": "Press release • May 22, 2025 • 07:02. Embracer to spin off Coffee Stain Group – remaining business to be renamed Fellowship Entertainment. Twitter; Linkedin; Facebook. Following the communication on April 22, 2024, and the separation of Asmodee in February 2025, the next step in the transformation of Embracer Group ...",
+            "position": 3
+        },
+        {
+            "title": "Reports and presentations",
+            "link": "https://embracer.com/investors/reports-presentations/",
+            "snippet": "Annual Report 2019/2020. Report Press release. 2020-08-13. Embracer Group M&A update. Presentation. 2020-08-13. Embracer Group acquires Sola Media. Press release Presentation. 2020-08-13. Embracer Group acquires Pow Wow Entertainment. Press release Presentation. 2020-08-13. Embracer Group acquires Palindrome ...",
+            "position": 4
+        },
+        {
+            "title": "Embracer Group: Home",
+            "link": "https://embracer.com/",
+            "snippet": "Press release • June 10, 2025. Lars Wingefors proposed to be elected as Executive Chair of the Board of Embracer – Phil Rogers appointed new CEO. Read more · Press release • May 22, 2025. Embracer to spin off Coffee Stain Group – remaining business to be renamed Fellowship Entertainment. Read more · Regulatory Press ...",
+            "position": 5
+        },
+        {
+            "title": "Lars Wingefors proposed to be elected as Executive Chair ...",
+            "link": "https://embracer.com/releases/lars-wingefors-proposed-to-be-elected-as-executive-chair-of-the-board-of-embracer-phil-rogers-appointed-new-ceo/",
+            "snippet": "Regulatory Press release • June 10, 2025 • 15:30. Lars Wingefors proposed to be elected as Executive Chair of the Board of Embracer – Phil Rogers appointed ...",
+            "position": 6
+        },
+        {
+            "title": "Embracer Group announces its intention to transform into ...",
+            "link": "https://embracer.com/releases/embracer-group-announces-its-intention-to-transform-into-three-standalone-publicly-listed-entities-at-nasdaq-stockholm/",
+            "snippet": "Embracer Group will hold a webcast presentation for investors, analysts, media and other stakeholders today, April 22, at 09:00 CEST. Please find more information in a separately distributed invitation that will follow this release. Further details regarding the separation process and other key process ...",
+            "date": "Apr 22, 2024",
+            "position": 7
+        },
+        {
+            "title": "Investors",
+            "link": "https://embracer.com/investors/",
+            "snippet": "Embracer Group Q4 and Year-End Report FY 2024/25. Summary · Download report · Press release · Presentation · Webcast · Financial fact sheet · ESG fact sheet.",
+            "sitelinks": [
+                {
+                    "title": "Reports and presentations",
+                    "link": "https://embracer.com/investors/reports-presentations/"
+                },
+                {
+                    "title": "Calendar",
+                    "link": "https://embracer.com/investors/calendar/"
+                },
+                {
+                    "title": "Ownership Structure",
+                    "link": "https://embracer.com/investors/ownership-structure/"
+                },
+                {
+                    "title": "Contact",
+                    "link": "https://embracer.com/investors/contact/"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Embracer Group divests Gearbox Entertainment for a ...",
+            "link": "https://embracer.com/releases/embracer-group-divests-gearbox-entertainment-for-a-consideration-of-usd-460-million-to-take-two-interactive-software-inc/",
+            "snippet": "Embracer Group will hold a webcast presentation for investors, analysts, media and other stakeholders on 28 March at 09.00 CET. Please find more information in a separate distributed invitation that will follow this release. Advisors Goldman Sachs Bank Europe SE Sweden Bankfilial and Juno Capital ...",
+            "date": "Mar 28, 2024",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

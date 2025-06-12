@@ -1,0 +1,93 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "DDoS Prevention Guide - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/201751764-DDoS-Prevention-Guide",
+            "snippet": "A DDoS (Distributed Denial-of-Service) is an overflow of information packets sent to an IP address (usually by malicious PC ninjas). Most common connections won't be able to handle all of these packets, so they will be effectively blocked from maintaining a connection until the attack lets up.",
+            "date": "Jul 17, 2019",
+            "position": 1
+        },
+        {
+            "title": "League of Legends - Demon's Hand Minigame",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/39157999306515-League-of-Legends-Demon-s-Hand-Minigame",
+            "snippet": "Your goal is to whittle away the enemy's health before they get yours. To do this, assemble hands to deal damage based on the attack values of the cards you play.",
+            "date": "Mar 17, 2025",
+            "position": 2
+        },
+        {
+            "title": "Account safety tips & tricks - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/sections/115002165847-Account-safety-tips-tricks",
+            "snippet": "League of Legends Email Verification In Client · DDoS Prevention Guide · Phishing: Don't take the bait. Need More Help? Contact Us. This site isn't even our final form. Reach out to us directly for hard-to-answer questions. Submit A Ticket. Riot Games. © 2025 Riot Games Inc. All rights reserved. League of Legends and ...",
+            "position": 3
+        },
+        {
+            "title": "Keywords and Game Vocab - Legends of Runeterra Support",
+            "link": "https://support-legendsofruneterra.riotgames.com/hc/en-us/articles/360035562194-Keywords-and-Game-Vocab-Legends-of-Runeterra",
+            "snippet": "Attack. When the unit attacks, do the effect. Attacking with the attack token, free attack, Scout, and Rally all count. Cards that command to \"strike each other\" do not count as an attack. Attack Strike. When the unit strikes when attacking, do the effect. Attune lor-keyword-attune.png. When summoned ...",
+            "date": "Dec 11, 2023",
+            "position": 4
+        },
+        {
+            "title": "Minion \"Attack\" Tee (Unisex)",
+            "link": "https://merch.riotgames.com/en-au/product/minion-mayhem-tee-attack-unisex",
+            "snippet": "M L XL 2XL. Out of Stock. Apparel; Tops; League of Legends. Minion \"Attack\" Tee (Unisex). Retired. $25. Out of Stock. Description. Bind them, grab them, charm them. There's always room to be creative in how you attack a minion. Print Design. Screenprinted design. Materials. 100% Cotton. $25. Minion \"Attack\" Tee (Unisex).",
+            "currency": "$",
+            "price": 25,
+            "position": 5
+        },
+        {
+            "title": "Attack of the Chromacrashers - Wild Rift Support - Riot Games",
+            "link": "https://support-wildrift.riotgames.com/hc/en-us/articles/25766018336275-Attack-of-the-Chromacrashers",
+            "snippet": "Attack of the Chromacrashers. Avatar. Laserface. May 17, 2024 at 11:11 AM. If you're looking to grab a Chromacrash skin you missed from the Chromacrash Returns mini-event, you're in luck—you can earn Chromacrash Skin Chests just from purchasing Wild Cores, and then open them for even more rewards.",
+            "position": 6
+        },
+        {
+            "title": "Robot Instructions",
+            "link": "https://www.riotgames.com/darkroom/original/01999ad0e737bda728ea87f4dd640083:45ff5636bf664d0f0e1f6d346f5168dd/module-3-student-materials.pdf",
+            "snippet": "Describe your custom action. RANGE. 1-4. DAMAGE. 1-4. Crush. Attack front and side spaces. Hit all enemies in range at once. Self-Destruct. Robot explodes when its hit points reach 0. ROBOT NAME. Abilities. Overview. Custom Action. Movement. One action per line: Laser, Crush, Move, Face: [Home/Goal/Left/Right/Tank].",
+            "position": 7
+        },
+        {
+            "title": "What's New in Alpha Lab 2 - 2XKO - Riot Games",
+            "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/",
+            "snippet": "Super 1 = S1 + any attack button (L, M, or H); Super 2 = S2 + any attack button (L, M, or H); Ultimate = S1 + S2. Tag Launcher is now (↓ + T) instead of T. Simply tap T to perform a Forward Assist. (→ + T) still calls Forward Assist as well. Anti-air and launcher have been combined into a single ...",
+            "date": "Mar 27, 2025",
+            "sitelinks": [
+                {
+                    "title": "Fuses",
+                    "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/#:~:text=Fuses,-Alpha%20Lab%202%20will%20also"
+                },
+                {
+                    "title": "Core Gameplay",
+                    "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/#:~:text=Core%20Gameplay,-Since%20Alpha%20Lab%201%2C"
+                },
+                {
+                    "title": "Cosmetics",
+                    "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/#:~:text=Cosmetics,-Alpha%20Lab%202%20will%20also"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Staff Software Engineer - UnEco",
+            "link": "https://www.riotgames.com/ro/work-with-us/job/6679846/staff-software-engineer-uneco-los-angeles-usa",
+            "snippet": "Investigate and troubleshoot live game issues, working cross-functionally to restore services and minimize downtime. Establish release management best ...",
+            "position": 9
+        },
+        {
+            "title": "Service Reliability Analyst II - ITIL",
+            "link": "https://www.riotgames.com/zh-hant/j/6781904",
+            "snippet": "Participate in on-call rotations to provide critical support and ensure rapid response to incidents, minimizing downtime and service disruptions. Assist in tracking and coordinating corrective actions for root cause analysis, ensuring thorough resolution of underlying issues and continuous improvement of ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

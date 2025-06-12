@@ -1,0 +1,98 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "36.00 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes",
+            "snippet": "With this release, we're rolling out a new version of Unreal Revision Control (URC). Starting today, all new projects will use it by default.",
+            "date": "5 days ago",
+            "position": 1
+        },
+        {
+            "title": "Updating Unreal Engine Projects With Patches After Release",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/updating-unreal-engine-projects-with-patches-after-release",
+            "snippet": "... release or previous patches, but adds a pointer to new content. The other approach is to transform the content in the original build using a binary patch.",
+            "position": 2
+        },
+        {
+            "title": "34.30 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes",
+            "snippet": "34.30 Fortnite Ecosystem Updates and Release Notes. On this page. The v34.30 update gives more control over matchmaking queues. Negan from The Walking Dead ...",
+            "position": 3
+        },
+        {
+            "title": "v3.4 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/news/v3-4-patch-notes",
+            "snippet": "This update delivers several highly requested quality-of-life improvements ... Fixed an issue that gave the Rare version of the Lunar Constructor and Outlander ...",
+            "position": 4
+        },
+        {
+            "title": "v4.3 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v4-3",
+            "snippet": "3 Patch Notes. Players ... Traps perks which are being updated in the Recombobulator now correctly update Impact and Knockback as the perks are upgraded.",
+            "position": 5
+        },
+        {
+            "title": "Make previous hotfix and patch builds available for download",
+            "link": "https://eoshelp.epicgames.com/s/question/0D54z00007UAOAUCA5/make-previous-hotfix-and-patch-builds-available-for-download?language=en_US",
+            "snippet": "Because of the way the Free Edition plugin is compiled and executed, the EOS SDK revision number and patch version must match exactly when the developer is ...",
+            "position": 6
+        },
+        {
+            "title": "30.20 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite",
+            "snippet": "We've combined Patch Notes and Release Notes into one document! Now you can ... 20 update, there are three new templates for you to create projects ...",
+            "position": 7
+        },
+        {
+            "title": "Problem with Build Patch Tool upload (not getting ...",
+            "link": "https://eoshelp.epicgames.com/s/question/0D54z00007p2Py6CAE/problem-with-build-patch-tool-upload-not-getting-an-answer-in-a-private-discussion?language=en_US",
+            "snippet": "... Patch Tool. Here is the command I ... What causes the error \"This version of the EOS SDK requires a newer anti-cheat client module version.",
+            "date": "Jul 13, 2022",
+            "position": 8
+        },
+        {
+            "title": "Are there any plans to make the patched version ...",
+            "link": "https://eoshelp.epicgames.com/s/question/0D5QP00000tXCqt0AG/are-there-any-plans-to-make-the-patched-version-of-the-epic-games-launcher-msi-available-the-current-msi-immediately-asks-to-be-updated-when-installed-we-deploy-via-sccm-and-it-needs-admin-intervention-to-update?language=en_US",
+            "snippet": "I'm digging internally to see if I can get you an answer, I suspect even if we do update ... release so many updates that sometimes it does lag ...",
+            "date": "Jan 30, 2025",
+            "position": 9
+        },
+        {
+            "title": "How to Create a Patch in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-create-a-patch-in-unreal-engine",
+            "snippet": "Under Release Version This is Based On, type the release version. Then check the box for Generate Patch. Set Release/DLC/Patching Settings. Click the arrow to ...",
+            "sitelinks": [
+                {
+                    "title": "Create A Launch Profile For...",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-create-a-patch-in-unreal-engine#:~:text=Create%20a%20Launch%20Profile%20for%20Testing%20the%20Patch,-If%20you%20have%20base%20build"
+                },
+                {
+                    "title": "Customize The Launch Profile",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-create-a-patch-in-unreal-engine#:~:text=Customize%20the%20Launch%20Profile,-Follow%20these%20steps%20to%20customize"
+                },
+                {
+                    "title": "Launch The Test Version Of...",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/how-to-create-a-patch-in-unreal-engine#:~:text=Launch%20the%20Test%20Version%20of%20the%20Patch,-Navigate%20back%20to%20the%20main"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version xbox"
+        },
+        {
+            "query": "Release patch update version download"
+        }
+    ],
+    "credits": 1
+}

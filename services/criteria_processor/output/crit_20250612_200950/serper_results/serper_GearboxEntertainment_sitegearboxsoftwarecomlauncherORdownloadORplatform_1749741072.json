@@ -1,0 +1,73 @@
+{
+    "searchParameters": {
+        "q": "site:gearboxsoftware.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Borderlands 2 Cross-Save Functionality",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205280730-Borderlands-2-Cross-Save-Functionality",
+            "snippet": "... download the save file or cancel the download operation. Select “Download ... platform that does not have that content. Once that character is returned ...",
+            "position": 1
+        },
+        {
+            "title": "How to Install Ultra HD Pack on PC",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/360026471411-How-to-Install-Ultra-HD-Pack-on-PC",
+            "snippet": "Click on the texture pack. This will take you to a Steam Store page for this specific content. Download/install the software. Fire up your game and start taking ...",
+            "position": 2
+        },
+        {
+            "title": "Cross Save / Cloud Save in Borderlands: The Handsome ...",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205281110-Cross-Save-Cloud-Save-in-Borderlands-The-Handsome-Collection",
+            "snippet": "Once the save has been uploaded, choose “Cross Save” or “Cloud Save” then “Download Save” from the main menu of the PS4 / Xbox One Handsome Collection game for ...",
+            "position": 3
+        },
+        {
+            "title": "Borderlands® 3 Out Now on Steam, Featuring Innovative ...",
+            "link": "https://www.gearboxsoftware.com/press_release/borderlands-3-out-now-on-steam-featuring-innovative-pc-cross-play-functionality/",
+            "snippet": "... platform each player is using. As mentioned during its PAX East panel ... To download screenshots, art, and other Borderlands 3 assets, please click here.",
+            "position": 4
+        },
+        {
+            "title": "Xbox 360 - Xbox Live Compatibility Pack Download Loop",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205280070-Xbox-360-Xbox-Live-Compatibility-Pack-Download-Loop",
+            "snippet": "Xbox 360 - Xbox Live Compatibility Pack Download Loop · 1) Turn off the Xbox 360. · 2) Turn the Xbox 360 back on. · 3) Press the Guide button on your controller, ...",
+            "position": 5
+        },
+        {
+            "title": "Xbox 360 - Claptastic Voyage 2 Part Download",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205280990-Xbox-360-Claptastic-Voyage-2-Part-Download",
+            "snippet": "Due to file size, the download for Claptastic Voyage comes in two separate downloads on Xbox 360. This is working as intended, however,...",
+            "position": 6
+        },
+        {
+            "title": "Borderlands PC Update 1.21 Available!",
+            "link": "https://www.gearboxsoftware.com/2010/02/borderlands-pc-update-1-21-available/",
+            "snippet": "You can download the update from our site if you purchased a physical retail copy of Borderlands. If you purchased a digital version, your distributor will ...",
+            "position": 7
+        },
+        {
+            "title": "PC: General Crash Troubleshooting Solutions",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205280090-PC-General-Crash-Troubleshooting-Solutions",
+            "snippet": "- Update your video drivers OR step back through previous driver versions until you find a version that may resolve the issue. You can download video drivers ...",
+            "position": 8
+        },
+        {
+            "title": "Take-Two Interactive Software Privacy Policy",
+            "link": "https://shift.gearboxsoftware.com/privacy",
+            "snippet": "This Privacy Policy supplements privacy disclosures provided with your software product and from your platform manufacturer. ... download, install, or access ...",
+            "position": 9
+        },
+        {
+            "title": "IMPORTANT INFORMATION ON HARDWARE DRIVERS ...",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205282160-IMPORTANT-INFORMATION-ON-HARDWARE-DRIVERS-AND-DIRECTX",
+            "snippet": "AMD USERS - Download the latest drivers and Catalyst Control Center software here · NVIDIA USERS - Download the latest drivers and NVIDIA Control Panel software ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,74 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "How to Download or Redownload Content in Nintendo ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/607/~/how-to-download-or-redownload-content-in-nintendo-3ds-eshop",
+            "snippet": "How to Download or Redownload Content in Nintendo 3DS eShop. In this article, you'll learn how to use the Nintendo eShop for Nintendo 3DS.",
+            "position": 1
+        },
+        {
+            "title": "Download of Software or Update Data is Stuck or Will Not ...",
+            "link": "https://www.nintendo.com/au/support/articles/download-of-software-or-update-data-is-stuck-or-will-not-progress/?srsltid=AfmBOoq_B015EwJa0YObnu5rLCf9JQaxCHpBlrQHqCMFWK3qWQBaRWfF",
+            "snippet": "Download of Software or Update Data is Stuck or Will Not Progress · Ensure your console has an active Internet connection. · If software is currently being played ...",
+            "position": 2
+        },
+        {
+            "title": "Problems with Download Codes (Software and ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/545/~/problems-with-download-codes-%28software-and-downloadable-content%29",
+            "snippet": "Select Nintendo eShop on the HOME Menu. · Select the account you want to use. · Select Enter Code on the left side of the screen. · Enter the 16-character download ...",
+            "position": 3
+        },
+        {
+            "title": "How to Use Download Play",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/43/~/how-to-use-download-play",
+            "snippet": "How to Use Download Play. In this article, you'll learn how to use DS Download play with compatible wireless multiplayer features.",
+            "position": 4
+        },
+        {
+            "title": "How to Purchase or Download Content in Nintendo eShop",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22423/~/how-to-purchase-or-download-content-in-nintendo-eshop",
+            "snippet": "How to Purchase or Download Content in Nintendo eShop ... Steps to buy games or DLC from Nintendo eShop by using existing funds, adding funds with a Nintendo ...",
+            "position": 5
+        },
+        {
+            "title": "Platform 9 - NO WAY OUT",
+            "link": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-download-software/Platform-9-NO-WAY-OUT-2695048.html?srsltid=AfmBOorENw5mJTkoYK7YLm9-0lRi8awwQc-ETu_ZgjvZOj8U9YbsFNTM",
+            "snippet": "Platform 9 - NO WAY OUT ... Sign in with a Nintendo Account to download selected demos, download free software, or purchase the download version ...",
+            "date": "Nov 14, 2024",
+            "position": 6
+        },
+        {
+            "title": "Download of Software or Update Data is Stuck or Will Not ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28152/~/download-of-software-or-update-data-is-stuck-or-will-not-progress-on-nintendo",
+            "snippet": "The information in this article can help you if, when downloading software on the Nintendo Switch console, the download progress doesn't begin, is paused, or",
+            "position": 7
+        },
+        {
+            "title": "How to Access Splatoon 3: Expansion Pass Content",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/64329/~/how-to-access-splatoon-3%3A-expansion-pass-content",
+            "snippet": "You will need: Your Nintendo Switch 2 or Nintendo Switch console; An Internet connection; Splatoon 3 software. Complete these steps. Purchase and download the ...",
+            "position": 8
+        },
+        {
+            "title": "How to Prioritize a Download on Nintendo Switch",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/53730/~/how-to-prioritize-a-download-on-nintendo-switch",
+            "snippet": "From the HOME Menu, select the game icon for the download that you would like to prioritize. · The “Downloading data…” screen will appear.",
+            "position": 9
+        },
+        {
+            "title": "How to Use the Nintendo 3DS Download Software Repair ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/71/~/how-to-use-the-nintendo-3ds-download-software-repair-tool",
+            "snippet": "Tap OK, followed by Download to initiate the repair process. The repair process will download the software again without overwriting the software's save data.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,80 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Cyber Expert",
+            "link": "https://new.minecraft.net/en-us/discover/cyber-and-digital-safety/cyber-expert",
+            "snippet": "Witness the effects of malware and learn techniques to combat it. Cyber Expert covers encryption/decryption, message integrity, DoS/DDoS attacks, Malware and ...",
+            "position": 1
+        },
+        {
+            "title": "Student Workbook",
+            "link": "https://education.minecraft.net/lessonsupportfiles/9947843085617313-Daring%20Defense_Student%20Workbook.docx",
+            "snippet": "Use the internet and research some real-life DDoS attacks using the prompts below. • Dyn DDoS Attack (2016). • AWS DDoS Attack (2020). • ...",
+            "position": 2
+        },
+        {
+            "title": "Cyber Fundamentals 2: The Interceptors",
+            "link": "https://education.minecraft.net/en-us/lessons/cyber-fundamentals-2-the-interceptors",
+            "snippet": "Although players stopped the attack, they will need to assemble the Incident Response team. ... Players will visit each of the workstations ...",
+            "date": "Oct 18, 2023",
+            "position": 3
+        },
+        {
+            "title": "cybersecurity specialists!",
+            "link": "https://education.minecraft.net/lessonsupportfiles/1163500612683104-CyberFUNdamentals_Unit%201_Student%20Workbook.pdf",
+            "snippet": "Malware. Quarantine. Phishing. Pop-Up Ads. Delivery Vectors/Attack Vectors. Page 6. CHALLENGE: Who are these villians?! What do they represent? Page 7.",
+            "position": 4
+        },
+        {
+            "title": "Cyber Expert",
+            "link": "https://education.minecraft.net/lessons/cyber-expert",
+            "snippet": "Students will also protect against denial of service (DoS) and DDoS (Distributed Denial of Service) attacks that might overwhelm the kingdom ...",
+            "date": "Oct 9, 2023",
+            "position": 5
+        },
+        {
+            "title": "Cyber Expert: Daring Defense (Unit 2)",
+            "link": "https://education.minecraft.net/it-it/lessons/cyber-expert-daring-defense-unit-2",
+            "snippet": "This unit is Daring Defense. This unit contains 3 lessons: Firewalls; DoS|DDoS Attacks; Access Control Systems.",
+            "date": "Oct 18, 2023",
+            "position": 6
+        },
+        {
+            "title": "Cyber Defender: Discover cybersecurity with ...",
+            "link": "https://education.minecraft.net/en-us/blog/cyber-defender",
+            "snippet": "Throughout the game, you'll encounter many hostiles, each representing a different kind of digital attack. ... (DDoS) attacks, where an attacker ...",
+            "date": "Oct 18, 2023",
+            "position": 7
+        },
+        {
+            "title": "Cyber Expert: Malware Mayhem (Unit 3)",
+            "link": "https://education.minecraft.net/en-us/lessons/cyber-expert-malware-mayhem-unit-3",
+            "snippet": "The kingdom is being overrun with species of malware. Attack the malware, defeat the ransomware, and become a Cyber Expert! Developed in ...",
+            "date": "Oct 18, 2023",
+            "position": 8
+        },
+        {
+            "title": "Cyber Expert: Daring Defense (Unit 2)",
+            "link": "https://education.minecraft.net/pt-pt/lessons/cyber-expert-daring-defense-unit-2",
+            "snippet": "This unit is Daring Defense. This unit contains 3 lessons: Firewalls; DoS|DDoS Attacks; Access Control Systems.",
+            "date": "Oct 18, 2023",
+            "position": 9
+        },
+        {
+            "title": "Cyber Fundamentals 3: Cloud Champions",
+            "link": "https://education.minecraft.net/it-it/lessons/cyber-fundamentals-3-cloud-champions",
+            "snippet": "Lesson 2: Big Bad's Attack. In this lesson, players will learn about the Internet of Things (IoT), identify types of IoT devices, and discover ...",
+            "date": "Oct 26, 2023",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

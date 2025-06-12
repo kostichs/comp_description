@@ -1,0 +1,101 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Patch Schedule - League of Legends Support - Riot Games",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/360018987893-Patch-Schedule-League-of-Legends",
+            "snippet": "Below is our planned patch schedule for 2025. Patches release on a Wednesday (PT) unless otherwise indicated.",
+            "position": 1
+        },
+        {
+            "title": "ARAM, Inting & More | Dev Update - League of Legends",
+            "link": "https://www.riotgames.com/en/news/aram-inting-more-dev-update-league-of-legends",
+            "snippet": "We're going to be adding multiple maps to aam after champ select when you load in you'll randomly get one of three maps.",
+            "date": "3 days ago",
+            "position": 2
+        },
+        {
+            "title": "Wild Rift Patch Schedule - Riot Games",
+            "link": "https://support-wildrift.riotgames.com/hc/en-us/articles/1500002088961-Wild-Rift-Patch-Schedule",
+            "snippet": "Patch Release Schedule. Version, Date (00:01 UTC). 6.0, Jan 9, 2025. 6.1, April 17, 2025. 6.2, July 17, 2025. 6.3, Oct 23, 2025. Note that this ...",
+            "date": "Apr 15, 2025",
+            "position": 3
+        },
+        {
+            "title": "Login, patching, crashing, & connecting",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/categories/115001242867-Login-patching-crashing-connecting",
+            "snippet": "Cannot Update and Launch League of Legends · / View All · Patching problems - League of Legends · Patching Issues · Crashing & connection issues · Advanced ...",
+            "position": 4
+        },
+        {
+            "title": "Patch Schedules and How They Affect TFT & TFTm",
+            "link": "https://support-teamfighttactics.riotgames.com/hc/en-us/articles/360042362874-Patch-Schedules-and-How-They-Affect-TFT-TFTm",
+            "snippet": "This just means that when you play the older version, you'll only be playing with other players who haven't updated yet. Once the PC TFT patch ...",
+            "date": "Feb 3, 2020",
+            "position": 5
+        },
+        {
+            "title": "Patching Issues - League of Legends Support - Riot Games",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/202969434-Patching-Issues",
+            "snippet": "The minimum Mac OS version currently supported is 10.12. Please update ... patch (Windows and Mac) and configure your firewall for League ...",
+            "date": "Feb 8, 2022",
+            "position": 6
+        },
+        {
+            "title": "Abilities, Smurfing, Replays, and More // Dev Updates",
+            "link": "https://www.riotgames.com/en/news/abilities-smurfing-replays-and-more-dev-updates-valorant",
+            "snippet": "We've seen a lot of conversation over the last few months about abilities in Valerant especially when multiple abilities overlap.",
+            "date": "May 30, 2025",
+            "position": 7
+        },
+        {
+            "title": "Dev",
+            "link": "https://www.riotgames.com/en/work-with-us/disciplines/data/total-recall-or-that-time-we-disabled-ranked",
+            "snippet": "A quick rundown of the 2 maps and Champ Select updates coming to ARAM in patch 25.13. Dev. 6/9/2025. Dev Update: ARAM, Inting & More. Members of the League dev ...",
+            "sitelinks": [
+                {
+                    "title": "Ranked update season one...",
+                    "link": "https://www.leagueoflegends.com/en-us/news/dev/dev-ranked-update-season-one-2025/"
+                },
+                {
+                    "title": "Season 2 Gameplay Changes...",
+                    "link": "https://www.leagueoflegends.com/en-us/news/dev/dev-season-2-gameplay-changes-preview/"
+                },
+                {
+                    "title": "Seasons in 2025",
+                    "link": "https://www.leagueoflegends.com/en-us/news/dev/dev-seasons-in-2025/"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Patch Schedule - Teamfight Tactics Support - Riot Games",
+            "link": "https://support-teamfighttactics.riotgames.com/hc/en-us/articles/37127675562387-Patch-Schedule-Teamfight-Tactics",
+            "snippet": "Below is our planned patch schedule for TFT for 2025. Patches release on a Wednesday (PT) unless otherwise indicated.",
+            "date": "Jan 16, 2025",
+            "position": 9
+        },
+        {
+            "title": "Riot Account username update",
+            "link": "https://update-account.riotgames.com/",
+            "snippet": "League of Legends accounts are now Riot Accounts. You may need to update your account with a new username (your Summoner Name will not be impacted).",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version windows 10"
+        },
+        {
+            "query": "Release patch update version download"
+        }
+    ],
+    "credits": 1
+}

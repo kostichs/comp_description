@@ -1,0 +1,148 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press Releases",
+            "link": "https://www.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. November 3, 2023 ... Please follow this link [https://www.activision.com/legal/ap-eula] in order to see these changes. ×. Privacy Policy Update.",
+            "sitelinks": [
+                {
+                    "title": "PDF Version. November 3, 2023 ... Please follow this link [https://www.activision.com/legal/ap-eula] in order to see these changes. ×. Privacy Policy Update.",
+                    "link": "https://www.activisionblizzard.com/press-releases#:~:text=PDF%20Version,November%203%2C%202023&text=Privacy%20Policy%20Update"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Newsroom",
+            "link": "https://www.activisionblizzard.com/newsroom.For",
+            "snippet": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We ...",
+            "sitelinks": [
+                {
+                    "title": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We ...",
+                    "link": "https://www.activisionblizzard.com/newsroom.For#:~:text=End%2Dof%2Dyear%20Blizzard%20Update,We"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Press Releases - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/press-releases",
+            "snippet": "PDF Version. October 3, 2023. Joyful Chaos Wherever You Go! Warcraft Rumble™ Launches at BlizzCon on November 3. Additional Formats. PDF Version. September 29 ...",
+            "sitelinks": [
+                {
+                    "title": "PDF Version. October 3, 2023. Joyful Chaos Wherever You Go! Warcraft Rumble™ Launches at BlizzCon on November 3. Additional Formats. PDF Version. September 29 ...",
+                    "link": "https://investor.activisionblizzard.com/press-releases#:~:text=PDF%20Version,September%2029"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Deadline extended: an update on the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the",
+            "snippet": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the ...",
+            "date": "Jul 19, 2023",
+            "sitelinks": [
+                {
+                    "title": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the ...",
+                    "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the#:~:text=Deadline%20extended%3A%20an%20update%20on,agreed%20not%20to%20terminate%20the"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Activision Announces Free Upgrade to Next-Gen for Call of Duty",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-free-upgrade-next-gen-call-duty-advanced",
+            "snippet": "... version for Xbox One, all-in-one games and entertainment system from ... release include unanticipated product delays and other factors identified in ...",
+            "sitelinks": [
+                {
+                    "title": "... version for Xbox One, all-in-one games and entertainment system from ... release include unanticipated product delays and other factors identified in ...",
+                    "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-free-upgrade-next-gen-call-duty-advanced#:~:text=version%20for%20Xbox%20One%2C%20all%2Din%2Done,games%20and%20entertainment%20system%20from&text=release%20include%20unanticipated%20product%20delays,and%20other%20factors%20identified%20in"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "End-of-year Blizzard Update",
+            "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update",
+            "snippet": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update.",
+            "date": "Dec 22, 2022",
+            "sitelinks": [
+                {
+                    "title": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update.",
+                    "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update#:~:text=Hey%20everyone!%20It's%20been%20about,good%20time%20for%20an%20update."
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "A March Update on the Microsoft Deal",
+            "link": "https://newsroom.activisionblizzard.com/p/microsoft-deal-update-march",
+            "snippet": "A March Update on the Microsoft Deal ... You may have seen statements from Sony, including an argument that if this deal goes through, Microsoft ...",
+            "date": "Mar 28, 2023",
+            "sitelinks": [
+                {
+                    "title": "A March Update on the Microsoft Deal ... You may have seen statements from Sony, including an argument that if this deal goes through, Microsoft ...",
+                    "link": "https://newsroom.activisionblizzard.com/p/microsoft-deal-update-march#:~:text=A%20March%20Update%20on%20the,Microsoft%20Deal&text=You%20may%20have%20seen%20statements,this%20deal%20goes%20through%2C%20Microsoft"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "Activision To Release Call Of Duty October 29",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-release-call-duty-october-29",
+            "snippet": "(Nasdaq: ATVI) has confirmed October 29 as the release date for Call of Duty™ to invade retail outlets nationwide. The highly anticipated, first-person, WWII ...",
+            "sitelinks": [
+                {
+                    "title": "(Nasdaq: ATVI) has confirmed October 29 as the release date for Call of Duty™ to invade retail outlets nationwide. The highly anticipated, first-person, WWII ...",
+                    "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-release-call-duty-october-29#:~:text=(Nasdaq%3A%20ATVI)%20has%20confirmed%20October,The%20highly%20anticipated%2C%20first%2Dperson%2C%20WWII"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Diablo® IV Launches, Immediately Sets ... - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/diablor-iv-launches-immediately-sets-new-record-blizzard",
+            "snippet": "... release include unanticipated product delays and other factors ... update any such forward-looking statements. Forward-looking ...",
+            "date": "Jun 6, 2023",
+            "sitelinks": [
+                {
+                    "title": "... release include unanticipated product delays and other factors ... update any such forward-looking statements. Forward-looking ...",
+                    "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/diablor-iv-launches-immediately-sets-new-record-blizzard#:~:text=release%20include%20unanticipated%20product%20delays,and%20other%20factors&text=update%20any%20such%20forward%2Dlooking%20statements.,Forward%2Dlooking"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Press Releases - Activision Blizzard - Investor Relations",
+            "link": "https://investor.activisionblizzard.com/press-releases?page=2",
+            "snippet": "PDF Version. April 18, 2023. Activision Blizzard to Release First Quarter 2023 Financial Results on April 27, 2023. Additional Formats. PDF Version. April 11 ...",
+            "sitelinks": [
+                {
+                    "title": "PDF Version. April 18, 2023. Activision Blizzard to Release First Quarter 2023 Financial Results on April 27, 2023. Additional Formats. PDF Version. April 11 ...",
+                    "link": "https://investor.activisionblizzard.com/press-releases?page=2#:~:text=PDF%20Version,April%2011"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version download"
+        },
+        {
+            "query": "Release patch update version free"
+        },
+        {
+            "query": "Release patch update version xbox"
+        }
+    ],
+    "credits": 1
+}

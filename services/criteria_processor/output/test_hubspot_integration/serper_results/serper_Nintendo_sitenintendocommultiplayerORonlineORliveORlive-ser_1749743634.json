@@ -1,0 +1,97 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Nintendo Switch Online overview - Nintendo Official Site",
+            "link": "https://www.nintendo.com/us/online/?srsltid=AfmBOorISmTDR9zC0sKKteEINmTk1VMfuVicTXs8hPqNQgoIHw_CHD3q",
+            "snippet": "Play online with friends and family. Race against other players around the world in the Mario Kart™ World game when it releases on Nintendo Switch 2. Or hang ...",
+            "position": 1
+        },
+        {
+            "title": "Nintendo Switch Online – Overview",
+            "link": "https://www.nintendo.com/en-gb/Nintendo-Switch-Online/Nintendo-Switch-Online-Overview-1183143.html?srsltid=AfmBOopYZLrTEbpFAT1OskHADDDThElxlSwkYMJbWc9m467CeiLXGD5m",
+            "snippet": "... multiplayer Splatoon 2 matches! Nintendo Switch Online + Expansion Pack members can enjoy this DLC at no additional cost for the duration of their membership.",
+            "position": 2
+        },
+        {
+            "title": "Nintendo Classics – Nintendo Switch Online Overview & FAQ",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/41205/~/nintendo-classics-%E2%80%93-nintendo-switch-online-overview-%26-faq",
+            "snippet": "Depending on the game, players can engage in online competitive or co-op multiplayer, or take turns controlling the action. Friends can even watch each other ...",
+            "position": 3
+        },
+        {
+            "title": "Level up with a Nintendo Switch Online Membership",
+            "link": "https://www.nintendo.com/us/online/nintendo-switch-online/?srsltid=AfmBOoqrZ-Z_XIxUcgjQaHPRp7bzqXAuxsIEVoBY88fJmL0w6smHiWjl",
+            "snippet": "A Nintendo Switch Online membership lets you play online, access classic games, and much more. Learn about the different memberships and their benefits.",
+            "sitelinks": [
+                {
+                    "title": "Free trial",
+                    "link": "https://www.nintendo.com/us/online/nintendo-switch-online/#:~:text=Try%20it%20for,Nintendo%20Switch%20Online%20today!"
+                },
+                {
+                    "title": "Upgrades",
+                    "link": "https://www.nintendo.com/us/online/nintendo-switch-online/#:~:text=Nintendo%20Switch%202,2%20Edition%20upgrade%20packs."
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "How to Start a Local or Online Multiplayer Game (51 ...",
+            "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/How-to-Start-a-Local-or-Online-Multiplayer-Game-51-Worldwide-Games--1833570.html?srsltid=AfmBOorAfWOq_q_Xj0ZVpmPjNLtu3km6FFTUSqA97o9n84bSRXEG3URJ",
+            "snippet": "A Nintendo Switch Online membership is required for each player to use online multiplayer features. Note. The number of players supported will vary for each ...",
+            "position": 5
+        },
+        {
+            "title": "How to Start an Online Multiplayer Game (Nintendo Classics",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/41236/~/how-to-start-an-online-multiplayer-game-%28nintendo-classics-%E2%80%93-nintendo-switch",
+            "snippet": "How to Start an Online Multiplayer Game (Nintendo Classics – Nintendo Switch Online) · Nintendo Entertainment System - Nintendo Classics · Super Nintendo ...",
+            "position": 6
+        },
+        {
+            "title": "Play Classic Games with Nintendo Switch Online",
+            "link": "https://www.nintendo.com/us/online/nintendo-switch-online/classic-games/?srsltid=AfmBOoqvbQON5P91peAiqS-97Z1PbvMVgKjLvKyzDCngbVG3Kx_6RY2n",
+            "snippet": "... Online and Nintendo Switch Online + Expansion Pack members. Video Player ... Seek to live, currently behind liveLIVE. Remaining Time -0:00. 1x. Playback ...",
+            "position": 7
+        },
+        {
+            "title": "How to Play Your Games Across Multiple Nintendo Switch ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/47524/~/how-to-play-your-games-across-multiple-nintendo-switch%26nbsp%3B2-or-nintendo",
+            "snippet": "If you would like to play your digital games or DLC on more than two consoles, you can turn on the online license setting. When turned on, you can play ...",
+            "position": 8
+        },
+        {
+            "title": "Nintendo Switch Online FAQ",
+            "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/Nintendo-Switch-Online/Nintendo-Switch-Online-FAQ-1442566.html?srsltid=AfmBOoq4syIZAYdItqm4o8NRPOA5pSMetuTEVYWEHV5z5dSkHWjsMO4g",
+            "snippet": "Do all family members need to use the same console or live in the same household? No. A Nintendo Switch Online family membership is linked to the Nintendo ...",
+            "sitelinks": [
+                {
+                    "title": "General Information",
+                    "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/Nintendo-Switch-Online/Nintendo-Switch-Online-FAQ-1442566.html#:~:text=General%20Information%3A"
+                },
+                {
+                    "title": "Account Settings &...",
+                    "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/Nintendo-Switch-Online/Nintendo-Switch-Online-FAQ-1442566.html#:~:text=Account%20Settings%20%26%20Membership%20Plans"
+                },
+                {
+                    "title": "Save Data Cloud Backup",
+                    "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/Nintendo-Switch-Online/Nintendo-Switch-Online-FAQ-1442566.html#:~:text=Save%20Data%20Cloud%20Backup,-How%20does%20Save%20Data%20Cloud"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Nintendo Switch: Play Online",
+            "link": "https://en-americas-support.nintendo.com/app/topics/detail/p/897/c/874",
+            "snippet": "How to Set Up a Local or Online Multiplayer Game (Pokémon Scarlet / Pokémon Violet) ... For online play, you can connect with live player shadows from all ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,83 @@
+{
+    "searchParameters": {
+        "q": "site:cdprojektred.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Gang street attacks",
+            "link": "https://forums.cdprojektred.com/index.php?threads/gang-street-attacks.11128819/",
+            "snippet": "Whats the attack frequency now? Is it just one and done? Each gang attacks you once and then never again or what? I actually liked the feature, ...",
+            "date": "Mar 7, 2024",
+            "position": 1
+        },
+        {
+            "title": "Why did NCPD attack me for no reason？",
+            "link": "https://forums.cdprojektred.com/index.php?threads/why-did-ncpd-attack-me-for-no-reason.11096608/",
+            "snippet": "Why did NCPD attack me for no reason？",
+            "date": "Dec 18, 2021",
+            "position": 2
+        },
+        {
+            "title": "Ciri's Charge Attack",
+            "link": "https://forums.cdprojektred.com/index.php?threads/ciris-charge-attack.63359/",
+            "snippet": "To use the Magic Amulet I use the key I use to throw bombs or use the torch or magic lamp. To use the Charge I have to hold the strong attack ...",
+            "date": "Dec 25, 2015",
+            "position": 3
+        },
+        {
+            "title": "Enemies no longer attack - Ver 2.0 Phantom Liberty",
+            "link": "https://forums.cdprojektred.com/index.php?threads/enemies-no-longer-attack-ver-2-0-phantom-liberty.11121499/",
+            "snippet": "Enemies stopped attacking me, no matter what I did. They wont move at all. Drones will move a little but will not attack. Not sure if they can ...",
+            "date": "Sep 28, 2023",
+            "position": 4
+        },
+        {
+            "title": "Every Tyger Claw Member is hostile",
+            "link": "https://forums.cdprojektred.com/index.php?threads/every-tyger-claw-member-is-hostile.11107610/",
+            "snippet": "So where ever I go, no matter the time or location, every member of the Tyger Claw Gang is instantly hostile and wants to attack me, which ruins",
+            "date": "Sep 25, 2022",
+            "position": 5
+        },
+        {
+            "title": "enemies don't attack - Cyberpunk | Forums - CD Projekt Red",
+            "link": "https://forums.cdprojektred.com/index.php?threads/enemies-dont-attack.11046320/",
+            "snippet": "This morning booted up CP and out of the blue normal open world enemies don't attack/ aggro anymore. Their detection bar fills up until the ...",
+            "date": "Dec 12, 2020",
+            "position": 6
+        },
+        {
+            "title": "Why do cops attack me when i shoot bounties?",
+            "link": "https://forums.cdprojektred.com/index.php?threads/why-do-cops-attack-me-when-i-shoot-bounties.11124955/",
+            "snippet": "Why do cops attack me when i shoot bounties? ... And if you enter their hostile areas they'll outright attack you if you don't leave.",
+            "date": "Nov 20, 2023",
+            "position": 7
+        },
+        {
+            "title": "Gang attacks on V in 1.7",
+            "link": "https://forums.cdprojektred.com/index.php?threads/gang-attacks-on-v-in-1-7.11117176/",
+            "snippet": "Nerani08 said: Like, a gang trying to attack you (50 Street Cred V and a living Legend) and backing down as they recognize you.",
+            "date": "Jul 2, 2023",
+            "position": 8
+        },
+        {
+            "title": "bandit sprinting attack abuse | Forums - CD PROJEKT RED",
+            "link": "https://forums.cdprojektred.com/index.php?threads/bandit-sprinting-attack-abuse.44607/",
+            "snippet": "Their sprinting attack is for some reason MUCH faster than regular attacks. giving you practically no time to react if they engage it close to you.",
+            "date": "Jun 1, 2015",
+            "position": 9
+        },
+        {
+            "title": "the game occasionally ignores the presses of the direction ...",
+            "link": "https://forums.cdprojektred.com/index.php?threads/the-game-occasionally-ignores-the-presses-of-the-direction-keys-during-combat.64767/",
+            "snippet": "the only way to evade this is to press the direction key long enough so geralt turns in that direction, and only then press the attack button, ...",
+            "date": "Jan 28, 2016",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

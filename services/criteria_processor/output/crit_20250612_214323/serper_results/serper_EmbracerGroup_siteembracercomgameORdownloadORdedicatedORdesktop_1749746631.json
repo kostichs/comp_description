@@ -1,0 +1,138 @@
+{
+    "searchParameters": {
+        "q": "site:embracer.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Embracer Games Archive",
+            "link": "https://embracer.com/about/gamesarchive/",
+            "snippet": "A dedicated team consisted of the CEO, archivist, archive administrator ... Game Invest, DECA Games, Dark Horse, Freemode and Crystal Dynamics – Eidos ...",
+            "sitelinks": [
+                {
+                    "title": "A dedicated team consisted of the CEO, archivist, archive administrator ... Game Invest, DECA Games, Dark Horse, Freemode and Crystal Dynamics – Eidos ...",
+                    "link": "https://embracer.com/about/gamesarchive/#:~:text=A%20dedicated%20team%20consisted%20of,the%20CEO%2C%20archivist%2C%20archive%20administrator&text=Game%20Invest%2C%20DECA%20Games%2C%20Dark,and%20Crystal%20Dynamics%20%E2%80%93%20Eidos"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Embracer Group: Home",
+            "link": "https://embracer.com/",
+            "snippet": "Download report · Press release · Presentation · Webcast · Financial fact sheet · ESG ... Game Invest, DECA Games, Dark Horse, Freemode and Crystal Dynamics ...",
+            "sitelinks": [
+                {
+                    "title": "Download report · Press release · Presentation · Webcast · Financial fact sheet · ESG ... Game Invest, DECA Games, Dark Horse, Freemode and Crystal Dynamics ...",
+                    "link": "https://embracer.com/#:~:text=Download%20report,ESG&text=Game%20Invest%2C%20DECA%20Games%2C%20Dark,Horse%2C%20Freemode%20and%20Crystal%20Dynamics"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Amplifier Game Invest",
+            "link": "https://embracer.com/about/operative-groups/amplifier-game-invest/",
+            "snippet": "Amplifier wants to create the most attractive home for passionate game developers and their studios, empowering their aspirations and creativity.",
+            "sitelinks": [
+                {
+                    "title": "Amplifier wants to create the most attractive home for passionate game developers and their studios, empowering their aspirations and creativity.",
+                    "link": "https://embracer.com/about/operative-groups/amplifier-game-invest/#:~:text=Amplifier%20wants%20to%20create%20the,empowering%20their%20aspirations%20and%20creativity"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Interim Report Q3 FY 2023/24",
+            "link": "https://embracer.com/wp-content/uploads/2024/02/Embracer-Group-Presentation-Q3-FY2324.pdf",
+            "snippet": "Value of Completed Game Development. Investment in Game Devlopment. Investment in Game Development as X times Completed Games. PC/Console Games.",
+            "date": "Dec 31, 2023",
+            "sitelinks": [
+                {
+                    "title": "Value of Completed Game Development. Investment in Game Devlopment. Investment in Game Development as X times Completed Games. PC/Console Games.",
+                    "link": "https://embracer.com/wp-content/uploads/2024/02/Embracer-Group-Presentation-Q3-FY2324.pdf#:~:text=Value%20of%20Completed%20Game%20Development,PC%2FConsole%20Games"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Corporate Governance Reports",
+            "link": "https://embracer.com/governance/governance-reports/",
+            "snippet": "Corporate Governance Report 2023/2024 Download pdf-file ... The Group includes 73 internal game development studios and engages over 7,000 talents across nearly ...",
+            "sitelinks": [
+                {
+                    "title": "Corporate Governance Report 2023/2024 Download pdf-file ... The Group includes 73 internal game development studios and engages over 7,000 talents across nearly ...",
+                    "link": "https://embracer.com/governance/governance-reports/#:~:text=Corporate%20Governance%20Report%202023%2F2024%20Download,pdf%2Dfile&text=The%20Group%20includes%2073%20internal,over%207%2C000%20talents%20across%20nearly"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "Record date for reverse share split in Embracer Group",
+            "link": "https://embracer.com/wp-content/uploads/2025/01/Record-date-for-reverse-share-split-in-Embracer-Group-250109.pdf",
+            "snippet": "The Group has 103 internal game development studios and is engaging more than 10,000 employees in more than 40 countries. Embracer Group's ...",
+            "date": "Jan 7, 2025",
+            "sitelinks": [
+                {
+                    "title": "The Group has 103 internal game development studios and is engaging more than 10,000 employees in more than 40 countries. Embracer Group's ...",
+                    "link": "https://embracer.com/wp-content/uploads/2025/01/Record-date-for-reverse-share-split-in-Embracer-Group-250109.pdf#:~:text=The%20Group%20has%20103%20internal,Embracer%20Group's"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Embracer to spin off Coffee Stain Group",
+            "link": "https://embracer.com/releases/embracer-to-spin-off-coffee-stain-group-remaining-business-to-be-renamed-fellowship-entertainment/",
+            "snippet": "Coffee Stain Group will consist of more than 250 passionate game developers and publishers, focused on community driven experiences. The group ...",
+            "date": "May 22, 2025",
+            "sitelinks": [
+                {
+                    "title": "Coffee Stain Group will consist of more than 250 passionate game developers and publishers, focused on community driven experiences. The group ...",
+                    "link": "https://embracer.com/releases/embracer-to-spin-off-coffee-stain-group-remaining-business-to-be-renamed-fellowship-entertainment/#:~:text=Coffee%20Stain%20Group%20will%20consist,community%20driven%20experiences.%20The%20group"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "ESG FACT SHEET",
+            "link": "https://embracer.com/wp-content/uploads/2024/02/Embracer-Group-ESG-Fact-Sheet-Q3-FY2324.pdf",
+            "snippet": "The Group has 132 internal game development studios and is engaging more than 15,000 employees in more than 40 countries. At Embracer Group, sustainability is ...",
+            "sitelinks": [
+                {
+                    "title": "The Group has 132 internal game development studios and is engaging more than 15,000 employees in more than 40 countries. At Embracer Group, sustainability is ...",
+                    "link": "https://embracer.com/wp-content/uploads/2024/02/Embracer-Group-ESG-Fact-Sheet-Q3-FY2324.pdf#:~:text=The%20Group%20has%20132%20internal,At%20Embracer%20Group%2C%20sustainability%20is"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Embracer Group's Crystal Dynamics partners with Amazon ...",
+            "link": "https://embracer.com/wp-content/uploads/2024/05/Embracer-Group8217s-Crystal-Dynamics-partners-with-Amazon-MGM-Studios-to-develop-Tomb-Raider-stories-in-streaming-and-film-240514.pdf",
+            "snippet": "The series, based on the iconic video game franchise, follows the. Tomb Raider adventures of world-famous archaeologist and adventurer Lara ...",
+            "date": "May 14, 2024",
+            "sitelinks": [
+                {
+                    "title": "The series, based on the iconic video game franchise, follows the. Tomb Raider adventures of world-famous archaeologist and adventurer Lara ...",
+                    "link": "https://embracer.com/wp-content/uploads/2024/05/Embracer-Group8217s-Crystal-Dynamics-partners-with-Amazon-MGM-Studios-to-develop-Tomb-Raider-stories-in-streaming-and-film-240514.pdf#:~:text=The%20series%2C%20based%20on%20the,world%2Dfamous%20archaeologist%20and%20adventurer%20Lara"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "asmodee's unique ecosystem",
+            "link": "https://embracer.com/wp-content/uploads/2024/11/Asmodee_Capital_Markets_Day_2024.pdf",
+            "snippet": "... Game Arena; (3) Includes ancillary products (gameplay enhancing products, ... Dedicated M&A team and post-merger integration team.",
+            "date": "Nov 14, 2024",
+            "sitelinks": [
+                {
+                    "title": "... Game Arena; (3) Includes ancillary products (gameplay enhancing products, ... Dedicated M&A team and post-merger integration team.",
+                    "link": "https://embracer.com/wp-content/uploads/2024/11/Asmodee_Capital_Markets_Day_2024.pdf#:~:text=Game%20Arena%3B%20(3)%20Includes%20ancillary,products%20(gameplay%20enhancing%20products%2C&text=Dedicated%20M%26A%20team%20and%20post%2Dmerger,integration%20team"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

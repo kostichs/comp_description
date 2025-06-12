@@ -1,0 +1,81 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Student Workbook",
+            "link": "https://education.minecraft.net/lessonsupportfiles/9947843085617313-Daring%20Defense_Student%20Workbook.docx",
+            "snippet": "Use the internet and research some real-life DDoS attacks using the prompts below. • Dyn DDoS Attack (2016). • AWS DDoS Attack (2020). • ...",
+            "position": 1
+        },
+        {
+            "title": "The Creaking should only attack mobs when you place it ...",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/30642078015245-The-Creaking-should-only-attack-mobs-when-you-place-it-down",
+            "snippet": "The Creaking should only attack mobs when you place it down. I think it would be cool if you could turn the Creaking into a guard. If you ...",
+            "date": "Sep 28, 2024",
+            "position": 2
+        },
+        {
+            "title": "Attack of the Mobs",
+            "link": "https://www.minecraft.net/en-us/marketplace/pdp?id=c9f00988-89dc-46e1-af08-d4af2b0a5f37",
+            "snippet": "Gear up and fight off archers, swordsmiths, axe people and mages in efforts to defend your kingdom's territory in Attack of the Mobs!",
+            "rating": 4.2,
+            "ratingCount": 302,
+            "position": 3
+        },
+        {
+            "title": "Mobs should not attack players on Visitor mode",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/37095052473101-Mobs-should-not-attack-players-on-Visitor-mode",
+            "snippet": "Mobs should not attack players on Visitor mode. Even when a player is in Visitor mode, they can still damage your builds and even steal your ...",
+            "date": "Jun 2, 2025",
+            "position": 4
+        },
+        {
+            "title": "Special mace super attack: the seismic uppercut",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/25023828154637-Special-mace-super-attack-the-seismic-uppercut",
+            "snippet": "Once the attack is fully charged, the mace is ready to use an attack capable of cataclysmic damage. The seismic uppercut! You right click ...",
+            "date": "Mar 14, 2024",
+            "position": 5
+        },
+        {
+            "title": "More attack patterns in mobs",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/35429621770509-More-attack-patterns-in-mobs",
+            "snippet": "Most hostile mobs attack every second (20 ticks) when they're close enough to the player, which once learned gets pretty stale. There are some ...",
+            "date": "Mar 30, 2025",
+            "position": 6
+        },
+        {
+            "title": "Decrease mob attack range in bedrock edition",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/29589774683789-Decrease-mob-attack-range-in-bedrock-edition",
+            "snippet": "Make hostile mob that deal melee damage like zombies, husk,drowned etc have less ranged in bedrock edition because mob in java have less attack ranged compared ...",
+            "date": "Aug 25, 2024",
+            "position": 7
+        },
+        {
+            "title": "Phantoms attack Happy Ghast",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/36168244576141-Phantoms-attack-Happy-Ghast",
+            "snippet": "Phantoms attack Happy Ghast. Phantoms and happy ghast are enemys. Avatar. Registered User shared this idea. April 28, 2025 at 1:53 AM; Report a Concern ...",
+            "position": 8
+        },
+        {
+            "title": "(Bedrock parity) Switch to direct attack when the skeleton is ...",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/4406720764429--Bedrock-parity-Switch-to-direct-attack-when-the-skeleton-is-underwater",
+            "snippet": "I want to switch the attack behavior of the skeleton underwater in Java Edition to direct attack like Bedrock Edition. In Java Edition,...",
+            "position": 9
+        },
+        {
+            "title": "Ghastling firing snow like explosion attack",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/35578144651661-Ghastling-firing-snow-like-explosion-attack",
+            "snippet": "Ghastling firing snow like explosion attack. Although the cute happy ghast fits being a pacifist like creature, I think it would still be ...",
+            "date": "Apr 4, 2025",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

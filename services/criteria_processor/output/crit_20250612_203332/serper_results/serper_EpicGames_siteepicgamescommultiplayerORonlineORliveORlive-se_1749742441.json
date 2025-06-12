@@ -1,0 +1,103 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Epic Online Services: Services",
+            "link": "https://onlineservices.epicgames.com/en-US/services",
+            "snippet": "... live ops, and more. Game services support ... Hide-and-spook: Building a killer multiplayer experience for Midnight Ghost Hunt with Epic Online Services.",
+            "position": 1
+        },
+        {
+            "title": "Multiplayer Games | Play PC Games With Friends",
+            "link": "https://store.epicgames.com/en-US/c/multiplayer-games",
+            "snippet": "This is also known as hotseat gaming. Online multiplayer allows players to connect with one another via a wide area network like the Internet, or through a ...",
+            "priceRange": "$6 to $70",
+            "position": 2
+        },
+        {
+            "title": "Multiplayer Programming Quick Start for Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-programming-quick-start-for-unreal-engine",
+            "snippet": "This is a best-practice for single-player and multiplayer games alike, as it makes live ... Online Services. Epic Online Services · Kids Web Services · Services ...",
+            "position": 3
+        },
+        {
+            "title": "Ultimate Multiplayer System",
+            "link": "http://marketplace-website-node-launcher-prod.ol.epicgames.com/ue/marketplace/en-US/product/ultimate-multiplayer-system",
+            "snippet": "What is the Ultimate Multiplayer System?The Ultimate Multiplayer System is ... Epic Online Services · Kids Web Services · Services Agreement · Acceptable Use ...",
+            "rating": 4.8,
+            "ratingCount": 69,
+            "currency": "$",
+            "price": 499.99,
+            "position": 4
+        },
+        {
+            "title": "Overview of Online Services in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-online-services-in-unreal-engine",
+            "snippet": "The Online Services plugin and its interfaces provide a common way to access the functionality of various online services such as Playstation Network, Xbox ...",
+            "position": 5
+        },
+        {
+            "title": "Lobbies and Sessions Introduction",
+            "link": "https://dev.epicgames.com/docs/game-services/lobbies-and-sessions/lobbies-and-sessions-introduction",
+            "snippet": "The Epic Online Services (EOS) SDK provides two different services that you can use for multiplayer matchmaking: Lobbies. Use the Lobby Interface to access ...",
+            "position": 6
+        },
+        {
+            "title": "Networking and Multiplayer in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-and-multiplayer-in-unreal-engine",
+            "snippet": "Broadcast & live events · Animation · Architecture · Automotive · Simulation · News ... Online Services. Epic Online Services · Kids Web Services · Services ...",
+            "position": 7
+        },
+        {
+            "title": "EOS Introduction | Epic Online Services Developer",
+            "link": "https://dev.epicgames.com/docs/epic-online-services/eos-get-started/eos-introduction",
+            "snippet": "Use the Epic Online Services (EOS) SDK to integrate the following services into your game: ... Multiplayer: lobbies, p2p, sessions, stats, title storage, voice ...",
+            "sitelinks": [
+                {
+                    "title": "Eos Sdk",
+                    "link": "https://dev.epicgames.com/docs/epic-online-services/eos-get-started/eos-introduction#:~:text=.-,EOS%20SDK"
+                },
+                {
+                    "title": "Interfaces",
+                    "link": "https://dev.epicgames.com/docs/epic-online-services/eos-get-started/eos-introduction#:~:text=Interfaces,-You%20integrate%20EOS%20services%20with"
+                },
+                {
+                    "title": "Coding Languages And Game...",
+                    "link": "https://dev.epicgames.com/docs/epic-online-services/eos-get-started/eos-introduction#:~:text=Coding%20Languages%20and%20Game%20Platforms,-The%20EOS%20SDK%20is%20available"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Play In Editor Multiplayer Options in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/play-in-editor-multiplayer-options-in-unreal-engine",
+            "snippet": "Broadcast & live events · Animation · Architecture · Automotive · Simulation · News ... Online Services. Epic Online Services · Kids Web Services · Services ...",
+            "position": 9
+        },
+        {
+            "title": "Games - Epic Online Services",
+            "link": "https://onlineservices.epicgames.com/en-US/services-games",
+            "snippet": "Services are live on hundreds of games with tens of millions of CCU ... Reduce cheating in online PC multiplayer play with cheat prevention and detection.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service android"
+        }
+    ],
+    "credits": 1
+}

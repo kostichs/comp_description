@@ -1,0 +1,103 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Epic Online Services: Services",
+            "link": "https://onlineservices.epicgames.com/en-US/services",
+            "snippet": "... live ops, and more. Game services support ... Hide-and-spook: Building a killer multiplayer experience for Midnight Ghost Hunt with Epic Online Services.",
+            "position": 1
+        },
+        {
+            "title": "Multiplayer Games | Play PC Games With Friends",
+            "link": "https://store.epicgames.com/en-US/c/multiplayer-games",
+            "snippet": "Online multiplayer allows players to connect with one another via a wide area network like the Internet, or through a local network, and play a multiplayer game together. Multiplayer PC games are fun because you can play with your friends or with a random group of players that enjoy the same online game.",
+            "priceRange": "$6 to $70",
+            "position": 2
+        },
+        {
+            "title": "Multiplayer Programming Quick Start for Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/multiplayer-programming-quick-start-for-unreal-engine",
+            "snippet": "This is a best-practice for single-player and multiplayer games alike, as it makes live changes to these variables more consistent, easier to debug, and easier to extend with new functionality. In ThirdPersonMPCharacter.cpp , add the following implementation for TakeDamage : ThirdPersonMPCharacter.cpp. float ...",
+            "position": 3
+        },
+        {
+            "title": "Ultimate Multiplayer System",
+            "link": "http://marketplace-website-node-launcher-prod.ol.epicgames.com/ue/marketplace/en-US/product/ultimate-multiplayer-system",
+            "snippet": "The Ultimate Multiplayer System is an advanced framework that will save years of work on your multiplayer projects. Everything you need to make a AAA quality multiplayer system. Works for desktop & mobile game dev. It helps you to access aws server resources, hosts ...",
+            "rating": 4.8,
+            "ratingCount": 69,
+            "currency": "$",
+            "price": 499.99,
+            "position": 4
+        },
+        {
+            "title": "Lobbies and Sessions Introduction",
+            "link": "https://dev.epicgames.com/docs/game-services/lobbies-and-sessions/lobbies-and-sessions-introduction",
+            "snippet": "The Epic Online Services (EOS) SDK provides two different services that you can use for multiplayer matchmaking: Lobbies. Use the Lobby Interface to access the lobby service. See the Lobby Interface documentation for more information. Sessions. Use the Sessions Interface to access the session service.",
+            "position": 5
+        },
+        {
+            "title": "Overview of Online Services in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/overview-of-online-services-in-unreal-engine",
+            "snippet": "The Online Services plugin and its interfaces provide a common way to access the functionality of various online services such as Playstation Network, Xbox Live, Epic, Steam, and so on.",
+            "position": 6
+        },
+        {
+            "title": "Networking and Multiplayer in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/networking-and-multiplayer-in-unreal-engine",
+            "snippet": "Modern multiplayer experiences require synchronizing vast amounts of data between large numbers of clients spread around the world. What data you send and how you send it is extremely important to providing a compelling experience to users since it can drastically affect how your project performs and feels.",
+            "position": 7
+        },
+        {
+            "title": "Games - Epic Online Services",
+            "link": "https://onlineservices.epicgames.com/en-US/services-games",
+            "snippet": "Services are live on hundreds of games with tens of millions of CCU ... Reduce cheating in online PC multiplayer play with cheat prevention and detection.",
+            "position": 8
+        },
+        {
+            "title": "Play In Editor Multiplayer Options in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/play-in-editor-multiplayer-options-in-unreal-engine",
+            "snippet": "Play As Client: Enables the Editor to act as a client. A dedicated server spawns behind the scenes to connect to. Run Under One Process, Spawns multiplayer windows under a single instance of Unreal Engine ...",
+            "position": 9
+        },
+        {
+            "title": "Epic Online Services (EOS) Overview",
+            "link": "https://dev.epicgames.com/docs/epic-online-services/eos-overview",
+            "snippet": "Epic Online Services (EOS) are free, cross-platform services for multiplayer games. EOS is quick to install into your game, includes operation tools, and allows scaling.",
+            "sitelinks": [
+                {
+                    "title": "Eos Game Services",
+                    "link": "https://dev.epicgames.com/docs/epic-online-services/eos-overview#:~:text=Services-,EOS%20Game%20Services"
+                },
+                {
+                    "title": "Multiplayer",
+                    "link": "https://dev.epicgames.com/docs/epic-online-services/eos-overview#:~:text=.-,Multiplayer"
+                },
+                {
+                    "title": "Player Progression",
+                    "link": "https://dev.epicgames.com/docs/epic-online-services/eos-overview#:~:text=Interface-,Player%20Progression"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service android"
+        }
+    ],
+    "credits": 1
+}

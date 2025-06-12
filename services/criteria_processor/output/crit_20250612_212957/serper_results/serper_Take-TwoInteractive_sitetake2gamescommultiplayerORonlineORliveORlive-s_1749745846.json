@@ -1,0 +1,88 @@
+{
+    "searchParameters": {
+        "q": "site:take2games.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Game Streaming",
+            "link": "https://www.take2games.com/game-streaming",
+            "snippet": "Rockstar Support · Ghost Story Support · Zynga Support · 2K Support. ©2025 Take-Two Interactive Software, Inc. Multi ESRB Game Rating.",
+            "position": 1
+        },
+        {
+            "title": "Leading Game Publisher | Take-Two Interactive Software, Inc.",
+            "link": "https://www.take2games.com/",
+            "snippet": "Take-Two Interactive Software is a leading game publisher, creating games through its labels, Rockstar Games, 2K, Private Division, and Social Point.",
+            "position": 2
+        },
+        {
+            "title": "Take-Two Interactive Software, Inc. Reiterates Expectations ...",
+            "link": "https://www.take2games.com/ir/news/take-two-interactive-software-inc-reiterates-expectations",
+            "snippet": "A live, listen-only webcast and a replay of the call will be available at ... online platforms, and cloud streaming services. The Company's common ...",
+            "sitelinks": [
+                {
+                    "title": "Release date",
+                    "link": "https://www.take2games.com/ir/news/take-two-interactive-software-inc-reiterates-expectations#:~:text=In%20addition%2C%20Take%2DTwo's,on%20May%2026%2C%202026"
+                },
+                {
+                    "title": "Stock price",
+                    "link": "https://www.take2games.com/ir/news/take-two-interactive-software-inc-reiterates-expectations#:~:text=NEW%20YORK%20%2D%2D(BUSINESS,increases%20in%2C%20and%20record"
+                },
+                {
+                    "title": "Parent company",
+                    "link": "https://www.take2games.com/ir/news/take-two-interactive-software-inc-reiterates-expectations#:~:text=%E2%80%9CWe%20support%20fully,blockbuster%20entertainment%20experience%20that"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Borderlands 4 Unveils Action-Packed Gameplay Deep Dive",
+            "link": "https://www.take2games.com/ir/news/borderlands-4-unveils-action-packed-gameplay-deep-dive",
+            "snippet": "Borderlands 4 makes it easier than ever for friends to jump into co-op multiplayer with a new system for players to form parties online and stay ...",
+            "date": "Apr 30, 2025",
+            "position": 4
+        },
+        {
+            "title": "Quarterly Earnings | Take-Two Interactive Software, Inc.",
+            "link": "https://www.take2games.com/ir/quarterly-earnings",
+            "snippet": "Webcasts, earnings presentations and investor presentations for Take-Two Interactive (TTWO)",
+            "position": 5
+        },
+        {
+            "title": "Take-Two and ESPN Videogames Announce ESPN NFL 2K5 ...",
+            "link": "https://ir.take2games.com/static-files/33dc6f5c-12a2-4252-a6fc-d0c5ec066402",
+            "snippet": "Xbox delivers an expansive collection of breakthrough games, powerful hardware and the unified. Xbox Live online service. The new tagline, \"it's good to play ...",
+            "position": 6
+        },
+        {
+            "title": "General | Take-Two Interactive Software, Inc.",
+            "link": "https://ir.take2games.com/taxonomy/term/3886?mobile=1&page=68",
+            "snippet": "2K Sports and Nexon Announce Partnership to Develop and Publish Online Baseball Simulation ... Live 2011 · Read more about Duke Nukem Forever(R) Set to Kick ...",
+            "position": 7
+        },
+        {
+            "title": "Borderlands® 4 Coming In 2025",
+            "link": "https://www.take2games.com/ir/news/borderlandsr-4-coming-2025",
+            "snippet": "Borderlands 4 was announced at gamescom's Opening Night Live ... We deliver our products through physical retail, digital download, online platforms, and cloud ...",
+            "position": 8
+        },
+        {
+            "title": "General | Take-Two Interactive Software, Inc.",
+            "link": "https://ir.take2games.com/taxonomy/term/3886?page=56",
+            "snippet": "2K Sports Announces October 24 Commercial Launch of NBA® 2K Online on Tencent Portal in China ... Expands Online Initiatives in Asia · Read more about Take ...",
+            "position": 9
+        },
+        {
+            "title": "Take-Two Interactive Software Privacy Policy",
+            "link": "https://www.take2games.com/privacy/",
+            "snippet": "If you participate in tournaments or other online game events, we must publicly post your information. We publish gameplay boards and multiplayer match records ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

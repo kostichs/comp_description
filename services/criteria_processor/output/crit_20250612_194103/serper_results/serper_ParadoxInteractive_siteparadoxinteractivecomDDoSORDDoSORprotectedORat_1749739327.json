@@ -1,0 +1,191 @@
+{
+    "searchParameters": {
+        "q": "site:paradoxinteractive.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Traffic Breach Statement",
+            "link": "https://www.paradoxinteractive.com/games/cities-skylines-ii/news/traffic-breach-statement",
+            "snippet": "The analysis shows that the threat is specifically a DLL hijacking attack aimed at stealing Exodus cryptocurrency wallet information.",
+            "sitelinks": [
+                {
+                    "title": "The analysis shows that the threat is specifically a DLL hijacking attack aimed at stealing Exodus cryptocurrency wallet information.",
+                    "link": "https://www.paradoxinteractive.com/games/cities-skylines-ii/news/traffic-breach-statement#:~:text=The%20analysis%20shows%20that%20the,stealing%20Exodus%20cryptocurrency%20wallet%20information"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Dark Pack Agreement",
+            "link": "https://www.paradoxinteractive.com/games/world-of-darkness/community/dark-pack-agreement",
+            "snippet": "This isn't to make life more difficult for LARP organizers or players, but to ensure that our intellectual property is protected in the way laws require it.",
+            "sitelinks": [
+                {
+                    "title": "This isn't to make life more difficult for LARP organizers or players, but to ensure that our intellectual property is protected in the way laws require it.",
+                    "link": "https://www.paradoxinteractive.com/games/world-of-darkness/community/dark-pack-agreement#:~:text=This%20isn't%20to%20make%20life,the%20way%20laws%20require%20it."
+                },
+                {
+                    "title": "Dark Pack Agreement",
+                    "link": "https://www.paradoxinteractive.com/games/world-of-darkness/community/dark-pack-agreement#:~:text=Dark%20Pack%20Agreement,-Dark%20Pack%20Agreement"
+                },
+                {
+                    "title": "Officially Sanctioned World...",
+                    "link": "https://www.paradoxinteractive.com/games/world-of-darkness/community/dark-pack-agreement#:~:text=Officially%20Sanctioned%20World%20of%20Darkness%20Fan%20Activities%20and%20Legal%20Notices"
+                },
+                {
+                    "title": "What's Included? What Kind...",
+                    "link": "https://www.paradoxinteractive.com/games/world-of-darkness/community/dark-pack-agreement#:~:text=What%27s%20included%3F%20What%20kind%20of%20content%20can%20I%20make%20or%20share%3F"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Combat - Developer Diary",
+            "link": "https://www.paradoxinteractive.com/games/millennia/news/combat",
+            "snippet": "During a round of combat, one Unit in an Army will target an enemy Unit. This causes the attacking Unit's Attack value to be compared to the ...",
+            "date": "Nov 1, 2023",
+            "sitelinks": [
+                {
+                    "title": "During a round of combat, one Unit in an Army will target an enemy Unit. This causes the attacking Unit's Attack value to be compared to the ...",
+                    "link": "https://www.paradoxinteractive.com/games/millennia/news/combat#:~:text=During%20a%20round%20of%20combat%2C,to%20be%20compared%20to%20the"
+                },
+                {
+                    "title": "News & Updates",
+                    "link": "https://www.paradoxinteractive.com/games/millennia/news/combat#:~:text=News%20%26%20Updates,-2023%2D11%2D01"
+                },
+                {
+                    "title": "Goals Of Combat",
+                    "link": "https://www.paradoxinteractive.com/games/millennia/news/combat#:~:text=Goals%20of%20Combat"
+                },
+                {
+                    "title": "Warfare Domain",
+                    "link": "https://www.paradoxinteractive.com/games/millennia/news/combat#:~:text=Warfare%20Domain,-Combat%2C%20as%20part%20of"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Surviving the Aftermath: Rebirth",
+            "link": "https://www.paradoxinteractive.com/games/surviving-the-aftermath/add-ons/surviving-the-aftermath-rebirth",
+            "snippet": "Be aware of the blighted areas that you will terraform, here, blight monsters will spawn and attack your survivors. Scr4 NewBuildingsinColony. New buildings ...",
+            "sitelinks": [
+                {
+                    "title": "Be aware of the blighted areas that you will terraform, here, blight monsters will spawn and attack your survivors. Scr4 NewBuildingsinColony. New buildings ...",
+                    "link": "https://www.paradoxinteractive.com/games/surviving-the-aftermath/add-ons/surviving-the-aftermath-rebirth#:~:text=Be%20aware%20of%20the%20blighted,New%20buildings"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Dev Diary #7: Visceral Immersive Combat",
+            "link": "https://www.paradoxinteractive.com/games/vampire-the-masquerade-bloodlines-2/news/visceral-immersive-combat",
+            "snippet": "If dodge is used towards an enemy performing a melee attack, it becomes a counter, staggering the enemy - it is fine for players to never do ...",
+            "date": "Jan 24, 2024",
+            "sitelinks": [
+                {
+                    "title": "If dodge is used towards an enemy performing a melee attack, it becomes a counter, staggering the enemy - it is fine for players to never do ...",
+                    "link": "https://www.paradoxinteractive.com/games/vampire-the-masquerade-bloodlines-2/news/visceral-immersive-combat#:~:text=If%20dodge%20is%20used%20towards,for%20players%20to%20never%20do"
+                },
+                {
+                    "title": "Latest News",
+                    "link": "https://www.paradoxinteractive.com/games/vampire-the-masquerade-bloodlines-2/news/visceral-immersive-combat#:~:text=Latest%20News,-2024%2D01%2D24"
+                },
+                {
+                    "title": "Dev Diary #7: Visceral...",
+                    "link": "https://www.paradoxinteractive.com/games/vampire-the-masquerade-bloodlines-2/news/visceral-immersive-combat#:~:text=Dev%20Diary%20%237%3A%20Visceral%20Immersive%20Combat,-In%20dev%20diary%20%231"
+                },
+                {
+                    "title": "Strategic Stalker",
+                    "link": "https://www.paradoxinteractive.com/games/vampire-the-masquerade-bloodlines-2/news/visceral-immersive-combat#:~:text=Strategic%20Stalker,-The%201st%20playstyle%20we%20at"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "Age of Wonders 4 - Giant Kings",
+            "link": "https://www.paradoxinteractive.com/games/age-of-wonders-4/add-ons/age-of-wonders-4-giant-kings",
+            "snippet": "Attack these traders to seize their wares - but beware, future dealings may be closed to you! 6. Fated Region Event System. A new realm trait, Legends of ...",
+            "sitelinks": [
+                {
+                    "title": "Attack these traders to seize their wares - but beware, future dealings may be closed to you! 6. Fated Region Event System. A new realm trait, Legends of ...",
+                    "link": "https://www.paradoxinteractive.com/games/age-of-wonders-4/add-ons/age-of-wonders-4-giant-kings#:~:text=Attack%20these%20traders%20to%20seize,new%20realm%20trait%2C%20Legends%20of"
+                },
+                {
+                    "title": "New Ruler Type",
+                    "link": "https://www.paradoxinteractive.com/games/age-of-wonders-4/add-ons/age-of-wonders-4-giant-kings#:~:text=New%20Ruler%20Type"
+                },
+                {
+                    "title": "Shop Structures",
+                    "link": "https://www.paradoxinteractive.com/games/age-of-wonders-4/add-ons/age-of-wonders-4-giant-kings#:~:text=Shop%20Structures"
+                },
+                {
+                    "title": "Fated Region Event System",
+                    "link": "https://www.paradoxinteractive.com/games/age-of-wonders-4/add-ons/age-of-wonders-4-giant-kings#:~:text=Fated%20Region%20Event%20System"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Stellaris",
+            "link": "https://www.paradoxinteractive.com/games/stellaris/about",
+            "snippet": "Defend or attack with fully customizable war fleets, where adaptation is the key to victory. Choose from an array of complex technologies when designing and ...",
+            "sitelinks": [
+                {
+                    "title": "Defend or attack with fully customizable war fleets, where adaptation is the key to victory. Choose from an array of complex technologies when designing and ...",
+                    "link": "https://www.paradoxinteractive.com/games/stellaris/about#:~:text=Defend%20or%20attack%20with%20fully,complex%20technologies%20when%20designing%20and"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "Warlock 2: The Exiled",
+            "link": "https://www.paradoxinteractive.com/games/warlock-2-the-exiled",
+            "snippet": "Carefully research over 170 spells and choose what to specialize in, from direct attack spells to terraforming, or maybe align yourself to one of the Gods to ...",
+            "sitelinks": [
+                {
+                    "title": "Carefully research over 170 spells and choose what to specialize in, from direct attack spells to terraforming, or maybe align yourself to one of the Gods to ...",
+                    "link": "https://www.paradoxinteractive.com/games/warlock-2-the-exiled#:~:text=Carefully%20research%20over%20170%20spells,one%20of%20the%20Gods%20to"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Crusader Kings II: Sword of Islam",
+            "link": "https://www.paradoxinteractive.com/games/crusader-kings-ii/add-ons/crusader-kings-ii-sword-of-islam",
+            "snippet": "Medieval Europe is brought to life in this epic game of knights, schemes, and thrones. \"The Ummah is under attack. All true muslims must be charitable in peace ...",
+            "sitelinks": [
+                {
+                    "title": "Medieval Europe is brought to life in this epic game of knights, schemes, and thrones. \"The Ummah is under attack. All true muslims must be charitable in peace ...",
+                    "link": "https://www.paradoxinteractive.com/games/crusader-kings-ii/add-ons/crusader-kings-ii-sword-of-islam#:~:text=Medieval%20Europe%20is%20brought%20to,must%20be%20charitable%20in%20peace"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "BATTLETECH Urban Warfare",
+            "link": "https://www.paradoxinteractive.com/games/battletech/add-ons/battletech-urban-warfare",
+            "snippet": "Attack and Defend is a challenging new mission type where your mercenaries must destroy an enemy's base to stop a steady stream of attackers before they can ...",
+            "sitelinks": [
+                {
+                    "title": "Attack and Defend is a challenging new mission type where your mercenaries must destroy an enemy's base to stop a steady stream of attackers before they can ...",
+                    "link": "https://www.paradoxinteractive.com/games/battletech/add-ons/battletech-urban-warfare#:~:text=Attack%20and%20Defend%20is%20a,of%20attackers%20before%20they%20can"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Ddos ddos protected attack xbox"
+        },
+        {
+            "query": "Ddos ddos protected attack android"
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,75 @@
+{
+    "searchParameters": {
+        "q": "site:krafton.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "PUBG: BATTLEGROUNDS | KRAFTON",
+            "link": "https://krafton.com/en/games/battlegrounds/",
+            "snippet": "Game Platform. PUBG: Battlegrounds (Steam). Steam Website. PUBG: Battlegrounds (Epic Games). Epic Games Website. PUBG: Battlegrounds (Kakao Games). Kakao Games ...",
+            "position": 1
+        },
+        {
+            "title": "Brand Resource Center | KRAFTON",
+            "link": "https://krafton.com/en/about/brandcenter/",
+            "snippet": "You can download the basic design assets, such as KRAFTON and each studio's logo and typeface, and our brand guidelines, under the Brand Resource Center menu.",
+            "position": 2
+        },
+        {
+            "title": "inZOI | KRAFTON",
+            "link": "https://krafton.com/en/games/inzoi/",
+            "snippet": "On-device generative AI tools empower players to easily create personalized customizations. Game Platform. inZOI (Steam). Steam Website · 5minlab. DEVELOPER ...",
+            "position": 3
+        },
+        {
+            "title": "Grenade Launcher-focused “KA-BOOM” Mode Arrives with ...",
+            "link": "https://krafton.com/en/news/press/grenade-launcher-focused-ka-boom-mode-arrives-with-march-update/",
+            "snippet": "The mode introduces the powerful “Red Zone Launcher” (which is more powerful than standard grenade launchers) and destructible terrain, excluding starting ...",
+            "position": 4
+        },
+        {
+            "title": "KRAFTON LAUNCHES KRAFTON CREATOR NETWORK ...",
+            "link": "https://press.krafton.com/KRAFTON-LAUNCHES-KRAFTON-CREATOR-NETWORK-TO-EMPOWER-GLOBAL-GAME-CREATO",
+            "snippet": "To qualify, applicants must be at least 18 years old and have a minimum of 1,000 followers on a recognized social media platform, including ...",
+            "date": "Mar 13, 2025",
+            "position": 5
+        },
+        {
+            "title": "Global Publishing Platform Dept. - KRAFTON",
+            "link": "https://blog.krafton.com/tag/global-publishing-platform-dept/",
+            "snippet": "Tag - Global Publishing Platform Dept. PeopleOn English ver. Developers who support developers, Global... © KRAFTON, Inc. All rights reserved.",
+            "position": 6
+        },
+        {
+            "title": "Dinkum | KRAFTON",
+            "link": "https://krafton.com/en/games/dinkum/",
+            "snippet": "Set up fences to shield your crops and fend off Crocos. Accumulated downloads: 0 +. Game Platform. Dinkum (Steam). Steam Website. 10. TOP. Visit Us · Privacy ...",
+            "position": 7
+        },
+        {
+            "title": "I can't download (install) CookieRun India.",
+            "link": "https://help.cookierunindia.krafton.com/hc/en/4-cookierun-india/faq/134-i-can-t-download-install-cookierun-india/?p=web",
+            "snippet": "If you're unable to install CookieRun India, please check the following: Ensure you have enough storage space on your device before attempting to download.",
+            "position": 8
+        },
+        {
+            "title": "KRAFTON AND RELU GAMES TO SHOWCASE MIMESIS ...",
+            "link": "https://press.krafton.com/en-GB/KRAFTON-AND-RELU-GAMES-TO-SHOWCASE-MIMESIS-AT-STEAM-NEXT-FEST",
+            "snippet": "As part of Steam Next Fest, a global digital event that highlights upcoming titles, players will be able to download a demo of the game from ...",
+            "date": "2 days ago",
+            "position": 9
+        },
+        {
+            "title": "Press | KRAFTON",
+            "link": "https://krafton.com/en/news/press/?var_page=5",
+            "snippet": "KRAFTON INVESTS IN SHORT-FORM VIDEO PLATFORM 'SPOON LABS,' WITH FOCUS ON DRAMATIC CONTENT. 2024. 09. 11. - Recognized the company's stable platform technology ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

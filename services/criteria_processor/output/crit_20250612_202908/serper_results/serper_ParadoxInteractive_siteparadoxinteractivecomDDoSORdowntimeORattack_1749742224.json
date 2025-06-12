@@ -1,0 +1,71 @@
+{
+    "searchParameters": {
+        "q": "site:paradoxinteractive.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Traffic Breach Statement",
+            "link": "https://www.paradoxinteractive.com/games/cities-skylines-ii/news/traffic-breach-statement",
+            "snippet": "The analysis shows that the threat is specifically a DLL hijacking attack aimed at stealing Exodus cryptocurrency wallet information.",
+            "position": 1
+        },
+        {
+            "title": "Combat - Developer Diary",
+            "link": "https://www.paradoxinteractive.com/games/millennia/news/combat",
+            "snippet": "This causes the attacking Unit's Attack value to be compared to the target's Defense value. From the result, damage is determined and ...",
+            "date": "Nov 1, 2023",
+            "position": 2
+        },
+        {
+            "title": "Surviving the Aftermath: Rebirth",
+            "link": "https://www.paradoxinteractive.com/games/surviving-the-aftermath/add-ons/surviving-the-aftermath-rebirth",
+            "snippet": "Be aware of the blighted areas that you will terraform, here, blight monsters will spawn and attack your survivors. Scr4 NewBuildingsinColony. New buildings ...",
+            "position": 3
+        },
+        {
+            "title": "Darfall Is Available Now – Build, Battle, and Survive ...",
+            "link": "https://www.paradoxinteractive.com/media/press-releases/press-release/darfall-is-available-now-build-battle-and-survive-the-undead-onslaught",
+            "snippet": "But as night falls, sinister undead forces emerge from the shadows, sending waves of enemies to attack the base. Each night brings new ...",
+            "date": "May 8, 2025",
+            "position": 4
+        },
+        {
+            "title": "Crusader Kings II: Sword of Islam",
+            "link": "https://www.paradoxinteractive.com/games/crusader-kings-ii/add-ons/crusader-kings-ii-sword-of-islam",
+            "snippet": "Medieval Europe is brought to life in this epic game of knights, schemes, and thrones. \"The Ummah is under attack. All true muslims must be charitable in peace ...",
+            "position": 5
+        },
+        {
+            "title": "Dev Diary #7: Visceral Immersive Combat",
+            "link": "https://www.paradoxinteractive.com/games/vampire-the-masquerade-bloodlines-2/news/visceral-immersive-combat",
+            "snippet": "If dodge is used towards an enemy performing a melee attack, it becomes a counter, staggering the enemy - it is fine for players to never do ...",
+            "date": "Jan 24, 2024",
+            "position": 6
+        },
+        {
+            "title": "BATTLETECH Urban Warfare",
+            "link": "https://www.paradoxinteractive.com/games/battletech/add-ons/battletech-urban-warfare",
+            "snippet": "Attack and Defend is a challenging new mission type where your mercenaries must destroy an enemy's base to stop a steady stream of attackers before they can ...",
+            "position": 7
+        },
+        {
+            "title": "The Lamplighters League Dev Diary #9 - Isaac",
+            "link": "https://www.paradoxinteractive.com/games/lamplighters-league/news/the-lamplighters-league-dev-diary-9-isaac",
+            "snippet": "Isaac's basic shoot attack is a multi-hit attack, similar to Judith or Ana Sofia's SMGs. However every stack of Heat increases the amount ...",
+            "date": "Dec 6, 2023",
+            "position": 8
+        },
+        {
+            "title": "Hearts of Iron II Complete",
+            "link": "https://www.paradoxinteractive.com/games/hearts-of-iron-ii-complete",
+            "snippet": "Movement-is-attack combat system making warfare more realistic. Mission-based Air and Naval system, giving options for logistical strikes and targeted ...",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

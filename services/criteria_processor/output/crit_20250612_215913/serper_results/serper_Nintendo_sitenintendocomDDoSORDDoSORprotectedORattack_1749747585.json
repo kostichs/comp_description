@@ -1,0 +1,87 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Attack Hole: Hero Edition",
+            "link": "https://www.nintendo.com/us/store/products/attack-hole-hero-edition-switch/?srsltid=AfmBOoruPR1ozqZxJWFe2hcUx3s8q2VTMfnP-SoucVBRWRmd6RxakdX4",
+            "snippet": "Attack Hole: Hero Edition ... Supported – Game behavior is consistent with Nintendo Switch. Swallow everything and become the biggest black hole!",
+            "currency": "$",
+            "price": 5.99,
+            "position": 1
+        },
+        {
+            "title": "Infantry Attack: Gold'n'Gun",
+            "link": "https://www.nintendo.com/us/store/products/infantry-attack-goldngun-70050000047981-switch/?srsltid=AfmBOoqaOhUe19Bwc3iBTazHMyAh1F7aXJq5SZwXAp0K4C5z5jVwQurw",
+            "snippet": "Buy Infantry Attack: Gold'n'Gun and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 50,
+            "position": 2
+        },
+        {
+            "title": "How to Connect a Wii U to the Internet Using Wi-Fi ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/16001/~/how-to-connect-a-wii-u-to-the-internet-using-wi-fi-protected-setup",
+            "snippet": "Select Wi-Fi Protected Setup. Select Push-Button Configuration. On the wireless access point, press and hold the WPS button until the LED blinks. A Setup ...",
+            "position": 3
+        },
+        {
+            "title": "Arcade Archives Rush'n Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/arcade-archives-rushn-attack-switch/?srsltid=AfmBOooqdTPv-y3siu5qpkhZn_MohWqwqF1mInz079LJZ63jHaaxAoQF",
+            "snippet": "Rush'n Attack is an action game released by KONAMI in 1985. Infiltrate an enemy base and get past four obstacles to rescue your comrades!",
+            "currency": "$",
+            "price": 9.87,
+            "position": 4
+        },
+        {
+            "title": "SUPER TRENCH ATTACK for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/super-trench-attack-switch/?srsltid=AfmBOooYGNoWhawxBNyQT11J-_63P3dDPq5DfMCEqZDtRZkbCDY5HR9c",
+            "snippet": "Engage in a fearless fight against Black Army's oppression and help end the World War. Super Trench Attack is an action packed, fun RPG, dual stick shooter.",
+            "currency": "$",
+            "price": 8,
+            "position": 5
+        },
+        {
+            "title": "Infantry Attack: Strike From Above",
+            "link": "https://www.nintendo.com/en-ca/store/products/infantry-attack-strike-from-above-70050000047983-switch/?srsltid=AfmBOorZTThoFLTb_z9Nfp_pjXWShgQnAulADHdvnYoSmVH66pfE2A9R",
+            "snippet": "Infantry Attack: Strike From Above ; Edition. Digital ; Equip yourself with a new secondary weapon and show your opponents who's the real boss! With this DLC you' ...",
+            "currency": "$",
+            "price": 50,
+            "position": 6
+        },
+        {
+            "title": "Attack of the Karens for Nintendo Switch",
+            "link": "https://www.nintendo.com/en-ca/store/products/attack-of-the-karens-switch/?srsltid=AfmBOorTz12pLCASrgc_MNp8wXGdsTd2ZfM3iD-2RkoSEc7R0Y0KtgW7",
+            "snippet": "Attack of the Karens · Piloting the Manager X-15, embark on a mission to rid the world of evil cyborg Karens and save your city from entitlement forever!",
+            "position": 7
+        },
+        {
+            "title": "Attack on Beetle for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/attack-on-beetle-switch/?srsltid=AfmBOopnNTwI0luM5zr5qjqP-peynKjiSyrQXsH9bgJkWfCGSZ753Igp",
+            "snippet": "Buy Attack on Beetle and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 5.99,
+            "position": 8
+        },
+        {
+            "title": "Infantry Attack: Drone Squad",
+            "link": "https://www.nintendo.com/us/store/products/infantry-attack-drone-squad-70050000047985-switch/?srsltid=AfmBOopmd6z9ZvOy1mHU145lnEF-VTn0GKkjash2hlPm4CfaRuwkA1v3",
+            "snippet": "Infantry Attack: Drone Squad ; Edition. Digital ; Equip yourself with new drones and show your opponents who's the real boss! With this DLC you'll unlock: - UD-1 ...",
+            "currency": "$",
+            "price": 1.49,
+            "position": 9
+        },
+        {
+            "title": "How to Connect a Nintendo 3DS Family System ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/16007/~/how-to-connect-a-nintendo-3ds-family-system-to-the-internet-using-wi-fi",
+            "snippet": "In this article, you'll learn how to connect online using Wi-Fi Protected Setup. Note: Complete these steps. Locate the WPS button on the router.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

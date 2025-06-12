@@ -1,0 +1,76 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Download the EA app – Powering next generation of PC ...",
+            "link": "https://www.ea.com/ea-app",
+            "snippet": "The fast, optimized platform makes it easier than ever to download and play. So jumping into your game takes less time and fewer clicks.",
+            "position": 1
+        },
+        {
+            "title": "How to download, install, and update the EA app",
+            "link": "https://help.ea.com/en/help/ea/ea-app/download-install-update-ea-app/",
+            "snippet": "Restart or reset your download · On PC: By default, the EA app installation folder is at C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop.",
+            "date": "Apr 10, 2025",
+            "position": 2
+        },
+        {
+            "title": "The all new EA app for Windows",
+            "link": "https://www.ea.com/news/ea-app",
+            "snippet": "NEED HELP? Verify my EA Login Linking your platform accounts to your EA Account ... Download Now.",
+            "position": 3
+        },
+        {
+            "title": "Games that won't download, install, or load in the EA app",
+            "link": "https://help.ea.com/en/help/ea/ea-app/game-download-install-load-troubleshoot/",
+            "snippet": "Go to C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop. Right-click on EADesktop.exe. Choose Run as Administrator. Start the download and ...",
+            "date": "Mar 13, 2025",
+            "position": 4
+        },
+        {
+            "title": "Re: EA Launcher doesn´t install in choosen directory",
+            "link": "https://forums.ea.com/discussions/ea-app-technical-issues-en/re-ea-launcher-doesn%C2%B4t-install-in-choosen-directory/7575218",
+            "snippet": "Download the installer from the EA page and navigate to the folder where you ... In this case, the app gets installed in a subfolder called EA Desktop under D:\\ ...",
+            "position": 5
+        },
+        {
+            "title": "How to download your games in the EA app",
+            "link": "https://help.ea.com/en/help/ea/ea-app/download-and-play-your-games/",
+            "snippet": "Launch the EA app. Log in to your EA Account. Go to Library. Find the game that you want to download and click the arrow in the bottom- ...",
+            "date": "Mar 13, 2025",
+            "position": 6
+        },
+        {
+            "title": "Platform Games - Electronic Arts Official Site",
+            "link": "https://www.ea.com/games/library/platform-games",
+            "snippet": "Explore platform games from Electronic Arts, a leading publisher of video games for the PC, consoles, and mobile.",
+            "position": 7
+        },
+        {
+            "title": "Re: Sims 3 launcher running in tray while playing.",
+            "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/re-sims-3-launcher-running-in-tray-while-playing-/8268515",
+            "snippet": "But even on a disc install, you may not be able to bypass the launcher if your install is tied to Origin, either because you updated the original EA download ...",
+            "position": 8
+        },
+        {
+            "title": "Re: I want to download my sims 4 onto the D:/ Drive",
+            "link": "https://forums.ea.com/discussions/the-sims-4-technical-issues-pc-en/re-i-want-to-download-my-sims-4-onto-the-d-drive/11839762",
+            "snippet": "Re: I want to download my sims 4 onto the D:/ Drive ... I have so far transferred documents, desktop & downloads to my D drive from my C drive.",
+            "position": 9
+        },
+        {
+            "title": "Re: Sims 3 DLC in EA App Not Showing up in Launcher",
+            "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/re-sims-3-dlc-in-ea-app-not-showing-up-in-launcher/8323072",
+            "snippet": "I'm not sure if Origin is an option because it already forced me out to download the EA app in the first place. It's only inside the launcher and actual game ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

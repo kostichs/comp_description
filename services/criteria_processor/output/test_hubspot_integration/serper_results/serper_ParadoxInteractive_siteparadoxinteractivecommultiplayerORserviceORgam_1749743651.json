@@ -1,0 +1,110 @@
+{
+    "searchParameters": {
+        "q": "site:paradoxinteractive.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "FOUNDRY",
+            "link": "https://www.paradoxinteractive.com/games/foundry/about",
+            "snippet": "There are currently no player limits for multiplayer, but we think the game is best played with 2-4 players. ... The Skin will be available to you in-game ...",
+            "position": 1
+        },
+        {
+            "title": "Cities in Motion 2",
+            "link": "https://www.paradoxinteractive.com/games/cities-in-motion-2/about",
+            "snippet": "Build, manage and lead your transportation network to provide cities with their ever changing needs. CIM2 introduces new features including multiplayer game ...",
+            "position": 2
+        },
+        {
+            "title": "A Game of Dwarves",
+            "link": "https://www.paradoxinteractive.com/games/a-game-of-dwarves",
+            "snippet": "A 13 level, storydriven campaign. Custom game mode: Create a world without enemies so you can build uninterrupted or spawn lots of them to increase the ...",
+            "currency": "$",
+            "price": 4.99,
+            "position": 3
+        },
+        {
+            "title": "Hearts of Iron IV",
+            "link": "https://www.paradoxinteractive.com/games/hearts-of-iron-iv",
+            "snippet": "Featuring cross-platform multiplayer. Media. Immerse yourself in Hearts ... game. From videos with developers to trailers, feature breakdowns and much ...",
+            "sitelinks": [
+                {
+                    "title": "Buy now",
+                    "link": "https://www.paradoxinteractive.com/games/hearts-of-iron-iv/buy"
+                },
+                {
+                    "title": "Graveyard of Empires",
+                    "link": "https://www.paradoxinteractive.com/games/hearts-of-iron-iv/add-ons/hearts-of-iron-iv-graveyard-of-empires"
+                },
+                {
+                    "title": "Add-ons",
+                    "link": "https://www.paradoxinteractive.com/games/hearts-of-iron-iv/add-ons"
+                },
+                {
+                    "title": "Götterdämmerung",
+                    "link": "https://www.paradoxinteractive.com/games/hearts-of-iron-iv/add-ons/hearts-of-iron-iv-gotterdammerung"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Victoria II",
+            "link": "https://www.paradoxinteractive.com/games/victoria-ii/about",
+            "snippet": "Victoria II is a grand strategy game ... Improved graphics and interface, as well as multiplayer support. A streamlined interface makes the game easily accessible ...",
+            "position": 5
+        },
+        {
+            "title": "FOUNDRY",
+            "link": "https://www.paradoxinteractive.com/games/foundry/buy",
+            "snippet": "Base Game (early access); Fancy Character Skin; Exclusive Office Decor Skins ... Multiplayer; Singleplayer. Developer. Channel 3 Entertainment. Languages.",
+            "currency": "$",
+            "price": 29.99,
+            "position": 6
+        },
+        {
+            "title": "Empire of Sin",
+            "link": "https://www.paradoxinteractive.com/games/empire-of-sin",
+            "snippet": "Empire of Sin is a new strategy game brought to you by Romero Games and Paradox Interactive that puts you at the heart of the ruthless criminal underworld ...",
+            "position": 7
+        },
+        {
+            "title": "Millennia",
+            "link": "https://www.paradoxinteractive.com/games/millennia/about",
+            "snippet": "Create your own nation in Millennia, a new historical 4x strategy game that challenges your strategic skills and encourages new discovery and experimentation.",
+            "position": 8
+        },
+        {
+            "title": "Grandest LAN",
+            "link": "https://www.paradoxinteractive.com/games/europa-universalis-iv/grandest-lan",
+            "snippet": "3-Day Multiplayer Campaign with custom rules to encourage role-playing · Suitable for players with different levels of experience, managed by game masters, tech ...",
+            "position": 9
+        },
+        {
+            "title": "Developer Diary | Achievements, Modding & Multiplayer",
+            "link": "https://www.paradoxinteractive.com/games/millennia/news/achievements-modding-multiplayer",
+            "snippet": "... game looks like under the hood). image1. Multiplayer. We are very excited to support the multiplayer community for Millennia! Many of our core ...",
+            "date": "Mar 14, 2024",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Video game multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Multiplayer service game ps4"
+        }
+    ],
+    "credits": 1
+}

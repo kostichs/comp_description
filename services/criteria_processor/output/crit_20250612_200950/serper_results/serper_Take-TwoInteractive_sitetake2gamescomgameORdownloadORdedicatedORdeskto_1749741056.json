@@ -1,0 +1,103 @@
+{
+    "searchParameters": {
+        "q": "site:take2games.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Leading Game Publisher | Take-Two Interactive Software ...",
+            "link": "https://www.take2games.com/",
+            "snippet": "Take-Two Interactive Software is a leading game publisher, creating games through its labels, Rockstar Games, 2K, Private Division, and Social Point.",
+            "position": 1
+        },
+        {
+            "title": "Words With Friends Launches New Suite of Game Modes",
+            "link": "https://www.take2games.com/ir/news/words-friends-launches-new-suite-game-modes",
+            "snippet": "Words With Friends Launches New Suite of Game Modes. Download PDF. Iconic mobile title transforms into an all-in-one-destination for word ...",
+            "date": "Nov 14, 2024",
+            "sitelinks": [
+                {
+                    "title": "Mission",
+                    "link": "https://www.take2games.com/ir/news/words-friends-launches-new-suite-game-modes#:~:text=Zynga%20is%20a,Inc.%20(NASDAQ%3A%20TTWO).%20With"
+                },
+                {
+                    "title": "Parent company",
+                    "link": "https://www.take2games.com/ir/news/words-friends-launches-new-suite-game-modes#:~:text=SAN%20MATEO%2C%20Calif.,Take%2DTwo%20Interactive%20Software%2C%20Inc."
+                },
+                {
+                    "title": "Release date",
+                    "link": "https://www.take2games.com/ir/news/words-friends-launches-new-suite-game-modes#:~:text=Words%20With%20Friends,new%20solo%20puzzle%20games"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "General | Take-Two Interactive Software, Inc ...",
+            "link": "https://ir.take2games.com/taxonomy/term/3886?mobile=1&page=40",
+            "snippet": "... Game for Mobile Devices with WWE® 2K · Read more about 2K Announces Development of First WWE Simulation Video Game for Mobile Devices with WWE® 2K · Evolve ...",
+            "position": 3
+        },
+        {
+            "title": "Take-Two Labels and Divisions",
+            "link": "https://www.take2games.com/labels/",
+            "snippet": "Zynga. --Gram Games, NaturalMotion, Small Giant Games, Skillpoint. Zynga Inc. 1200 Park Pl, San Mateo, CA 94403, USA. EEA: Zynga Game Ireland Limited. 25-28, ...",
+            "position": 4
+        },
+        {
+            "title": "Q3 Fiscal Year 2025 Conference Call SAFE HARBOR",
+            "link": "https://ir.take2games.com/static-files/b830ed82-c9a4-4543-a10f-85bb29f8c878",
+            "snippet": "With community-inspired enhancements to gameplay, major technological updates, and the addition of new game modes, the team at Visual Concepts ...",
+            "date": "Feb 6, 2025",
+            "position": 5
+        },
+        {
+            "title": "General | Take-Two Interactive Software, Inc ...",
+            "link": "https://ir.take2games.com/taxonomy/term/3886?mobile=1&page=3",
+            "snippet": "Zynga Opens Pre-Registration with First Trailer for Upcoming Game of Thrones: Legends ... NFL, NFLPA and 2K Announce Launch of NFL 2K Playmakers Mobile Game.",
+            "position": 6
+        },
+        {
+            "title": "Rollerdrome Now Available on Xbox Series X|S and ...",
+            "link": "https://www.take2games.com/ir/news/rollerdrome-now-available-xbox-series-xs-and-windows-pc",
+            "snippet": "Rollerdrome is available for digital download for $29.99 on Xbox Series X|S and Windows PC. It is available to play now with Xbox Game Pass for ...",
+            "date": "Nov 28, 2023",
+            "position": 7
+        },
+        {
+            "title": "Roman Reigns Named WWE® 2K25 Cover Star as ...",
+            "link": "https://ir.take2games.com/node/30991/pdf",
+            "snippet": "WWE 2K25 features several updates and improvements to existing features throughout the game: 2K Showcase: The Bloodline's Dynasty : The all-new ...",
+            "date": "Jan 28, 2025",
+            "position": 8
+        },
+        {
+            "title": "A The Lord of The Rings Game Launches on March 25, 2025",
+            "link": "https://www.take2games.com/ir/news/tales-shire-lord-rings-game-launches-march-25-2025",
+            "snippet": "Tales of the Shire: A The Lord of The Rings Game Launches on March 25, 2025. Download PDF. Fulfill your dreams of living the idyllic countryside ...",
+            "date": "Mar 25, 2025",
+            "position": 9
+        },
+        {
+            "title": "General | Take-Two Interactive Software, Inc.",
+            "link": "https://ir.take2games.com/taxonomy/term/3886?page=52",
+            "snippet": "Borderlands® 2 Psycho Pack Now Available · Take-Two Interactive Software, Inc. · Four Finalists Named for MLB® 2K13 Perfect Game Challenge Sudden Death Showdown.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop windows 10"
+        },
+        {
+            "query": "Game download dedicated desktop xbox series x"
+        },
+        {
+            "query": "Game download dedicated desktop xbox"
+        }
+    ],
+    "credits": 1
+}

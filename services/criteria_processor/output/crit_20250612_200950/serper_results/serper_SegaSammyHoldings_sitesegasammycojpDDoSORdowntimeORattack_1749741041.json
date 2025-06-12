@@ -1,0 +1,76 @@
+{
+    "searchParameters": {
+        "q": "site:segasammy.co.jp (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "SS Report archive（FY2024/3 Winter）",
+            "link": "https://www.segasammy.co.jp/en/ir/individual/ss_report/archive/archive_202403_winter/",
+            "snippet": "While maintaining the attractiveness of battle systems such as “1 MORE” attack, “All-out Attack” and of course the series' greatest feature ...",
+            "date": "Jan 30, 2024",
+            "position": 1
+        },
+        {
+            "title": "SEGA SAMMY Group Sustainable Procurement Guidelines ...",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/ja/Segasammygroup_SustainableSupplyChainGuideline_Changes_en_241101-1.pdf",
+            "snippet": "It is important to have a plan in place for rapid recovery in the event of a cyber attack. Such measures may include adding information leak ...",
+            "date": "Nov 1, 2024",
+            "position": 2
+        },
+        {
+            "title": "SEGA SAMMY HOLDINGS INC.",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/201303businessreport_e_web.pdf",
+            "snippet": "You can attack your opponent based on the color and number of “Puyos” you delete in these chains. Of course, plenty of cute characters from ...",
+            "date": "Mar 31, 2013",
+            "position": 3
+        },
+        {
+            "title": "WELCOME TO THE NEXT LEVEL!",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/ir_2024_web_all_e.pdf",
+            "snippet": "huge hit Sonar Attack, the first title from Satomi Corporation, was released into the world. When we faced the hardship of bankruptcy in ...",
+            "date": "Nov 28, 2024",
+            "position": 4
+        },
+        {
+            "title": "SEGA SAMMY Group Sustainable Procurement Guidelines",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/ja/Segasammygroup_SustainableProcurementGuidelines_en_241101-1.pdf",
+            "snippet": "It is important to have a plan in place for rapid recovery in the event of a cyber attack. Such measures may include adding information leak ...",
+            "date": "Nov 1, 2024",
+            "position": 5
+        },
+        {
+            "title": "Actual Results for the Second Quarter of the Year Ending ...",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/2q_main_qa_e_final_.pdf",
+            "snippet": "A: As a result of efforts to improve facility operation centering on collaboration with popular contents such as “Attack on Titan,” the ...",
+            "date": "Nov 30, 2015",
+            "position": 6
+        },
+        {
+            "title": "CONSOLIDATED FINANCIAL STATEMENTS［Japanese ...",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/20161101_2q_tanshin_e_.pdf",
+            "snippet": "The Group collaborated with popular comic “attack on titan” at the indoor theme park Tokyo Joypolis, and facilities utilization remained ...",
+            "date": "Nov 2, 2015",
+            "position": 7
+        },
+        {
+            "title": "SEGA SAMMY HOLDINGS INC.",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/201603_2q_kabutsu_e_final.pdf",
+            "snippet": "We carried out various initiatives, such as a collaboration with the popular comic book series ATTACK ON TITAN, at the indoor theme park TOKYO ...",
+            "date": "Dec 1, 2015",
+            "position": 8
+        },
+        {
+            "title": "SEGA SAMMY HOLDINGS INC.",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/201503_2q_kabutsu_e_final.pdf",
+            "snippet": "ONLINE 2 Arks player in time attack, as its clos- ing event. The tremendously successful event was attended by total of roughly 47 thousand.",
+            "date": "Dec 1, 2014",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

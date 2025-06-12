@@ -131,9 +131,6 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
         else:
             logger.info("No selected products or files specified - will process all products")
         
-        # Log the full command for debugging
-        logger.info(f"Executing command: {' '.join(cmd)}")
-        
         # Add Circuit Breaker support (enabled by default, can be disabled via env var)
         import os
         if os.getenv('DISABLE_CIRCUIT_BREAKER', 'false').lower() == 'true':
@@ -141,9 +138,18 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
             logger.info("Circuit Breaker отключен через переменную окружения")
         
         # Add HubSpot integration flag
+        logger.info(f"🔍 HUBSPOT ПАРАМЕТР ПРОВЕРКА:")
+        logger.info(f"   🔗 write_to_hubspot_criteria = {write_to_hubspot_criteria}")
+        logger.info(f"   📝 Тип параметра: {type(write_to_hubspot_criteria)}")
+        
         if write_to_hubspot_criteria:
             cmd.append("--write-to-hubspot-criteria")
-            logger.info("HubSpot интеграция включена")
+            logger.info("✅ HubSpot интеграция включена - добавлен флаг --write-to-hubspot-criteria")
+        else:
+            logger.info("📝 HubSpot интеграция отключена - флаг НЕ добавлен")
+        
+        # Log the full command for debugging ПОСЛЕ добавления всех флагов
+        logger.info(f"🚀 ИТОГОВАЯ КОМАНДА: {' '.join(cmd)}")
         
         # Меняем рабочую директорию на criteria_processor
         # Устанавливаем UTF-8 кодировку для Windows

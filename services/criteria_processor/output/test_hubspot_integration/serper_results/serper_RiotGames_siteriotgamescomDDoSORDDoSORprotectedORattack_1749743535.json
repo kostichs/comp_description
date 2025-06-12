@@ -1,0 +1,109 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "DDoS Prevention Guide - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/201751764-DDoS-Prevention-Guide",
+            "snippet": "**While the best protection against a DDoS attack is to avoid programs that use P2P, (especially the illegal ones), there may be instances of ...",
+            "date": "Jul 17, 2019",
+            "position": 1
+        },
+        {
+            "title": "League of Legends - Demon's Hand Minigame",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/39157999306515-League-of-Legends-Demon-s-Hand-Minigame",
+            "snippet": "Your goal is to whittle away the enemy's health before they get yours. To do this, assemble hands to deal damage based on the attack values of the cards you ...",
+            "date": "Mar 17, 2025",
+            "position": 2
+        },
+        {
+            "title": "Account safety tips & tricks - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/sections/115002165847-Account-safety-tips-tricks",
+            "snippet": "Keep your Riot Games account and League of Legends account safe and protected using these steps! Click here for account safety ... DDoS Prevention Guide ...",
+            "position": 3
+        },
+        {
+            "title": "Peeking into VALORANT's Netcode",
+            "link": "https://technology.riotgames.com/news/peeking-valorants-netcode",
+            "snippet": "The challenge: Design client/server communication to limit the attack surface area for cheaters. Note: VALORANT uses a server-authoritative ...",
+            "date": "Jul 28, 2020",
+            "position": 4
+        },
+        {
+            "title": "Matchmaking and Autofill - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/201752954-Matchmaking-and-Autofill",
+            "snippet": "If you or someone else dodges from an autofilled lobby, you will not be protected from autofill for the next game. /remake-ing a match will ...",
+            "date": "Jul 19, 2023",
+            "position": 5
+        },
+        {
+            "title": "Keywords and Game Vocab - Legends of Runeterra Support",
+            "link": "https://support-legendsofruneterra.riotgames.com/hc/en-us/articles/360035562194-Keywords-and-Game-Vocab-Legends-of-Runeterra",
+            "snippet": "Double Attack. When attacking, a Double Attack unit strikes both before AND at the same time as its blocker. Not generatable: ...",
+            "date": "Dec 11, 2023",
+            "position": 6
+        },
+        {
+            "title": "What's New in Alpha Lab 2 - 2XKO - Riot Games",
+            "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/",
+            "snippet": "Access to Super Assist and Fury Break at the start of each round. Ability to press attack buttons in time with the opponent's attacks to reduce ...",
+            "date": "Mar 27, 2025",
+            "position": 7
+        },
+        {
+            "title": "Attack of the Chromacrashers - Wild Rift Support - Riot Games",
+            "link": "https://support-wildrift.riotgames.com/hc/en-us/articles/25766018336275-Attack-of-the-Chromacrashers",
+            "snippet": "Attack of the Chromacrashers · SCHEDULE*. Start - May 24, 2024 // 00:00 UTC · Purchase Wild Cores, Get Rewards. If you purchase Wild Cores during ...",
+            "position": 8
+        },
+        {
+            "title": "Content Efficiency: Game Data Server",
+            "link": "https://technology.riotgames.com/news/content-efficiency-game-data-server",
+            "snippet": "(Example: Talon starts with 55.208 attack damage. I want to ... attack damage. The \"Layer\" would tell the game when it starts that ...",
+            "date": "Feb 11, 2016",
+            "sitelinks": [
+                {
+                    "title": "Game Data Server",
+                    "link": "https://technology.riotgames.com/news/content-efficiency-game-data-server#:~:text=Game%20Data%20Server,-We%20specifically%20designed"
+                },
+                {
+                    "title": "Property Markup",
+                    "link": "https://technology.riotgames.com/news/content-efficiency-game-data-server#:~:text=Property%20Markup,-For%20any%20given%20type%2C"
+                },
+                {
+                    "title": "Layers",
+                    "link": "https://technology.riotgames.com/news/content-efficiency-game-data-server#:~:text=Layers,-In%20addition%20to%20GDS%20abstracting"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "A Taxonomy of Tech Debt",
+            "link": "https://technology.riotgames.com/news/taxonomy-tech-debt",
+            "snippet": "... attack definitions.) 2. Fix cost: 2 / 5. We don't currently have the ability to composite shapes to create custom geometry without new code ...",
+            "date": "Apr 10, 2018",
+            "sitelinks": [
+                {
+                    "title": "Metrics",
+                    "link": "https://technology.riotgames.com/news/taxonomy-tech-debt#:~:text=Metrics,-In%20order%20to%20make%20good"
+                },
+                {
+                    "title": "Types Of Debt",
+                    "link": "https://technology.riotgames.com/news/taxonomy-tech-debt#:~:text=Types%20of%20Debt"
+                },
+                {
+                    "title": "Data Debt",
+                    "link": "https://technology.riotgames.com/news/taxonomy-tech-debt#:~:text=Data%20Debt,-Data%20debt%20starts%20with%20a"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,87 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press Releases",
+            "link": "https://www.activisionblizzard.com/press-releases",
+            "snippet": "November 3, 2023. Blizzard Entertainment Announces the Next Three Expansions for World of Warcraft®, Kicking Off The Worldsoul Saga™ with The War Within™ in 2024. Additional Formats. PDF Version. November 3, 2023. Blizzard Takes the Stage at BlizzCon® 2023; Announces the Next Three World of Warcraft® Expansions, ...",
+            "position": 1
+        },
+        {
+            "title": "Newsroom",
+            "link": "https://www.activisionblizzard.com/newsroom.For",
+            "snippet": "End-of-year Blizzard Update. Call of Duty®: Modern Warfare® II: Four Areas of Advanced Game Performance, Thanks to the New Call of Duty® Tech Engine. We pledged to make Activision Blizzard a more diverse and inclusive workplace — we're now #1 in our industry. The Art (and Science) of Following Your Gaming Passion.",
+            "position": 2
+        },
+        {
+            "title": "Press Releases - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/press-releases",
+            "snippet": "Blizzard Takes the Stage at BlizzCon® 2023; Announces the Next Three World of Warcraft® Expansions, First Expansion for Diablo® IV, a New Overwatch® hero, and more! Additional Formats. PDF Version. November 3, 2023. Blizzard Entertainment Announces the Next Three Expansions for World of Warcraft®, Kicking Off The ...",
+            "position": 3
+        },
+        {
+            "title": "Deadline extended: an update on the Microsoft deal",
+            "link": "https://newsroom.activisionblizzard.com/p/deadline-extended-an-update-on-the",
+            "snippet": "Deadline extended: an update on the Microsoft deal. The Activision Blizzard and Microsoft boards have mutually agreed not to terminate the deal until after October 18.",
+            "date": "Jul 19, 2023",
+            "position": 4
+        },
+        {
+            "title": "Activision Announces Free Upgrade to Next-Gen for Call of Duty",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-free-upgrade-next-gen-call-duty-advanced",
+            "snippet": "The forward-looking statements in this release are based upon information available to Activision Publishing and Activision Blizzard as of the date of this release, and neither Activision Publishing nor Activision Blizzard assumes any obligation to update any such forward-looking statements. Forward-looking statements ...",
+            "position": 5
+        },
+        {
+            "title": "End-of-year Blizzard Update",
+            "link": "https://newsroom.activisionblizzard.com/p/end-of-year-blizzard-update",
+            "snippet": "Hey everyone! It's been about a year since my last post, and with 2022 coming to an end, I felt it was a good time for an update. 2022 has been a great year for Blizzard, made possible by the hard work, creativity, and passion of everyone who works here, and the support, feedback, and joy from the ...",
+            "date": "Dec 22, 2022",
+            "position": 6
+        },
+        {
+            "title": "Activision To Release Call Of Duty October 29",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-release-call-duty-october-29",
+            "snippet": "Santa Monica, CA – Oct. 14, 2003 – Activision, Inc. (Nasdaq: ATVI) has confirmed October 29 as the release date for Call of Duty™ to invade retail outlets nationwide. The highly anticipated, first-person, WWII action game is set for an all-out assault on fans everywhere, having already received critical acclaim ...",
+            "position": 7
+        },
+        {
+            "title": "Raising Hell: id Software's DOOM 3 For PC Ships To Retail",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/raising-hell-id-softwares-doom-3-pc-ships-retail",
+            "snippet": "The next generation in PC gaming has arrived with the release of DOOM 3,\" said Todd Hollenshead, CEO, id Software. \"DOOM 3 is a total assault on your senses. The terrifying atmosphere, story, and cinema quality visuals and sound are like nothing ever seen in a ...",
+            "position": 8
+        },
+        {
+            "title": "Call of Duty: Infinite Warfare is #1 Top Selling Console Game ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-infinite-warfare-1-top-selling-console-game-year-date",
+            "snippet": "The forward-looking statements in this release are based upon information available to Activision Publishing and Activision Blizzard as of the date of this release, and neither Activision Publishing nor Activision Blizzard assumes any obligation to update any such forward-looking statements. Forward-looking statements ...",
+            "position": 9
+        },
+        {
+            "title": "Joyful Chaos Wherever You Go! Warcraft Rumble™ ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/joyful-chaos-wherever-you-go-warcraft-rumbletm-launches-blizzcon",
+            "snippet": "The forward-looking statements in this release are based upon information available to Blizzard Entertainment and Activision Blizzard as of the date of this release, and neither Blizzard Entertainment nor Activision Blizzard assumes any obligation to update any such forward-looking statements.",
+            "date": "Oct 3, 2023",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version free"
+        },
+        {
+            "query": "Release patch update version xbox"
+        },
+        {
+            "query": "Release patch update version download"
+        }
+    ],
+    "credits": 1
+}

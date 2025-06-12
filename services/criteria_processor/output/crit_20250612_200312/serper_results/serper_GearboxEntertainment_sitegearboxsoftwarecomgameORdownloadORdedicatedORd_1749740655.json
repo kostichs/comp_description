@@ -1,0 +1,91 @@
+{
+    "searchParameters": {
+        "q": "site:gearboxsoftware.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Games",
+            "link": "https://www.gearboxsoftware.com/games/",
+            "snippet": "Borderlands: Game of the Year Edition · Borderlands 2 VR · Borderlands · Borderlands 2 · Borderlands: The Pre-Sequel · Borderlands: The Handsome Collection ...",
+            "position": 1
+        },
+        {
+            "title": "Borderlands: Game of the Year Edition",
+            "link": "https://www.gearboxsoftware.com/game/borderlands-goty/",
+            "snippet": "With new weapons, visual upgrades, all 4 add-on packs and more, play solo or in 4-player split screen co-op! Game Information. Release Date: April 3, 2019",
+            "position": 2
+        },
+        {
+            "title": "Battleborn",
+            "link": "https://www.gearboxsoftware.com/game/battleborn/",
+            "snippet": "The game combines highly-stylized visuals and frenetic first-person shooting, with Gearbox's industry-leading co-operative combat, and an expansive ...",
+            "position": 3
+        },
+        {
+            "title": "SHiFT",
+            "link": "https://shift.gearboxsoftware.com/",
+            "snippet": "Join the Community. Share your stories, offer feedback, and connect with others on the Forums. Bonus Loot. Enable unique in-game items and perks.",
+            "sitelinks": [
+                {
+                    "title": "Cookie notice",
+                    "link": "https://shift.gearboxsoftware.com/registration/pre"
+                },
+                {
+                    "title": "Forgot your password?",
+                    "link": "https://shift.gearboxsoftware.com/password/new"
+                },
+                {
+                    "title": "Gearbox Entertainment Support",
+                    "link": "https://support.gearboxsoftware.com/hc/en-us"
+                },
+                {
+                    "title": "Credits",
+                    "link": "https://shift.gearboxsoftware.com/credits"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Gearbox Software",
+            "link": "https://www.gearboxsoftware.com/",
+            "snippet": "Featured Releases: Risk Of Rain 2: Seekers Of The Storm, Tiny Tina's Wonderlands, Borderlands: The Escape Room.",
+            "position": 5
+        },
+        {
+            "title": "I Bought Borderlands in a Retail Game Box, how do I get ...",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205279330-I-Bought-Borderlands-in-a-Retail-Game-Box-how-do-I-get-the-Steam-Version",
+            "snippet": "Navigate to your game “Library” menu, then select “TOOLS,” and locate the Borderlands Granting Tool. Install this tool. Installing and running the Borderlands ...",
+            "position": 6
+        },
+        {
+            "title": "Get Ready for Gearbox's Newest Game: Battleborn",
+            "link": "https://www.gearboxsoftware.com/2014/07/get-ready-for-gearboxs-newest-game-battleborn/",
+            "snippet": "Get Ready for Gearbox's Newest Game: Battleborn ... Today we're happy to announce our newest creation, Battleborn. We're calling Battleborn a “hero shooter” in ...",
+            "position": 7
+        },
+        {
+            "title": "Borderlands on IGN's Game of the Month!",
+            "link": "https://www.gearboxsoftware.com/2009/11/borderlands-on-igns-game-of-the-month/",
+            "snippet": "Borderlands on IGN's Game of the Month! Borderlands owns the 360 spot on IGN's Game of the Month this month – these are games that they just can't put down!",
+            "position": 8
+        },
+        {
+            "title": "Spike Video Game Awards",
+            "link": "https://www.gearboxsoftware.com/2012/12/spike-video-game-awards/",
+            "snippet": "Spike Video Game Awards. Borderlands 2 swept the Spike VGAs winning Best Shooter, Character of the Year (Claptrap) and Best Performance by a Human Male ...",
+            "position": 9
+        },
+        {
+            "title": "Borderlands 2 'Game with Dev' Night on Xbox Live",
+            "link": "https://www.gearboxsoftware.com/2012/09/borderlands-2-39game-with-dev39-night-on-xbox-live-2/",
+            "snippet": "Developers from Gearbox Software and 2K Games, creators of Borderlands 2, will play their game with Xbox LIVE Gold members in a Game with Developers event.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,84 @@
+{
+    "searchParameters": {
+        "q": "site:take2games.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press Releases | Take-Two Interactive Software, Inc.",
+            "link": "https://www.take2games.com/ir/press-releases",
+            "snippet": "July 10, 2024. Ball Over Everything: NBA® 2K25 Features NBA Champion Jayson Tatum, Two-Time WNBA MVP A'ja Wilson, and Hall-of-Fame Legend Vince Carter as Cover Athletes · PDF Version. June 12, 2024. Take-Two Interactive Software, Inc. Announces Pricing of Secondary Offering of Common Stock by Embracer Group AB.",
+            "position": 1
+        },
+        {
+            "title": "Rockstar Games Announces Grand Theft Auto VI, Coming ...",
+            "link": "https://www.take2games.com/ir/news/rockstar-games-announces-grand-theft-auto-vi-coming-2025",
+            "snippet": "(NASDAQ: TTWO), is proud to announce that Grand Theft Auto VI is coming to PlayStation® 5 computer entertainment systems and Xbox Series X|S games and entertainment systems in 2025. This press release features multimedia. View the full release here: https://www.businesswire.com/news/home/20231204993583/en/.",
+            "position": 2
+        },
+        {
+            "title": "Take-Two Interactive Software, Inc. Reiterates Expectations ...",
+            "link": "https://www.take2games.com/ir/news/take-two-interactive-software-inc-reiterates-expectations",
+            "snippet": "The Company undertakes no obligation to update any forward-looking statement, whether as a result of new information, future events or otherwise. View source version on businesswire.com: https://www.businesswire.com/news/home/20250502895390/en/. (Investor Relations) Nicole Shevins Senior Vice President Investor ...",
+            "position": 3
+        },
+        {
+            "title": "Rockstar Games Releases Trailer 2 for Grand Theft Auto VI",
+            "link": "https://www.take2games.com/ir/news/rockstar-games-releases-trailer-2-grand-theft-auto-vi",
+            "snippet": "The Company undertakes no obligation to update any forward-looking statement, whether as a result of new information, future events or otherwise. View source version on businesswire.com: https://www.businesswire.com/news/home/20250506618004/en/. Simon Ramsey Rockstar Games (212) 334-6633. Simon.Ramsey ...",
+            "date": "May 6, 2025",
+            "position": 4
+        },
+        {
+            "title": "Borderlands® 4 Coming In 2025",
+            "link": "https://www.take2games.com/ir/news/borderlandsr-4-coming-2025",
+            "snippet": "The Company undertakes no obligation to update any forward-looking statement, whether as a result of new information, future events or otherwise. View source version on businesswire.com: https://www.businesswire.com/news/home/20240820178683/ ...",
+            "position": 5
+        },
+        {
+            "title": "Quarterly Earnings | Take-Two Interactive Software, Inc.",
+            "link": "https://www.take2games.com/ir/quarterly-earnings",
+            "snippet": "Q4 2025 Earnings Release · Q4 2025 Prepared Remarks. February 6, 2025 at 1:30 PM PST. Q3 2025 Take-Two Interactive Software, Inc. Earnings Conference Call. WebCast Presentation · Q3 2025 Earnings Presentation · Investor Presentation - February 2025 · Q3 2025 Earnings Release · Q3 2025 Prepared Remarks.",
+            "position": 6
+        },
+        {
+            "title": "TTWO 4Q25 Earnings Release - Investor Relations",
+            "link": "https://ir.take2games.com/static-files/9a22a038-45bc-48df-8391-07705b355877",
+            "snippet": "Internally, management uses this Non-GAAP financial measure in assessing the Company's operating results and in planning and forecasting. A reconciliation of this Non-GAAP financial measure to the most comparable GAAP measure is contained in the financial tables to this press release.",
+            "date": "May 15, 2025",
+            "position": 7
+        },
+        {
+            "title": "Take-Two Interactive Software, Inc. to Acquire The Gearbox ...",
+            "link": "https://www.take2games.com/ir/news/take-two-interactive-software-inc-acquire-gearbox-entertainment",
+            "snippet": "The Company undertakes no obligation to update any forward-looking statement, whether as a result of new information, future events or otherwise. 1 Take-Two currently controls the long-term publishing rights for the critically and commercially acclaimed Borderlands and Tiny Tina's Wonderlands franchises ...",
+            "date": "Mar 27, 2024",
+            "position": 8
+        },
+        {
+            "title": "Rockstar Games announces new release date for Midnight ...",
+            "link": "https://ir.take2games.com/static-files/85b61409-e424-499b-b24f-d511b49cb03f",
+            "snippet": "Set for release on October 7th in North America and. October 10th in Europe and developed by series creator Rockstar San Diego, Midnight Club: Los Angeles will give gamers the unprecedented freedom to race through a hyper-realistic LA. Rockstar San Diego has created a beautiful rendition of Los Angeles to race through ...",
+            "position": 9
+        },
+        {
+            "title": "Take-Two Interactive Software, Inc. Reports Results for ...",
+            "link": "https://www.take2games.com/ir/news/take-two-interactive-software-inc-reports-results-fiscal-2",
+            "snippet": "... release and significant market acceptance of our games; and the ability to ... View source version on businesswire.com: https://www.businesswire.com ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version download"
+        },
+        {
+            "query": "Release patch update version xbox"
+        }
+    ],
+    "credits": 1
+}

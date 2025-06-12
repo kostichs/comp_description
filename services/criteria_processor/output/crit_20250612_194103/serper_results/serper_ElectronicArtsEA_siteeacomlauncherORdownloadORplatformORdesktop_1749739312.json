@@ -1,0 +1,94 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Download the EA app – Powering next generation of PC ...",
+            "link": "https://www.ea.com/ea-app",
+            "snippet": "The fast, optimized platform makes it easier than ever to download and play. So jumping into your game takes less time and fewer clicks.",
+            "sitelinks": [
+                {
+                    "title": "Origin",
+                    "link": "https://www.ea.com/ea-app#:~:text=Has%20the%20EA,PC%20and%20Mac%3F%20Yes."
+                },
+                {
+                    "title": "Streaming instructions",
+                    "link": "https://www.ea.com/ea-app#:~:text=The%20EA%20app,macOS%20Catalina%20or%20newer."
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Re: EA Launcher doesn´t install in choosen directory",
+            "link": "https://forums.ea.com/discussions/ea-app-technical-issues-en/re-ea-launcher-doesn%C2%B4t-install-in-choosen-directory/7575218",
+            "snippet": "Download the installer from the EA page and navigate to the folder where you ... In this case, the app gets installed in a subfolder called EA Desktop under D:\\ ...",
+            "position": 2
+        },
+        {
+            "title": "Games that won't download, install, or load in the EA app",
+            "link": "https://help.ea.com/en/help/ea/ea-app/game-download-install-load-troubleshoot/",
+            "snippet": "Go to C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop. Right-click on EADesktop.exe. Choose Run as Administrator. Start the download and ...",
+            "date": "Mar 13, 2025",
+            "position": 3
+        },
+        {
+            "title": "Re: Sims 3 launcher keeps taking me back to EA App!! ...",
+            "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/re-sims-3-launcher-keeps-taking-me-back-to-ea-app-someone-help-pls/8321072",
+            "snippet": "If you are having problems with the launcher downloads while using the EA app - try the following. 1. With the EA app open , click the three bars in the upper ...",
+            "position": 4
+        },
+        {
+            "title": "How to download your games in the EA app",
+            "link": "https://help.ea.com/en/help/ea/ea-app/download-and-play-your-games/",
+            "snippet": "Launch the EA app. Log in to your EA Account. Go to Library. Find the game that you want to download and click the arrow in the bottom- ...",
+            "date": "Mar 13, 2025",
+            "position": 5
+        },
+        {
+            "title": "How to download, install, and update the EA app",
+            "link": "https://help.ea.com/en/help/ea/ea-app/download-install-update-ea-app/",
+            "snippet": "Restart or reset your download · On PC: By default, the EA app installation folder is at C:\\Program Files\\Electronic Arts\\EA Desktop\\EA Desktop.",
+            "date": "Apr 10, 2025",
+            "position": 6
+        },
+        {
+            "title": "Launcher crashes when I open the downloads tab in Sims 3",
+            "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/launcher-crashes-when-i-open-the-downloads-tab-in-sims-3/12167613",
+            "snippet": "I bought a new world - Roaring Heights Gold Edition but I can't download it in my game when launcher crashes. ... desktop. If it copies ...",
+            "date": "May 11, 2025",
+            "position": 7
+        },
+        {
+            "title": "My download is endlessly stuck on \"preparing\".",
+            "link": "https://forums.ea.com/discussions/the-sims-4-technical-issues-pc-en/my-download-is-endlessly-stuck-on-preparing-/4990534",
+            "snippet": "My download is endlessly stuck on \"preparing\". I've tried everything, cleaning the cache, redownloading the EA app, updating it, repairing it, freeing up ...",
+            "date": "Oct 20, 2024",
+            "sitelinks": [
+                {
+                    "title": "9 answers",
+                    "link": "https://forums.ea.com/discussions/the-sims-4-technical-issues-pc-en/my-download-is-endlessly-stuck-on-preparing-/4990534/replies/4991194"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Re: Sims 3 launcher won't open",
+            "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/re-sims-3-launcher-wont-open/8260687",
+            "snippet": "Re: Sims 3 launcher won't open · https://www.microsoft.com/en-US/download/details.aspx?id=8109 · https://help.ea.com/en/help/pc/how-to-gather-dxdiag-information/.",
+            "position": 9
+        },
+        {
+            "title": "Re: Can't download anything from The Exchange? (Sims 3)",
+            "link": "https://forums.ea.com/discussions/-/-/8286757",
+            "snippet": "... desktop. Launch the game to create a new folder; there's no need ... I have to open my launcher too, and then pick the correct icon to open the download.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

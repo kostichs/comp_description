@@ -1,0 +1,97 @@
+{
+    "searchParameters": {
+        "q": "site:embracer.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Press releases",
+            "link": "https://embracer.com/news-media/pressreleases/",
+            "snippet": "Update on the transformative partnership- and licensing deals. Read more ... Invitation to teleconference in regards to today's press release – change of call-in ...",
+            "position": 1
+        },
+        {
+            "title": "Embracer Group announces trading update for Q3",
+            "link": "https://embracer.com/releases/embracer-group-announces-trading-update-for-q3/",
+            "snippet": "Embracer Group announces trading update for Q3 ... The financial figures presented in this press release are preliminary and unaudited.",
+            "date": "Jan 29, 2025",
+            "position": 2
+        },
+        {
+            "title": "Reports and presentations",
+            "link": "https://embracer.com/investors/reports-presentations/",
+            "snippet": "Press release Presentation Webcast. 2021-02-03. M&A update February 3, 2021. Presentation. 2020. 2020-11-18. M&A update. Presentation Webcast. 2020-11-18. M&A ...",
+            "position": 3
+        },
+        {
+            "title": "Embracer Group: Home",
+            "link": "https://embracer.com/",
+            "snippet": "Embracer Group Q4 and Year-End Report FY 2024/25 · Download report · Press release · Presentation · Webcast · Financial fact sheet · ESG fact sheet.",
+            "sitelinks": [
+                {
+                    "title": "Investors",
+                    "link": "https://embracer.com/investors/"
+                },
+                {
+                    "title": "About",
+                    "link": "https://embracer.com/about/"
+                },
+                {
+                    "title": "Operative groups",
+                    "link": "https://embracer.com/about/operative-groups/"
+                },
+                {
+                    "title": "Coffee Stain",
+                    "link": "https://embracer.com/about/operative-groups/coffee-stain/"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Lars Wingefors proposed to be elected as Executive Chair ...",
+            "link": "https://embracer.com/releases/lars-wingefors-proposed-to-be-elected-as-executive-chair-of-the-board-of-embracer-phil-rogers-appointed-new-ceo/",
+            "snippet": "Regulatory Press release • June 10, 2025 • 15:30. Lars Wingefors proposed to be elected as Executive Chair of the Board of Embracer – Phil Rogers appointed ...",
+            "position": 5
+        },
+        {
+            "title": "Embracer to spin off Coffee Stain Group",
+            "link": "https://embracer.com/releases/embracer-to-spin-off-coffee-stain-group-remaining-business-to-be-renamed-fellowship-entertainment/",
+            "snippet": "Press release • May 22, 2025 • 07:02. Embracer to spin off Coffee Stain Group – remaining business to be renamed Fellowship Entertainment.",
+            "sitelinks": [
+                {
+                    "title": "Parent company",
+                    "link": "https://embracer.com/releases/embracer-to-spin-off-coffee-stain-group-remaining-business-to-be-renamed-fellowship-entertainment/#:~:text=As%20previously%20communicated%2C,holding%20company.%20The%20new"
+                },
+                {
+                    "title": "Release date",
+                    "link": "https://embracer.com/releases/embracer-to-spin-off-coffee-stain-group-remaining-business-to-be-renamed-fellowship-entertainment/#:~:text=Embracer%20today%20announces,developers%20and%20publishers%20by"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Embracer Group announces its intention to transform into ...",
+            "link": "https://embracer.com/releases/embracer-group-announces-its-intention-to-transform-into-three-standalone-publicly-listed-entities-at-nasdaq-stockholm/",
+            "snippet": "As announced today and further detailed in a separate press release available at embracer.com/investors. As part of the transformation and ...",
+            "date": "Apr 22, 2024",
+            "position": 7
+        },
+        {
+            "title": "Invitation to teleconference in regards to today's press ...",
+            "link": "https://embracer.com/wp-content/uploads/2022/11/Invitation-to-teleconference-in-regards-to-todays-press-release-%E2%80%93-change-of-call-in-number-200406.pdf",
+            "snippet": "Embracer Group invites to a teleconference for investors, analysts and media today, Monday,. April 6, 2020, at 10:30 am (CET) about the press release published ...",
+            "position": 8
+        },
+        {
+            "title": "not for release, publication or distribution in whole or in part ...",
+            "link": "https://embracer.com/wp-content/uploads/2022/11/THQ-Nordic-completes-issuance-of-new-share-in-the-amount-of-11-million-Class-B-shares-raising-proceeds-of-approximately-SEK-2090-million-190221.pdf",
+            "snippet": "Neither the Company nor anyone else undertake to review, update, confirm or to release publicly any revisions to any forward-looking statements to reflect ...",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

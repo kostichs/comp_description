@@ -1,0 +1,85 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Updates Incoming for Resident Evil 2 ...",
+            "link": "https://game.capcom.com/residentevil/sp/uk/news-1887.html",
+            "snippet": "Version Update for Resident Evil 2, Resident Evil 3, and Resident Evil 7 Biohazard. Updates for the Steam versions of Resident Evil 2, Resident Evil 3, and ...",
+            "position": 1
+        },
+        {
+            "title": "MONSTER HUNTER: WORLD",
+            "link": "https://game.capcom.com/world/us/infomation.html",
+            "snippet": "... release. This message ... These reward rules will also be applied to any future quests with Arch-tempered elder dragons from update version 5.10 onwards.",
+            "position": 2
+        },
+        {
+            "title": "Patch Cards and Download Chips | Mega Man Battle ...",
+            "link": "http://game.capcom.com/manual/REXEAC/vol2/en/steam/page/1/10",
+            "snippet": "Press on the MegaMan screen to open the Download Chip and Patch Card screen. Select and confirm the desired Download Chip to acquire the shown Chip.",
+            "position": 3
+        },
+        {
+            "title": "Game Updates|Monster Hunter Wilds Official Online Manual",
+            "link": "https://manual.capcom.com/mhwilds/en/steam/page/14/1",
+            "snippet": "Updating the Game · How to Update · Checking Your Game Version.",
+            "position": 4
+        },
+        {
+            "title": "Update History|Monster Hunter Wilds Official Online Manual",
+            "link": "https://manual.capcom.com/mhwilds/en/ps5/update",
+            "snippet": "Update History. Update History. 05/27/2025 Updates. The web manual has been updated for content added in Ver. 1.011.00.00. Additions. – Street Fighter 6 Special ...",
+            "position": 5
+        },
+        {
+            "title": "GAME UPDATES | Maintenance Info",
+            "link": "https://game.capcom.com/cfn/sfv/systemfault/list/update?lang=en",
+            "snippet": "Title Update Ver. 07.010 Notification (9/1)Sep.02.2022 13:55 · GAME UPDATES ... About Changing the Language Settings (Steam Version)Mar.04.2022 10:31 ...",
+            "position": 6
+        },
+        {
+            "title": "update - Resident Evil 3 | Capcom",
+            "link": "https://game.capcom.com/residentevil/sp/es/news-528.html",
+            "snippet": "UPDATE · The Xbox One X Patch is now live! We've made improvements to Resident Evil 3 framerate performance. · RP Boosters are now available for ...",
+            "date": "Nov 8, 2023",
+            "position": 7
+        },
+        {
+            "title": "Resident Evil Series Releases for Apple Devices｜CAPCOM",
+            "link": "https://game.capcom.com/residentevil/sp/es/news-3431.html",
+            "snippet": "Resident Evil 7 biohazard. Notice of Update ... Note about sharing saved data to a new device (For those using older versions up to Version 1.1.3) ...",
+            "position": 8
+        },
+        {
+            "title": "Iceborne Official Web Manual | Update History",
+            "link": "https://game.capcom.com/manual/MHW/en/ps4/news",
+            "snippet": "Update History. 12/03/2021 Updates. The Artemis ... Unlike the low/high rank version, the master rank version does not have pursuit or reward levels.",
+            "position": 9
+        },
+        {
+            "title": "About Game Updates | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/MHRISE/en/steam/page/15/1",
+            "snippet": "You can update your version of the game by connecting your PC to the Internet, launching Steam and performing an update.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version free"
+        },
+        {
+            "query": "Release patch update version xbox"
+        },
+        {
+            "query": "Release patch update version download"
+        }
+    ],
+    "credits": 1
+}

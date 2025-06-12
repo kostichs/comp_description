@@ -1,0 +1,90 @@
+{
+    "searchParameters": {
+        "q": "site:ubisoft.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "DDOS, DOS and Our Next Steps",
+            "link": "https://www.ubisoft.com/en-gb/game/rainbow-six/siege/news-updates/11Lg5ZRMqEOpi7Kzkk1RiN/ddos-dos-and-our-next-steps",
+            "snippet": "DDoS – An attack on the server, or network, from multiple PCs/devices that overloads the network. This results in all players being disconnected and the match ending. DoS – An attack on the server, or network, from a single PC/device ...",
+            "position": 1
+        },
+        {
+            "title": "DDoS 2020 Status Report - 6News - Rainbow Six Siege",
+            "link": "https://www.ubisoft.com/en-ca/help/rainbow-six-siege/video/ddos-2020-status-report-6news-rainbow-six-siege/35df1f98-d034-47e6-9f95-c37945bfc6bb",
+            "snippet": "Ubisoft Cares about your privacy. YouTube has been deactivated. Do you accept the use of cookies to display and allow you to watch the video content? I Accept Cookies. Can't find what you're looking for? Contact us. Ubisoft Help Quick Links. Help Topics. Account Management and Security.",
+            "position": 2
+        },
+        {
+            "title": "Assault On Hereford | Event | Rainbow Six Siege",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/events/assault-on-hereford",
+            "snippet": "FROM FEBRUARY 6 TO FEBRUARY 19. ASSAULT ON HEREFORD. From February 6th to February 19th, Team Rainbow is under attack! It's time for you to dive into our brand-new scenario driven event: Assault on Hereford. Engage in fast-paced 5v5 phases across three iconic game modes, set on an exclusive version of the Hereford ...",
+            "position": 3
+        },
+        {
+            "title": "How to Solo Queue to Platinum || Attack || Rainbow Six Siege ...",
+            "link": "https://www.ubisoft.com/en-us/help/gameplan/rainbow-six-siege/video/71614db8-eaf4-45ba-9bd5-394513686bf1",
+            "snippet": "The best advice I can give anybody when they're solo queuing on the attacking side is to try to apply direct pressure to the objective.",
+            "position": 4
+        },
+        {
+            "title": "Plane Attack Guide from a Pro Player! All 3 Sites Covered ...",
+            "link": "https://www.ubisoft.com/en-gb/help/gameplan/rainbow-six-siege/video/10c5f468-e51c-4ab3-9226-c151e9244ed9",
+            "snippet": "You can have a person go up top and pop the hatch same time keep this person in sight or you can just push all the way through and kill this person.",
+            "position": 5
+        },
+        {
+            "title": "Assassin's Creed Odyssey Story Creator Mode | Elite Attack",
+            "link": "https://assassinscreed.ubisoft.com/story-creator-mode/en-us/quest/6846d6a4087b203a70a8d9b9",
+            "snippet": "Story Creator Mode · Introduction · Discover Stories · Browse Stories · Photo Mode · RELEASE DATE: OCTOBER 5, 2018 Buy Now · Introduction Discover Stories Browse Stories. clear. Copied. > Elite Attack. playlist_add Add to Story Log. More options keyboard_arrow_down. Total plays. 0. Completion rate. 0% ...",
+            "date": "3 days ago",
+            "position": 6
+        },
+        {
+            "title": "Prince of Persia: The Lost Crown - Boss Attack Update Trailer",
+            "link": "https://www.ubisoft.com/en-us/game/prince-of-persia/news-updates/tgdMoRE9Lmw/prince-of-persia-the-lost-crown-boss-attack-update-trailer",
+            "snippet": "Prince of Persia: The Lost Crown - Boss Attack Update Trailer.",
+            "position": 7
+        },
+        {
+            "title": "Attack on Sparta - Assassin's Creed - Ubisoft",
+            "link": "https://assassinscreed.ubisoft.com/story-creator-mode/en-us/quest/68458f01e47e20160c737f68",
+            "snippet": "Attack on Sparta · Info · Description · Creator ...",
+            "date": "4 days ago",
+            "position": 8
+        },
+        {
+            "title": "The Division 2 – Medical Camp Attack Side Mission - Single ...",
+            "link": "https://www.ubisoft.com/en-us/help/gameplan/the-division-2/video/94a0b625-9870-44f1-8e60-a5ba669f4a88",
+            "snippet": "The Division 2 Single Player Gameplay Medical Camp Attack Side Mission We need to complete the following objectives in this mission : Assist the civilians Support the civilians Collect requested components Retrieve new arms components Secure the camp Protect the engineer Repair progress Neutralize the hostile ...",
+            "position": 9
+        },
+        {
+            "title": "Patch Notes 2.51.0 - FOR HONOR",
+            "link": "https://www.ubisoft.com/en-ca/game/for-honor/news-updates/1OPoKzj6XD6FuzNQAFPWOu/patch-notes-2510-for-honor",
+            "snippet": "With this change, the minimum duration of Guardbreak Vulnerability is 433ms (300ms during the charge portion, then 133ms during the strike portion). Orochi. Zone Attack now deals 11 damage (down from 14); Side Heavy Finishers now deal 28 damage (down from 30) ...",
+            "date": "Apr 25, 2024",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Ddos ddos protected attack xbox series x"
+        },
+        {
+            "query": "Ddos ddos protected attack xbox"
+        },
+        {
+            "query": "Ddos ddos protected attack 2022"
+        },
+        {
+            "query": "Ddos ddos protected attack ps4"
+        }
+    ],
+    "credits": 1
+}

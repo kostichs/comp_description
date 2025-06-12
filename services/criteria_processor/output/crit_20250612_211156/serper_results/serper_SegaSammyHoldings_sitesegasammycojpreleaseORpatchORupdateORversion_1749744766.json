@@ -1,0 +1,95 @@
+{
+    "searchParameters": {
+        "q": "site:segasammy.co.jp (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "News Release｜SEGA SAMMY HOLDINGS",
+            "link": "https://www.segasammy.co.jp/en/release/",
+            "snippet": "News Release. News Release. Search. AND OR. Feed. Whole period, FY2026, FY2025, FY2024, FY2023, FY2022, FY2021, FY2020, FY2019, FY2018, FY2017, FY2016, FY2015 ...",
+            "position": 1
+        },
+        {
+            "title": "Notice Regarding the Status of Acquisition of Treasury Stocks",
+            "link": "https://www.segasammy.co.jp/en/release/72952/",
+            "snippet": "News Release · Notice Regarding the Status of Acquisition of Treasury Stocks. News Release. Notice Regarding the Status of Acquisition of ...",
+            "date": "Jun 2, 2025",
+            "position": 2
+        },
+        {
+            "title": "IR Library｜Investor Relations｜SEGA SAMMY HOLDINGS",
+            "link": "https://www.segasammy.co.jp/en/ir/library/",
+            "snippet": "News Release · Employment Information · Privacy Policy · Web Accessibility Policy · SEGA SAMMY Group Social Media Policy · SNS Official Accounts · Terms of Use ...",
+            "position": 3
+        },
+        {
+            "title": "Notice Regarding Revision of the Compensation System ...",
+            "link": "https://www.segasammy.co.jp/en/release/48810/",
+            "snippet": "News Release. Notice Regarding Revision of the Compensation System Associated with the Introduction of a Compensation System for Post ...",
+            "date": "May 10, 2024",
+            "position": 4
+        },
+        {
+            "title": "Notice regarding the Latest SEGA Football Management ...",
+            "link": "https://www.segasammy.co.jp/en/release/73039/",
+            "snippet": "Pre-register for the game's release via email or by adding it to your Wishlist on the PlayStation™Store or Steam. For further information ...",
+            "date": "Jun 4, 2025",
+            "position": 5
+        },
+        {
+            "title": "disclaimer",
+            "link": "https://www.segasammy.co.jp/cms/wp-content/uploads/pdf/en/ir/20250603_q4_major_QA_e.pdf",
+            "snippet": "original Japanese document, the Japanese language version shall prevail. ... A: As with previous titles in the series, we aim to release in fall, ...",
+            "date": "Jun 3, 2025",
+            "position": 6
+        },
+        {
+            "title": "IR｜News Release｜SEGA SAMMY HOLDINGS",
+            "link": "https://www.segasammy.co.jp/en/release/category/ir/page/43/?ct=IR&mf_page=1&imgsize=0",
+            "snippet": "News Release · IR. News Release. Search. AND OR. Feed. Whole period, FY2026, FY2025, FY2024, FY2023, FY2022, FY2021, FY2020, FY2019, FY2018, FY2017, FY2016 ...",
+            "position": 7
+        },
+        {
+            "title": "Investor Relations｜SEGA SAMMY HOLDINGS",
+            "link": "https://www.segasammy.co.jp/en/ir/",
+            "snippet": "News Release · Employment Information · Privacy Policy · Web Accessibility Policy · SEGA SAMMY Group Social Media Policy · SNS Official Accounts · Terms of Use ...",
+            "sitelinks": [
+                {
+                    "title": "IR｜News Release",
+                    "link": "https://www.segasammy.co.jp/en/release/category/ir/"
+                },
+                {
+                    "title": "IR Library",
+                    "link": "https://www.segasammy.co.jp/en/ir/library/"
+                },
+                {
+                    "title": "Presentation",
+                    "link": "https://www.segasammy.co.jp/en/ir/library/presentation/"
+                },
+                {
+                    "title": "INTEGRATED Report/Annual...",
+                    "link": "https://www.segasammy.co.jp/en/ir/library/printing_annual/"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Presentation｜IR Library｜Investor Relations｜SEGA ...",
+            "link": "https://www.segasammy.co.jp/en/ir/library/presentation/",
+            "snippet": "News Release · Employment Information · Privacy Policy · Web Accessibility Policy · SEGA SAMMY Group Social Media Policy · SNS Official Accounts · Terms of Use ...",
+            "position": 9
+        },
+        {
+            "title": "Notice Regarding Final Result of SEGA Europe Limited.'s ...",
+            "link": "https://www.segasammy.co.jp/en/release/39721/",
+            "snippet": "THIS RELEASE HAS BEEN PREPARED IN COMPLIANCE WITH JAPANESE AND FINNISH LAW, THE RULES OF NASDAQ HELSINKI AND THE HELSINKI TAKEOVER CODE AND THE INFORMATION ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

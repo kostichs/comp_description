@@ -1,0 +1,43 @@
+﻿GAMING,Website,Test,Company_Name,Official_Website,LinkedIn_URL,Description,Timestamp,HubSpot_Company_ID,All_Results,Qualified_Products
+HoYoverse (miHoYo),https://www.hoyoverse.com/en-us/,br,HoYoverse (miHoYo),hoyoverse.com,https://www.linkedin.com/company/mihoyo,"MiHoYo Co., Ltd. is a Chinese video game development and publishing company founded in 2011. The company is headquartered in Shanghai, China.",2025-06-09,34812325915,"{
+  ""AI"": {
+    ""product"": ""AI"",
+    ""general_status"": false,
+    ""general_criteria"": {
+      ""passed"": false,
+      ""passed_count"": 0,
+      ""total_count"": 1,
+      ""detailed_criteria"": [
+        {
+          ""criteria_text"": ""The company does not have headquarters in Mainland China, Iran or Russia."",
+          ""result"": ""Fail""
+        }
+      ]
+    },
+    ""qualification_results"": {},
+    ""qualified_audiences"": [],
+    ""detailed_results"": {}
+  },
+  ""WAAP"": {
+    ""product"": ""WAAP"",
+    ""general_status"": false,
+    ""general_criteria"": {
+      ""passed"": false,
+      ""passed_count"": 0,
+      ""total_count"": 1,
+      ""detailed_criteria"": [
+        {
+          ""criteria_text"": ""The company does not have headquarters in Mainland China, Iran or Russia."",
+          ""result"": ""Fail""
+        }
+      ]
+    },
+    ""qualification_results"": {},
+    ""qualified_audiences"": [],
+    ""detailed_results"": {}
+  }
+}","=== AI ===
+NOT QUALIFIED - Failed General Criteria
+
+=== WAAP ===
+NOT QUALIFIED - Failed General Criteria"

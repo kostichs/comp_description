@@ -1,0 +1,93 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Attack Hole: Hero Edition",
+            "link": "https://www.nintendo.com/us/store/products/attack-hole-hero-edition-switch/?srsltid=AfmBOoqB6bk2q-0XxyZFfqxjiaoVUgq0DHy7hi1V6q-juMAGrfglZvUQ",
+            "snippet": "Buy Attack Hole: Hero Edition and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 5.99,
+            "position": 1
+        },
+        {
+            "title": "Infantry Attack: Gold'n'Gun",
+            "link": "https://www.nintendo.com/us/store/products/infantry-attack-goldngun-70050000047981-switch/?srsltid=AfmBOorFsxqcSRnpOrEH1Xu80TmDGYR3bxHAzkgE0ize6TvzlX77QB2D",
+            "snippet": "Prepare for the next battle much faster thanks to extra currency and give your opponents a taste of your new weapon! Software description provided by the publisher. Infantry Attack: Gold'n'Gun ...",
+            "currency": "$",
+            "price": 50,
+            "position": 2
+        },
+        {
+            "title": "SUPER TRENCH ATTACK for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/super-trench-attack-switch/?srsltid=AfmBOopv2gB86hVjgQ2BD47nwpU5pH3GVT4gpoFYouSrP47u9AwKvUYA",
+            "snippet": "Super Trench Attack is a goofball comedy shooter based in a World War setting. Engage in a fearless fight against Black Army's oppression and help end the World War.",
+            "currency": "$",
+            "price": 8,
+            "position": 3
+        },
+        {
+            "title": "Uboat Attack | Nintendo Switch download software | Games",
+            "link": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-download-software/Uboat-Attack-2636711.html?srsltid=AfmBOops0bxZslvTWBf6HWQgi1ee8JMGL6Q8Y_5kjn-1rYPEAL4nJr-v",
+            "snippet": "Uboat Attack. System: Nintendo Switch Release date: 30/08/2024. Download to console. £7.20. Price on Nintendo eShop (inc. VAT) ...",
+            "currency": "£",
+            "price": 7.2,
+            "position": 4
+        },
+        {
+            "title": "Arcade Archives Rush'n Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/arcade-archives-rushn-attack-switch/?srsltid=AfmBOooSGFi_ey0g6iJTD_yb3HaZL9vYJhNZA0UBxEsARlEgzxVZK8-q",
+            "snippet": "\"Rush'n Attack\" is an action game released by KONAMI in 1985. Infiltrate an enemy base and get past four obstacles to rescue your comrades! Take out foes with a knife, or with weapons dropped from enemies. Jump and duck to avoid attacks and make it to the goal. The honor of the Green Berets depends on you!",
+            "currency": "$",
+            "price": 9.87,
+            "position": 5
+        },
+        {
+            "title": "AMAZE! Time Attack Edition for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/amaze-time-attack-edition-switch/?srsltid=AfmBOorGuInWcm5MXJD8_DDqVXybfanPT3cb9uLqV9KUN_hURu3bhVMv",
+            "snippet": "Buy AMAZE! Time Attack Edition and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 4.99,
+            "position": 6
+        },
+        {
+            "title": "Attack of the Karens for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/attack-of-the-karens-switch/?srsltid=AfmBOooKnOQxxGUks29lZn0A1rsx4ecx-1sanvIFUgPWyMcvfr9_J5U8",
+            "snippet": "Nintendo · Flag of Usa. Free shipping on orders $50 or more. Restrictions apply. Store · Games; Attack of the Karens. Slide 1 of 8. Attack of the Karens 1. Attack of the Karens 3. Attack of the Karens 4. Attack of the Karens 5. Attack of the Karens 6. Attack of the Karens 7. Attack of the Karens 8. Attack of the Karens ...",
+            "currency": "$",
+            "price": 50,
+            "position": 7
+        },
+        {
+            "title": "Air Jet Fighter Combat - Europe Fly Plane Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/air-jet-fighter-combat-europe-fly-plane-attack-switch/?srsltid=AfmBOooEvBC9yHU41Jd-fV0Mu8dnXgy9g-mvZKxyYGg0S7oxLwK8kCLc",
+            "snippet": "A variety of missions will give you the opportunity to fly models from the Second World War. Realistic overheating physics, honest breakdowns will complicate your missions. Welcome to Air Fighter Air Attack.",
+            "currency": "$",
+            "price": 50,
+            "position": 8
+        },
+        {
+            "title": "Persona®5 Strikers All-Out Attack Pack for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/persona-5-strikers-all-out-attack-pack-70050000023826-switch/?srsltid=AfmBOopv-7fI3-iPcxbkLUwyoLm4Uv3Jf6_k5jvGNIkou0Qk509yNXIq",
+            "snippet": "Buy Persona®5 Strikers All-Out Attack Pack and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 4.99,
+            "position": 9
+        },
+        {
+            "title": "\"Attack\" Pose Set 2",
+            "link": "https://www.nintendo.com/en-ca/store/products/attack-pose-set-2-70050000038017-switch/?srsltid=AfmBOoq1ttC1RxG0_8Y82V7Vvb5Brx0oHnVGsSONRNotcLrW6j4IY_VR",
+            "snippet": "This additional content includes: - Attack Pose Set 2 (3 types) Summon all your might and unleash a devastating blow to show the world how awesome you are! Enjoy communicating with other hunters and taking fun photos with these special gestures! - After purchasing, speak to the Courier and select Add-on Content to ...",
+            "currency": "$",
+            "price": 50,
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -437,7 +437,7 @@ def save_structured_data_incrementally(result: Dict[str, Any], output_path: str)
         return True
     except Exception as e:
         logging.error(f"Error saving structured data to {output_path}: {e}")
-        return False
+        return False 
 
 def merge_original_with_results(original_file_path: str, results_file_path: str, output_file_path: str) -> bool:
     """

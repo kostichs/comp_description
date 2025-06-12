@@ -1,0 +1,128 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Online Multiplayer Games - My Nintendo Store",
+            "link": "https://www.nintendo.com/us/store/games/games-to-play-together-online/?srsltid=AfmBOoqVPjPqwzTDeB3kBir_WO_qtdaORTSQNtCGzzkuNu8oRn4Lo2qC",
+            "snippet": "Battle it out with friends and family with these online multiplayer games for the Nintendo Switch system. Choose from various genres, including shooters, ...",
+            "priceRange": "$15 to $60",
+            "position": 1
+        },
+        {
+            "title": "Nintendo Switch Online overview - Nintendo Official Site",
+            "link": "https://www.nintendo.com/us/online/?srsltid=AfmBOop0C1Moh0LwEpcgTUXrnS4TG2hyaflnmW2PjeLTFTmJu93fGGmg",
+            "snippet": "Play online with friends and family. Race against other players around the world in the Mario Kart™ World game when it releases on Nintendo Switch 2. Or hang ...",
+            "sitelinks": [
+                {
+                    "title": "Play online with friends and family. Race against other players around the world in the Mario Kart™ World game when it releases on Nintendo Switch 2. Or hang ...",
+                    "link": "https://www.nintendo.com/us/online/?srsltid=AfmBOop0C1Moh0LwEpcgTUXrnS4TG2hyaflnmW2PjeLTFTmJu93fGGmg#:~:text=Play%20online%20with%20friends%20and,Nintendo%20Switch%202.%20Or%20hang"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Nintendo Switch Online – Overview",
+            "link": "https://www.nintendo.com/en-gb/Nintendo-Switch-Online/Nintendo-Switch-Online-Overview-1183143.html?srsltid=AfmBOopuRit3JoZ8iidHi8lmKtQI0c1PAxgHs7X0sWNzVQ9c4WfBizDh",
+            "snippet": "... multiplayer Splatoon 2 matches! Nintendo Switch Online + Expansion Pack members can enjoy this DLC at no additional cost for the duration of their membership.",
+            "position": 3
+        },
+        {
+            "title": "How to Start an Online Multiplayer Game (Nintendo Switch ...",
+            "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/Nintendo-Switch-Online/How-to-Start-an-Online-Multiplayer-Game-Nintendo-Switch-Online-Classic-Games--1441443.html?srsltid=AfmBOoooiv29dFnjHIOfaY2uf7sQZXr8aIJAJ9nZMFWouMwVnn63LGfB",
+            "snippet": "How to Start an Online Multiplayer Game (Nintendo Switch Online Classic Games) ... In this article, you'll learn how to start an online game from one of the ...",
+            "sitelinks": [
+                {
+                    "title": "How to Start an Online Multiplayer Game (Nintendo Switch Online Classic Games) ... In this article, you'll learn how to start an online game from one of the ...",
+                    "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/Nintendo-Switch-Online/How-to-Start-an-Online-Multiplayer-Game-Nintendo-Switch-Online-Classic-Games--1441443.html?srsltid=AfmBOoooiv29dFnjHIOfaY2uf7sQZXr8aIJAJ9nZMFWouMwVnn63LGfB#:~:text=How%20to%20Start%20an%20Online,(Nintendo%20Switch%20Online%20Classic%20Games)&text=In%20this%20article%2C%20you'll%20learn,game%20from%20one%20of%20the"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "How to Start an Online Multiplayer Game (Nintendo Classics",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/41236/~/how-to-start-an-online-multiplayer-game-%28nintendo-classics-%E2%80%93-nintendo-switch",
+            "snippet": "How to Start an Online Multiplayer Game (Nintendo Classics – Nintendo Switch Online) · Nintendo Entertainment System - Nintendo Classics · Super Nintendo ...",
+            "sitelinks": [
+                {
+                    "title": "How to Start an Online Multiplayer Game (Nintendo Classics – Nintendo Switch Online) · Nintendo Entertainment System - Nintendo Classics · Super Nintendo ...",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/41236/~/how-to-start-an-online-multiplayer-game-%28nintendo-classics-%E2%80%93-nintendo-switch#:~:text=How%20to%20Start%20an%20Online,Classics%20%E2%80%93%20Nintendo%20Switch%20Online)&text=Nintendo%20Entertainment%20System%20%2D%20Nintendo,Classics&text=Super%20Nintendo"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "LIVE A LIVE for Nintendo Switch - Nintendo Official Site",
+            "link": "https://www.nintendo.com/us/store/products/live-a-live-switch/?srsltid=AfmBOorLjiZe2L4OUPA3hgAE3AGTtVOPPh8A6Hr8_yhOnran5ih8dKKL",
+            "snippet": "LIVE A LIVE ; Genre. Role playing ; Nintendo Switch Online. Save Data Cloud. Play online, access classic NES™ and Super NES™ games, and more with a Nintendo ...",
+            "sitelinks": [
+                {
+                    "title": "LIVE A LIVE ; Genre. Role playing ; Nintendo Switch Online. Save Data Cloud. Play online, access classic NES™ and Super NES™ games, and more with a Nintendo ...",
+                    "link": "https://www.nintendo.com/us/store/products/live-a-live-switch/?srsltid=AfmBOorLjiZe2L4OUPA3hgAE3AGTtVOPPh8A6Hr8_yhOnran5ih8dKKL#:~:text=LIVE%20A%20LIVE&text=Genre,Role%20playing&text=Nintendo%20Switch%20Online,and%20more%20with%20a%20Nintendo"
+                }
+            ],
+            "currency": "$",
+            "price": 49.99,
+            "position": 6
+        },
+        {
+            "title": "Multiplayer - Super Mario Maker™ 2 for the Nintendo Switch ...",
+            "link": "https://supermariomaker.nintendo.com/multiplayer/",
+            "snippet": "Create a course with a friend, try to clear a course with up to four players on a single screen, or enjoy online multiplayer with the Super Mario Maker 2 ...",
+            "position": 7
+        },
+        {
+            "title": "Level up with a Nintendo Switch Online Membership",
+            "link": "https://www.nintendo.com/us/online/nintendo-switch-online/?srsltid=AfmBOopUsHqD4J3yTGO3EQmrsWHT_Qo054ebgm9hm512uhKrhnj1fGiq",
+            "snippet": "A Nintendo Switch Online membership lets you play online, access classic games, and much more. Learn about the different memberships and their benefits.",
+            "sitelinks": [
+                {
+                    "title": "Play Classic Games with...",
+                    "link": "https://www.nintendo.com/us/online/nintendo-switch-online/classic-games/"
+                },
+                {
+                    "title": "Game Boy",
+                    "link": "https://www.nintendo.com/us/store/products/game-boy-nintendo-switch-online-switch/"
+                },
+                {
+                    "title": "Nintendo Entertainment System",
+                    "link": "https://www.nintendo.com/us/store/products/nintendo-entertainment-system-nintendo-switch-online-switch/"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Nintendo Multiplayer Games Hub",
+            "link": "https://www.nintendo.com/en-za/Games/Nintendo-Multiplayer-Games-Hub-906847.html?srsltid=AfmBOorUwluq3yglMTzl5VExd4V6m3eN20Ryfzv7yW7CA1IqOlbnp0Ab",
+            "snippet": "With a Nintendo Switch Online membership, you can play online with players all over the world, gain access to classic games with added online multiplayer, and a ...",
+            "sitelinks": [
+                {
+                    "title": "With a Nintendo Switch Online membership, you can play online with players all over the world, gain access to classic games with added online multiplayer, and a ...",
+                    "link": "https://www.nintendo.com/en-za/Games/Nintendo-Multiplayer-Games-Hub-906847.html?srsltid=AfmBOorUwluq3yglMTzl5VExd4V6m3eN20Ryfzv7yW7CA1IqOlbnp0Ab#:~:text=With%20a%20Nintendo%20Switch%20Online,added%20online%20multiplayer%2C%20and%20a"
+                }
+            ],
+            "currency": "$",
+            "price": 50,
+            "position": 9
+        },
+        {
+            "title": "How to Start a Local or Online Multiplayer Game ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/49683/~/how-to-start-a-local-or-online-multiplayer-game-%28clubhouse-games%3A-51-worldwide",
+            "snippet": "A Nintendo Switch Online membership is required to play online. To host a multiplayer game using GameShare, you must play on a Nintendo Switch 2 system. Make ...",
+            "sitelinks": [
+                {
+                    "title": "A Nintendo Switch Online membership is required to play online. To host a multiplayer game using GameShare, you must play on a Nintendo Switch 2 system. Make ...",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/49683/~/how-to-start-a-local-or-online-multiplayer-game-%28clubhouse-games%3A-51-worldwide#:~:text=A%20Nintendo%20Switch%20Online%20membership,Make"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,105 @@
+{
+    "searchParameters": {
+        "q": "site:ubisoft.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Multiplayer - Games",
+            "link": "https://store.ubisoft.com/us/genre-multiplayer?lang=en_US",
+            "snippet": "Multiplayer. 151 results. Filters Sort by. Sort by: Best Sellers ... Activating this game might affect your previously saved games and in-game progression.",
+            "position": 1
+        },
+        {
+            "title": "Multiplayer in The Settlers: New Allies | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/the-settlers-new-allies/gameplay/article/multiplayer-in-the-settlers-new-allies/000104168",
+            "snippet": "Multiplayer in The Settlers: New Allies ... Have an active Nintendo Switch Online, PlayStation Plus subscription or an Xbox Game Pass subscription for console.Be ...",
+            "position": 2
+        },
+        {
+            "title": "Multiplayer availability on Ubisoft games purchased from ...",
+            "link": "https://www.ubisoft.com/en-us/help/connectivity-and-performance/article/multiplayer-availability-on-ubisoft-games-purchased-from-approved-retailers/000061893",
+            "snippet": "To check if a game supports multiplayer modes, please see the information provided by the approved retailer and the official game website. If your Ubisoft ...",
+            "position": 3
+        },
+        {
+            "title": "Multiplayer in Anno 1800 | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/anno-1800/gameplay/article/multiplayer-in-anno-1800/000065251",
+            "snippet": "From the main menu, select ''Multiplayer''. · Choose ''Host New Game''. · Select ''+'' to invite other players or add an AI opponent. · Choose ''Start Game''.",
+            "position": 4
+        },
+        {
+            "title": "Playing co-op in Watch Dogs 2 | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/watch-dogs-2/gameplay/article/playing-co-op-in-watch-dogs-2/000062617",
+            "snippet": "To start a game in online mode, bring up your phone and select Multiplayer. You can then choose from the following modes: 2 Player Co-op. 4 Player Party.",
+            "position": 5
+        },
+        {
+            "title": "Multiplayer in The Crew Motorfest | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-gb/help/the-crew-motorfest/gameplay/article/multiplayer-in-the-crew-motorfest/000105252",
+            "snippet": "Multiplayer in The Crew Motorfest. You can enjoy The Crew Motorfest with up to 32 players online as part of Live Competitions. These game modes will be ...",
+            "position": 6
+        },
+        {
+            "title": "Captain Laserhawk The GAME - Ubisoft",
+            "link": "https://edenonline.ubisoft.com/game",
+            "snippet": "Captain Laserhawk: the G.A.M.E is a frenetic retro arcade multiplayer arena shooter. ... TERMS OF SERVICE · LEGAL OVERVIEW · DO NOT SELL MY PERSONAL ...",
+            "position": 7
+        },
+        {
+            "title": "Ubisoft | Welcome to the official Ubisoft website",
+            "link": "https://www.ubisoft.com/en-us/",
+            "snippet": "Welcome to the official website for Ubisoft, creator of Assassin's Creed, Just Dance, Tom Clancy's video game series, Rayman, Far Cry, Watch Dogs and many ...",
+            "sitelinks": [
+                {
+                    "title": "Games",
+                    "link": "https://www.ubisoft.com/en-us/games"
+                },
+                {
+                    "title": "Company",
+                    "link": "https://www.ubisoft.com/en-us/company/about-us"
+                },
+                {
+                    "title": "Job Openings | Ubisoft Careers",
+                    "link": "https://www.ubisoft.com/en-us/company/careers"
+                },
+                {
+                    "title": "Login",
+                    "link": "https://connect.ubisoft.com/login?appId=314d4fef-e568-454a-ae06-43e3bece12a6"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Decommissioning of online services for older legacy ...",
+            "link": "https://www.ubisoft.com/en-us/help/purchases-and-rewards/article/decommissioning-of-online-services-for-older-legacy-ubisoft-games-a-m/000064576",
+            "snippet": "The online multiplayer services, in-game news and player statistics for most games listed below have been shut down.",
+            "position": 9
+        },
+        {
+            "title": "Multiplayer in Trackmania | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/trackmania/gameplay/article/multiplayer-in-trackmania/000097467",
+            "snippet": "You can enjoy Trackmania with up to 100 players per server in multiplayer activities online, or locally. These game modes are available depending on your Access ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Multiplayer service game ps4"
+        },
+        {
+            "query": "Multiplayer service game xbox one"
+        },
+        {
+            "query": "Best multiplayer service game"
+        }
+    ],
+    "credits": 1
+}

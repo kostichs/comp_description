@@ -1,0 +1,51 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com \"Add to Cart\", \"Checkout\" buttons",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Resident Evil on GOG.com",
+            "link": "https://game.capcom.com/residentevil/ja/news-4051.html?ref=news_link_to_next",
+            "snippet": "Go to checkout. Your shopping cartYour shopping cart is empty right now ... Check out now Add to cart Buy as a gift. Check out now Add to cart Buy as a ...",
+            "sitelinks": [
+                {
+                    "title": "Bundle",
+                    "link": "https://www.gog.com/en/game/resident_evil_bundle"
+                },
+                {
+                    "title": "Resident Evil 2",
+                    "link": "https://www.gog.com/en/game/resident_evil_2"
+                },
+                {
+                    "title": "Resident Evil 3",
+                    "link": "https://www.gog.com/en/game/resident_evil_3"
+                }
+            ],
+            "rating": 4.7,
+            "ratingCount": 896,
+            "position": 1
+        },
+        {
+            "title": "Resident Evil 2 on GOG.com",
+            "link": "https://game.capcom.com/residentevil/ja/news-4154.html",
+            "snippet": "Go to checkout. Your shopping cartYour shopping cart is empty right now ... Check out now Add to cart Buy as a gift. Check out now Add to cart Buy as a ...",
+            "rating": 4.8,
+            "ratingCount": 1511,
+            "position": 2
+        },
+        {
+            "title": "Resident Evil 3 on GOG.com",
+            "link": "https://game.capcom.com/residentevil/sp/en/news-4188.html",
+            "snippet": "Go to checkout. Your shopping cartYour shopping cart is empty right now ... Check out now Add to cart Buy as a gift. Check out now Add to cart Buy as a ...",
+            "rating": 4.6,
+            "ratingCount": 795,
+            "position": 3
+        }
+    ],
+    "credits": 1
+}

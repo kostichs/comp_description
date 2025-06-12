@@ -1,0 +1,84 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Multiplayer Video Games - Official EA Site",
+            "link": "https://www.ea.com/games/library/multiplayer",
+            "snippet": "Explore multiplayer video games for from Electronic Arts, a leading ... Online Service Updates Security · Your Privacy Choices. Cookie Preferences.",
+            "position": 1
+        },
+        {
+            "title": "EA Play Live - EA Sports - Official EA Site",
+            "link": "https://www.ea.com/ea-play-live/10",
+            "snippet": "EA Play Live Close. Spotlight Series News. Relive The Event ... Online Service Updates Security · Your Privacy Choices. Cookie Preferences.",
+            "position": 2
+        },
+        {
+            "title": "New Live Service Updates to EA Games",
+            "link": "https://www.ea.com/news/new-live-service-updates-to-ea-games",
+            "snippet": "New Live Service Updates to EA Games · Celebrate EA PLAY through free trials, updates across console and mobile games and Play to Give Challenges! · Celebrate EA ...",
+            "position": 3
+        },
+        {
+            "title": "Re: Online multiplayer - F1® 23",
+            "link": "https://forums.ea.com/discussions/f1-23-en/re-online-multiplayer/8403131",
+            "snippet": "Re: Online multiplayer. On the Home Screen you can start a League. Invite your friends and lets go. Like. 0. Reply. 3 Replies. Replies sorted by Oldest.",
+            "position": 4
+        },
+        {
+            "title": "Online Video Games - Official EA Site",
+            "link": "https://www.ea.com/games/library/online",
+            "snippet": "Explore Online video games from Electronic Arts, a leading publisher of games for the PC, consoles and mobile.",
+            "position": 5
+        },
+        {
+            "title": "Remaster Update and Multiplayer Overview",
+            "link": "https://www.ea.com/games/command-and-conquer/command-and-conquer-remastered/news/remaster-update-multiplayer-overview",
+            "snippet": "When navigating to the Online portion of the menus, players will first have the ability to host or join custom multiplayer games. Once players join a game lobby ...",
+            "position": 6
+        },
+        {
+            "title": "Re: Multiplayer - do we need to pay for it on PC? Please ...",
+            "link": "https://forums.ea.com/discussions/star-wars-games-discussion-en/re-multiplayer---do-we-need-to-pay-for-it-on-pc-please-answer/10553176",
+            "snippet": "... multiplayer or subscribe to access multiplayer at \"no additional cost\". ... Or can I buy the game and be able to play online without paying for anything but the ...",
+            "position": 7
+        },
+        {
+            "title": "NBA LIVE 19: THE ONE Like You've Never Seen It Before",
+            "link": "https://www.ea.com/news/feature-the-one",
+            "snippet": "... online or offline, Co-op Live Events or multiplayer Live Run,” said NBA LIVE Creative Director Ryan Santos when I asked about THE ONE in NBA LIVE 18. “I'm ...",
+            "position": 8
+        },
+        {
+            "title": "Star Wars™ Battlefront™ II Multiplayer Game Modes",
+            "link": "https://www.ea.com/games/starwars/battlefront/star-wars-battlefront-2/game-modes",
+            "snippet": "Arcade. Arcade is a single player (or on consoles, split-screen multiplayer) ... Online Service Updates Security YouTube Terms of Service Google Privacy Policy.",
+            "position": 9
+        },
+        {
+            "title": "EA Play Live - Join us for a World of Play - Official EA Site",
+            "link": "https://www.ea.com/ea-play-live",
+            "snippet": "EA Play Live 2021 connects global audiences with EA's biggest new games through live broadcasts, community content, and more ... Online Service Updates Security.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        }
+    ],
+    "credits": 1
+}

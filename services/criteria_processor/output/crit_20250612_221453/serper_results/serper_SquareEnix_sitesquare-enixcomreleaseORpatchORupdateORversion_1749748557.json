@@ -1,0 +1,92 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?id=5382&kid=67515",
+            "snippet": "... update your firmware before trying the version update again. *Consult with ... Subcategory: [Update / Patch]. Contact us. About us · Jobs · Support · Global ...",
+            "position": 1
+        },
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?kid=79924&id=5382&page=0&sc=0",
+            "snippet": "To change the duration cycle of the current subscription to a different one, please update the subscription in the same fashion and the change will not take ...",
+            "position": 2
+        },
+        {
+            "title": "Patch 7.25 Notes | FINAL FANTASY XIV, The Lodestone",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_25",
+            "snippet": "Patch 7.25 Notes. ... This update also introduces upgradeable phantom weapons, Mamool Ja ...",
+            "date": "May 27, 2025",
+            "position": 3
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/480176",
+            "snippet": "... patch (Use for either the version update error or cannot download patch files error) Then either rename or remove the folder, the next time ...",
+            "date": "Mar 21, 2023",
+            "position": 4
+        },
+        {
+            "title": "ffxiv Unable to update patch files [11006] [20819] [20831] ...",
+            "link": "https://forum.square-enix.com/ffxiv/threads/501588",
+            "snippet": "But for some reason the update is just not working. I keep getting the error message on the title. Unable to update patch files [11006] [20819] ...",
+            "date": "Jun 27, 2024",
+            "position": 5
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/516542",
+            "snippet": "09:09 PM. (9). Absolutely crazy, it must be really rare for them to still release the patch. EDIT: looking at the JP patch notes it says ...",
+            "date": "Mar 24, 2025",
+            "position": 6
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/492327",
+            "snippet": "Unable to update patch files. [11006][20815][20866][19900][5] XInputXIV3.dll. Hello everyone! I am currently unable to access ffxiv. I ...",
+            "date": "Nov 1, 2023",
+            "position": 7
+        },
+        {
+            "title": "Patch 7.2 Notes (Preliminary)",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_2_Preliminary",
+            "snippet": "Read the patch notes. Older · Newer · Topics · News. View desktop version of the Lodestone.",
+            "date": "Mar 21, 2025",
+            "position": 8
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/494075",
+            "snippet": "Unable to complete version update [30426][19900][740]. I get back ... You may do this by going to My Documents>My Games>FFXIV>Downloads> then from ...",
+            "date": "Jan 10, 2024",
+            "position": 9
+        },
+        {
+            "title": "Update to FINAL FANTASY XVI",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXVI&l=patch-notes",
+            "snippet": "May 9th, 2024. We announce the release of update 1.32, which addresses several critical issues. Version 1.32. The following issues have been ...",
+            "date": "Oct 17, 2024",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version reddit"
+        },
+        {
+            "query": "Release patch update version xbox"
+        },
+        {
+            "query": "Release patch update version download"
+        }
+    ],
+    "credits": 1
+}

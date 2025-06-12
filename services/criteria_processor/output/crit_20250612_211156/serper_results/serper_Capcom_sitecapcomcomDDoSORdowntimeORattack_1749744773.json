@@ -1,0 +1,73 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Basic Charge Blade Controls",
+            "link": "https://manual.capcom.com/mhwilds/en/ps5/page/4/10",
+            "snippet": "Timing the move while the shield is facing the incoming attack will let you Guard automatically. After guarding, you will be able to perform Axe: Super ...",
+            "position": 1
+        },
+        {
+            "title": "Basic Controls by Weapon | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/MHRISE/en/switch/page/3/5",
+            "snippet": "Hammer. - Overhead Smash - Side Smash - (Hold) Charge - (Charge then release) Charged Attack - (While charging) Charge Switch. Hunting Horn. - Left Swing",
+            "position": 2
+        },
+        {
+            "title": "Onimusha: Warlords Official Web Manual",
+            "link": "http://game.capcom.com/manual/onimusha/en/ps4/page/8/1",
+            "snippet": "Each type of attack has its own power, range, and duration. Use each type well and you'll be victorious in battle.",
+            "position": 3
+        },
+        {
+            "title": "Battle Rules | Monster Hunter Stories 2",
+            "link": "https://game.capcom.com/manual/MHST2/en/switch/page/6/2",
+            "snippet": "Before a turn begins, you will be able to choose a move. Note: By selecting the \"Fight\" option, you will then be able to choose one of your three regular attack ...",
+            "position": 4
+        },
+        {
+            "title": "Basic Dual Blade Controls",
+            "link": "https://manual.capcom.com/mhwilds/en/ps5/page/4/4",
+            "snippet": "Hit a monster's wound to perform Midair Spinning Blade Dance, an attack that spans the length of the monster and can destroy multiple wounds. Recommended Combos ...",
+            "position": 5
+        },
+        {
+            "title": "The Basics of Attack Composition | SF Seminar",
+            "link": "https://game.capcom.com/cfn/sfv/column/131432?lang=en",
+            "snippet": "In today's lecture I'd like to cover the basic framework of attacks. First, let's take a closer look at what elements make up an attack action.",
+            "position": 6
+        },
+        {
+            "title": "Charge Blade",
+            "link": "http://game.capcom.com/manual/MH4U/en/page-92.html",
+            "snippet": "Accumulate energy with the nimble sword, and then switch to axe mode to unleash a thunderous, energy-filled attack. Basic Actions (Sword Mode). Basic Attack ...",
+            "position": 7
+        },
+        {
+            "title": "Basic Sword & Shield Controls",
+            "link": "https://manual.capcom.com/mhwilds/en/steam/page/4/3",
+            "snippet": "A basic sword attack that can be chained together for a 4-hit combo. Use mid-combo to adjust your positioning. Special Attack. Use ＋ to perform a Shield ...",
+            "position": 8
+        },
+        {
+            "title": "Hour 11: The Basics of Attacking: Damage Part II | ストゼミ",
+            "link": "https://game.capcom.com/cfn/sfv/column/131545",
+            "snippet": "This is something called \"hit stop/block stop,\" that helps to give the player a sense of the attack hitting as well as the weight of the attack. Hit/block stop ...",
+            "position": 9
+        },
+        {
+            "title": "Onimusha - Deadly Strikes (Criticals)",
+            "link": "http://game.capcom.com/manual/onimusha/en/ps4/page/3/3",
+            "snippet": "Attack Guide · Puzzle Tips · Oni Spirits · Update · TOP; Game Controls; Deadly Strikes (Criticals). Deadly Strikes (Criticals). Under certain conditions, you ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,91 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Game Builder Tycoon for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/game-builder-tycoon-switch/?srsltid=AfmBOopkOt4FXeri2Ihzy4IOADn1tzMHzAB2DhRphcE-lae7WrvMyjsQ",
+            "snippet": "Experience the thrill of running your own studio in Game Builder Tycoon. Design outstanding games by selecting key elements such as art, features, quests, ...",
+            "currency": "$",
+            "price": 9.99,
+            "position": 1
+        },
+        {
+            "title": "Fighters Pass - Super Smash Bros. Ultimate for Nintendo Switch",
+            "link": "https://smashbros.nintendo.com/buy/dlc/",
+            "snippet": "Fighters Pass. Smash Bros Ultimate Digital. Already have the game? Purchase the Fighters Pass to get the first five DLC packs.",
+            "currency": "$",
+            "price": 50,
+            "position": 2
+        },
+        {
+            "title": "Willy's Wonderland - The Game for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/willys-wonderland-the-game-switch/?srsltid=AfmBOops53VcpWR_941GxWhxZaHmdNXUR9YCenTN-2JY4TqTzy3m0zQ1",
+            "snippet": "Willy's Wonderland – The Game is a 2.5D beat 'em up game based on the cult film of the same name, in which a group of Animatronics come to life and slaughter ...",
+            "currency": "$",
+            "price": 4.99,
+            "position": 3
+        },
+        {
+            "title": "Mouse Trap - The Board Game for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/mouse-trap-the-board-game-switch/?srsltid=AfmBOopKI5JsFMhksxyllHuNKVZCiVmTiWO_C-8S1in4qS2gUrF9ntrQ",
+            "snippet": "It's the chaotic board game you remember! Join your friends and race to collect the most cheese. Are you ready? Welcome to the cheese board of your dreams.",
+            "currency": "$",
+            "price": 19.99,
+            "position": 4
+        },
+        {
+            "title": "Grab it! Crane Game for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/grab-it-crane-game-switch/?srsltid=AfmBOoryrqOToe5EPxDfIhM7YMTGg_e302YFiR4RRoj2eKKPPhXq3BcA",
+            "snippet": "Gear up for an arcade classic: the crane game! Win as many prizes as you can and become a crane game master! Let's enjoy a crane game on the Nintendo Switch™!",
+            "currency": "$",
+            "price": 5,
+            "position": 5
+        },
+        {
+            "title": "Escape Game The Deserted House",
+            "link": "https://www.nintendo.com/us/store/products/escape-game-the-deserted-house-switch/?srsltid=AfmBOorCX6zgERoztnskUr6Z5KvUVZFM_1SnGV0wONG1FWK9-s_Hz6Rl",
+            "snippet": "This game is an escape-the-room game (mystery-adventure game). Point the screen with a cursor to solve riddles, and story goes on.",
+            "currency": "$",
+            "price": 9.99,
+            "position": 6
+        },
+        {
+            "title": "WRC 10 The Official Game for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/wrc-10-the-official-game-switch/?srsltid=AfmBOoqJMD83ZNrljIcr9L0XPyryStiXv8plTfrzSHyFvARop19dg_k7",
+            "snippet": "Warning: This is a virtual game and not real life. Be cautious, do not imitate the vehicle movements shown in this game when you are driving a car in real life.",
+            "currency": "$",
+            "price": 49.99,
+            "position": 7
+        },
+        {
+            "title": "SpongeBob Squarepants™: The Patrick Star Game",
+            "link": "https://www.nintendo.com/us/store/products/spongebob-squarepants-the-patrick-star-game-switch/?srsltid=AfmBOoqSVSH3X0vgAg4hQ34oqjjz1zsreYNvUk7thh3xIADA_Z2QHta6",
+            "snippet": "About this item ; Game file size. Nintendo Switch: 918 MB. Nintendo Switch 2: 918 MB ; Supported play modes. TV mode. Tabletop mode. Handheld mode. Software ...",
+            "currency": "$",
+            "price": 50,
+            "position": 8
+        },
+        {
+            "title": "HOT WHEELS UNLEASHED™ - Game of the Year Edition",
+            "link": "https://www.nintendo.com/us/store/products/hot-wheels-unleashed-game-of-the-year-edition-switch/?srsltid=AfmBOoqiMtGGtqa9C-CaNKd4EFSBApXn4ROxKpvBe4mMC5FT8y83GnEn",
+            "snippet": "HOT WHEELS UNLEASHED™ - Game of the Year Edition ... Collect the best vehicles in the Hot Wheels™ universe, build spectacular tracks and dive into breathtaking ...",
+            "currency": "$",
+            "price": 50,
+            "position": 9
+        },
+        {
+            "title": "Iwata Asks - Game & Watch - Page 1 - Nintendo",
+            "link": "https://iwataasks.nintendo.com/interviews/clubn/game-and-watch-ball-reward/0/0/",
+            "snippet": "Computers weren't common then. Izushi. Hardware technicians made the games. Iwata. You made a piece of hardware dedicated to a single game.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

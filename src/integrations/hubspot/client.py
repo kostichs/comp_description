@@ -294,6 +294,41 @@ class HubSpotClient:
         except Exception as e:
             logger.error(f"Error updating company properties: {e}", exc_info=True)
             return False
+
+    async def get_company_properties(self, company_id: str, properties: List[str]) -> Optional[Dict[str, Any]]:
+        """
+        Получение свойств компании из HubSpot.
+        
+        Args:
+            company_id (str): ID компании в HubSpot
+            properties (List[str]): Список названий свойств для получения
+            
+        Returns:
+            Optional[Dict[str, Any]]: Словарь свойств компании или None в случае ошибки
+        """
+        if not self.api_key:
+            logger.warning("HubSpot API key not set. Get operation aborted.")
+            return None
+        
+        try:
+            # Формируем параметры запроса
+            properties_param = ",".join(properties)
+            endpoint = f"{self.base_url}/crm/v3/objects/companies/{company_id}?properties={properties_param}"
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(endpoint, headers=self.headers) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        logger.info(f"Successfully retrieved properties for company ID: {company_id}")
+                        return data.get("properties", {})
+                    else:
+                        error_text = await response.text()
+                        logger.error(f"Failed to get company properties. Status: {response.status}, Error: {error_text}")
+                        return None
+        
+        except Exception as e:
+            logger.error(f"Error getting company properties: {e}", exc_info=True)
+            return None
     
     def is_description_fresh(self, timestamp_str: Optional[str], max_age_months: int = 6) -> bool:
         """

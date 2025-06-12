@@ -1,0 +1,81 @@
+{
+    "searchParameters": {
+        "q": "site:krafton.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Games | KRAFTON",
+            "link": "https://krafton.com/en/games/",
+            "snippet": "Commander Quest. Deckbuilding Roguelike, Card Game, Strategy; PC. More. Flyway Games. TOP. Visit Us · Privacy Policy · Contact Us · Speak Up · Privacy Notice ...",
+            "position": 1
+        },
+        {
+            "title": "TERA | KRAFTON",
+            "link": "https://www.krafton.com/en/games/tera/",
+            "snippet": "In celebration of our 3rd anniversary for the North American release, we launched on Steam in 2015 and recorded No.1 concurrent players among MMORPG. Game",
+            "position": 2
+        },
+        {
+            "title": "Dreamotion",
+            "link": "https://krafton.com/en/studios/dreamotion/",
+            "snippet": "We create fun, high-quality games faster than anyone else. Our focus is on the game's core essence, “FUN”.",
+            "position": 3
+        },
+        {
+            "title": "Bluehole Studio",
+            "link": "https://krafton.com/en/studios/bluehole/",
+            "snippet": "As a production game studio that has innovated the genre of MMORPG, Bluehole Studio aims to bring fun and inspiration to our global users.",
+            "position": 4
+        },
+        {
+            "title": "Dinkum Together",
+            "link": "https://dinkumtogether.krafton.com/en",
+            "snippet": "TERA. MMORPG · Moonbreaker. SF strategy. E-SPORTS. E-SPORTS. PUBG E-Sports. PUBGM E-sports. game logo. News. Media. MORE. News; Media. ENGLISH. ENGLISH; 한국어.",
+            "position": 5
+        },
+        {
+            "title": "PUBG STUDIOS | KRAFTON",
+            "link": "https://krafton.com/en/studios/pubg/",
+            "snippet": "The obsession with crafting the world of PUBG extends beyond the game, as we prepare IP-based projects to bring the excitement of PUBG into entertainment ...",
+            "position": 6
+        },
+        {
+            "title": "inZOI Studio | KRAFTON",
+            "link": "https://krafton.com/en/studios/inzoi/",
+            "snippet": "inZOI is a life simulation game where you can visualize stories of life with immersive, realistic graphics and deep, detailed simulation.",
+            "position": 7
+        },
+        {
+            "title": "Dark and Darker Mobile",
+            "link": "https://abyssofdungeons.krafton.com/",
+            "snippet": "Moonbreaker. SF strategy. E-SPORTS. E-SPORTS. PUBG E-Sports. PUBGM E-sports. game logo. News. Game Info. Overview. Probability. Gallery. Coupon. Community. Shop.",
+            "position": 8
+        },
+        {
+            "title": "PUBG: BATTLEGROUNDS | KRAFTON",
+            "link": "https://krafton.com/en/games/battlegrounds/",
+            "snippet": "The game was established as a global leader in the battle royale genre, reaching a large number of players around the world.",
+            "position": 9
+        },
+        {
+            "title": "KRAFTON LAUNCHES INZOI IN GLOBAL EARLY ACCESS",
+            "link": "https://krafton.com/en/news/press/krafton-launches-inzoi-in-global-early-access/",
+            "snippet": "The game is set at a price of $39.99, with all updates and DLC to be ... KRAFTON is dedicated to continuously expanding and improving support across ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop xbox"
+        },
+        {
+            "query": "Game download dedicated desktop android"
+        }
+    ],
+    "credits": 1
+}

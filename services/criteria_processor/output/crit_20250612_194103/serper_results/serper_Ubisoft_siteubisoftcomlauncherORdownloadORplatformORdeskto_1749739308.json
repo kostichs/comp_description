@@ -1,0 +1,109 @@
+{
+    "searchParameters": {
+        "q": "site:ubisoft.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Ubisoft Connect - Downloading...",
+            "link": "https://www.ubisoft.com/en-us/ubisoft-connect/download",
+            "snippet": "Download Ubisoft Connect. Downloading... Download didn't start? Try again. All your games, friends, and benefits in one place. Accessible through our desktop ...",
+            "position": 1
+        },
+        {
+            "title": "Installing or re-installing Ubisoft Connect PC | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/connectivity-and-performance/article/installing-or-re-installing-ubisoft-connect-pc/000063173",
+            "snippet": "Ubisoft Connect PC is a desktop application which allows you to manage and play your Ubisoft games, access Ubisoft+ content, redeem rewards and more. To install Ubisoft Connect PC: • Download the latest version of Ubisoft Connect PC. • Run the installer file you downloaded with administrator rights. • Follow the on ...",
+            "position": 2
+        },
+        {
+            "title": "Ubisoft Connect | Ubisoft (US)",
+            "link": "https://www.ubisoft.com/en-us/ubisoft-connect",
+            "snippet": "... platform. Accessible through our desktop app and directly from your games on ... Download Ubisoft Connect. English. UBISOFT CONNECT · Support · Investors ...",
+            "sitelinks": [
+                {
+                    "title": "Ubisoft account",
+                    "link": "https://account.ubisoft.com/.Login"
+                },
+                {
+                    "title": "Downloading...",
+                    "link": "https://www.ubisoft.com/en-us/ubisoft-connect/download"
+                },
+                {
+                    "title": "Assassin’s Creed Shadows...",
+                    "link": "https://www.ubisoft.com/en-us/game/assassins-creed/news/3rJiU861lAyWTYpvH3cfmY/assassins-creed-shadows-post-launch-roadmap-update-a-first-look-at-whats-coming-next"
+                },
+                {
+                    "title": "Membership",
+                    "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/shop/membership"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Free Access: Download Tom Clancy's Rainbow Six Siege",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/free-access",
+            "snippet": "*Applicable platform account may be required. Persistent internet ... Download Uplay Launcher. Studios. UBISOFT MONTREALUBISOFT BARCELONAUBISOFT ...",
+            "position": 4
+        },
+        {
+            "title": "Ubisoft Connect on PC Support | Official Ubisoft Help (GB)",
+            "link": "https://www.ubisoft.com/en-gb/help/all-topics?platform=Ubisoft%20Connect%20on%20PC",
+            "snippet": "Ubisoft Connect PC is a desktop application which allows you to manage and play your Ubisoft games, access Ubisoft+ content, redeem rewards and more. To install Ubisoft Connect PC: • Download the latest version of Ubisoft Connect PC. • Run the installer file you downloaded with administrator rights. • Follow the on ...",
+            "position": 5
+        },
+        {
+            "title": "Changing download options in Ubisoft Connect PC",
+            "link": "https://www.ubisoft.com/en-gb/help/connectivity-and-performance/article/changing-download-options-in-ubisoft-connect-pc/000061161",
+            "snippet": "For subscriptions made on other platform stores, you can manage your subscriptions directly on the platform. From the ''My Subscription'' page, you can: Change your payment method.Download an invoice for your subscription by selecting the ''View billing details'' option.Edit your billing address. Renew or cancel ...",
+            "position": 6
+        },
+        {
+            "title": "Installing a game through Ubisoft Connect PC",
+            "link": "https://www.ubisoft.com/en-gb/help/connectivity-and-performance/article/installing-a-game-through-ubisoft-connect-pc/000060552",
+            "snippet": "Epic Games Launcher From the library, you can see which additional content is available by checking the number in the top-right corner of the game tile. Installing the game will automatically download and install all available content for your game. We also have information available on checking if your content is ...",
+            "position": 7
+        },
+        {
+            "title": "Ubisoft | Welcome to the official Ubisoft website",
+            "link": "https://www.ubisoft.com/en-us/",
+            "snippet": "Download Ubisoft Connect. Games. Browse By Category. Featured · New To Old · Free To Play. Browse By Platform ... Download Ubisoft Connect. Ubisoft | Welcome to ...",
+            "sitelinks": [
+                {
+                    "title": "Games",
+                    "link": "https://www.ubisoft.com/en-us/games"
+                },
+                {
+                    "title": "Company",
+                    "link": "https://www.ubisoft.com/en-us/company/about-us"
+                },
+                {
+                    "title": "Job Openings | Ubisoft Careers",
+                    "link": "https://www.ubisoft.com/en-us/company/careers"
+                },
+                {
+                    "title": "Login",
+                    "link": "https://connect.ubisoft.com/login?appId=314d4fef-e568-454a-ae06-43e3bece12a6"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Checking if your content is installed on PC",
+            "link": "https://www.ubisoft.com/en-us/help/purchases-and-rewards/article/checking-if-your-content-is-installed-on-pc/000061437",
+            "snippet": "Epic Games Launcher. From the library, you can see which additional content is available by checking the number in the top-right corner of the game tile. Installing the game will automatically download and install all available content for your game. We also have information available on checking if your content is ...",
+            "position": 9
+        },
+        {
+            "title": "Download Roller Champions – Free-to-Play",
+            "link": "https://www.ubisoft.com/en-us/game/roller-champions/download",
+            "snippet": "Download Roller Champions for free! Applicable platform account may be required. Persistent internet connection and Ubisoft account required.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

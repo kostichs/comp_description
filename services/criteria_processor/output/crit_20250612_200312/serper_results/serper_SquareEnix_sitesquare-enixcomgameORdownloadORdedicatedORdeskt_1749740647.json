@@ -1,0 +1,106 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "(windows) FFXIV downloads patches to \"My Documents\\ ...",
+            "link": "https://forum.square-enix.com/ffxiv/threads/501199",
+            "snippet": "The game download the content in a temporal folder, then move where you installed it. If it is Steam, it is in the steamapps folder inside the ...",
+            "date": "Jun 23, 2024",
+            "position": 1
+        },
+        {
+            "title": "FINAL FANTASY XIV Online - Starter Edition",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVSTARTEREDITION&l=sestorepcdownload",
+            "snippet": "... Game · Board Games · Puzzles · Music · All Music · CD · Blu-ray · Vinyl · Apparel · FFXIV ... when you buy this product. Platform: Select Options, PC Download ...",
+            "currency": "$",
+            "price": 19.99,
+            "position": 2
+        },
+        {
+            "title": "Feral Interactive | Mac, Linux, Switch & Mobile Games",
+            "link": "https://xmail.square-enix.com/fe/track/link/d3du2it35e24/d95897f13387c0315b10d16942dcf039/2277/en/20/eyJ1c2VyIjp7ImxhbmciOiJlbiIsImNvdW50cnkiOiJVUyIsImxvY2FsZSI6ImVuX1VTIiwiZXh0cmEiOiIrWjl5YXNOcG82VmNxQUhFOWJFRzQwM3c1a3NpTlNLejJ3Q1hxZTU1dys5YnBhS0xxXC9odTNveHE5R1NEUCtpWSJ9fQ%3D%3D",
+            "snippet": "HITMAN – Game Of The Year Edition. out now £42.47. Buy Explore. DLCRequires: XCOM 2. XCOM 2: War of the Chosen. out now £34.99. Buy Explore. DLCRequires: Total ...",
+            "priceRange": "£2 to £45",
+            "position": 3
+        },
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?id=5382&kid=81074",
+            "snippet": "Please visit https://sqex.to/ffxiv_client_en to download the official Windows client for Final Fantasy XIV. □ Steam Please go to your Steam Library and download ...",
+            "position": 4
+        },
+        {
+            "title": "SQUARE ENIX | The Official SQUARE ENIX Website",
+            "link": "https://na.square-enix.com/",
+            "snippet": "Book a stay at KILLER INN - a new multiplayer murder mystery action game. Step into a deadly game of co-operation and survival. But beware - some of your ...",
+            "sitelinks": [
+                {
+                    "title": "Games",
+                    "link": "https://www.square-enix-games.com/games"
+                },
+                {
+                    "title": "News",
+                    "link": "https://www.square-enix-games.com/news"
+                },
+                {
+                    "title": "Store",
+                    "link": "https://na.store.square-enix-games.com/"
+                },
+                {
+                    "title": "U.S. Privacy Notice",
+                    "link": "https://www.square-enix-games.com/documents/privacy"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?id=5382&kid=67500",
+            "snippet": "You can re-download the Windows game client at the following link: http://www.finalfantasyxiv.com/playersdownload/na. Steam users should re-install from ...",
+            "position": 6
+        },
+        {
+            "title": "FINAL FANTASY VII",
+            "link": "https://membership.square-enix.com/sso/login?service=http%3A%2F%2Ffinalfantasyviipc.com%2Fen%3Fcheck&gateway=true&mobile-app=true&theme=dark%2F1000",
+            "snippet": "Whether you're a seasoned FINAL FANTASY VII veteran or exploring this RPG classic for the very first time, show off your in-game ... PC Digital Download",
+            "position": 7
+        },
+        {
+            "title": "FINAL FANTASY TRADING CARD GAME Booster Pack ' ...",
+            "link": "https://press.na.square-enix.com/FINAL-FANTASY-TRADING-CARD-GAME-CUMULATIVELY-ACHIEVES-20-MILLION-PACKS",
+            "snippet": "The FINAL FANTASY TRADING CARD GAME (FFTCG) is an exciting trading card game ... Download 0 items Zip content limit reached! Add set to downloads.",
+            "date": "Mar 24, 2023",
+            "position": 8
+        },
+        {
+            "title": "FINAL FANTASY® XI: Ultimate Collection Seekers Edition",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXI&l=se",
+            "snippet": "... Game · Board Games · Puzzles · Music · All Music · CD · Blu-ray · Vinyl · Apparel · FFXIV ... when you buy this product. Platform: Select Options, PC Download.",
+            "currency": "$",
+            "price": 29.99,
+            "position": 9
+        },
+        {
+            "title": "An introduction to SaGa",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=BLOG&l=SAGA&utm_source=sqex-social&utm_content=SaGaFrontier&utm_campaign=SummerofSaGa",
+            "snippet": "Much like other Square Enix RPG series, like FINAL FANTASY or DRAGON QUEST, each SaGa game is a complete, standalone adventure. There's no narrative connection ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop mac"
+        },
+        {
+            "query": "Game download dedicated desktop xbox"
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,81 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Re: Is it true, EA servers are being DDoS attacked?",
+            "link": "https://forums.ea.com/discussions/apex-legends-general-discussion-en/re-is-it-true-ea-servers-are-being-ddos-attacked/5406918",
+            "snippet": "Re: Is it true, EA servers are being DDoS attacked? @hhnbbfggty66 Happens to them a lot. What is crazy is it takes out every game and forums they have ...",
+            "position": 1
+        },
+        {
+            "title": "DDOS ATTACK AGAIN! BF4 - Battlefield",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/ddos-attack-again-bf4/11924881",
+            "snippet": "DDOS ATTACK AGAIN! BF4. Well it did not last long before they attacked again. Crashing servers all over.. Like. 2. Reply. 5 Replies. Replies ...",
+            "date": "Feb 24, 2025",
+            "position": 2
+        },
+        {
+            "title": "Re: So much DDOS attacks and kids with WH running ...",
+            "link": "https://forums.ea.com/discussions/-/-/8676413",
+            "snippet": "Re: So much DDOS attacks and kids with WH running around. Cool... @NVC_Miny Hahaha u rly dont know? What is the point in saying that , when they dont even ...",
+            "position": 3
+        },
+        {
+            "title": "Opponent DDOS | EA Forums - 11859604",
+            "link": "https://forums.ea.com/discussions/fc-25-technical-issues-en/opponent-ddos/11859604",
+            "snippet": "Opponent DDOS. I am currently playing fut champs and was winning 3-2 and says I lost connection to ea servers and gave me a loss. All my connections are ...",
+            "position": 4
+        },
+        {
+            "title": "Re: So much DDOS attacks and kids with WH running ...",
+            "link": "https://forums.ea.com/discussions/-/-/8676415",
+            "snippet": "DDOS attacks are pretty rare, I doubt they're what you are experiencing.When there is a DDOS attack then pretty much the whole server is affected, meaning.",
+            "position": 5
+        },
+        {
+            "title": "BF4's server has been frequently attacked recently",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/bf4s-server-has-been-frequently-attacked-recently/11903235",
+            "snippet": "In the past half month, there have been people using DDOS and EA server backend bugs to attack players' servers. During the game battle, ...",
+            "date": "Feb 16, 2025",
+            "sitelinks": [
+                {
+                    "title": "18 answers",
+                    "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/bf4s-server-has-been-frequently-attacked-recently/11903235/replies/11904234"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Re: Fix the DDOS attacks",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/re-fix-the-ddos-attacks/6664135",
+            "snippet": "Re: Fix the DDOS attacks. The daily server hacking attacks still going on here 3+ weeks later. At times our server is attacked/crashing every 20 minutes or ...",
+            "position": 7
+        },
+        {
+            "title": "Re: Community Server Under Attack by DDOS from China",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/re-community-server-under-attack-by-ddos-from-china/6669077",
+            "snippet": "... DDoS attack. At the same time, because Battlelog leaks IP information, no one can block the attack, Even if you change the IP address and port. DDoS attacker ...",
+            "position": 8
+        },
+        {
+            "title": "Re: Ddos attack on Apex Servers?",
+            "link": "https://forums.ea.com/discussions/-/-/5531015",
+            "snippet": "Re: Ddos attack on Apex Servers? @Fyro021 Completely agree with you.Because of the same persistent issues that ruined large parts of season 9 for me & a ...",
+            "position": 9
+        },
+        {
+            "title": "Re: DDOS Attack, ping 200 - Apex Legends",
+            "link": "https://forums.ea.com/discussions/apex-legends-general-discussion-en/re-ddos-attack-ping-200/5428863",
+            "snippet": "High ping here or there is more than likely server maintenance, network congestion, or other similar things, it could be a DDoS attack but it's probably not ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

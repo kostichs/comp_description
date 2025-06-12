@@ -1,0 +1,90 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Online Multiplayer Games - My Nintendo Store",
+            "link": "https://www.nintendo.com/us/store/games/games-to-play-together-online/?srsltid=AfmBOooiOReD97zGfDtzjtS3z1GTnJ3sCuePwzUsoX5hg3mrEdQhhqdi",
+            "snippet": "Battle it out with friends and family with these online multiplayer games for the Nintendo Switch system ... Game + DLC bundle. Regular Price:$49.99. Games ...",
+            "priceRange": "$15 to $60",
+            "position": 1
+        },
+        {
+            "title": "Nintendo Multiplayer Games Hub",
+            "link": "https://www.nintendo.com/en-gb/Games/Nintendo-Multiplayer-Games-Hub-906847.html?srsltid=AfmBOooClP58W91XM5QXN2fV4wS1pP9SkjC3_YV9Tic7I3L3-wCN_vdw",
+            "snippet": "Check out the selections below to find the perfect multiplayer game for you! ... Set cookie preferences Legal information Service Termination CSR Modern ...",
+            "currency": "$",
+            "price": 50,
+            "position": 2
+        },
+        {
+            "title": "Multiplayer - Super Mario Maker™ 2 for the Nintendo Switch ...",
+            "link": "https://supermariomaker.nintendo.com/multiplayer/",
+            "snippet": "Create a course with a friend, try to clear a course with up to four players on a single screen, or enjoy online multiplayer with the Super Mario Maker 2 game",
+            "position": 3
+        },
+        {
+            "title": "Which Games Are Multiplayer?",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/17385/~/which-games-are-multiplayer%3F",
+            "snippet": "The following games feature simultaneous multiplayer gameplay (requiring two controllers). While in the Game List you can identify them by the orange 2P logo.",
+            "position": 4
+        },
+        {
+            "title": "Suika Game Multi-Player Mode Expansion Pack",
+            "link": "https://www.nintendo.com/us/store/products/suika-game-multi-player-mode-expansion-pack-70070000020969-switch/?srsltid=AfmBOopKSsUJD-S_LGcZtya-ohjipn9djQ2_FemSK2Mzk-GXcMT-G7QT",
+            "snippet": "Enjoy four game modes: \"Original,\" \"Time Limit,\" \"Attack,\" and \"Item.\" \"Original\" is the usual Suika Game, and the player with the highest score wins.",
+            "currency": "$",
+            "price": 2.25,
+            "position": 5
+        },
+        {
+            "title": "Which Games Are Multiplayer? | Support",
+            "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/Which-Games-Are-Multiplayer-1518566.html?srsltid=AfmBOoouGLip2YNT_yCsGH_XvuRiTf1E3-e6shGuAjw1OTI6p8WzJEmn",
+            "snippet": "The following games feature simultaneous multiplayer gameplay (requiring two controllers). While in the Game List you can identify them by the orange \"2P\" logo.",
+            "position": 6
+        },
+        {
+            "title": "How to Start a Local or Online Multiplayer Game ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/49683/~/how-to-start-a-local-or-online-multiplayer-game-%28clubhouse-games%3A-51-worldwide",
+            "snippet": "Select Local Communication to play a multiplayer game wirelessly or select Mosaic Mode to play a game across multiple consoles. ... Online service · Nintendo ...",
+            "position": 7
+        },
+        {
+            "title": "How to Set Up a Local or Online Multiplayer Game (Super ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/63381/~/how-to-set-up-a-local-or-online-multiplayer-game-%28super-mario-bros.-wonder%29",
+            "snippet": "How to Set Up a Local or Online Multiplayer Game (Super Mario Bros. Wonder) ... Online service · Nintendo Retail Locations · Orders · Order details · Shipping ...",
+            "position": 8
+        },
+        {
+            "title": "How to Start an Online Multiplayer Game (Nintendo Classics",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/41236/~/how-to-start-an-online-multiplayer-game-%28nintendo-classics-%E2%80%93-nintendo-switch",
+            "snippet": "How to Start an Online Multiplayer Game (Nintendo Classics – Nintendo Switch Online) ... Online service · Nintendo Retail Locations · Orders · Order details ...",
+            "position": 9
+        },
+        {
+            "title": "Multiplayer games with free demos",
+            "link": "https://www.nintendo.com/en-gb/Nintendo-eShop/Multiplayer-games-with-free-demos-2423917.html?srsltid=AfmBOopyPItR_iBzwJQydpeFhMiKXh3qFQMFABy9aRtyDhVBWcAKNFSV",
+            "snippet": "Dance and share exciting moments all year long with the #1 music video game platform of all time! ... Set cookie preferences Legal information Service Termination ...",
+            "priceRange": "£18 to £50",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Video game multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Best multiplayer service game"
+        }
+    ],
+    "credits": 1
+}

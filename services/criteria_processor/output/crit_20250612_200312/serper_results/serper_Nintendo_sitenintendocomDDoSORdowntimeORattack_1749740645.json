@@ -1,0 +1,134 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 13.0.1 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/57295/~/super-smash-bros.-ultimate-update-ver.-13.0.1%26nbsp%3B--fighter-adjustments",
+            "snippet": "Reduced vulnerability. Donkey Kong, Down Tilt Attack, Extended the amount of time opponents will be in the damage animation. Donkey Kong, Neutral Special ...",
+            "sitelinks": [
+                {
+                    "title": "Reduced vulnerability. Donkey Kong, Down Tilt Attack, Extended the amount of time opponents will be in the damage animation. Donkey Kong, Neutral Special ...",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/57295/~/super-smash-bros.-ultimate-update-ver.-13.0.1%26nbsp%3B--fighter-adjustments#:~:text=Reduced%20vulnerability.,Neutral%20Special"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 8.0.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/49877/~/super-smash-bros.-ultimate-update-ver.-8.0.0---fighter-adjustments",
+            "snippet": "Increased attack range of the tip. Increased the opponent's downtime when hitting a shield. Corrin, Forward Air Attack, Maintained the launch ...",
+            "date": "Jul 2, 2020",
+            "sitelinks": [
+                {
+                    "title": "Increased attack range of the tip. Increased the opponent's downtime when hitting a shield. Corrin, Forward Air Attack, Maintained the launch ...",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/49877/~/super-smash-bros.-ultimate-update-ver.-8.0.0---fighter-adjustments#:~:text=Increased%20attack%20range%20of%20the,Maintained%20the%20launch"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 10.1.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/54095/~/super-smash-bros.-ultimate-update-ver.-10.1.0---fighter-adjustments",
+            "snippet": "Made it easier to hit multiple times. Increased attack range of the first attack to fourth attack. Fox, Down Air Attack, Made it easier to hit multiple times.",
+            "sitelinks": [
+                {
+                    "title": "Made it easier to hit multiple times. Increased attack range of the first attack to fourth attack. Fox, Down Air Attack, Made it easier to hit multiple times.",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/54095/~/super-smash-bros.-ultimate-update-ver.-10.1.0---fighter-adjustments#:~:text=Made%20it%20easier%20to%20hit,easier%20to%20hit%20multiple%20times."
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 11.0.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/54794/~/super-smash-bros.-ultimate-update-ver.-11.0.0---fighter-adjustments",
+            "snippet": "Byleth, Down Air Attack, Extended launch distance. Increased power against shields. ; Byleth, Side Special, Increased the opponent's downtime when shielding from ...",
+            "sitelinks": [
+                {
+                    "title": "Byleth, Down Air Attack, Extended launch distance. Increased power against shields. ; Byleth, Side Special, Increased the opponent's downtime when shielding from ...",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/54794/~/super-smash-bros.-ultimate-update-ver.-11.0.0---fighter-adjustments#:~:text=Byleth,Increased%20power%20against%20shields.&text=Byleth,opponent's%20downtime%20when%20shielding%20from"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 9.0.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/53118/~/super-smash-bros.-ultimate-update-ver.-9.0.0---fighter-adjustments",
+            "snippet": "Increased attack range. Ice Climber, Down Smash Attack, Extended launch distance. Ice Climber, Side Special, Increased the speed of the edge-grab timing ...",
+            "sitelinks": [
+                {
+                    "title": "Increased attack range. Ice Climber, Down Smash Attack, Extended launch distance. Ice Climber, Side Special, Increased the speed of the edge-grab timing ...",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/53118/~/super-smash-bros.-ultimate-update-ver.-9.0.0---fighter-adjustments#:~:text=Increased%20attack%20range.,speed%20of%20the%20edge%2Dgrab%20timing"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 13.0.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/56516/~/super-smash-bros.-ultimate-update-ver.-13.0.0---fighter-adjustments",
+            "snippet": "Increased attack power and maintained launch distance of the high-damage window for the explosion. Joker, Final Smash, Shortened the downtime after finishing ...",
+            "sitelinks": [
+                {
+                    "title": "Increased attack power and maintained launch distance of the high-damage window for the explosion. Joker, Final Smash, Shortened the downtime after finishing ...",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/56516/~/super-smash-bros.-ultimate-update-ver.-13.0.0---fighter-adjustments#:~:text=Increased%20attack%20power%20and%20maintained,Shortened%20the%20downtime%20after%20finishing"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver.4.0.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/47012/~/super-smash-bros.-ultimate-update-ver.4.0.0---fighter-adjustments",
+            "snippet": "Neutral Attack 3, Depending on the timing of continuing from neutral attack 2 to neutral attack 3, neutral attack 3 will no longer decrease vulnerability.",
+            "sitelinks": [
+                {
+                    "title": "Neutral Attack 3, Depending on the timing of continuing from neutral attack 2 to neutral attack 3, neutral attack 3 will no longer decrease vulnerability.",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/47012/~/super-smash-bros.-ultimate-update-ver.4.0.0---fighter-adjustments#:~:text=Neutral%20Attack%203,will%20no%20longer%20decrease%20vulnerability."
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 12.0.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/55791/~/super-smash-bros.-ultimate-update-ver.-12.0.0---fighter-adjustments",
+            "snippet": "Reduced vulnerability when the attack hits. Mii Swordfighter, Down Special 3, Increased attack speed. Mii Gunner, Neutral Special 2, Increased the amount of ...",
+            "sitelinks": [
+                {
+                    "title": "Reduced vulnerability when the attack hits. Mii Swordfighter, Down Special 3, Increased attack speed. Mii Gunner, Neutral Special 2, Increased the amount of ...",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/55791/~/super-smash-bros.-ultimate-update-ver.-12.0.0---fighter-adjustments#:~:text=Reduced%20vulnerability%20when%20the%20attack,Increased%20the%20amount%20of"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Beginner Strategies",
+            "link": "https://play.nintendo.com/news-tips/tips-tricks/super-smash-bros-ultimate-beginner-strategies/",
+            "snippet": "However, if you quickly flick the Control Stick in a direction and press the A Button, you will perform a powerful move called a Smash Attack. These attacks ...",
+            "sitelinks": [
+                {
+                    "title": "However, if you quickly flick the Control Stick in a direction and press the A Button, you will perform a powerful move called a Smash Attack. These attacks ...",
+                    "link": "https://play.nintendo.com/news-tips/tips-tricks/super-smash-bros-ultimate-beginner-strategies/#:~:text=However%2C%20if%20you%20quickly%20flick,a%20Smash%20Attack.%20These%20attacks"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 2.0.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/43317/~/super-smash-bros.-ultimate-update-ver.-2.0.0---fighter-adjustments",
+            "snippet": "Shortened the downtime from shielding. Mewtwo, Side Tilt Attack, This move will now always launch forward. Mewtwo, Up Special, Made it easier to grab edges.",
+            "sitelinks": [
+                {
+                    "title": "Shortened the downtime from shielding. Mewtwo, Side Tilt Attack, This move will now always launch forward. Mewtwo, Up Special, Made it easier to grab edges.",
+                    "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/43317/~/super-smash-bros.-ultimate-update-ver.-2.0.0---fighter-adjustments#:~:text=Shortened%20the%20downtime%20from%20shielding.,it%20easier%20to%20grab%20edges."
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

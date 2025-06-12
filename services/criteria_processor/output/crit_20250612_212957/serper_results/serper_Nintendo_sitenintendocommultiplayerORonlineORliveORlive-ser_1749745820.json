@@ -1,0 +1,88 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Nintendo Switch Online overview - Nintendo Official Site",
+            "link": "https://www.nintendo.com/us/online/?srsltid=AfmBOookGjOX8H_wc1vJAMJsU2Blon_MP7HpsWuMI8dLpGjXIXG7EwNQ",
+            "snippet": "Play online with friends and family. Race against other players around the world in the Mario Kart™ World game when it releases on Nintendo Switch 2. Or hang ...",
+            "position": 1
+        },
+        {
+            "title": "Nintendo Switch Online – Overview",
+            "link": "https://www.nintendo.com/en-gb/Nintendo-Switch-Online/Nintendo-Switch-Online-Overview-1183143.html?srsltid=AfmBOorQlH9zRcpA5r6e5bHvWpsy60HswuQ2x4I1oEN9JCnP1jZPQz-Q",
+            "snippet": "... multiplayer Splatoon 2 matches! Nintendo Switch Online + Expansion Pack members can enjoy this DLC at no additional cost for the duration of their membership.",
+            "position": 2
+        },
+        {
+            "title": "Online Multiplayer Games - My Nintendo Store",
+            "link": "https://www.nintendo.com/us/store/games/games-to-play-together-online/?srsltid=AfmBOoonF81N6vxdwAbm1MUlPGM4gmBerxl98cukkzs5Xb4qy6gbH6nd",
+            "snippet": "Battle it out with friends and family with these online multiplayer games for the Nintendo Switch system. Choose from various genres, including shooters, ...",
+            "priceRange": "$15 to $60",
+            "position": 3
+        },
+        {
+            "title": "How to Start an Online Multiplayer Game (Nintendo Switch ...",
+            "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/Nintendo-Switch-Online/How-to-Start-an-Online-Multiplayer-Game-Nintendo-Switch-Online-Classic-Games--1441443.html?srsltid=AfmBOorwKHRa5YA16B1_wQdMD0e-zn_UM_I6g8uLdN4k9dW72_QrVphB",
+            "snippet": "How to Start an Online Multiplayer Game (Nintendo Switch Online Classic Games) ... In this article, you'll learn how to start an online game from one of the ...",
+            "position": 4
+        },
+        {
+            "title": "Level up with a Nintendo Switch Online Membership",
+            "link": "https://www.nintendo.com/us/online/nintendo-switch-online/?srsltid=AfmBOopYAy_VA8-vHIjI6wDum-aNePjxnemc4iEFKnjUC9rilCDe-v_y",
+            "snippet": "A Nintendo Switch Online membership lets you play online, access classic games, and much more. Learn about the different memberships and their benefits.",
+            "position": 5
+        },
+        {
+            "title": "How to Start an Online Multiplayer Game (Nintendo Classics",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/41236/~/how-to-start-an-online-multiplayer-game-%28nintendo-classics-%E2%80%93-nintendo-switch",
+            "snippet": "How to Start an Online Multiplayer Game (Nintendo Classics – Nintendo Switch Online) · Nintendo Entertainment System - Nintendo Classics · Super Nintendo ...",
+            "position": 6
+        },
+        {
+            "title": "Play Classic Games with Nintendo Switch Online",
+            "link": "https://www.nintendo.com/us/online/nintendo-switch-online/classic-games/?srsltid=AfmBOoom19cIsKJsmph_1yfB69OQVKTcSlTOuzM1bcA3fMrCViaW-yKC",
+            "snippet": "... Online and Nintendo Switch Online + Expansion Pack members. Video Player ... Seek to live, currently behind liveLIVE. Remaining Time -0:00. 1x. Playback ...",
+            "position": 7
+        },
+        {
+            "title": "Nintendo Switch: Play Online",
+            "link": "https://en-americas-support.nintendo.com/app/topics/detail/p/989/c/874/page/2",
+            "snippet": "Learn about how your experience can differ between single-player and online multiplayer gameplay in Xenoblade Chronicles X: Definitive Edition. Error Message: ...",
+            "position": 8
+        },
+        {
+            "title": "Nintendo Switch Online Classic Games – Overview & FAQ",
+            "link": "https://www.nintendo.com/en-za/Support/Nintendo-Switch/Nintendo-Switch-Online-Classic-Games-Overview-FAQ-1434319.html?srsltid=AfmBOoqk9WxOQpReGscCqWGBOQTa0OFYyFwJULgLbC48g9k-plA19Fs3",
+            "snippet": "For the first time ever, players will be able to enjoy these games online. Depending on the game, players can engage in competitive or co-op multiplayer online, ...",
+            "sitelinks": [
+                {
+                    "title": "Nintendo Switch Online...",
+                    "link": "https://www.nintendo.com/en-za/Support/Nintendo-Switch/Nintendo-Switch-Online-Classic-Games-Overview-FAQ-1434319.html#:~:text=Nintendo%20Switch%20Online%20Classic%20Games%20%2D%2D%20Overview%20%26%20FAQ,-Support%20%7C%20Nintendo%20Switch"
+                },
+                {
+                    "title": "How Does This Service Work...",
+                    "link": "https://www.nintendo.com/en-za/Support/Nintendo-Switch/Nintendo-Switch-Online-Classic-Games-Overview-FAQ-1434319.html#:~:text=How%20does%20this%20service%20work%20as%20part%20of%20Nintendo%20Switch%20Online%3F"
+                },
+                {
+                    "title": "Can These Classic Games Be...",
+                    "link": "https://www.nintendo.com/en-za/Support/Nintendo-Switch/Nintendo-Switch-Online-Classic-Games-Overview-FAQ-1434319.html#:~:text=Can%20these%20classic%20games%20be%20played%20indefinitely%3F"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Multiplayer - Super Mario Maker™ 2 for the Nintendo Switch ...",
+            "link": "https://supermariomaker.nintendo.com/multiplayer/",
+            "snippet": "Create a course with a friend, try to clear a course with up to four players on a single screen, or enjoy online multiplayer with the Super Mario Maker 2 ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,93 @@
+{
+    "searchParameters": {
+        "q": "site:paradoxinteractive.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "PDX Launcher",
+            "link": "https://www.paradoxinteractive.com/our-games/launcher",
+            "snippet": "Already bought Crusader Kings III, Surviving Mars or Stellaris in the Paradox Store? Download our launcher and play. Don't have an account? Sign up now! Windows ...",
+            "position": 1
+        },
+        {
+            "title": "Our games",
+            "link": "https://www.paradoxinteractive.com/our-games/discover",
+            "snippet": "Paradox Launcher V.2 is here! Link your Paradox and Steam accounts together ... Available for Windows and Linux. Download Now. Help us shape our future ...",
+            "sitelinks": [
+                {
+                    "title": "On Sale",
+                    "link": "https://www.paradoxinteractive.com/our-games/on-sale"
+                },
+                {
+                    "title": "Europa Universalis V",
+                    "link": "https://www.paradoxinteractive.com/games/europa-universalis-v"
+                },
+                {
+                    "title": "All games",
+                    "link": "https://www.paradoxinteractive.com/our-games/all-games"
+                },
+                {
+                    "title": "Crusader Kings III",
+                    "link": "https://www.paradoxinteractive.com/games/crusader-kings-iii/add-ons/crusader-kings-iii-khans-of-the-steppe"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Crusader Kings II Launcher",
+            "link": "https://www.paradoxinteractive.com/our-games/in-game/ck2/ck_104c.html",
+            "snippet": "Latest update is v2.0.2. Manual download here.",
+            "position": 3
+        },
+        {
+            "title": "Cities: Skylines",
+            "link": "https://www.paradoxinteractive.com/games/cities-skylines/about",
+            "snippet": "Extensive Modding Support. Build or improve on existing maps and structures. You can then import your creations into the game, share them as well as download ...",
+            "position": 4
+        },
+        {
+            "title": "Hearts of Iron IV",
+            "link": "https://www.paradoxinteractive.com/games/hearts-of-iron-iv",
+            "snippet": "Intense Online Combat. Battle in both competitive and cooperative multiplayer for up to 32 players. Featuring cross-platform multiplayer.",
+            "position": 5
+        },
+        {
+            "title": "Victoria 3",
+            "link": "https://www.paradoxinteractive.com/games/victoria-3",
+            "snippet": "Get exclusive wallpapers for desktop and phone, forum icons & all the latest Victoria 3 news! Sign up now. Email*. By subscribing, you agree to receive news ...",
+            "position": 6
+        },
+        {
+            "title": "Free Content",
+            "link": "https://www.paradoxinteractive.com/games/world-of-darkness/community/free-content",
+            "snippet": "A free supplement to all World of Darkness 5th Edition settings with expanded mechanics and permutations for Storytellers' use. Download PDF. World of Darkness ...",
+            "position": 7
+        },
+        {
+            "title": "Europa Universalis IV",
+            "link": "https://www.paradoxinteractive.com/games/europa-universalis-iv",
+            "snippet": "Engage in Cross-platform Multiplayer. Battle against your friends or try the co-operative multiplayer mode that allows several players to work together to ...",
+            "position": 8
+        },
+        {
+            "title": "Crusader Kings III: Starter Edition",
+            "subtitle": "",
+            "link": "https://www.paradoxinteractive.com/games/crusader-kings-iii/buy",
+            "snippet": "Product details. Platforms. Paradox Launcher; Steam; Xbox Game Pass for PC. OS Compatibility. Supports Linux; Supports Mac; Supports Windows. Gameplay.",
+            "position": 9
+        },
+        {
+            "title": "All games - Paradox Interactive",
+            "link": "https://www.paradoxinteractive.com/our-games/all-games?Brand=Battletech",
+            "snippet": "Platform. Steam. Paradox Launcher. Playstation 4. More. Genre. Grand Strategy. Historical. Strategy. More. BATTLETECH - Heavy Metal. -50%.",
+            "priceRange": "$2 to $50",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

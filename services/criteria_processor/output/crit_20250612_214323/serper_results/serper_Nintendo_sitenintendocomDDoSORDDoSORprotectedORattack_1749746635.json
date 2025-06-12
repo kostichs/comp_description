@@ -1,0 +1,89 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Attack Hole: Hero Edition",
+            "link": "https://www.nintendo.com/us/store/products/attack-hole-hero-edition-switch/?srsltid=AfmBOorwwfGzvz7UpAwQTcSpoSUEdnKobfTMiZ4e3p0elzGJ1szaEFdp",
+            "snippet": "Attack Hole: Hero Edition ... Supported – Game behavior is consistent with Nintendo Switch. Swallow everything and become the biggest black hole!",
+            "currency": "$",
+            "price": 5.99,
+            "position": 1
+        },
+        {
+            "title": "Infantry Attack: Gold'n'Gun",
+            "link": "https://www.nintendo.com/us/store/products/infantry-attack-goldngun-70050000047981-switch/?srsltid=AfmBOopIMIWRdf78kQurBNMlGcj_OpCSkA-S5sJbcqtjjOuLdC74Efgy",
+            "snippet": "Buy Infantry Attack: Gold'n'Gun and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 50,
+            "position": 2
+        },
+        {
+            "title": "Attack Hole for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/attack-hole-switch/?srsltid=AfmBOoru04Jg9H6GKGXZ-9RU2VBU7Z7VGBCcU_eUzJdcx6wXZxZq_Zct",
+            "snippet": "Attack Hole ; Version. Nintendo Switch ; Game file size. Nintendo Switch: 147 MB. Nintendo Switch 2: 147 MB ; Supported play modes. TV mode. Tabletop mode.",
+            "currency": "$",
+            "price": 4.99,
+            "position": 3
+        },
+        {
+            "title": "How to Connect a Wii U to the Internet Using Wi-Fi ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/16001/~/how-to-connect-a-wii-u-to-the-internet-using-wi-fi-protected-setup",
+            "snippet": "Select Wi-Fi Protected Setup. Select Push-Button Configuration. On the wireless access point, press and hold the WPS button until the LED blinks. A Setup ...",
+            "position": 4
+        },
+        {
+            "title": "Arcade Archives Rush'n Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/arcade-archives-rushn-attack-switch/?srsltid=AfmBOoouAWLCzNtWRMDTIMcZBOTzmjJ3gNvKSkoqPd9VzGTASLJzoM1q",
+            "snippet": "Rush'n Attack is an action game released by KONAMI in 1985. Infiltrate an enemy base and get past four obstacles to rescue your comrades!",
+            "currency": "$",
+            "price": 9.87,
+            "position": 5
+        },
+        {
+            "title": "SUPER TRENCH ATTACK for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/super-trench-attack-switch/?srsltid=AfmBOoo9tc2chTVIRstdNzlVOMVgzVx-MnTBAgEc72PXYtXjmMjPuuED",
+            "snippet": "Engage in a fearless fight against Black Army's oppression and help end the World War. Super Trench Attack is an action packed, fun RPG, dual stick shooter.",
+            "currency": "$",
+            "price": 8,
+            "position": 6
+        },
+        {
+            "title": "Sleep Attack for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/sleep-attack-switch/?srsltid=AfmBOornFQjweKvRa3ZeNRj3quFOsvjxwgg9HlzVu85_zTXFp9bw0OIo",
+            "snippet": "Build and place powerful turrets to attack invading enemies. Then rotate the battlefield to force foes down your preferred path of destruction. Be careful ...",
+            "currency": "$",
+            "price": 50,
+            "position": 7
+        },
+        {
+            "title": "Infantry Attack: Strike From Above",
+            "link": "https://www.nintendo.com/en-ca/store/products/infantry-attack-strike-from-above-70050000047983-switch/?srsltid=AfmBOooIIPLbUAQN8a32Egt22UIE8GwSuNo0rrIkS5SwjdIt_tqpVAlS",
+            "snippet": "Infantry Attack: Strike From Above ; Edition. Digital ; Equip yourself with a new secondary weapon and show your opponents who's the real boss! With this DLC you' ...",
+            "currency": "$",
+            "price": 50,
+            "position": 8
+        },
+        {
+            "title": "Attack of the Karens for Nintendo Switch",
+            "link": "https://www.nintendo.com/en-ca/store/products/attack-of-the-karens-switch/?srsltid=AfmBOoqPFKyVg0cSh5hXmkpV0GfVGBv-ahQ3DeUZI7y5-DcmhfKWJB4A",
+            "snippet": "Attack of the Karens · Piloting the Manager X-15, embark on a mission to rid the world of evil cyborg Karens and save your city from entitlement forever!",
+            "position": 9
+        },
+        {
+            "title": "Infantry Attack: Drone Squad",
+            "link": "https://www.nintendo.com/us/store/products/infantry-attack-drone-squad-70050000047985-switch/?srsltid=AfmBOopVk1gUY1GpuC6t8ARmjDwXjXBbMsByUZ6pr3b6b02t8WKeilcg",
+            "snippet": "Infantry Attack: Drone Squad ; Edition. Digital ; Equip yourself with new drones and show your opponents who's the real boss! With this DLC you'll unlock: - UD-1 ...",
+            "currency": "$",
+            "price": 50,
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,118 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "(windows) FFXIV downloads patches to \"My Documents\\ ...",
+            "link": "https://forum.square-enix.com/ffxiv/threads/501199",
+            "snippet": "The game download the content in a temporal folder, then move where you installed it. If it is Steam, it is in the steamapps folder inside the ...",
+            "date": "Jun 23, 2024",
+            "position": 1
+        },
+        {
+            "title": "FINAL FANTASY XIV Online - Starter Edition",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVSTARTEREDITION&l=sestorepcdownload",
+            "snippet": "... Game · Board Games · Puzzles · Music · All Music · CD · Blu-ray · Vinyl · Apparel · FFXIV ... when you buy this product. Platform: Select Options, PC Download ...",
+            "currency": "$",
+            "price": 19.99,
+            "position": 2
+        },
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?id=5382&kid=81074",
+            "snippet": "Please visit https://sqex.to/ffxiv_client_en to download the official Windows client for Final Fantasy XIV. □ Steam Please go to your Steam Library and download ...",
+            "position": 3
+        },
+        {
+            "title": "SQUARE ENIX | The Official SQUARE ENIX Website",
+            "link": "https://na.square-enix.com/",
+            "snippet": "Book a stay at KILLER INN - a new multiplayer murder mystery action game. Step into a deadly game of co-operation and survival. But beware - some of your ...",
+            "sitelinks": [
+                {
+                    "title": "Games",
+                    "link": "https://www.square-enix-games.com/games"
+                },
+                {
+                    "title": "News",
+                    "link": "https://www.square-enix-games.com/news"
+                },
+                {
+                    "title": "Store",
+                    "link": "https://na.store.square-enix-games.com/"
+                },
+                {
+                    "title": "U.S. Privacy Notice",
+                    "link": "https://www.square-enix-games.com/documents/privacy"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "FINAL FANTASY XV WINDOWS EDITION Playable Demo",
+            "link": "https://xmail.square-enix.com/fe/track/link/f4ha5ofisis3/a396519383e72d9c24f82ebe6b38f264/2102/en/1/eyJ1c2VyIjp7ImNvdW50cnkiOiJOTCIsImV4dHJhIjoiWmpGb3k3SzlLcitnNERzTmVQVVJBQzg0VytVR28wTXNwcm5wM3czblVEOD0iLCJsYW5nIjoiZW4iLCJsb2NhbGUiOiJlbl9OTCJ9fQ%3D%3D",
+            "snippet": "Amazing graphics and beautiful game. Sabiha , 6/3/2018. Thumbs up logo for product review module. 15. Thumbs down logo for product review module. 4. Read more ...",
+            "position": 5
+        },
+        {
+            "title": "FINAL FANTASY® XI: Ultimate Collection Seekers Edition",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXI&l=se",
+            "snippet": "... Game · Board Games · Puzzles · Music · All Music · CD · Blu-ray · Vinyl · Apparel · FFXIV ... when you buy this product. Platform: Select Options, PC Download.",
+            "currency": "$",
+            "price": 29.99,
+            "position": 6
+        },
+        {
+            "title": "FINAL FANTASY VII",
+            "link": "https://membership.square-enix.com/sso/login?service=http%3A%2F%2Ffinalfantasyviipc.com%2Fen%3Fcheck&gateway=true&mobile-app=true&theme=dark%2F1000",
+            "snippet": "Whether you're a seasoned FINAL FANTASY VII veteran or exploring this RPG classic for the very first time, show off your in-game ... PC Digital Download",
+            "position": 7
+        },
+        {
+            "title": "FINAL FANTASY XI",
+            "link": "https://support.eu.square-enix.com/faqarticle.php?id=455&la=2&kid=60224&ret=faqtop&c=4&sc=0",
+            "snippet": "To download the game's client and sign up for the Free Trial, please visit the page below and follow the instructions provided: http://www.ff11europe.com ...",
+            "position": 8
+        },
+        {
+            "title": "An introduction to SaGa",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=BLOG&l=SAGA&utm_source=sqex-social&utm_content=SaGaFrontier&utm_campaign=SummerofSaGa",
+            "snippet": "Much like other Square Enix RPG series, like FINAL FANTASY or DRAGON QUEST, each SaGa game is a complete, standalone adventure. There's no narrative connection ...",
+            "position": 9
+        },
+        {
+            "title": "Throughline Games | Indie Game Developer",
+            "link": "https://xmail.square-enix.com/fe/track/link/s47um4y3gedo/285343a56366454fe761ab5912e31731/2233/en/5/e30%3D",
+            "snippet": "Combining experiences from the film, animation, and game industries, we are dedicated to creating memorable characters, engaging gameplay, and meaningful ...",
+            "sitelinks": [
+                {
+                    "title": "About",
+                    "link": "https://www.throughlinegames.com/about"
+                },
+                {
+                    "title": "Forgotton Anne",
+                    "link": "https://www.throughlinegames.com/forgottonanne"
+                },
+                {
+                    "title": "News",
+                    "link": "https://www.throughlinegames.com/news"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop windows 10"
+        },
+        {
+            "query": "Game download dedicated desktop xbox"
+        }
+    ],
+    "credits": 1
+}

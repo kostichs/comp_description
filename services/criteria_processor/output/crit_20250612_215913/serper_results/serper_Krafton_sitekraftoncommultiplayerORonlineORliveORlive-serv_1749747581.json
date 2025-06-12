@@ -1,0 +1,83 @@
+{
+    "searchParameters": {
+        "q": "site:krafton.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "SMASH LEGENDS | KRAFTON",
+            "link": "https://krafton.com/en/games/smashlegends/",
+            "snippet": "A multiplayer PvP game that you can enjoy intensely in real-time! Enjoy the battle for victory and the legend that suits you among various legends and skills!",
+            "position": 1
+        },
+        {
+            "title": "PUBG: BATTLEGROUNDS UPDATE 32.1 NOW LIVE",
+            "link": "https://krafton.com/en/news/press/pubg-battlegrounds-update-32-1-now-live/",
+            "snippet": "Press. Game. PUBG: BATTLEGROUNDS UPDATE 32.1 NOW LIVE. Date2024. 10 ... This change will go live with the update, and players can refer to ...",
+            "date": "Oct 10, 2024",
+            "position": 2
+        },
+        {
+            "title": "KRAFTON ANNOUNCES INZOI GLOBAL SHOWCASE TO ...",
+            "link": "https://krafton.com/en/news/press/krafton-announces-inzoi-global-showcase-to-be-held-on-march-19/",
+            "snippet": "The online showcase will be broadcast live on inZOI's official YouTube and Twitch channels. The event will be presented in Korean with language support ...",
+            "position": 3
+        },
+        {
+            "title": "PUBG: BATTLEGROUNDS | KRAFTON",
+            "link": "https://krafton.com/en/games/battlegrounds/",
+            "snippet": "Won “Best Multiplayer Game” and “PC Game of the Year” at the Golden Joystick Awards held in the U.K.. The 55th Trade Day. Won “600 Million Dollar Export Tower ...",
+            "position": 4
+        },
+        {
+            "title": "PUBG: BATTLEGROUNDS' 21.2 UPDATE IS OFFICIALLY ...",
+            "link": "https://krafton.com/en/news/press/pubg-battlegrounds-21-2-update-is-officially-live-on-all-platforms/",
+            "snippet": "Below is a detailed breakdown of major updates live in PUBG: BATTLEGROUNDS with Update 21.2. For more information, please view the full patch notes HERE ...",
+            "position": 5
+        },
+        {
+            "title": "TERA CONSOLE'S NEWEST UPDATE NOW LIVE",
+            "link": "https://krafton.com/en/news/press/tera-consoles-newest-update-now-live-introduces-season-11-battle-pass/",
+            "snippet": "TERA Console's latest update (112.01) is now live on PS4 and Xbox One, ushering in an exciting new era for the beloved MMORPG from Bluehole Studio and KRAFTON.",
+            "position": 6
+        },
+        {
+            "title": "PUBG: BATTLEGROUNDS UPDATE 32.1 NOW LIVE",
+            "link": "https://press.krafton.com/PUBG-BATTLEGROUNDS-UPDATE-321-NOW-LIVE",
+            "snippet": "PUBG: BATTLEGROUNDS UPDATE 32.1 NOW LIVE. The latest update to the popular battle royale game introduces a region merge, new arcade mode, ...",
+            "date": "Oct 10, 2024",
+            "position": 7
+        },
+        {
+            "title": "ReLU Games | KRAFTON",
+            "link": "https://krafton.com/en/studios/relugames/",
+            "snippet": "We are dedicated to harnessing deep learning for uncovering the essence of gaming enjoyment. The internet introduced us to 'online/multiplayer play' as a ...",
+            "position": 8
+        },
+        {
+            "title": "Life | KRAFTON",
+            "link": "https://krafton.com/en/careers/life/",
+            "snippet": "KLT KRAFTON Live Talk. We believe we can achieve our vision by constantly discussing the values and direction that Krafton pursues and garnering ...",
+            "position": 9
+        },
+        {
+            "title": "BEARS! DESTON'S RETURN! PUBG: BATTLEGROUNDS ...",
+            "link": "https://krafton.com/en/news/press/bears-destons-return-pubg-battlegrounds-update-22-1-is-now-live-on-pc-also-bears/",
+            "snippet": "PUBG: BATTLEGROUNDS' Update 22.1 is now live on PC and Survivors will be thrilled to learn that Deston has returned to the rotation. Also, there are bears now.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service xbox"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        }
+    ],
+    "credits": 1
+}

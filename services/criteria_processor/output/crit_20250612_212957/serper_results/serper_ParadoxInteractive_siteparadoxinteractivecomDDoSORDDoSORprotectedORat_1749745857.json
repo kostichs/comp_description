@@ -1,0 +1,78 @@
+{
+    "searchParameters": {
+        "q": "site:paradoxinteractive.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Traffic Breach Statement",
+            "link": "https://www.paradoxinteractive.com/games/cities-skylines-ii/news/traffic-breach-statement",
+            "snippet": "The analysis shows that the threat is specifically a DLL hijacking attack aimed at stealing Exodus cryptocurrency wallet information.",
+            "position": 1
+        },
+        {
+            "title": "Combat - Developer Diary",
+            "link": "https://www.paradoxinteractive.com/games/millennia/news/combat",
+            "snippet": "During a round of combat, one Unit in an Army will target an enemy Unit. This causes the attacking Unit's Attack value to be compared to the ...",
+            "date": "Nov 1, 2023",
+            "position": 2
+        },
+        {
+            "title": "Dark Pack Agreement",
+            "link": "https://www.paradoxinteractive.com/games/world-of-darkness/community/dark-pack-agreement",
+            "snippet": "This isn't to make life more difficult for LARP organizers or players, but to ensure that our intellectual property is protected in the way laws require it.",
+            "position": 3
+        },
+        {
+            "title": "Surviving the Aftermath: Rebirth",
+            "link": "https://www.paradoxinteractive.com/games/surviving-the-aftermath/add-ons/surviving-the-aftermath-rebirth",
+            "snippet": "Be aware of the blighted areas that you will terraform, here, blight monsters will spawn and attack your survivors. Scr4 NewBuildingsinColony. New buildings ...",
+            "position": 4
+        },
+        {
+            "title": "Crusader Kings II: Sword of Islam",
+            "link": "https://www.paradoxinteractive.com/games/crusader-kings-ii/add-ons/crusader-kings-ii-sword-of-islam",
+            "snippet": "Medieval Europe is brought to life in this epic game of knights, schemes, and thrones. \"The Ummah is under attack. All true muslims must be charitable in peace ...",
+            "position": 5
+        },
+        {
+            "title": "Darfall Is Available Now – Build, Battle, and Survive ...",
+            "link": "https://www.paradoxinteractive.com/media/press-releases/press-release/darfall-is-available-now-build-battle-and-survive-the-undead-onslaught",
+            "snippet": "But as night falls, sinister undead forces emerge from the shadows, sending waves of enemies to attack the base. Each night brings new ...",
+            "date": "May 8, 2025",
+            "position": 6
+        },
+        {
+            "title": "Escape the Mad Empire Is Out Now in Early Access!",
+            "link": "https://www.paradoxinteractive.com/media/press-releases/press-release/escape-the-mad-empire-is-out-now-in-early-access",
+            "snippet": "Hundreds of insane items and equipment, encouraging theorycrafting and emergent gameplay. Real-time with instant-attack on pause combat system.",
+            "date": "Apr 22, 2025",
+            "position": 7
+        },
+        {
+            "title": "Millennia | Update 3",
+            "link": "https://www.paradoxinteractive.com/games/millennia/news/update-3",
+            "snippet": "Privateer changed from 39 Attack to 47 Attack. Privateer spawn at maximum Veterancy level. Privateer Morale increased from 40 to 50 ...",
+            "date": "May 27, 2024",
+            "position": 8
+        },
+        {
+            "title": "Hearts of Iron IV: Götterdämmerung",
+            "link": "https://www.paradoxinteractive.com/games/hearts-of-iron-iv/add-ons/hearts-of-iron-iv-gotterdammerung",
+            "snippet": "Attack important enemy targets with carefully planned strikes. Enemy ports, industrial structures, research facilities and special resource collection areas ...",
+            "position": 9
+        },
+        {
+            "title": "New Histories and New Tactics Coming to Hearts of Iron IV",
+            "link": "https://www.paradoxinteractive.com/media/press-releases/press-release/new-histories-and-new-tactics-coming-to-hearts-of-iron-iv",
+            "snippet": "Raids: Attack important enemy targets with carefully planned strikes. Enemy ports, industrial structures, research facilities and special ...",
+            "date": "Oct 3, 2024",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

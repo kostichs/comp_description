@@ -1,0 +1,93 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Online Multiplayer Games - My Nintendo Store",
+            "link": "https://www.nintendo.com/us/store/games/games-to-play-together-online/?srsltid=AfmBOoqhiN4D0Ne3-0gaASKWKnrn_ONDsKazcf9GLudHZjjKjl07ofJl",
+            "snippet": "Battle it out with friends and family with these online multiplayer games for the Nintendo Switch system ... Game + DLC bundle. Regular Price:$49.99. Games ...",
+            "priceRange": "$15 to $60",
+            "position": 1
+        },
+        {
+            "title": "Nintendo Multiplayer Games Hub",
+            "link": "https://www.nintendo.com/en-gb/Games/Nintendo-Multiplayer-Games-Hub-906847.html?srsltid=AfmBOoq8PQDXqSmnK6GjzfptNG9ElYuh3ygkLSbmD0aP5lIEoW7vNGCQ",
+            "snippet": "Check out the selections below to find the perfect multiplayer game for you! ... Set cookie preferences Legal information Service Termination CSR Modern ...",
+            "currency": "$",
+            "price": 50,
+            "position": 2
+        },
+        {
+            "title": "Multiplayer - Super Mario Maker™ 2 for the Nintendo Switch ...",
+            "link": "https://supermariomaker.nintendo.com/multiplayer/",
+            "snippet": "Create a course with a friend, try to clear a course with up to four players on a single screen, or enjoy online multiplayer with the Super Mario Maker 2 game",
+            "position": 3
+        },
+        {
+            "title": "Multiplayer Nintendo Switch Games - My Nintendo Store",
+            "link": "https://www.nintendo.com/us/store/games/multiplayer-games/?srsltid=AfmBOoqozheLygjWt5NOIhizwHIWZd8bwLEvSA7rGFGcB6TjN7TQryGh",
+            "snippet": "Looking for fun multiplayer games to play on your Nintendo Switch system? We have you covered. Shop a wide variety of multiplayer games, from classic party ...",
+            "priceRange": "$9 to $60",
+            "position": 4
+        },
+        {
+            "title": "Suika Game Multi-Player Mode Expansion Pack",
+            "link": "https://www.nintendo.com/us/store/products/suika-game-multi-player-mode-expansion-pack-70070000020969-switch/?srsltid=AfmBOooZYbix_lBNi4EdtpX6caCNRQhDMZRRXM4K8fbKuTtFcumN1i7d",
+            "snippet": "Enjoy four game modes: \"Original,\" \"Time Limit,\" \"Attack,\" and \"Item.\" \"Original\" is the usual Suika Game, and the player with the highest score wins.",
+            "currency": "$",
+            "price": 2.25,
+            "position": 5
+        },
+        {
+            "title": "Which Games Are Multiplayer?",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/17385/~/which-games-are-multiplayer%3F",
+            "snippet": "The following games feature simultaneous multiplayer gameplay (requiring two controllers). While in the Game List you can identify them by the orange 2P logo.",
+            "position": 6
+        },
+        {
+            "title": "How to Start a Local or Online Multiplayer Game ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/49683/~/how-to-start-a-local-or-online-multiplayer-game-%28clubhouse-games%3A-51-worldwide",
+            "snippet": "Select Local Communication to play a multiplayer game wirelessly or select Mosaic Mode to play a game across multiple consoles. ... Online service · Nintendo ...",
+            "position": 7
+        },
+        {
+            "title": "Nintendo Switch 2 GameChat",
+            "link": "https://www.nintendo.com/us/gaming-systems/switch-2/features/gamechat/?srsltid=AfmBOorXUqwPf3WTkAaMPyBGayKrCBJBMjZPWA4_uNmEbG5K2JA-eK8e",
+            "snippet": "If a game supports GameShare via GameChat, you can share your game with ... Additional games, systems and/or accessories may be required for multiplayer mode.",
+            "position": 8
+        },
+        {
+            "title": "NAMCO MUSEUM (PAC-MAN VS. Free Multiplayer-only ...",
+            "link": "https://www.nintendo.com/us/store/products/namco-museum-pac-man-vs-free-multiplayer-only-ver-switch/?srsltid=AfmBOopqJbXQikH9bo5F9wtkjHw3bRoIYHGquWy9ocb_ZvNJkeLD0gkh",
+            "snippet": "Supported – Game behavior is consistent with Nintendo Switch. PAC-MAN™ VS. (Free Multiplayer-only Ver.) is a free download from Nintendo eShop which allows ...",
+            "currency": "$",
+            "price": 50,
+            "position": 9
+        },
+        {
+            "title": "Co-op games for two",
+            "link": "https://www.nintendo.com/en-ca/store/games/co-op-games/?srsltid=AfmBOoqrR3L9LWVh3XHbwrDA6yejwgn3c_QLB87nXYcuir6NuW9GCSKr",
+            "snippet": "The World™: The Game – Complete Edition. 1/14/21. Regular Price:$19.99 ... Additional games, systems and/or accessories may be required for multiplayer mode.",
+            "priceRange": "$13 to $80",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Video game multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Best multiplayer service game"
+        }
+    ],
+    "credits": 1
+}

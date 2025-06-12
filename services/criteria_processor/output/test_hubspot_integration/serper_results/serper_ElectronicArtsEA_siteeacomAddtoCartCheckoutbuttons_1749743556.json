@@ -1,0 +1,55 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com \"Add to Cart\", \"Checkout\" buttons",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "gift Club Pogo or Gems to friends [FEEDBACK]",
+            "link": "https://forums.ea.com/discussions/pogo-general-discussion-en/pogo---gift-club-pogo-or-gems-to-friends-feedback/10334996/replies/10335003",
+            "snippet": "... button underneath the “Add to Cart” button. I clicked on a “Give Gift” button which now says “Added!” with a “Checkout” link. Clicking on that checkout link ...",
+            "position": 1
+        },
+        {
+            "title": "gift Club Pogo or Gems to friends [FEEDBACK]",
+            "link": "https://forums.ea.com/discussions/-/-/10334996",
+            "snippet": "... button underneath the “Add to Cart” button. I clicked on a “Give Gift” button which now says “Added!” with a “Checkout” link. Clicking on ...",
+            "date": "Jul 19, 2022",
+            "position": 2
+        },
+        {
+            "title": "NBA LIVE 14 Christmas Promotion: How to Redeem",
+            "link": "https://www.ea.com/news/espn-christmas-redeem",
+            "snippet": "Select your preferred platform, then click the ADD TO CART button. 3. In the pop-up Shopping Cart window, click CHECKOUT. 4. On the shopping cart screen ...",
+            "position": 3
+        },
+        {
+            "title": "Dragon Age: The Veilguard – Rook's Coffer",
+            "link": "https://go.ea.com/DARooksCoffer",
+            "snippet": "... Checkout · Facebook · Instagram · Twitter. Home; Dragon Age: The Veilguard – Rook's ... Add to cart. Product variants. Default Title - $99.99 USD. Add to cart ...",
+            "currency": "$",
+            "price": 99.99,
+            "originalPrice": 150,
+            "position": 4
+        },
+        {
+            "title": "Re: PS4 SW Battlefront Season Pass & DLC not working.",
+            "link": "https://forums.ea.com/discussions/star-wars-games-discussion-en/re-ps4-sw-battlefront-season-pass--dlc-not-working-/10563052",
+            "snippet": "You have to get individual add-ons from the playstation store on your internet browser and download to ps4 after taking it through the checkout.",
+            "position": 5
+        },
+        {
+            "title": "Titanfall | Electronic Arts",
+            "link": "https://o.ea.com/19912",
+            "snippet": "ADD TO CART. Pros, Save $25 When You Buy $250+. in‑store or buy online & pick ... checkout. Shopping In-Store? Visit your nearest store and make your ...",
+            "currency": "$",
+            "price": 4.99,
+            "position": 6
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,134 @@
+{
+    "searchParameters": {
+        "q": "site:krafton.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Abyss of Dungeons - Patch Notes",
+            "link": "https://dndm.krafton.com/en/news/8756",
+            "snippet": "A successful second hit shortens the attack activation time from 1.14 to 1.04. Hitbox range of battle axe blade increased from 10 to 20.",
+            "date": "2 days ago",
+            "sitelinks": [
+                {
+                    "title": "A successful second hit shortens the attack activation time from 1.14 to 1.04. Hitbox range of battle axe blade increased from 10 to 20.",
+                    "link": "https://dndm.krafton.com/en/news/8756#:~:text=A%20successful%20second%20hit%20shortens,increased%20from%2010%20to%2020."
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "November Update #4",
+            "link": "https://defensederby.krafton.com/en/news/6903",
+            "snippet": "Restrict opponents' units in combat. Restricted units cannot attack or be deployed for 8.3 sec. With 3 opponents alive: restricts 1 unit from 2 ...",
+            "date": "Nov 14, 2023",
+            "sitelinks": [
+                {
+                    "title": "Restrict opponents' units in combat. Restricted units cannot attack or be deployed for 8.3 sec. With 3 opponents alive: restricts 1 unit from 2 ...",
+                    "link": "https://defensederby.krafton.com/en/news/6903#:~:text=Restrict%20opponents'%20units%20in%20combat.,restricts%201%20unit%20from%202"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "December Balance Adjustments",
+            "link": "https://defensederby.krafton.com/en/news/7004",
+            "snippet": "For this reason, we are adjusting its attack power to make it more powerful in all situations. ... Therefore, we are raising Moon Night's attack power ...",
+            "position": 3
+        },
+        {
+            "title": "Update #8-1 Patch Notes",
+            "link": "https://defensederby.krafton.com/en/news/7279",
+            "snippet": "Increased attack power (Based on lv. 100, Mythic+). 3,259 → 3,602 (+10.5%). Decreased active skill's cooldown. 4 → 3. Rake. Increased passive ...",
+            "date": "Apr 16, 2024",
+            "sitelinks": [
+                {
+                    "title": "Increased attack power (Based on lv. 100, Mythic+). 3,259 → 3,602 (+10.5%). Decreased active skill's cooldown. 4 → 3. Rake. Increased passive ...",
+                    "link": "https://defensederby.krafton.com/en/news/7279#:~:text=Increased%20attack%20power%20(Based%20on,Increased%20passive"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Defense Derby's April Update Introduces New Butcher Unit",
+            "link": "https://krafton.com/en/news/press/defense-derbys-april-update-introduces-new-butcher-unit/",
+            "snippet": "As a single-melee dealer, the Butcher possesses a special ability called Bloodthirsty, which increases his attack power and attack speed as the castle's HP ...",
+            "sitelinks": [
+                {
+                    "title": "As a single-melee dealer, the Butcher possesses a special ability called Bloodthirsty, which increases his attack power and attack speed as the castle's HP ...",
+                    "link": "https://krafton.com/en/news/press/defense-derbys-april-update-introduces-new-butcher-unit/#:~:text=As%20a%20single%2Dmelee%20dealer%2C%20the,speed%20as%20the%20castle's%20HP"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "Defense Derby's June Update Introduces New Martial ...",
+            "link": "https://krafton.com/en/news/press/defense-derbys-june-update-introduces-new-martial-tiger-unit/",
+            "snippet": "The Hammer Sprite possesses a special ability called Gold Appears, which boosts the attack power and attack speed of herself and the hero at the start of each ...",
+            "sitelinks": [
+                {
+                    "title": "The Hammer Sprite possesses a special ability called Gold Appears, which boosts the attack power and attack speed of herself and the hero at the start of each ...",
+                    "link": "https://krafton.com/en/news/press/defense-derbys-june-update-introduces-new-martial-tiger-unit/#:~:text=The%20Hammer%20Sprite%20possesses%20a,at%20the%20start%20of%20each"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Patch Notes - Updates & Fixes (5/14)",
+            "link": "https://dndm.krafton.com/en/news/8645",
+            "snippet": "Cooldown reduced from 40 seconds to 30 seconds. Falling Attack (Passive). Damage scaling from physical power reduced from 115% to 100 ...",
+            "date": "May 12, 2025",
+            "sitelinks": [
+                {
+                    "title": "Cooldown reduced from 40 seconds to 30 seconds. Falling Attack (Passive). Damage scaling from physical power reduced from 115% to 100 ...",
+                    "link": "https://dndm.krafton.com/en/news/8645#:~:text=Cooldown%20reduced%20from%2040%20seconds,reduced%20from%20115%25%20to%20100"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "Patch Notes [v.2.01]",
+            "link": "https://support.krafton.com/hc/en-us/articles/20009697951257-Patch-Notes-v-2-01",
+            "snippet": "Widened incoming attack camera angle; Widened angle for dodging off screen attacks; Reduced damage taken multiplier when attacked from behind ...",
+            "date": "Jun 26, 2023",
+            "sitelinks": [
+                {
+                    "title": "Widened incoming attack camera angle; Widened angle for dodging off screen attacks; Reduced damage taken multiplier when attacked from behind ...",
+                    "link": "https://support.krafton.com/hc/en-us/articles/20009697951257-Patch-Notes-v-2-01#:~:text=Widened%20incoming%20attack%20camera%20angle,multiplier%20when%20attacked%20from%20behind"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Update #6-1 Patch Notes",
+            "link": "https://defensederby.krafton.com/en/news/7072",
+            "snippet": "... attack speed. The adjustments will be as follows: Increased attack speed; Before the patch: 3.2 seconds; After the patch: 1.6 seconds ...",
+            "date": "Feb 19, 2024",
+            "sitelinks": [
+                {
+                    "title": "... attack speed. The adjustments will be as follows: Increased attack speed; Before the patch: 3.2 seconds; After the patch: 1.6 seconds ...",
+                    "link": "https://defensederby.krafton.com/en/news/7072#:~:text=attack%20speed.%20The%20adjustments%20will,After%20the%20patch%3A%201.6%20seconds"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "patch notes#10",
+            "link": "https://defensederby.krafton.com/en/news/7429",
+            "snippet": "Before Increases the attack power of your hero by 35.4% and attack speed of your hero by 11.8%. After Increases the attack power of your ...",
+            "date": "Jun 9, 2024",
+            "sitelinks": [
+                {
+                    "title": "Before Increases the attack power of your hero by 35.4% and attack speed of your hero by 11.8%. After Increases the attack power of your ...",
+                    "link": "https://defensederby.krafton.com/en/news/7429#:~:text=Before%20Increases%20the%20attack%20power,the%20attack%20power%20of%20your"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

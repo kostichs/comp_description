@@ -1,0 +1,109 @@
+{
+    "searchParameters": {
+        "q": "site:gearboxsoftware.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Games",
+            "link": "https://www.gearboxsoftware.com/games/",
+            "snippet": "Borderlands: Game of the Year Edition · Borderlands 2 VR · Borderlands · Borderlands 2 · Borderlands: The Pre-Sequel · Borderlands: The Handsome Collection ...",
+            "position": 1
+        },
+        {
+            "title": "Borderlands: Game of the Year Edition",
+            "link": "https://www.gearboxsoftware.com/game/borderlands-goty/",
+            "snippet": "With new weapons, visual upgrades, all 4 add-on packs and more, play solo or in 4-player split screen co-op! Game Information. Release Date: April 3, 2019",
+            "position": 2
+        },
+        {
+            "title": "SHiFT",
+            "link": "https://shift.gearboxsoftware.com/",
+            "snippet": "Join the Community. Share your stories, offer feedback, and connect with others on the Forums. Bonus Loot. Enable unique in-game items and perks.",
+            "sitelinks": [
+                {
+                    "title": "Cookie notice",
+                    "link": "https://shift.gearboxsoftware.com/registration/pre"
+                },
+                {
+                    "title": "Forgot your password?",
+                    "link": "https://shift.gearboxsoftware.com/password/new"
+                },
+                {
+                    "title": "Gearbox Entertainment Support",
+                    "link": "https://support.gearboxsoftware.com/hc/en-us"
+                },
+                {
+                    "title": "Credits",
+                    "link": "https://shift.gearboxsoftware.com/credits"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Battleborn",
+            "link": "https://www.gearboxsoftware.com/game/battleborn/",
+            "snippet": "The game combines highly-stylized visuals and frenetic first-person shooting, with Gearbox's industry-leading co-operative combat, and an expansive ...",
+            "position": 4
+        },
+        {
+            "title": "Gearbox Software",
+            "link": "https://www.gearboxsoftware.com/",
+            "snippet": "Featured Releases: Risk Of Rain 2: Seekers Of The Storm, Tiny Tina's Wonderlands, Borderlands: The Escape Room.",
+            "sitelinks": [
+                {
+                    "title": "Games",
+                    "link": "https://www.gearboxsoftware.com/games/"
+                },
+                {
+                    "title": "Careers",
+                    "link": "https://www.gearboxsoftware.com/careers/"
+                },
+                {
+                    "title": "About",
+                    "link": "https://www.gearboxsoftware.com/about/"
+                },
+                {
+                    "title": "Contact",
+                    "link": "https://www.gearboxsoftware.com/contact/"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "How to Install Ultra HD Pack on PC",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/360026471411-How-to-Install-Ultra-HD-Pack-on-PC",
+            "snippet": "Click on the texture pack. This will take you to a Steam Store page for this specific content. Download/install the software. Fire up your game and start taking ...",
+            "position": 6
+        },
+        {
+            "title": "Homeworld: Emergence, the Stand-Alone Expansion to ...",
+            "link": "https://www.gearboxsoftware.com/press_release/homeworld-emergence-the-stand-alone-expansion-to-the-original-game-is-available-drm-free-and-exclusively-on-gog-com/",
+            "snippet": "The game features both land and air vehicles, massive environments, tactical combat and online multiplayer. To celebrate those great additions to GOG.com's ...",
+            "position": 7
+        },
+        {
+            "title": "I Bought Borderlands in a Retail Game Box, how do I get ...",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205279330-I-Bought-Borderlands-in-a-Retail-Game-Box-how-do-I-get-the-Steam-Version",
+            "snippet": "Navigate to your game “Library” menu, then select “TOOLS,” and locate the Borderlands Granting Tool. Install this tool. Installing and running the Borderlands ...",
+            "position": 8
+        },
+        {
+            "title": "Borderlands PC Update 1.21 Available!",
+            "link": "https://www.gearboxsoftware.com/2010/02/borderlands-pc-update-1-21-available/",
+            "snippet": "Borderlands PC Update 1.21 is now available! To learn more, please visit the Borderlands game page. You can download the update from our site if you ...",
+            "position": 9
+        },
+        {
+            "title": "DLC Not Accessible / Enumerating Content Error",
+            "link": "https://support.gearboxsoftware.com/hc/en-us/articles/205281160-DLC-Not-Accessible-Enumerating-Content-Error",
+            "snippet": "The game will need to fully finish installing before the DLC will show up in the fast travel menu. There is no need to download the DLC from the marketplace.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

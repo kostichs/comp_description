@@ -1,0 +1,74 @@
+{
+    "searchParameters": {
+        "q": "site:cdprojektred.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "How do I change where my games should be installed, and ...",
+            "link": "https://support.cdprojektred.com/en/gwent/pc/gwent-technical/issue/350/how-do-i-change-where-my-games-should-be-installed-and-where-i-want-to-download-files-1",
+            "snippet": "How do I change where my games should be installed, and where I want to download files? ... game are set in the universe created by Andrzej Sapkowski. All ...",
+            "position": 1
+        },
+        {
+            "title": "Game Installation — GWENT: The Witcher Card Game",
+            "link": "https://support.cdprojektred.com/en/gwent/pc/gwent-rogue-mage/issue/2138/game-installation",
+            "snippet": "Go to the Store in Steam, search GWENT: Rogue Mage, select it and click Play Game. Follow the onscreen instructions to download and install the game. Once ...",
+            "position": 2
+        },
+        {
+            "title": "Cross-progression in game versions with regional restrictions",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/nintendo-switch-2/sp-technical/issue/2242/shou-dao-di-qu-xian-zhi-de-you-xi-ban-ben-de-kua-ping-tai-jin-du",
+            "snippet": "PC versions of the game aren't affected by regional restrictions and save files created on a less restrictive game version can't be loaded on ...",
+            "date": "Jun 4, 2025",
+            "position": 3
+        },
+        {
+            "title": "Award-winning creators of story-driven role-playing games.",
+            "link": "https://www.cdprojektred.com/en/our-games",
+            "snippet": "Set in the rich universe of The Witcher, this free-to-play strategic collectible card game ... dedicated to the exchange of knowledge and experience ...",
+            "position": 4
+        },
+        {
+            "title": "I am unable to load my save from cross-progression",
+            "link": "https://support.cdprojektred.com/en/witcher-3/pc/sp-technical/issue/2288/i-am-unable-to-load-my-save-from-cross-progression",
+            "snippet": "In order to load saves via cross progression, it needs to have the same game content present. Example: A save created on the base game edition, ...",
+            "position": 5
+        },
+        {
+            "title": "Error encountered while installing the game from discs",
+            "link": "https://support.cdprojektred.com/en/witcher-3/pc/sp-technical/issue/1001/error-encountered-while-installing-the-game-from-discs",
+            "snippet": "If you experienced an error related to reading data from the installation disc, we suggest using the most convenient form of game installation via GOG Galaxy ...",
+            "position": 6
+        },
+        {
+            "title": "How do I perform a clean install of the game?",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/pc/sp-technical/issue/2233/how-do-i-perform-a-clean-install-of-the-game",
+            "snippet": "If you install the game on the same partition as you have the Operating System installed, ensure that the game isn't blocked by Windows permissions settings.",
+            "position": 7
+        },
+        {
+            "title": "The Witcher 3: Wild Hunt - PC",
+            "link": "https://support.cdprojektred.com/en/witcher-3/pc",
+            "snippet": "... Download Now. Browse categories. TECHNICAL. install, update, crash, languages ... game are set in the universe created by Andrzej Sapkowski. All other ...",
+            "position": 8
+        },
+        {
+            "title": "GWENT: The Witcher Card Game - PC",
+            "link": "https://support.cdprojektred.com/en/gwent/pc",
+            "snippet": "... download user profile. Please, try again later\" login error when launching ... GAME & GAMEPLAY. general information, cards, text, interface · CONTRACTS ...",
+            "position": 9
+        },
+        {
+            "title": "PC boxed edition – game code and installation",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/pc/sp-technical/issue/1748/pc-boxed-edition-game-code-and-installation",
+            "snippet": "Cyberpunk 2077 boxed edition comes with a game code. There are no discs. 1. Download and install the GOG GALAXY 2.0 application. 2. Launch the app.",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

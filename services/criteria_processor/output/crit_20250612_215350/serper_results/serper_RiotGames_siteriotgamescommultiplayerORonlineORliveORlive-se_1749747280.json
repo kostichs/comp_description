@@ -1,0 +1,98 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Now Streaming on Riot Mobile",
+            "link": "https://www.riotgames.com/en/news/now-streaming-on-riot-mobile",
+            "snippet": "Now you can check the schedule, view past matches, and watch live matches on the go. You can even earn rewards by watching select matches on ...",
+            "date": "Dec 13, 2022",
+            "position": 1
+        },
+        {
+            "title": "URF Academy",
+            "link": "https://www.riotgames.com/en/urf-academy",
+            "snippet": "URF Academy Online. What's URF Academy? Welcome to the URF Academy, a ... multiplayer game. Up Next: The Curriculum · Creative Commons License The URF ...",
+            "position": 2
+        },
+        {
+            "title": "Live community events - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/sections/115002165607-Live-community-events",
+            "snippet": "Live community events. Events, apps, promos, & merch. League of Legends Basics · Account recovery, safety, & data · Ranked gameplay, honor, & rewards · Lag, low ...",
+            "position": 3
+        },
+        {
+            "title": "League Displays",
+            "link": "https://displays.riotgames.com/",
+            "snippet": "Privacy Notice · Terms of Service · ESRB. Blood Fantasy Violence Mild Suggestive Themes Use of Alcohol and Tobacco Online Interactions Not Rated by the ESRB.",
+            "position": 4
+        },
+        {
+            "title": "Riot Mobile Features - VALORANT Support",
+            "link": "https://support-valorant.riotgames.com/hc/en-us/articles/4407665971603-Riot-Mobile-Features",
+            "snippet": "With Riot Mobile, you'll be able to chat with friends regardless of what game they're playing or where they live, receive hot-off-the-press news about the Riot ...",
+            "date": "Apr 24, 2025",
+            "position": 5
+        },
+        {
+            "title": "Riot Mobile - Apps on Google Play",
+            "link": "https://qrlogin.riotgames.com/riotmobile/",
+            "snippet": "... lets me know who is online, in game, etc. 26 people found this review helpful. Did you find this helpful? Yes. No. A Google user. more_vert. Flag inappropriate.",
+            "rating": 4.6,
+            "ratingCount": 263881,
+            "position": 6
+        },
+        {
+            "title": "Running Online Services at Riot: Part I",
+            "link": "https://technology.riotgames.com/news/running-online-services-riot-part-i",
+            "snippet": "Running Online Services at Riot: Part I ... It then continually sweeps both the live and desired state of the cluster to figure out what actions ...",
+            "date": "Sep 22, 2016",
+            "position": 7
+        },
+        {
+            "title": "Offices",
+            "link": "https://www.riotgames.com/en/work-with-us/offices",
+            "snippet": "I don't live in any of the cities with a Riot office. Is there an opportunity to work remotely? We take a hybrid approach by entrusting teams to decide the ...",
+            "sitelinks": [
+                {
+                    "title": "Los Angeles, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/los-angeles"
+                },
+                {
+                    "title": "SF Bay Area, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/sf-bay-area"
+                },
+                {
+                    "title": "St. Louis, USA",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/st-louis"
+                },
+                {
+                    "title": "Seoul, Korea",
+                    "link": "https://www.riotgames.com/en/work-with-us/offices/seoul"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "We're Updating our Internal Structure to Better Connect ...",
+            "link": "https://www.riotgames.com/en/news/riot-games-connecting-games-with-esports-music-publishing",
+            "snippet": "... Online Entertainment, among others. ... Brian Wright: Brian will lead the development of new live action projects as the head of Riot's live- ...",
+            "date": "Aug 15, 2024",
+            "position": 9
+        },
+        {
+            "title": "Need to live | Heimerdinger Champion Trailer - League of ...",
+            "link": "https://www.riotgames.com/en/news/need-to-live-heimerdinger-champion-trailer-league-of-legends-wild-rift",
+            "snippet": "Need to live | Heimerdinger Champion Trailer - League of Legends: Wild Rift. 475K views · 7 months ago ...more. League of Legends: Wild Rift.",
+            "date": "Oct 16, 2024",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

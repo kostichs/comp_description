@@ -1,0 +1,94 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "(windows) FFXIV downloads patches to \"My Documents\\ ...",
+            "link": "https://forum.square-enix.com/ffxiv/threads/501199",
+            "snippet": "The game download the content in a temporal folder, then move where you installed it. If it is Steam, it is in the steamapps folder inside the ...",
+            "date": "Jun 23, 2024",
+            "position": 1
+        },
+        {
+            "title": "[Q67494] [Windows] Unable to Download",
+            "link": "https://support.na.square-enix.com/faqarticle.php?kid=67494&id=5382.&la=1&ret=faq&pv=10&page=16&c=0&sc=0&so=4",
+            "snippet": "Try a different internet browser to download the game client. ... If you have plugins active on your browser, deactivate them and use the default settings of your ...",
+            "position": 2
+        },
+        {
+            "title": "FINAL FANTASY XIV Online - Starter Edition",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVSTARTEREDITION&l=sestorepcdownload",
+            "snippet": "... Game · Board Games · Puzzles · Music · All Music · CD · Blu-ray · Vinyl · Apparel · FFXIV ... when you buy this product. Platform: Select Options, PC Download ...",
+            "currency": "$",
+            "price": 19.99,
+            "position": 3
+        },
+        {
+            "title": "FINAL FANTASY PIXEL REMASTER - Square Enix",
+            "link": "http://dlgames.square-enix.com/ff/ff5/en/",
+            "snippet": "Download on the App Store · Get it on Google Play · ESRB · Terms Of Use · Privacy Notice · Cookies Notice · Affiliate Statement · Accessibility Statement ...",
+            "position": 4
+        },
+        {
+            "title": "SQUARE ENIX | The Official SQUARE ENIX Website",
+            "link": "https://na.square-enix.com/",
+            "snippet": "Book a stay at KILLER INN - a new multiplayer murder mystery action game. Step into a deadly game of co-operation and survival. But beware - some of your ...",
+            "sitelinks": [
+                {
+                    "title": "Games",
+                    "link": "https://www.square-enix-games.com/games"
+                },
+                {
+                    "title": "News",
+                    "link": "https://www.square-enix-games.com/news"
+                },
+                {
+                    "title": "Store",
+                    "link": "https://na.store.square-enix-games.com/"
+                },
+                {
+                    "title": "U.S. Privacy Notice",
+                    "link": "https://www.square-enix-games.com/documents/privacy"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?id=5382&la=1&kid=69853",
+            "snippet": "... game time on the account. In addition, if you have a non-Steam ... download the launcher through the Steam client which you can download from Steam.",
+            "position": 6
+        },
+        {
+            "title": "Square Enix Support Centre - FINAL FANTASY VII",
+            "link": "https://support.eu.square-enix.com/faqarticle.php?id=1379&la=2&kid=64322&sc=0",
+            "snippet": "1) Log into the Square Enix Members using the \"Log in\" button in the top right corner of the screen. 2) Select \"Add new game\" from the top right corner drop- ...",
+            "position": 7
+        },
+        {
+            "title": "SQUARE ENIX Support Center - FINAL FANTASY XIV",
+            "link": "https://support.na.square-enix.com/faqarticle.php?id=5382&kid=67500",
+            "snippet": "You can re-download the Windows game client at the following link: http://www.finalfantasyxiv.com/playersdownload/na. Steam users should re-install from ...",
+            "position": 8
+        },
+        {
+            "title": "I can't find my character, what should I do?",
+            "link": "https://support.eu.square-enix.com/faqarticle.php?kid=81710&id=5383&la=2&ret=faq&pv=10&page=0&c=0&sc=0&so=0",
+            "snippet": "If you had previously logged into the game and were unable to find your character, you may need to change which World and/or Data Center you are viewing in-game ...",
+            "position": 9
+        },
+        {
+            "title": "FINAL FANTASY XV WINDOWS EDITION Playable Demo",
+            "link": "https://xmail.square-enix.com/fe/track/link/f4ha5ofisis3/a396519383e72d9c24f82ebe6b38f264/2102/en/1/eyJ1c2VyIjp7ImNvdW50cnkiOiJOTCIsImV4dHJhIjoiWmpGb3k3SzlLcitnNERzTmVQVVJBQzg0VytVR28wTXNwcm5wM3czblVEOD0iLCJsYW5nIjoiZW4iLCJsb2NhbGUiOiJlbl9OTCJ9fQ%3D%3D",
+            "snippet": "Amazing graphics and beautiful game. Sabiha , 6/3/2018. Thumbs up logo for product review module. 15. Thumbs down logo for product review module. 4. Read more ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

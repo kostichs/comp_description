@@ -1,0 +1,90 @@
+{
+    "searchParameters": {
+        "q": "site:embracer.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Media assets",
+            "link": "https://embracer.com/news-media/media-assets/",
+            "snippet": "Media assets. Assets. Logo pack | Embracer Group Download zip-file.",
+            "position": 1
+        },
+        {
+            "title": "Embracer Group: Home",
+            "link": "https://embracer.com/",
+            "snippet": "Embracer Group Q4 and Year-End Report FY 2024/25 · Download report · Press release · Presentation · Webcast · Financial fact sheet · ESG fact sheet.",
+            "sitelinks": [
+                {
+                    "title": "Investors",
+                    "link": "https://embracer.com/investors/"
+                },
+                {
+                    "title": "About",
+                    "link": "https://embracer.com/about/"
+                },
+                {
+                    "title": "Operative groups",
+                    "link": "https://embracer.com/about/operative-groups/"
+                },
+                {
+                    "title": "Coffee Stain",
+                    "link": "https://embracer.com/about/operative-groups/coffee-stain/"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Embracer Group acquires Vertigo Games",
+            "link": "https://embracer.com/releases/embracer-group-acquires-vertigo-games/",
+            "snippet": "Vertigo Games is a multi-platform VR entertainment company with offices in Rotterdam, The Netherlands and Los Angeles, California. With ...",
+            "date": "Sep 16, 2020",
+            "position": 3
+        },
+        {
+            "title": "embracer group q4 & year-end report",
+            "link": "https://embracer.com/wp-content/uploads/2025/05/Embracer-Group-publishes-Interim-Report-Q4-January-March-2025-Adjusted-EBIT-amounted-to-SEK-1077-million-250522.pdf",
+            "snippet": "Dark Horse's e- commerce site Dark Horse Direct remains an important strategic direct-to-consumer platform. Furthermore, Dark Horse ...",
+            "date": "Mar 31, 2025",
+            "position": 4
+        },
+        {
+            "title": "Corporate Governance Reports",
+            "link": "https://embracer.com/governance/governance-reports/",
+            "snippet": "Governance reports. Corporate Governance Report 2023/2024 Download pdf-file.",
+            "position": 5
+        },
+        {
+            "title": "Embracer Group Announces the 11[th] Operating Group",
+            "link": "https://embracer.com/releases/embracer-group-announces-the-11th-operating-group-embracer-freemode/",
+            "snippet": "Established in 2006, Quantic Lab is a highly experienced outsourcing company specialized in all-platform high-quality testing, UX and ...",
+            "date": "Aug 18, 2022",
+            "position": 6
+        },
+        {
+            "title": "Embracer Group acquires Deca Games",
+            "link": "https://embracer.com/releases/embracer-group-acquires-deca-games/",
+            "snippet": "Embracer plans to reinvest cash flows and contribute additional funding to DECA who creates a new platform for acquisitive growth within ...",
+            "date": "Aug 13, 2020",
+            "position": 7
+        },
+        {
+            "title": "Sustainability reports",
+            "link": "https://embracer.com/sustainability/sustainability-reports/",
+            "snippet": "Sustainability reports. Embracer Group Annual Report and Sustainability Report 2023/2024 Download pdf-file.",
+            "position": 8
+        },
+        {
+            "title": "Embracer Group acquires Saber Interactive – initial ...",
+            "link": "https://embracer.com/releases/embracer-group-acquires-saber-interactive-initial-consideration-usd-150-million/",
+            "snippet": "Long term synergy opportunities within publishing, development and IP utilisation; and; Platform for further organic growth and acquisitions.",
+            "date": "Feb 19, 2020",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

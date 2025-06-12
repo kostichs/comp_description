@@ -1,0 +1,84 @@
+{
+    "searchParameters": {
+        "q": "site:cdprojektred.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Award-winning creators of story-driven role-playing games.",
+            "link": "https://www.cdprojektred.com/en/diversity",
+            "snippet": "(Girls in the Game!) We created a mentoring and scholarship program for high school girls to help them take their first steps in the video game industry…",
+            "position": 1
+        },
+        {
+            "title": "Cyberpunk 2077 Follow-up, codenamed Project Orion",
+            "link": "https://press.cdprojektred.com/en/news/1531/cyberpunk-2077-follow-up-codenamed-project-orion-grows-in-strength-at-cd-projekt-red-north-america",
+            "snippet": "Ryan Barnard's past credits include Game Director at Massive Entertainment and Ubisoft, as well as Gameplay Director at Hitman developer IO ...",
+            "date": "Feb 6, 2024",
+            "position": 2
+        },
+        {
+            "title": "Game size & Storage — Cyberpunk 2077",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/nintendo-switch-2/sp-technical/issue/2807/game-size-storage",
+            "snippet": "The game is approximately 59 GB. If downloaded digitally, it can be installed either on the internal storage or a SD card. The physical version runs ...",
+            "position": 3
+        },
+        {
+            "title": "[iOS] Performance troubleshooting — GWENT: The Witcher ...",
+            "link": "https://support.cdprojektred.com/en/gwent/ios-mac/gwent-technical/issue/1933/ios-performance-troubleshooting",
+            "snippet": "If you experience crashes, black screens, or performance problems while playing the game on iOS, follow the troubleshooting steps below.",
+            "position": 4
+        },
+        {
+            "title": "How do I transfer my save file to the next-gen update?",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/playstation/sp-technical/issue/2075/how-do-i-transfer-my-save-file-to-the-next-gen-update-1",
+            "snippet": "If you are playing on a PlayStation 5 console via backwards compatibility, once you download the next-gen version of the game, your PlayStation 5 will ...",
+            "position": 5
+        },
+        {
+            "title": "Technical Support — CD PROJEKT RED",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/pc/sp-technical/issue/1568/contact-to-support",
+            "snippet": "The game is not launching ; Device. Windows PC Steam Deck ; Select a platform. Epic Games Store GOG Steam ; Version. The version number can be found in the top ...",
+            "sitelinks": [
+                {
+                    "title": "Location",
+                    "link": "https://support.cdprojektred.com/en/cyberpunk/pc/sp-technical/issue/1568/contact-to-support#:~:text=Information%20about%20your,Jagiello%C5%84ska%2074%2C%2003%2D301%20Warsaw."
+                },
+                {
+                    "title": "Safety concerns",
+                    "link": "https://support.cdprojektred.com/en/cyberpunk/pc/sp-technical/issue/1568/contact-to-support#:~:text=We%20respect%20your,Find%20more%20details%20in"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "How to use cross progression — The Witcher 3: Wild Hunt",
+            "link": "https://support.cdprojektred.com/en/witcher-3/pc/sp-technical/issue/2389/how-to-use-cross-progression",
+            "snippet": "Open the “Load Game” menu and press the button/key for Cross Progression displayed on the bottom right corner. 3. Connect the game to your CD PROJEKT RED ...",
+            "position": 7
+        },
+        {
+            "title": "My game crashes — The Witcher 3: Wild Hunt",
+            "link": "https://support.cdprojektred.com/en/witcher-3/pc/sp-technical/issue/992/my-game-crashes-4",
+            "snippet": "My game crashes · Download newest drivers for your GPU, but don't install them yet. · Download Display Driver Uninstaller and run it to remove previous versions ...",
+            "position": 8
+        },
+        {
+            "title": "Where are my game saves located? — Cyberpunk 2077",
+            "link": "https://support.cdprojektred.com/en/cyberpunk%20/pc/sp-technical/issue/1706/where-are-my-game-saves-located",
+            "snippet": "Roach Race: A Cyberpunk Arcade Mini-Game. Where are my game saves located? Created 4 years ago Updated 4 years ago. The save files can be found in the ...",
+            "position": 9
+        },
+        {
+            "title": "SmartFrame and the Gallery feature — Cyberpunk 2077",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/pc/interface-sp/issue/2743/smartframe-and-the-gallery-feature",
+            "snippet": "Even if you start a new game or load an old save, all screenshots in the Gallery will still be visible, as long as they're stored in the designated screenshots ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

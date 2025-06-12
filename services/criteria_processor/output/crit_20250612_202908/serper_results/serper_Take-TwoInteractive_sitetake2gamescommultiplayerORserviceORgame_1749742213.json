@@ -1,0 +1,110 @@
+{
+    "searchParameters": {
+        "q": "site:take2games.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Words With Friends Launches New Suite of Game Modes",
+            "link": "https://www.take2games.com/ir/news/words-friends-launches-new-suite-game-modes",
+            "snippet": "Words With Friends Launches New Suite of Game Modes · Mini Crosswords: Go beyond creating words into a game mode where you use your knowledge to ...",
+            "date": "Nov 14, 2024",
+            "position": 1
+        },
+        {
+            "title": "Leading Game Publisher | Take-Two Interactive Software, Inc.",
+            "link": "https://www.take2games.com/",
+            "snippet": "Take-Two Interactive Software is a leading game publisher, creating games through its labels, Rockstar Games, 2K, Private Division, and Social Point.",
+            "sitelinks": [
+                {
+                    "title": "Take-Two Terms of Service",
+                    "link": "https://www.take2games.com/legal/"
+                },
+                {
+                    "title": "Rockstar Games Releases...",
+                    "link": "https://www.take2games.com/ir/news/rockstar-games-releases-trailer-2-grand-theft-auto-vi"
+                },
+                {
+                    "title": "Grand Theft Auto VI",
+                    "link": "https://www.take2games.com/ir/news/rockstar-games-announces-grand-theft-auto-vi-coming-2025"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Ghost Story Games Reveals Judas, an All-New Single- ...",
+            "link": "https://www.take2games.com/ir/news/ghost-story-games-reveals-judas-all-new-single-player-narrative",
+            "snippet": "9, 2022-- Ghost Story Games, the development studio led by game creator Ken Levine , today announced that Judas, an all-new single-player, ...",
+            "date": "Dec 9, 2022",
+            "position": 3
+        },
+        {
+            "title": "Take-Two Terms of Service",
+            "link": "https://www.take2games.com/legal/",
+            "snippet": "... game virtual asset made available, purchased from a Digital ... game, Virtual Item, or Service purchased. If the Dispute claims a ...",
+            "date": "Feb 28, 2025",
+            "position": 4
+        },
+        {
+            "title": "Sid Meier's Civilization® VII Launching Worldwide on ...",
+            "link": "https://www.take2games.com/ir/news/sid-meiers-civilizationr-vii-launching-worldwide-february-11",
+            "snippet": "Multiplayer matches can be epic multi-Age campaigns, or take place in a single Age so you can enjoy an entire game in a single session. Cross- ...",
+            "date": "Aug 20, 2024",
+            "position": 5
+        },
+        {
+            "title": "Borderlands® 4 Coming In 2025",
+            "link": "https://www.take2games.com/ir/news/borderlandsr-4-coming-2025",
+            "snippet": "For the latest information on Borderlands 4, wishlist the game, visit www.borderlands.2k.com and follow the game across YouTube, Facebook, X, Instagram and ...",
+            "position": 6
+        },
+        {
+            "title": "Legends Invites Fans to Join the Hunt in the Dragon Egg ...",
+            "link": "https://www.take2games.com/ir/news/zyngas-game-thrones-legends-invites-fans-join-hunt-dragon-egg",
+            "snippet": "“Our Game of Thrones: Legends players can now immerse themselves further into the Westeros universe in-game and explore the world with Google ...",
+            "date": "Feb 4, 2025",
+            "position": 7
+        },
+        {
+            "title": "Game Streaming",
+            "link": "https://www.take2games.com/game-streaming",
+            "snippet": "Rockstar Support · Ghost Story Support · Zynga Support · 2K Support. ©2025 Take-Two Interactive Software, Inc. Multi ESRB Game Rating.",
+            "position": 8
+        },
+        {
+            "title": "The Outer Worlds: Spacer's Choice Edition Now Available",
+            "link": "https://www.take2games.com/ir/news/outer-worlds-spacers-choice-edition-now-available",
+            "snippet": "The Outer Worlds: Spacer's Choice Edition includes The Outer Worlds base game and both DLCs, Murder on Eridanos and Peril on Gorgon. Players who already own The ...",
+            "position": 9
+        },
+        {
+            "title": "Words With Friends Launches New Suite of Game Modes",
+            "link": "https://ir.take2games.com/node/30886/pdf",
+            "snippet": "Mini Crosswords: Go beyond creating words into a game mode where you use your knowledge to complete a new puzzle every day. Earn Club Trophies ...",
+            "date": "Nov 14, 2024",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Video game multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Multiplayer service game xbox series x"
+        },
+        {
+            "query": "Multiplayer service game ps4"
+        }
+    ],
+    "credits": 1
+}

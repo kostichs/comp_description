@@ -1,0 +1,74 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Re: FIX THE GAME TO STOP DDOS!!",
+            "link": "https://forums.ea.com/discussions/-/-/8655399",
+            "snippet": "Diamond and higher ranks have a newer version of DDoS protection. It won't be perfect, though I think it's safe to say that they're still improving on this.",
+            "position": 1
+        },
+        {
+            "title": "DDOS ATTACK AGAIN! BF4 - Battlefield",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/ddos-attack-again-bf4/11924881",
+            "snippet": "DDOS ATTACK AGAIN! BF4. Well it did not last long before they attacked again. Crashing servers all over.. Like. 2. Reply. 5 Replies. Replies ...",
+            "date": "Feb 24, 2025",
+            "position": 2
+        },
+        {
+            "title": "Re: So much DDOS attacks and kids with WH running ...",
+            "link": "https://forums.ea.com/discussions/-/-/8676415",
+            "snippet": "DDOS attacks are pretty rare, I doubt they're what you are experiencing.When there is a DDOS attack then pretty much the whole server is affected, meaning.",
+            "position": 3
+        },
+        {
+            "title": "Opponent DDOS | EA Forums - 11859604",
+            "link": "https://forums.ea.com/discussions/fc-25-technical-issues-en/opponent-ddos/11859604",
+            "snippet": "Opponent DDOS. I am currently playing fut champs and was winning 3-2 and says I lost connection to ea servers and gave me a loss. All my connections are ...",
+            "position": 4
+        },
+        {
+            "title": "FIX THE GAME TO STOP DDOS!! - Apex Legends",
+            "link": "https://forums.ea.com/discussions/apex-legends-feedback-en/fix-the-game-to-stop-ddos/8655398/replies/8655399",
+            "snippet": "Diamond and higher ranks have a newer version of DDoS protection. It won't be perfect, though I think it's safe to say that they're still improving on this.",
+            "position": 5
+        },
+        {
+            "title": "Re: So much DDOS attacks and kids with WH running ...",
+            "link": "https://forums.ea.com/discussions/-/-/8676413",
+            "snippet": "Re: So much DDOS attacks and kids with WH running around. Cool... @NVC_Miny Hahaha u rly dont know? What is the point in saying that , when they dont even ...",
+            "position": 6
+        },
+        {
+            "title": "Re: Is it true, EA servers are being DDoS attacked?",
+            "link": "https://forums.ea.com/discussions/apex-legends-general-discussion-en/re-is-it-true-ea-servers-are-being-ddos-attacked/5406918",
+            "snippet": "Re: Is it true, EA servers are being DDoS attacked? @hhnbbfggty66 Happens to them a lot. What is crazy is it takes out every game and forums they have ...",
+            "position": 7
+        },
+        {
+            "title": "Re: ddos protected server caused a packet loss",
+            "link": "https://forums.ea.com/discussions/-/-/5505958",
+            "snippet": "Re: ddos protected server caused a packet loss. @corn2597 I also had such a problem, if the server has DDOS protection, then I always have packet losses on ...",
+            "position": 8
+        },
+        {
+            "title": "Community Server Under Attack by DDOS from China",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/community-server-under-attack-by-ddos-from-china/6669056/replies/6669096",
+            "snippet": "... DDoS attack. At the same time, because Battlelog leaks IP information, no one can block the attack, Even if you change the IP address and port. DDoS attacker ...",
+            "position": 9
+        },
+        {
+            "title": "Ddos attack ? (Pretty sure I've got evidence plz help)",
+            "link": "https://forums.ea.com/discussions/apex-legends-general-discussion-en/ddos-attack--pretty-sure-i%E2%80%99ve-got-evidence-plz-help/5451919/replies/5451928",
+            "snippet": "Ddos attack ? (Pretty sure I've got evidence plz help). Now I'm not one to jump to conclusions with stuff like this but here's what just happened . So I've ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

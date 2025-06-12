@@ -1,0 +1,74 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Nintendo Switch System Update Information",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22525/~/nintendo-switch-system-update-information",
+            "snippet": "Latest version. Ver. 20.1.1 (Released ... You can verify your current menu version and manually start the update from the System Settings menu if necessary.",
+            "position": 1
+        },
+        {
+            "title": "System Update History for Nintendo Switch",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/43314/~/system-update-history-for-nintendo-switch",
+            "snippet": "If you're unable to update to Version 18.0.1 because of the issue ... release of version 6.0.0. Change the layout of the USB keyboard to the ...",
+            "position": 2
+        },
+        {
+            "title": "System Update Information for Nintendo Switch 2 - Support",
+            "link": "https://www.nintendo.com/au/support/articles/system-update-information-for-nintendo-switch-2/?srsltid=AfmBOoqDVWoBvSDsjS9yFbh_oB-IcGyv9_GfS-16aeEg1IwpWuFGYWEQ",
+            "snippet": "When completing the initial console set up, you will be prompted to download and install system version 20.1.0. If the update is not completed ...",
+            "date": "7 days ago",
+            "position": 3
+        },
+        {
+            "title": "Nintendo Switch System Update Information",
+            "link": "https://www.nintendo.com/en-gb/Support/Nintendo-Switch/System-Updates/Nintendo-Switch-System-Update-Information-1445507.html?srsltid=AfmBOoriypR3lmB1seQOxYaBaGKKiNlATjRYgDhuqWvChtedBIxwQGpz",
+            "snippet": "Information: · Latest version: 20.1.1 (Released 3 June 2025) · Performing the System Update: · Important: · Update history · Ver. 20.1.1 (Released 3 June 2025).",
+            "position": 4
+        },
+        {
+            "title": "How to Update Splatoon 3",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/59461/~/how-to-update-splatoon-3",
+            "snippet": "Press the + Button or – Button on your controller. The current version number will display under the software title. Select Software Update followed by Over the ...",
+            "position": 5
+        },
+        {
+            "title": "How to Update Software on Nintendo Switch",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22767/~/how-to-update-software-on-nintendo-switch",
+            "snippet": "Follow these steps to automatically or manually download and install the latest version of software on Nintendo Switch. Note: If a software update is ...",
+            "position": 6
+        },
+        {
+            "title": "How to Update Software Data Via a Local User on ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/27541/~/how-to-update-software-data-via-a-local-user-on-nintendo-switch%26nbsp%3B2-and",
+            "snippet": "Press the + Button or - Button on your controller, then select Software Update, then Match Version with Local Users, and then NextContinuarSuitePróximo . ... If ...",
+            "position": 7
+        },
+        {
+            "title": "Nintendo 3DS System Update History",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/667/~/nintendo-3ds-system-update-history",
+            "snippet": "*The ability to update within StreetPass Mii Plaza and purchase paid content is only available to users in countries where the full version of the Nintendo ...",
+            "position": 8
+        },
+        {
+            "title": "How to Perform a System Update on Nintendo Switch",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22418/~/how-to-perform-a-system-update-on-nintendo-switch",
+            "snippet": "How to update the system version on a Nintendo Switch console. Important:The Nintendo Switch console must be connected online to download a system update.",
+            "position": 9
+        },
+        {
+            "title": "Latest system update information | Nintendo 3DS & 2DS",
+            "link": "https://www.nintendo.com/en-gb/Support/Nintendo-3DS-2DS/Performing-System-Updates/Latest-system-update-information/Latest-system-update-information-241709.html?srsltid=AfmBOorJRNQtkwdaV9TY3e4qQy3aU6DDmWZm9TUQUkKNViFQfzrAVpAf",
+            "snippet": "Changes in system software version 6.0.0-12(11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)E ... Added an option to update StreetPass Mii Plaza. An update is currently ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

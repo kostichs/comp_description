@@ -1,0 +1,87 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Preparing for Multiplayer | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/MHRISE/en/steam/page/14/1",
+            "snippet": "To use the multiplayer function, you need to make sure all players are on the same version of the game. You can update your version of the game by ...",
+            "position": 1
+        },
+        {
+            "title": "Accessing Multiplayer | Monster Hunter Stories 2",
+            "link": "https://game.capcom.com/manual/MHST2/en/switch/page/11/1",
+            "snippet": "Accessing Multiplayer. Ways to Connect and Play ... Note: You can access Multiplayer via the Quest Board, but some game progress is required to unlock it.",
+            "position": 2
+        },
+        {
+            "title": "Monster Hunter World - Multiplayer",
+            "link": "https://game.capcom.com/manual/MHW/en/xone/page/1/3",
+            "snippet": "Online multiplayer allows you to work together with other hunters to take down the most challenging monsters in the game.",
+            "position": 3
+        },
+        {
+            "title": "Preparing for Multiplayer | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/MHRISE/en/switch/page/14/1",
+            "snippet": "To use the multiplayer function, you need to make sure all players are on the same version of the game. You can update the game by either downloading update ...",
+            "position": 4
+        },
+        {
+            "title": "Multiplayer|Monster Hunter Wilds Beta Official Online Manual",
+            "link": "https://manual.capcom.com/mhwilds/beta/en/ps5/page/6/1",
+            "snippet": "In multiplayer, players join lobbies, which are used ... Crossplay must be set up from the Title Screen, by going to Options > Game Settings > Crossplay.",
+            "position": 5
+        },
+        {
+            "title": "Online Co-Op Multiplayer",
+            "link": "https://game.capcom.com/manual/bio6/en/page-51.html",
+            "snippet": "Use Xbox LIVE® to engage in multiplayer with players from around the world. You will need a broadband connection in order to access the Xbox LIVE service.",
+            "position": 6
+        },
+        {
+            "title": "Multiplayer | Monster Hunter Rise: Sunbreak Official Web ...",
+            "link": "https://game.capcom.com/manual/MHRISE/en/switch/page/1/2",
+            "snippet": "Go on a hunt with your friends! ... How to use Multiplayer and its various convenient features. ... Screenshots show a game still in development. They may differ ...",
+            "position": 7
+        },
+        {
+            "title": "Preparing for Multiplayer | Monster Hunter Rise",
+            "link": "https://game.capcom.com/manual/Multi-Platform/en/xone/page/13/1",
+            "snippet": "If you and other players are all using Xbox Game Pass, you can play online multiplayer together no matter what hardware you are using. Please note that you won' ...",
+            "position": 8
+        },
+        {
+            "title": "MONSTER HUNTER GENERATIONS - Online Multiplayer",
+            "link": "https://game.capcom.com/manual/MH_Gen/en-UK/page-153.html",
+            "snippet": "Search and join a friend's Hunters Hub. If your friend is Available, then they are currently online playing the game. If your friend is marked as Recruiting!, ...",
+            "position": 9
+        },
+        {
+            "title": "Monster Hunter Stories 2: Wings of Ruin Official Web Manual",
+            "link": "https://game.capcom.com/manual/MHST2/en/switch/page/11/6",
+            "snippet": "Local Play enables you to play Multiplayer together with those nearby. Note: Up to 4 people can play together in Multiplayer. Some game progress is required ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Multiplayer service game ps4"
+        },
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Multiplayer service game xbox series x"
+        }
+    ],
+    "credits": 1
+}

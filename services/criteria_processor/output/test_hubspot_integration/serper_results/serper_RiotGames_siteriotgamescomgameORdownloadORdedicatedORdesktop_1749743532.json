@@ -1,0 +1,115 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Riot Games. Developer of League of Legends, VALORANT ...",
+            "link": "https://www.riotgames.com/en",
+            "snippet": "Celebrate a career that had a legendary impact on the game, the sport, and the worldwide community. Watch video. Watch Now. VALORANT ...",
+            "position": 1
+        },
+        {
+            "title": "Game Feeling & 8 Kinds of Fun",
+            "link": "https://www.riotgames.com/en/urf-academy/fun-and-feeling",
+            "snippet": "The PDF preview is not available on mobile and tablet devices, please access on a desktop computer or click the link above to download it to your device.",
+            "position": 2
+        },
+        {
+            "title": "2XKO - Riot Games",
+            "link": "https://2xko.riotgames.com/en-us/",
+            "snippet": "2v2 TEAM-BASED FIGHTING GAME · March 2025 Dev Update · What's New in Alpha Lab 2 · 2XKO November 2024 Check-In · What's in 2XKO Alpha Lab? · Braum Champion ...",
+            "sitelinks": [
+                {
+                    "title": "Alpha lab",
+                    "link": "https://2xko.riotgames.com/en-us/alpha/"
+                },
+                {
+                    "title": "News",
+                    "link": "https://2xko.riotgames.com/en-us/news/"
+                },
+                {
+                    "title": "2XKO Basic Controls",
+                    "link": "https://2xko.riotgames.com/en-us/news/game-updates/2xko-basic-controls/"
+                },
+                {
+                    "title": "What’s New in Alpha Lab 2",
+                    "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "download - League Displays - Riot Games",
+            "link": "https://displays.riotgames.com/en-au/",
+            "snippet": "HD screensavers and wallpapers, direct to your desktop. · League Displays is not available on mobile & tablet. Please download the application on your computer.",
+            "position": 4
+        },
+        {
+            "title": "League of Legends",
+            "link": "https://developer.riotgames.com/docs/lol",
+            "snippet": "Data Dragon is our way of centralizing League of Legends game data and assets, including champions, items, runes, summoner spells, and profile icons. All of ...",
+            "position": 5
+        },
+        {
+            "title": "Riot Games Service Status",
+            "link": "https://status.riotgames.com/?locale=en-us",
+            "snippet": "Riot Games Service Status. keystonefoundationbeta. English. Cross-game Issues. All times shown in 24-hour format. Current Messages. Recently Closed.",
+            "position": 6
+        },
+        {
+            "title": "In-game features - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/sections/115002164268-In-game-features",
+            "snippet": "In-game features · Patch Schedule - League of Legends · Parties and Voice Chat FAQ · Introducing Missions · Chat Commands · Emotes FAQ · Colorblind Mode · Smart Ping ...",
+            "position": 7
+        },
+        {
+            "title": "League download & client issues - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/sections/115002165907-League-download-client-issues",
+            "snippet": "League download & client issues. Lag, low FPS, hardware, & bugs. League of Legends Basics · Account recovery, safety, & data · Ranked gameplay, honor, & rewards ...",
+            "sitelinks": [
+                {
+                    "title": "Can't install League of Legends",
+                    "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/115005275348-Can-t-install-League-of-Legends"
+                },
+                {
+                    "title": "Updated Client - Known Issues",
+                    "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/231536768-Updated-Client-Known-Issues"
+                },
+                {
+                    "title": "Report a Bug",
+                    "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/115005466327-Report-a-Bug"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Remakes and Surrenders in Wild Rift - Riot Games",
+            "link": "https://support-wildrift.riotgames.com/hc/en-us/articles/15877312365459-Remakes-and-Surrenders-in-Wild-Rift",
+            "snippet": "Whatever the reason, you have two powerful tools to end a game early: remakes and surrenders. Remakes. If a player is found to have been ...",
+            "date": "May 22, 2025",
+            "position": 9
+        },
+        {
+            "title": "Welcome to Noxus | Dev Update - League of Legends",
+            "link": "https://www.riotgames.com/en/news/welcome-to-noxus-dev-update-league-of-legends",
+            "snippet": "We'll have three uniquely themed Seasons each year that will immerse you in moments and Journeys throughout Runa and our alternate universes.",
+            "date": "Jan 8, 2025",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop mac"
+        },
+        {
+            "query": "Game download dedicated desktop xbox"
+        }
+    ],
+    "credits": 1
+}

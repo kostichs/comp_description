@@ -1,0 +1,29 @@
+{
+    "searchParameters": {
+        "q": "site:cdprojektred.com \"Add to Cart\", \"Checkout\" buttons",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "THE WITCHER WHITE WOLF LED WALL ART",
+            "link": "https://gear.cdprojektred.com/products/the-witcher-white-wolf-led-wall-art",
+            "snippet": "Checkout · Facebook · Instagram · Twitter · Home; THE WITCHER WHITE WOLF LED WALL ART ... Add to cart. Summon the White Wolf's Glow. Illuminate your wolf's den or ...",
+            "currency": "$",
+            "price": 150,
+            "position": 1
+        },
+        {
+            "title": "cyberpunk edgerunners david's apartment shadowbox - ...",
+            "link": "https://gear.cdprojektred.com/products/cyberpunk-edgerunners-davids-apartment-shadowbox",
+            "snippet": "Checkout · Facebook · Instagram · Twitter · Home; CYBERPUNK EDGERUNNERS DAVID'S ... Add to cart. Shine a spotlight on David's backstory. Every edgerunner has a ...",
+            "currency": "$",
+            "price": 145,
+            "position": 2
+        }
+    ],
+    "credits": 1
+}

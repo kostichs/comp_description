@@ -1,0 +1,93 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "DDoS Prevention Guide - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/201751764-DDoS-Prevention-Guide",
+            "snippet": "**While the best protection against a DDoS attack is to avoid programs that use P2P, (especially the illegal ones), there may be instances of ...",
+            "date": "Jul 17, 2019",
+            "position": 1
+        },
+        {
+            "title": "League of Legends - Demon's Hand Minigame",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/39157999306515-League-of-Legends-Demon-s-Hand-Minigame",
+            "snippet": "Your goal is to whittle away the enemy's health before they get yours. To do this, assemble hands to deal damage based on the attack values of the cards you ...",
+            "date": "Mar 17, 2025",
+            "position": 2
+        },
+        {
+            "title": "Account safety tips & tricks - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/sections/115002165847-Account-safety-tips-tricks",
+            "snippet": "DDoS Prevention Guide · Phishing: Don't take the bait. Need More Help? Contact Us. This site isn't even our final form. Reach out to us directly for hard-to ...",
+            "position": 3
+        },
+        {
+            "title": "Keywords and Game Vocab - Legends of Runeterra Support",
+            "link": "https://support-legendsofruneterra.riotgames.com/hc/en-us/articles/360035562194-Keywords-and-Game-Vocab-Legends-of-Runeterra",
+            "snippet": "Double Attack. When attacking, a Double Attack unit strikes both before AND at the same time as its blocker. Not generatable: ...",
+            "date": "Dec 11, 2023",
+            "position": 4
+        },
+        {
+            "title": "Minion \"Attack\" Tee (Unisex)",
+            "link": "https://merch.riotgames.com/en-au/product/minion-mayhem-tee-attack-unisex",
+            "snippet": "Bind them, grab them, charm them. There's always room to be creative in how you attack a minion. Print Design. Screenprinted design. Materials. 100% Cotton.",
+            "currency": "$",
+            "price": 25,
+            "position": 5
+        },
+        {
+            "title": "Attack of the Chromacrashers - Wild Rift Support - Riot Games",
+            "link": "https://support-wildrift.riotgames.com/hc/en-us/articles/25766018336275-Attack-of-the-Chromacrashers",
+            "snippet": "Attack of the Chromacrashers · SCHEDULE*. Start - May 24, 2024 // 00:00 UTC · Purchase Wild Cores, Get Rewards. If you purchase Wild Cores during ...",
+            "position": 6
+        },
+        {
+            "title": "Robot Instructions",
+            "link": "https://www.riotgames.com/darkroom/original/01999ad0e737bda728ea87f4dd640083:45ff5636bf664d0f0e1f6d346f5168dd/module-3-student-materials.pdf",
+            "snippet": "Attack front and side spaces. Hit all enemies in range at once. Self-Destruct. Robot explodes when its hit points reach 0. ROBOT NAME. Abilities. Overview.",
+            "position": 7
+        },
+        {
+            "title": "What's New in Alpha Lab 2 - 2XKO - Riot Games",
+            "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/",
+            "snippet": "Ability to press attack buttons in time with the opponent's attacks to reduce damage to their teammate ... Super 1 = S1 + any attack button (L, M, ...",
+            "date": "Mar 27, 2025",
+            "sitelinks": [
+                {
+                    "title": "Fuses",
+                    "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/#:~:text=Fuses,-Alpha%20Lab%202%20will%20also"
+                },
+                {
+                    "title": "Core Gameplay",
+                    "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/#:~:text=Core%20Gameplay,-Since%20Alpha%20Lab%201%2C"
+                },
+                {
+                    "title": "Cosmetics",
+                    "link": "https://2xko.riotgames.com/en-us/news/game-updates/whats-new-in-alpha-lab-2/#:~:text=Cosmetics,-Alpha%20Lab%202%20will%20also"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Staff Software Engineer - UnEco",
+            "link": "https://www.riotgames.com/ro/work-with-us/job/6679846/staff-software-engineer-uneco-los-angeles-usa",
+            "snippet": "Investigate and troubleshoot live game issues, working cross-functionally to restore services and minimize downtime. Establish release management best ...",
+            "position": 9
+        },
+        {
+            "title": "Service Reliability Analyst II - ITIL",
+            "link": "https://www.riotgames.com/zh-hant/j/6781904",
+            "snippet": "Participate in on-call rotations to provide critical support and ensure rapid response to incidents, minimizing downtime and service disruptions. Assist in ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

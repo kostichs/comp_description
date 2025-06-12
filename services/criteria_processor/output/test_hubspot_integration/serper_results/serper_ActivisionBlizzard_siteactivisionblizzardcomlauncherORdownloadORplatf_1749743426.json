@@ -1,0 +1,111 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Tidy up your digital life with these organizer apps",
+            "link": "https://newsroom.activisionblizzard.com/p/tidy-up-your-digital-life-with-these",
+            "snippet": "Stardock Software has a whole host of programs and apps that can alter your desktop and file organization but Fences stands out for us. Fences ...",
+            "date": "Aug 25, 2023",
+            "sitelinks": [
+                {
+                    "title": "Stardock Software has a whole host of programs and apps that can alter your desktop and file organization but Fences stands out for us. Fences ...",
+                    "link": "https://newsroom.activisionblizzard.com/p/tidy-up-your-digital-life-with-these#:~:text=Stardock%20Software%20has%20a%20whole,Fences"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Media Contacts",
+            "link": "https://www.activisionblizzard.com/media-contacts",
+            "snippet": "Media Downloads. File Name 10. Download Icon. Test · File Name 9. Download Icon. Download · File Name 8. Download Icon. Download · File Name 7. Download Icon.",
+            "position": 2
+        },
+        {
+            "title": "Activision Blizzard | Annual Reports",
+            "link": "https://www.activisionblizzard.com/annual-reports",
+            "snippet": "Download annual reports to learn more about Activision Blizzard's performance. 2022 Annual Report May 1, 2022 DOWNLOAD",
+            "sitelinks": [
+                {
+                    "title": "Download annual reports to learn more about Activision Blizzard's performance. 2022 Annual Report May 1, 2022 DOWNLOAD",
+                    "link": "https://www.activisionblizzard.com/annual-reports#:~:text=Download%20annual%20reports%20to%20learn,more%20about%20Activision%20Blizzard's%20performance&text=2022%20Annual%20Report&text=May%201%2C%202022&text=DOWNLOAD"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Who We Are",
+            "link": "https://www.activisionblizzard.com/who-we-are",
+            "snippet": "Featuring a robust multiplayer mode, StarCraft allowed players to compete with or against one another through Blizzard's Battle.net platform. ... download charts ...",
+            "position": 4
+        },
+        {
+            "title": "Activision Announces Vigilante 8®: Arcade for Xbox Live Arcade",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-vigilante-8r-arcade-xbox-live-arcade",
+            "snippet": "The title is scheduled for release via download on Xbox LIVE Arcade for Xbox 360 this spring and has not yet been rated by the ESRB. For more information ...",
+            "sitelinks": [
+                {
+                    "title": "The title is scheduled for release via download on Xbox LIVE Arcade for Xbox 360 this spring and has not yet been rated by the ESRB. For more information ...",
+                    "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/activision-announces-vigilante-8r-arcade-xbox-live-arcade#:~:text=The%20title%20is%20scheduled%20for,For%20more%20information"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "Senior Environment Artist - Infinity Ward",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025432EXTERNAL/Senior-Environment-Artist-Infinity-Ward",
+            "snippet": "Job Description: Your Platform. Founded in 2002, Infinity Ward is the original studio behind the Call of Duty® franchise. The titles developed by Infinity ...",
+            "sitelinks": [
+                {
+                    "title": "Job Description: Your Platform. Founded in 2002, Infinity Ward is the original studio behind the Call of Duty® franchise. The titles developed by Infinity ...",
+                    "link": "https://careers.activisionblizzard.com/job/ACCOUSR025432EXTERNAL/Senior-Environment-Artist-Infinity-Ward#:~:text=Job%20Description%3A,The%20titles%20developed%20by%20Infinity"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Activision Announces Partnership with Metallica for First Ever ...",
+            "link": "https://investor.activisionblizzard.com/static-files/d7c8aea3-0c85-4a24-bd52-211885418ec9",
+            "snippet": "Music creators will also be able to share their recordings with their friends online through GHTunes™ where other gamers can download and play an endless supply ...",
+            "sitelinks": [
+                {
+                    "title": "Music creators will also be able to share their recordings with their friends online through GHTunes™ where other gamers can download and play an endless supply ...",
+                    "link": "https://investor.activisionblizzard.com/static-files/d7c8aea3-0c85-4a24-bd52-211885418ec9#:~:text=Music%20creators%20will%20also%20be,and%20play%20an%20endless%20supply"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "Principal Online Programmer in Warsaw, Poland",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025452EXTERNAL/Principal-Online-Programmer",
+            "snippet": "Experience with multi-platform development, including PC, Xbox, and PlayStation. Comfortable working with RESTful APIs, JSON, and network protocol design ...",
+            "sitelinks": [
+                {
+                    "title": "Experience with multi-platform development, including PC, Xbox, and PlayStation. Comfortable working with RESTful APIs, JSON, and network protocol design ...",
+                    "link": "https://careers.activisionblizzard.com/job/ACCOUSR025452EXTERNAL/Principal-Online-Programmer#:~:text=Experience%20with%20multi%2Dplatform%20development%2C%20including,JSON%2C%20and%20network%20protocol%20design"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Crash Team Rumble: Behind its bold, new direction",
+            "link": "https://newsroom.activisionblizzard.com/p/crash-team-rumble-bold-new-direction",
+            "snippet": "What you might not remember is that Crash took platformers, games where the main objective was to run and jump from one platform to another, to ...",
+            "date": "Apr 20, 2023",
+            "sitelinks": [
+                {
+                    "title": "What you might not remember is that Crash took platformers, games where the main objective was to run and jump from one platform to another, to ...",
+                    "link": "https://newsroom.activisionblizzard.com/p/crash-team-rumble-bold-new-direction#:~:text=What%20you%20might%20not%20remember,one%20platform%20to%20another%2C%20to"
+                }
+            ],
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

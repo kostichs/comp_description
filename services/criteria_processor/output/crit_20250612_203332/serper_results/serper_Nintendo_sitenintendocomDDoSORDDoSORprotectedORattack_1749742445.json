@@ -1,0 +1,89 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Attack Hole: Hero Edition",
+            "link": "https://www.nintendo.com/us/store/products/attack-hole-hero-edition-switch/?srsltid=AfmBOopfuwyrhtu9c3iF5mifWV4CBYsw4BQ6Bs46X9l7QI1gAg3twtgf",
+            "snippet": "Attack Hole: Hero Edition ... Supported – Game behavior is consistent with Nintendo Switch. Swallow everything and become the biggest black hole!",
+            "currency": "$",
+            "price": 5.99,
+            "position": 1
+        },
+        {
+            "title": "Infantry Attack: Gold'n'Gun",
+            "link": "https://www.nintendo.com/us/store/products/infantry-attack-goldngun-70050000047981-switch/?srsltid=AfmBOor4au2he-jeLfs0ij4BV_wqYMoEQc73-xoOuiM_IZ8DWOr22y9a",
+            "snippet": "Buy Infantry Attack: Gold'n'Gun and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 1.49,
+            "position": 2
+        },
+        {
+            "title": "How to Connect a Wii U to the Internet Using Wi-Fi ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/16001/~/how-to-connect-a-wii-u-to-the-internet-using-wi-fi-protected-setup",
+            "snippet": "Select Wi-Fi Protected Setup. Select Push-Button Configuration. On the wireless access point, press and hold the WPS button until the LED blinks. A Setup ...",
+            "position": 3
+        },
+        {
+            "title": "Arcade Archives Rush'n Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/arcade-archives-rushn-attack-switch/?srsltid=AfmBOoqKtkDzwHaxBpz8kJ9amyXb9cPLvxvi--VYs_NIZ9WavxiGRZRB",
+            "snippet": "Rush'n Attack is an action game released by KONAMI in 1985. Infiltrate an enemy base and get past four obstacles to rescue your comrades!",
+            "currency": "$",
+            "price": 9.87,
+            "position": 4
+        },
+        {
+            "title": "SUPER TRENCH ATTACK for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/super-trench-attack-switch/?srsltid=AfmBOooyCqO2TdukbpyXGkOsJwANsGeBttgoHgfzgSuS5iSF8IVRtAUw",
+            "snippet": "Engage in a fearless fight against Black Army's oppression and help end the World War. Super Trench Attack is an action packed, fun RPG, dual stick shooter.",
+            "currency": "$",
+            "price": 8,
+            "position": 5
+        },
+        {
+            "title": "Sleep Attack for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/sleep-attack-switch/?srsltid=AfmBOor79d5G0c39pxXd8CPvCVwQM0dUQY2J1K9G4aNujmSnXVxaQQEg",
+            "snippet": "Build and place powerful turrets to attack invading enemies. Then rotate the battlefield to force foes down your preferred path of destruction. Be careful ...",
+            "currency": "$",
+            "price": 6.99,
+            "position": 6
+        },
+        {
+            "title": "AMAZE! Time Attack Edition for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/amaze-time-attack-edition-switch/?srsltid=AfmBOor0A7VRSZ7f_Q6I_XZSnxph5X5YocjX17r9hOPYweVAIG_40Gyh",
+            "snippet": "Buy AMAZE! Time Attack Edition and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 4.99,
+            "position": 7
+        },
+        {
+            "title": "Air Jet Fighter Combat - Europe Fly Plane Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/air-jet-fighter-combat-europe-fly-plane-attack-switch/?srsltid=AfmBOorG6aE9Rl38LkcxdpEK53KTJmfGIZ5UZiXaJTasOGHE_BoTigF8",
+            "snippet": "Welcome to Air Fighter Air Attack. Functions: - Realistic graphics - Realistic physics - Stunning 3D models - Photorealistic skybox - Different type ...",
+            "currency": "$",
+            "price": 50,
+            "position": 8
+        },
+        {
+            "title": "Uboat Attack: Vortice DLC",
+            "link": "https://www.nintendo.com/us/store/products/uboat-attack-vortice-dlc-70050000051316-switch/?srsltid=AfmBOoqqRpmEqKi867PsOcXw91Cqil4t3WuRFUjBdF1JIGM-E1eEKwf_",
+            "snippet": "Uboat Attack: Vortice DLC ; Edition. Digital ; Board the cunning Vortice and control the battlefield! A new fearsome vessel has joined the fight! With this DLC, ...",
+            "currency": "$",
+            "price": 1.49,
+            "position": 9
+        },
+        {
+            "title": "The Wonderful 101 Development Staff - Page 4 - Iwata Asks",
+            "link": "https://iwataasks.nintendo.com/interviews/wiiu/thewonderful101/1/3/",
+            "snippet": "It's what it sounds like. It allows you to attack in waves by creating multiple Unite Morphs at the same time. Before that you could only create one Unite Morph ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

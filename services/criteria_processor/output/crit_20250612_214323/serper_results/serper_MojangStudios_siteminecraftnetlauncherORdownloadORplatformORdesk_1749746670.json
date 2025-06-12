@@ -1,0 +1,91 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Download Minecraft & Server Software",
+            "link": "https://www.minecraft.net/en-us/download",
+            "snippet": "Downloads. The face of a creeper. Download the Launcher. Rediscover the world of Minecraft. Download the Launcher today and pick up where you left off. A ...",
+            "position": 1
+        },
+        {
+            "title": "Download and Install the Minecraft Launcher",
+            "link": "https://help.minecraft.net/hc/en-us/articles/23907917790093-How-to-Download-and-Install-the-Minecraft-Launcher",
+            "snippet": "Download and Install the Minecraft Launcher · Go to the Launcher download page on Minecraft.net · Select the download that works with the platform you are using.",
+            "position": 2
+        },
+        {
+            "title": "Download the Minecraft Launcher to play ...",
+            "link": "https://www.minecraft.net/en-us/download-dungeons",
+            "snippet": "Already own Minecraft Dungeons? Download the Minecraft Launcher. Download for Windows 10/11 · Download for Windows 7/8.",
+            "position": 3
+        },
+        {
+            "title": "The Minecraft Launcher Crashes on Sign In",
+            "link": "https://help.minecraft.net/hc/en-us/articles/23430310790413",
+            "snippet": "Select Uninstall. Go to the Minecraft Launcher download page. Download and install the Launcher. Was this Article Helpful? Yes",
+            "position": 4
+        },
+        {
+            "title": "Troubleshooting Minecraft Launcher Issues",
+            "link": "https://help.minecraft.net/hc/en-us/articles/6662588435597-Minecraft-Launcher-Support",
+            "snippet": "See How to Download and Install the Minecraft Launcher for information. To learn more about missing dependencies that can affect the Launcher, see ...",
+            "position": 5
+        },
+        {
+            "title": "Troubleshooting Installing the Minecraft Launcher",
+            "link": "https://help.minecraft.net/hc/en-us/articles/23430683774221-Troubleshooting-Installing-the-Minecraft-Launcher",
+            "snippet": "Download and install the Xbox App for Windows PC · Sign into your Xbox account after installation · Go to the search bar and type Minecraft Launcher · Click Get or ...",
+            "position": 6
+        },
+        {
+            "title": "Download | Minecraft Education",
+            "link": "https://education.minecraft.net/en-us/get-started/download",
+            "snippet": "Learn how to download Minecraft Education. Follow these simple instructions in order to access Minecraft Education on your phone, computer or tablet.",
+            "position": 7
+        },
+        {
+            "title": "Minecraft Server Download",
+            "link": "https://www.minecraft.net/en-us/download/server",
+            "snippet": "Download the Launcher today and pick up where you left off. A grassy dirt block. Download the Java Edition Server. Run a Minecraft Java multiplayer server.",
+            "position": 8
+        },
+        {
+            "title": "Welcome to the Minecraft Official Site | Minecraft",
+            "link": "https://www.minecraft.net/",
+            "snippet": "Download the Launcher today and pick up where you left off. A grassy dirt ... A game-based learning platform supporting thousands of educators in over 100 ...",
+            "sitelinks": [
+                {
+                    "title": "Server Download",
+                    "link": "https://www.minecraft.net/en-us/download/server"
+                },
+                {
+                    "title": "Download the Launcher",
+                    "link": "https://www.minecraft.net/en-us/download"
+                },
+                {
+                    "title": "Minecraft Realms Play with...",
+                    "link": "https://www.minecraft.net/en-us/realms"
+                },
+                {
+                    "title": "Classic",
+                    "link": "https://classic.minecraft.net/"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "How to set up family share on your PC - Minecraft Help",
+            "link": "https://help.minecraft.net/hc/en-us/articles/21854073838989-How-to-Download-and-Play-Minecraft-Through-Family-Share-on-PC",
+            "snippet": "Search for Minecraft Launcher and download it if it is not already installed on your device. If you want to make sure the child does not make purchases on ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,113 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Multiplayer Video Games - Official EA Site",
+            "link": "https://www.ea.com/games/library/multiplayer",
+            "snippet": "Or, team up with friends in another hit from our multiplayer game library! ... Service Updates Security · Your Privacy Choices. Cookie Preferences. © 2025 ...",
+            "position": 1
+        },
+        {
+            "title": "Buy Split Fiction - Electronic Arts",
+            "link": "https://www.ea.com/games/split-fiction/split-fiction",
+            "snippet": "One user must own the full game in order for the co-op player to play the full game. ... Online Service Updates. Sales tax may apply for your region. © 2025 ...",
+            "position": 2
+        },
+        {
+            "title": "Split Fiction launching on March 6th, 2025",
+            "link": "https://www.ea.com/ar/games/split-fiction/split-fiction/news/split-fiction-reveal-announcement",
+            "snippet": "A Hazelight Studios staple feature, The Friend's Pass* returns again allowing one player that owns the game to invite a friend to play for FREE! Hazelight is ...",
+            "position": 3
+        },
+        {
+            "title": "Play A Way Out with a Friend, Even if They Don't Own the ...",
+            "link": "https://www.ea.com/news/a-way-out-friends-pass",
+            "snippet": "A Way Out lets you team up with a buddy from your friend list for its split-screen, co-op adventure, even when they don't own the game themselves.",
+            "position": 4
+        },
+        {
+            "title": "Dragon Age: Inquisition Unveils Cooperative Multiplayer",
+            "link": "https://www.ea.com/news/dragon-age-inquisition-unveils-cooperative-multiplayer",
+            "snippet": "The F1 25 Q&A: Creative Director Gavin Cooper on their biggest game ever ... Service Updates Security · Your Privacy Choices. Cookie Preferences. © 2025 ...",
+            "position": 5
+        },
+        {
+            "title": "Split Fiction Friend's Pass - Xbox",
+            "link": "https://www.ea.com/games/split-fiction/split-fiction/features/friends-pass-xbox",
+            "snippet": "Yes, both players need a Xbox Game Pass Core (previously Xbox Live Gold) or platform's service subscription to play online co-op. Players on PC do not need a ...",
+            "position": 6
+        },
+        {
+            "title": "Remaster Update and Multiplayer Overview",
+            "link": "https://www.ea.com/games/command-and-conquer/command-and-conquer-remastered/news/remaster-update-multiplayer-overview",
+            "snippet": "So for this update, we wanted to take a deep dive into the components of Multiplayer and describe how we're approaching this beloved part of the game. ... Service ...",
+            "position": 7
+        },
+        {
+            "title": "Buy Split Fiction | Xbox",
+            "link": "https://go.ea.com/z6NGr",
+            "snippet": "Online multiplayer on console requires Xbox Game Pass Core, Standard, or Ultimate (subscriptions sold separately). DETAILS; REVIEWS; MORE. Gallery.",
+            "currency": "$",
+            "price": 49.99,
+            "position": 8
+        },
+        {
+            "title": "Friend's Pass",
+            "link": "https://www.ea.com/games/it-takes-two/it-takes-two/features/itt-friends-pass",
+            "snippet": "In addition, if they've joined a game session and the game was saved, it ... Online Service Updates. Sales tax may apply for your region. © 2025 ...",
+            "sitelinks": [
+                {
+                    "title": "Steam",
+                    "link": "https://www.ea.com/games/it-takes-two/it-takes-two/news/how-to-get-friends-pass-on-steam"
+                },
+                {
+                    "title": "Playstation",
+                    "link": "https://www.ea.com/games/it-takes-two/it-takes-two/news/how-to-get-friends-pass-on-playstation"
+                },
+                {
+                    "title": "EA app",
+                    "link": "https://www.ea.com/games/it-takes-two/it-takes-two/news/how-to-get-friends-pass-on-ea-app"
+                },
+                {
+                    "title": "Nintendo Switch",
+                    "link": "https://www.ea.com/games/it-takes-two/it-takes-two/news/how-to-get-friends-pass-on-switch"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Star Wars™ Battlefront™ II Multiplayer Game Modes",
+            "link": "https://www.ea.com/games/starwars/battlefront/star-wars-battlefront-2/game-modes",
+            "snippet": "MULTIPLAYER PROGRESSION HEROES MAPS & LOCATIONS GAME MODES REINFORCEMENTS CLASSES VEHICLES ... Service Updates Security YouTube Terms of Service Google ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Video game multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Multiplayer service game ps4"
+        },
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Best multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game xbox one"
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,96 @@
+{
+    "searchParameters": {
+        "q": "site:cdprojektred.com (\"release\" OR \"patch\" OR \"update\" OR \"version\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Patch 2.3 is coming!",
+            "link": "https://forums.cdprojektred.com/index.php?threads/patch-2-3-is-coming.11136278/",
+            "snippet": "The fact that we're getting another patch (or maybe more than one) is expected, since the game is about to release on two new platforms. But the ...",
+            "date": "7 days ago",
+            "position": 1
+        },
+        {
+            "title": "Patch 2.13",
+            "link": "https://forums.cdprojektred.com/index.php?threads/patch-2-13.11131930/",
+            "snippet": "OK, what about a console version of the update? Will CDPR be able to comment on this? Will the patch come later, or will it stay as it is?",
+            "date": "Sep 12, 2024",
+            "position": 2
+        },
+        {
+            "title": "Update 2.2 for Cyberpunk 2077 is Now Available!",
+            "link": "https://press.cdprojektred.com/en/news/1693/update-2-2-for-cyberpunk-2077-is-now-available",
+            "snippet": "On top of it all, Update 2.2 also brings a number of technical improvements and more secrets to Night City. [Check patch notes]. More ...",
+            "date": "Dec 10, 2024",
+            "position": 3
+        },
+        {
+            "title": "Important Update - Cyberpunk | Forums - CD Projekt Red",
+            "link": "https://forums.cdprojektred.com/index.php?threads/important-update.11049239/",
+            "snippet": "After the holidays, we'll continue working — we'll release two large patches starting with Patch #1 in January. This will be followed by Patch # ...",
+            "date": "Dec 14, 2020",
+            "position": 4
+        },
+        {
+            "title": "Cyberpunk 2077 on previous-gen consoles",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/playstation/sp-technical/issue/2239/cyberpunk-2077-on-previous-gen-consoles",
+            "snippet": "For the last year and half, the team has worked hard to release ... Following Patch 1.6 (the Edgerunners Update), we want to focus our attention ...",
+            "position": 5
+        },
+        {
+            "title": "THE WITCHER PIN AND PATCH BANNER",
+            "link": "https://gear.cdprojektred.com/products/the-witcher-pin-and-patch-banner",
+            "snippet": "Transform your lair into Kaer Morhen with The Witcher Pin Banner and Patch Set. Unleash your inner wolf!",
+            "currency": "$",
+            "price": 85,
+            "position": 6
+        },
+        {
+            "title": "Patch after hotfixes",
+            "link": "https://forums.cdprojektred.com/index.php?threads/patch-after-hotfixes.11112193/",
+            "snippet": "... version of this next gen update. John_Russell. Senior user. #6. Dec 25, 2022. The biggest performance issue seems to be with the Red ...",
+            "date": "Dec 24, 2022",
+            "position": 7
+        },
+        {
+            "title": "Discover New Content Coming To Cyberpunk 2077 With The ...",
+            "link": "https://press.cdprojektred.com/en/news/1498/discover-new-content-coming-to-cyberpunk-2077-with-the-free-update-2-1-this-december",
+            "snippet": "The update will become available to players on December 5th, the same day as the release of Cyberpunk 2077: Ultimate Edition. Full article: With ...",
+            "date": "Dec 1, 2023",
+            "position": 8
+        },
+        {
+            "title": "GOG telling me graphics driver is out of date",
+            "link": "https://forums.cdprojektred.com/index.php?threads/gog-telling-me-graphics-driver-is-out-of-date.11123908/",
+            "snippet": "... patch 2.02 came out I was notified of a new driver available so I ... Same again after the latest driver update dated 11/14 Still saying driver ...",
+            "date": "Oct 29, 2023",
+            "position": 9
+        },
+        {
+            "title": "How do I update my game to the next-gen?",
+            "link": "https://support.cdprojektred.com/en/cyberpunk/playstation/sp-technical/issue/2072/how-do-i-update-my-game-to-the-next-gen-1",
+            "snippet": "It is necessary to manually download the dedicated next-gen version of the game from either the PlayStation Store or your library. To update disc copies ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release patch update version xbox"
+        },
+        {
+            "query": "Release patch update version free"
+        },
+        {
+            "query": "Release patch update version download"
+        },
+        {
+            "query": "Release patch update version apk"
+        }
+    ],
+    "credits": 1
+}

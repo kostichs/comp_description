@@ -1,0 +1,94 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Call of Duty: Black Ops III Multiplayer Beta Available Now First ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-black-ops-iii-multiplayer-beta-available-now-first",
+            "snippet": "... game or co-op online with up to four players (on PS4™ system, Xbox One, and PC), the deepest, most rewarding multiplayer ever offered in Call of Duty, and ...",
+            "position": 1
+        },
+        {
+            "title": "2023 in review: It's a whole new game.",
+            "link": "https://newsroom.activisionblizzard.com/p/2023-in-review-its-a-whole-new-game",
+            "snippet": "In June, we introduced Crash Team Rumble, the 4v4 online multiplayer game ... (That's enough service members to fill every seat in the ...",
+            "date": "Dec 19, 2023",
+            "position": 2
+        },
+        {
+            "title": "Skylanders® SuperChargers Delivers Real-Time Online ...",
+            "link": "https://investor.activisionblizzard.com/static-files/c8e18d9b-2b5d-40fb-b0b2-8464a951e5f7",
+            "snippet": "MFi Extended Game Controller -- An MFi Extended Game controller can be used for iPhone, iPod touch, iPad and. Apple TV - a great option for multiplayer. ○.",
+            "position": 3
+        },
+        {
+            "title": "Blur&#153; Features Innovative In-Game Facebook® Integration",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/blur153-features-innovative-game-facebookr-integration",
+            "snippet": "Blur offers online multiplayer supporting competitive and cooperative gameplay for up to 20 racers, including team racing and objective based events, and ...",
+            "position": 4
+        },
+        {
+            "title": "New Call of Duty: Advanced Warfare Multiplayer Delivers ...",
+            "link": "https://investor.activisionblizzard.com/static-files/665de28a-87a4-429c-b02d-72ea6e73b9c9",
+            "snippet": "New Call of Duty: Advanced Warfare Multiplayer Delivers Game Changing Experience. First Call of Duty Created with Three-Year Development Cycle from First ...",
+            "position": 5
+        },
+        {
+            "title": "Confronting loneliness with games - by Laura Entis",
+            "link": "https://newsroom.activisionblizzard.com/p/confronting-loneliness-with-games",
+            "snippet": "A point-and-click puzzle game, you're tasked with building yourself a companion one organ at a time. Oddly, Karrh didn't originally set out to ...",
+            "date": "Jul 13, 2023",
+            "position": 6
+        },
+        {
+            "title": "Destiny 2 Delivers Biggest Console Video Game Launch ...",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/destiny-2-delivers-biggest-console-video-game-launch-week-year",
+            "snippet": "Blizzard Entertainment's online gaming service. \"With ... For competitive players, Destiny 2 offers intense 4v4 multiplayer matches in 'The Crucible'.",
+            "position": 7
+        },
+        {
+            "title": "Senior Gameplay Engineer (Multiplayer) in Warsaw, Poland",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR024318EXTERNAL/Senior-Gameplay-Engineer-Multiplayer",
+            "snippet": "4+ years of professional game engineering experience. A deep understanding of latency, bandwidth and the general multiplayer game programming domain. Strong ...",
+            "position": 8
+        },
+        {
+            "title": "Playing Our Part: A Welcoming Game Community",
+            "link": "https://newsroom.activisionblizzard.com/p/playing-our-part-a-welcoming-game",
+            "snippet": "Players are required to acknowledge the Call of Duty Code of Conduct in order to play multiplayer modes. Blizzard's in-game Code of Conduct has ...",
+            "date": "Dec 15, 2022",
+            "position": 9
+        },
+        {
+            "title": "Call of Duty: Modern Warfare Is #1 Most ... - Activision Blizzard",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-modern-warfare-1-most-played-call-duty-multiplayer",
+            "snippet": "New, multiplayer game mode. The Season One Battle Pass can be purchased for 1,000 COD points or players can upgrade to the Battle Pass Bundle ...",
+            "date": "Dec 18, 2019",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Video game multiplayer service game"
+        },
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Multiplayer service game xbox one"
+        },
+        {
+            "query": "Multiplayer service game ps4"
+        },
+        {
+            "query": "Best multiplayer service game"
+        }
+    ],
+    "credits": 1
+}

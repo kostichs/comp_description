@@ -1,0 +1,75 @@
+{
+    "searchParameters": {
+        "q": "site:cdprojektred.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "What is this REDLauncher stuff??",
+            "link": "https://forums.cdprojektred.com/index.php?threads/what-is-this-redlauncher-stuff.11131651/",
+            "snippet": "I don't know, maybe because Red Launcher is used by the game to connect your CDPR account which now have nothing to do with GOG anymore. But ...",
+            "date": "Aug 16, 2024",
+            "position": 1
+        },
+        {
+            "title": "Red Launcher Crashes and becomes stripes",
+            "link": "https://forums.cdprojektred.com/index.php?threads/red-launcher-crashes-and-becomes-stripes.11135963/",
+            "snippet": "Every time I launch the game from Steam, the Red Launcher opens for a split second and then reduces into stripe artifacts like the picture ...",
+            "date": "May 26, 2025",
+            "position": 2
+        },
+        {
+            "title": "[FIXED] REDlauncher login browser tab won't pop up (and ...",
+            "link": "https://forums.cdprojektred.com/index.php?threads/fixed-redlauncher-login-browser-tab-wont-pop-up-and-sometimes-it-says-im-offline.11133880/",
+            "snippet": "Some time ago I had an issue with the launcher itself not starting. Today it got resolved and I don't know how. Now there's another problem, ...",
+            "date": "Dec 28, 2024",
+            "position": 3
+        },
+        {
+            "title": "[FIXED] REDlauncher no longer starts and TW3 launches ...",
+            "link": "https://forums.cdprojektred.com/index.php?threads/fixed-redlauncher-no-longer-starts-and-tw3-launches-directly-from-steam.11131492/",
+            "snippet": "So the Workaround seems to be installing a REDlauncher game to repair the launcher itself. Last edited: Apr 2, 2025. RED Point. Reactions ...",
+            "date": "Aug 3, 2024",
+            "position": 4
+        },
+        {
+            "title": "When launching from steam, skip the redlauncher",
+            "link": "https://forums.cdprojektred.com/index.php?threads/when-launching-from-steam-skip-the-redlauncher.11110993/",
+            "snippet": "I found a way to skip the launcher (click properties in Steam and add this '--launcher-skip' to your start field) but i should not have to do that in the first ...",
+            "date": "Dec 14, 2022",
+            "position": 5
+        },
+        {
+            "title": "This application failed to start because no Qt platform ...",
+            "link": "https://forums.cdprojektred.com/index.php?threads/this-application-failed-to-start-because-no-qt-platform-plugin-could-be-initialized-reinstalling-the-application-may-fix-this-problem.11114498/",
+            "snippet": "This application failed to start because no Qt platform ... my red launcher used to work but for some reason after the update it didnt.",
+            "date": "Mar 4, 2023",
+            "position": 6
+        },
+        {
+            "title": "CDPR The Game Wont Launch, HELP",
+            "link": "https://forums.cdprojektred.com/index.php?threads/cdpr-the-game-wont-launch-help.11118877/",
+            "snippet": "Apologies if this is reported already, So when i launch the game, via steam, the launcher ... desktop icon. I have no mods and the enable ...",
+            "date": "Sep 20, 2023",
+            "position": 7
+        },
+        {
+            "title": "After launching the game appears in Task Manager, but does ...",
+            "link": "https://forums.cdprojektred.com/index.php?threads/after-launching-the-game-appears-in-task-manager-but-does-not-open.11131960/",
+            "snippet": "Sep 12, 2024. Upvote 0. Try to skip launcher by adding \"--launcher ... Crash to desktop after sleeping in V's bed for the first time (v2.1). 1.",
+            "date": "Sep 12, 2024",
+            "position": 8
+        },
+        {
+            "title": "\"Could not download user profile. Please, try again later\" ...",
+            "link": "https://support.cdprojektred.com/en/gwent/pc/pc-account/issue/2392/could-not-download-user-profile-please-try-again-later-login-error-when-launching-the-game",
+            "snippet": "Select Platform. Cyberpunk 2077. Select Platform. The Witcher 3: Wild Hunt ... If you see the following login error when launching the game \"Could not download ...",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}

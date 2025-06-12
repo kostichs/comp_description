@@ -1,0 +1,81 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 13.0.1 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/57295/~/super-smash-bros.-ultimate-update-ver.-13.0.1%26nbsp%3B--fighter-adjustments",
+            "snippet": "Reduced vulnerability. Donkey Kong, Down Tilt Attack, Extended the amount of time opponents will be in the damage animation. Donkey Kong, Neutral Special ...",
+            "position": 1
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 10.1.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/54095/~/super-smash-bros.-ultimate-update-ver.-10.1.0---fighter-adjustments",
+            "snippet": "Made it easier to hit multiple times. Increased attack range of the first attack to fourth attack. Fox, Down Air Attack, Made it easier to hit multiple times.",
+            "position": 2
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Update Ver. 9.0.0 - Fighter ...",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/53118/~/super-smash-bros.-ultimate-update-ver.-9.0.0---fighter-adjustments",
+            "snippet": "Increased attack range. Ice Climber, Down Smash Attack, Extended launch distance. Ice Climber, Side Special, Increased the speed of the edge-grab timing ...",
+            "position": 3
+        },
+        {
+            "title": "Attack Hole for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/attack-hole-switch/?srsltid=AfmBOoqtmApb1OfdGxOm8SoXxFNeUjAofC46WhA-EnTm-us6MYoBfagk",
+            "snippet": "Attack Hole ; Version. Nintendo Switch ; Game file size. Nintendo Switch: 147 MB. Nintendo Switch 2: 147 MB ; Supported play modes. TV mode. Tabletop mode.",
+            "currency": "$",
+            "price": 4.99,
+            "position": 4
+        },
+        {
+            "title": "Super Smash Bros. Ultimate Beginner Strategies",
+            "link": "https://play.nintendo.com/news-tips/tips-tricks/super-smash-bros-ultimate-beginner-strategies/",
+            "snippet": "However, if you quickly flick the Control Stick in a direction and press the A Button, you will perform a powerful move called a Smash Attack. These attacks ...",
+            "position": 5
+        },
+        {
+            "title": "Splatoon Update Ver. 2.9.0 - Weapon Adjustments",
+            "link": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/17018/~/splatoon-update-ver.-2.9.0---weapon-adjustments",
+            "snippet": "While the first adjustment results in an overall decrease in damage dealt by a single ink fling attack in Ver. 2.8.0, the second adjustment was implemented ...",
+            "position": 6
+        },
+        {
+            "title": "Arcade Archives Rush'n Attack for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/arcade-archives-rushn-attack-switch/?srsltid=AfmBOor_N8lXDKJ5rfuTKia6MO7pzsOvBF1wH1sDqsXI8aZF9lYCPbqy",
+            "snippet": "\"Rush'n Attack\" is an action game released by KONAMI in 1985. Infiltrate an enemy base and get past four obstacles to rescue your comrades!",
+            "currency": "$",
+            "price": 7.99,
+            "position": 7
+        },
+        {
+            "title": "SUPER TRENCH ATTACK for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/super-trench-attack-switch/?srsltid=AfmBOopnH02C6MbM_F5gACamO1IuIXLlAUQQ-Bau8t4keg0pJlvK_C11",
+            "snippet": "Engage in a fearless fight against Black Army's oppression and help end the World War. Super Trench Attack is an action packed, fun RPG, dual stick shooter.",
+            "currency": "$",
+            "price": 8,
+            "position": 8
+        },
+        {
+            "title": "Vortex Attack EX for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/vortex-attack-ex-switch/?srsltid=AfmBOor6kbNIM-9MrDpQ9C79I2aj3vicMXzGGVQQ4Eur4i5HjJLOuQW_",
+            "snippet": "Buy Vortex Attack EX and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 9.99,
+            "position": 9
+        },
+        {
+            "title": "Poll: Which Minecraft Dungeons Mob Will You Attack?",
+            "link": "https://play.nintendo.com/activities/opinion-polls/minecraft-dungeons-mob-attack-poll/",
+            "snippet": "Mob attack! You can fight up-close and personal with melee swings, hang back with ranged attacks, or tank your way through swarms of mobs, shielded by heavy ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

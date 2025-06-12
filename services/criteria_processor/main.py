@@ -183,6 +183,11 @@ def main():
             selected_products_list = [p.strip() for p in args.selected_products.split(',') if p.strip()]
             log_info(f"🎯 Будут обрабатываться только выбранные продукты: {selected_products_list}")
         
+        # ДЕТАЛЬНОЕ ЛОГИРОВАНИЕ HUBSPOT ПАРАМЕТРА
+        log_info(f"🔍 HUBSPOT ПАРАМЕТР В MAIN.PY:")
+        log_info(f"   🔗 args.write_to_hubspot_criteria = {args.write_to_hubspot_criteria}")
+        log_info(f"   📝 Тип параметра: {type(args.write_to_hubspot_criteria)}")
+        
         # Валидация конфигурации
         log_info("Проверяем конфигурацию...")
         validate_config()
@@ -211,13 +216,15 @@ def main():
             )
         elif args.parallel:
             log_info(f"🚀 ПАРАЛЛЕЛЬНЫЙ РЕЖИМ: max_concurrent={args.max_concurrent}")
+            log_info(f"🔗 ПЕРЕДАЕМ В run_parallel_analysis: write_to_hubspot_criteria={args.write_to_hubspot_criteria}")
             results = run_parallel_analysis(
                 companies_file=args.file,
                 load_all_companies=args.all_files,
                 session_id=args.session_id,
                 use_deep_analysis=args.deep_analysis,
                 max_concurrent_companies=args.max_concurrent,
-                selected_products=selected_products_list
+                selected_products=selected_products_list,
+                write_to_hubspot_criteria=args.write_to_hubspot_criteria
             )
         else:
             log_info("🐌 ОБЫЧНЫЙ РЕЖИМ: последовательная обработка")

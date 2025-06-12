@@ -1,0 +1,104 @@
+{
+    "searchParameters": {
+        "q": "site:take2games.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Leading Game Publisher | Take-Two Interactive Software, Inc.",
+            "link": "https://www.take2games.com/",
+            "snippet": "Take-Two Interactive Software is a leading game publisher, creating games through its labels, Rockstar Games, 2K, Private Division, and Social Point.",
+            "position": 1
+        },
+        {
+            "title": "Fundamentals | Take-Two Interactive Software, Inc.",
+            "link": "https://www.take2games.com/ir/fundamentals",
+            "snippet": "Take-Two Interactive (TTWO) balance sheet, cash flow, income statement, trading statistics and other financial information.",
+            "position": 2
+        },
+        {
+            "title": "TAKE-TWO INTERACTIVE SOFTWARE, INC.",
+            "link": "https://ir.take2games.com/static-files/f3fdf5c5-663b-4ac2-8924-d63dc410c60a",
+            "snippet": "The world's most successful mobile soccer management game. Provides a platform for creating and managing soccer clubs, including daily competitions with a ...",
+            "position": 3
+        },
+        {
+            "title": "Rockstar Games Releases Trailer 2 for Grand Theft Auto VI",
+            "link": "https://www.take2games.com/ir/news/rockstar-games-releases-trailer-2-grand-theft-auto-vi",
+            "snippet": "Rockstar Games Releases Trailer 2 for Grand Theft Auto VI. Download PDF ... download, online platforms, and cloud streaming services. The ...",
+            "date": "May 6, 2025",
+            "position": 4
+        },
+        {
+            "title": "Take-Two Interactive Software Privacy Policy",
+            "link": "https://www.take2games.com/privacy/",
+            "snippet": "This Privacy Policy supplements privacy disclosures provided with your software product and from your platform manufacturer. ... download, install, or access ...",
+            "position": 5
+        },
+        {
+            "title": "General | Take-Two Interactive Software, Inc.",
+            "link": "https://ir.take2games.com/taxonomy/term/3886?mobile=1&page=45",
+            "snippet": "BioShock® Infinite: Burial at Sea – Episode Two Available for Download Starting Today · Read more about BioShock® Infinite: Burial at Sea – Episode Two ...",
+            "position": 6
+        },
+        {
+            "title": "Corporate Profile | Take-Two Interactive Software, Inc.",
+            "link": "https://www.take2games.com/ir",
+            "snippet": "... download, online platforms, and cloud streaming services. The Company's common stock is publicly traded on NASDAQ under the symbol TTWO. All trademarks and ...",
+            "sitelinks": [
+                {
+                    "title": "Press Releases",
+                    "link": "https://www.take2games.com/ir/press-releases"
+                },
+                {
+                    "title": "Quarterly Earnings",
+                    "link": "https://www.take2games.com/ir/quarterly-earnings"
+                },
+                {
+                    "title": "SEC Filings",
+                    "link": "https://www.take2games.com/ir/sec-filings"
+                },
+                {
+                    "title": "Conduct & Social...",
+                    "link": "https://www.take2games.com/ir/conduct-social-responsibility-overview"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "Take-Two Terms of Service",
+            "link": "https://www.take2games.com/legal/",
+            "snippet": "You agree not to use, export, re-export, download, or otherwise transfer any part of the Services, Virtual Items, or your Account into (or ...",
+            "date": "Feb 28, 2025",
+            "position": 8
+        },
+        {
+            "title": "0002002698-24-000440 | 144 | Take- ...",
+            "link": "https://ir.take2games.com/sec-filings/sec-filing/144/0002002698-24-000440/",
+            "snippet": "Take-Two Interactive Software, Inc. Issuer. TAKE TWO INTERACTIVE SOFTWARE INC. Filing Formats. View HTML · Download PDF · Download DOC.",
+            "date": "Nov 19, 2024",
+            "position": 9
+        },
+        {
+            "title": "Rockstar Games Announces Grand Theft Auto VI, Coming ...",
+            "link": "https://www.take2games.com/ir/news/rockstar-games-announces-grand-theft-auto-vi-coming-2025",
+            "snippet": "We deliver our products through physical retail, digital download, online platforms, and cloud streaming services. The Company's common stock is publicly ...",
+            "sitelinks": [
+                {
+                    "title": "Release date",
+                    "link": "https://www.take2games.com/ir/news/rockstar-games-announces-grand-theft-auto-vi-coming-2025#:~:text=Rockstar%20Games%20Announces,publishing%20label%20of%20Take%2DTwo"
+                },
+                {
+                    "title": "Products",
+                    "link": "https://www.take2games.com/ir/news/rockstar-games-announces-grand-theft-auto-vi-coming-2025#:~:text=We%20develop%20and,and%20mobile%2C%20including%20smartphones"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

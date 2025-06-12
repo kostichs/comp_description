@@ -1,0 +1,75 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Tidy up your digital life with these organizer apps",
+            "link": "https://newsroom.activisionblizzard.com/p/tidy-up-your-digital-life-with-these",
+            "snippet": "Stardock Software has a whole host of programs and apps that can alter your desktop and file organization but Fences stands out for us. Fences ...",
+            "date": "Aug 25, 2023",
+            "position": 1
+        },
+        {
+            "title": "Media Contacts",
+            "link": "https://www.activisionblizzard.com/media-contacts",
+            "snippet": "Media Downloads. File Name 10. Download Icon. Test · File Name 9. Download Icon. Download · File Name 8. Download Icon. Download · File Name 7. Download Icon.",
+            "position": 2
+        },
+        {
+            "title": "Activision Blizzard | Annual Reports",
+            "link": "https://www.activisionblizzard.com/annual-reports",
+            "snippet": "Download annual reports to learn more about Activision Blizzard's performance. 2022 Annual Report May 1, 2022 DOWNLOAD",
+            "position": 3
+        },
+        {
+            "title": "Activision Blizzard | Advancing Our Communities",
+            "link": "https://ourcommitments.activisionblizzard.com/advancing-our-communities",
+            "snippet": "You can download and explore all of our ESG Reports here to learn more on additional ways we are advancing more Diverse and Inclusive Communities.",
+            "position": 4
+        },
+        {
+            "title": "Advanced Warfare",
+            "link": "https://investor.activisionblizzard.com/static-files/a87d3146-cf4e-4387-ad90-92578ab062a9",
+            "snippet": "If Day Zero Edition not available at retailer, pre-order customer may receive a pre-order refund, or may purchase a launch unit and obtain a code to download ...",
+            "position": 5
+        },
+        {
+            "title": "Call of Duty: World at War Downloadable Maps now Available",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-world-war-downloadable-maps-now-available",
+            "snippet": "(Nasdaq: ATVI) and Treyarch today announced the Call of Duty(R): World at War Map Pack 1 is now available for download on Xbox 360(TM) and PLAYSTATION(R)3 ...",
+            "position": 6
+        },
+        {
+            "title": "Activision Blizzard | About",
+            "link": "https://www.activisionblizzard.com/about-us",
+            "snippet": "Activision Blizzard Media is the gateway for brands to the #1 cross-platform gaming company in the western world, with hundreds of millions of players across ...",
+            "position": 7
+        },
+        {
+            "title": "Activision Blizzard | Protecting The Planet",
+            "link": "https://ourcommitments.activisionblizzard.com/protecting-the-planet",
+            "snippet": "Protecting the planet. ×. Download Our Full 2022 ESG Report · Back to Home. ×. Activision Blizzard. Careers · Legal · Terms of Use · Privacy Policy; Cookie ...",
+            "position": 8
+        },
+        {
+            "title": "The Edit | Activision Blizzard King | Substack",
+            "link": "https://newsroom.activisionblizzard.com/s/the-edit",
+            "snippet": "Clean up your desktop, Simpsons video games, and much more. Aug 28, 2023 • Marques Edge, Tim Leong, Eric Alt, and Andrew Nusca. 2. Share this post.",
+            "position": 9
+        },
+        {
+            "title": "The traveler's guide to gaming on the go - by Joey Held",
+            "link": "https://newsroom.activisionblizzard.com/p/the-travelers-guide-to-gaming-on",
+            "snippet": "As the name implies, there's enough room here for a desktop tower and monitor, plus accessories like a keyboard, mouse, hard drive, and cables.",
+            "date": "Jul 20, 2023",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

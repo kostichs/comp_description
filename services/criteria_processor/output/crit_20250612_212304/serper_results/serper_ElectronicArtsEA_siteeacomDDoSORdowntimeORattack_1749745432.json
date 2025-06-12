@@ -1,0 +1,81 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Re: Is it true, EA servers are being DDoS attacked?",
+            "link": "https://forums.ea.com/discussions/apex-legends-general-discussion-en/re-is-it-true-ea-servers-are-being-ddos-attacked/5406918",
+            "snippet": "Re: Is it true, EA servers are being DDoS attacked? @hhnbbfggty66 Happens to them a lot. What is crazy is it takes out every game and forums they have. Horrible way to run ...",
+            "position": 1
+        },
+        {
+            "title": "DDOS ATTACK AGAIN! BF4 - Battlefield",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/ddos-attack-again-bf4/11924881",
+            "snippet": "Forum Discussion. Niiilss's avatar. Niiilss. Seasoned Newcomer. 4 months ago. DDOS ATTACK AGAIN! BF4. Well it did not last long before they attacked again. Crashing servers all over.. Like. 2. Reply. 5 Replies. Replies sorted by Oldest. Replies have been turned off for this discussion.",
+            "date": "Feb 24, 2025",
+            "position": 2
+        },
+        {
+            "title": "Re: So much DDOS attacks and kids with WH running ...",
+            "link": "https://forums.ea.com/discussions/-/-/8676413",
+            "snippet": "Re: So much DDOS attacks and kids with WH running around. Cool... @NVC_Miny Hahaha u rly dont know? What is the point in saying that , when they dont even care about what u or I are saying? If u type on google *why EA is so bad* u will see lots of plp on reddit talking bad words about them, so what is the point in ...",
+            "position": 3
+        },
+        {
+            "title": "Re: Community Server Under Attack by DDOS from China",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/re-community-server-under-attack-by-ddos-from-china/6669077",
+            "snippet": "As I mentioned many times, Chinese people make money through VIP of BF4 server, The basic price is approximately from 10 RMB to 150 RMB per month. Because of this, there are always people who want to monopolize this market, So someone learned how to launch a DDoS attack. At the same ...",
+            "position": 4
+        },
+        {
+            "title": "Opponent DDOS | EA Forums - 11859604",
+            "link": "https://forums.ea.com/discussions/fc-25-technical-issues-en/opponent-ddos/11859604",
+            "snippet": "Opponent DDOS. I am currently playing fut champs and was winning 3-2 and says I lost connection to ea servers and gave me a loss. All my connections are completely fine. My opponent ddosed me so I can get a loss and lose connection. I think it's crazy how I'm getting an automatic loss for that and that player gets ...",
+            "position": 5
+        },
+        {
+            "title": "Re: So much DDOS attacks and kids with WH running ...",
+            "link": "https://forums.ea.com/discussions/-/-/8676415",
+            "snippet": "DDOS attacks are pretty rare, I doubt they're what you are experiencing. When there is a DDOS attack then pretty much the whole server is affected, meaning multiple lobbies. These kind large scale things are pretty rare, so they are most likely using some other method to achieve this.",
+            "position": 6
+        },
+        {
+            "title": "Re: Fix the DDOS attacks",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/re-fix-the-ddos-attacks/6664135",
+            "snippet": "Re: Fix the DDOS attacks. The daily server hacking attacks still going on here 3+ weeks later. At times our server is attacked/crashing every 20 minutes or so, so repeatedly and nonstop. Should enable EA to directly chase the culprits down and block their access permanently off as they are persistent on it like this ...",
+            "position": 7
+        },
+        {
+            "title": "BF4's server has been frequently attacked recently",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/bf4s-server-has-been-frequently-attacked-recently/11903235",
+            "snippet": "In the past half month, there have been people using DDOS and EA server backend bugs to attack players' servers. During the game battle, all players suddenly experience severe lag and crashes, or simply collapse. The connection between the game prompt and the server was lost, and the server was ...",
+            "date": "Feb 16, 2025",
+            "sitelinks": [
+                {
+                    "title": "18 answers",
+                    "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/bf4s-server-has-been-frequently-attacked-recently/11903235/replies/11904234"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Re: DDOS Attack, ping 200 - Apex Legends",
+            "link": "https://forums.ea.com/discussions/apex-legends-general-discussion-en/re-ddos-attack-ping-200/5428863",
+            "snippet": "If the person has the capacity to orchestrate a DDoS attack, they have the capacity to get cheats for free or make their own. when it comes to DDoS you're talking about multiple computers (thousands) going after the servers to deny access of services amongst other things ...",
+            "position": 9
+        },
+        {
+            "title": "Re: Ddos attack on Apex Servers?",
+            "link": "https://forums.ea.com/discussions/-/-/5531015",
+            "snippet": "Re: Ddos attack on Apex Servers? @Fyro021 Completely agree with you.Because of the same persistent issues that ruined large parts of season 9 for me & a complete inability to fix them I refused to buy the season 9 pass as a sign of my disbelief in the game.Fast forward several weeks into season 10 & for me nothing ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

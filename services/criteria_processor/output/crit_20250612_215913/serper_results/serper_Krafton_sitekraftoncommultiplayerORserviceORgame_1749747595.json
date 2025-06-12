@@ -1,0 +1,86 @@
+{
+    "searchParameters": {
+        "q": "site:krafton.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "inZOI | KRAFTON",
+            "link": "https://www.krafton.com/en/games/inzoi/",
+            "snippet": "On-device generative AI tools empower players to easily create personalized customizations. Game Platform. inZOI (Steam). Steam Website · 5minlab. DEVELOPER ...",
+            "position": 1
+        },
+        {
+            "title": "ReLU Games | KRAFTON",
+            "link": "https://krafton.com/en/studios/relugames/",
+            "snippet": "The internet introduced us to 'online/multiplayer play' as a genre ... Scavenger T.O.M is a survival crafting game set in a radiation-contaminated world.",
+            "position": 2
+        },
+        {
+            "title": "TERA | KRAFTON",
+            "link": "https://www.krafton.com/en/games/tera/",
+            "snippet": "In celebration of our 3rd anniversary for the North American release, we launched on Steam in 2015 and recorded No.1 concurrent players among MMORPG. Game",
+            "position": 3
+        },
+        {
+            "title": "Dinkum Together",
+            "link": "https://dinkumtogether.krafton.com/en",
+            "snippet": "game logo. News. Media. MORE. News; Media. ENGLISH. ENGLISH; 한국어 ... 5MINLAB IS A REGISTERED TRADEMARK OR SERVICE MARK OF KRAFTON, INC. Our site uses cookies ...",
+            "position": 4
+        },
+        {
+            "title": "Dreamotion",
+            "link": "https://krafton.com/en/studios/dreamotion/",
+            "snippet": "Our focus is on the game's core essence, “FUN”. Once we are convinced that this will be a fun game, we will make it, regardless of the genre or platform.",
+            "position": 5
+        },
+        {
+            "title": "Project ZETA",
+            "link": "https://zeta.krafton.com/",
+            "snippet": "TERMS OF SERVICE|PRIVACY POLICY|COOKIE POLICY| COOKIE SETTINGS. © 2025 ... The game, including but not limited to its gameplay mechanics, graphics ...",
+            "position": 6
+        },
+        {
+            "title": "KRAFTON LAUNCHES INZOI IN GLOBAL EARLY ACCESS",
+            "link": "https://krafton.com/en/news/press/krafton-launches-inzoi-in-global-early-access/",
+            "snippet": "inZOI is available in Early Access via Steam from March 28. The game is set at a price of $39.99, with all updates and DLC to be provided for free until full ...",
+            "position": 7
+        },
+        {
+            "title": "STRIKING DISTANCE STUDIOS GOES ROGUE WITH ITS ...",
+            "link": "https://press.krafton.com/STRIKING-DISTANCE-STUDIOS-GOES-ROGUE-WITH-ITS-NEW-GAME-REDACTED",
+            "snippet": "This game is all about fighting, dying, dying again, dying some more, and adapting, taking the classic roguelike formula and cranking it to ...",
+            "date": "Aug 22, 2024",
+            "position": 8
+        },
+        {
+            "title": "MOONBREAKER: EARLY ACCESS",
+            "link": "https://support.krafton.com/hc/en-us/articles/20009122105369-MOONBREAKER-EARLY-ACCESS",
+            "snippet": "Throughout Early Access, we will release a number of updates that add new content to the game. ... Moonbreaker currently includes a multiplayer ...",
+            "date": "Jun 26, 2023",
+            "position": 9
+        },
+        {
+            "title": "inZOI Studio | KRAFTON",
+            "link": "https://krafton.com/en/studios/inzoi/",
+            "snippet": "inZOI is a life simulation game where you can visualize stories of life with immersive, realistic graphics and deep, detailed simulation.",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer service game switch"
+        },
+        {
+            "query": "Multiplayer service game xbox"
+        },
+        {
+            "query": "Best multiplayer service game"
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,74 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"DDoS\" OR \"DDoS\" OR \"protected\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "FDDoSDetection | Unreal Engine 5.6 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/NetCore/Net/Core/Misc/FDDoSDetection/__ctor",
+            "snippet": "The stronger the DDoS attack, the higher the severity state will escalate (based on the thresholds), and the stronger the limitations places on incoming ...",
+            "position": 1
+        },
+        {
+            "title": "FDDoSStateConfig | Unreal Engine 5.5 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/NetCore/Net/Core/Misc/FDDoSStateConfig",
+            "snippet": "Applies only the per-frame adjusted state (based on expected vs actual framerate), to active DDoS protection. Public function, void. ApplyState ( FDDoSState& ...",
+            "position": 2
+        },
+        {
+            "title": "Epic Online Services | Acceptable Use Policy",
+            "link": "https://onlineservices.epicgames.com/en-US/services/terms/aup",
+            "snippet": "The services have built-in technical limitations that are intended to prevent DDOS attacks and other forms of abuse. These technical limitations are ...",
+            "position": 3
+        },
+        {
+            "title": "FDDoSDetection | Unreal Engine 5.6 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/NetCore/Net/Core/Misc/FDDoSDetection",
+            "snippet": "Protected variable, TArray< FDDoSStateConfig >, DetectionSeverity, The different DDoS detection states, of escalating severity, depending on the strength of the ...",
+            "position": 4
+        },
+        {
+            "title": "Verse API reference page for the Attack function",
+            "link": "https://dev.epicgames.com/documentation/en-us/uefn/verse-api/fortnitedotcom/ai/fort_guard_actions/attack",
+            "snippet": "Learn technical details about the Attack function. ... The following attributes and effects determine how Attack behaves and how you can use it in your programs.",
+            "position": 5
+        },
+        {
+            "title": "Verse API reference page for the Attack function | Fortnite ...",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/ai/fort_guard_actions/attack",
+            "snippet": "Attributes and Effects. The following attributes and effects determine how Attack behaves and how you can use it in your programs.",
+            "position": 6
+        },
+        {
+            "title": "Cyber Attack City 1410-1541-8895 by alienontheblock",
+            "link": "https://www.epicgames.com/fortnite/en-US/creative/island-codes/1410-1541-8895",
+            "snippet": "Cyber Attack City. By alienontheblock · Teen. Violence · Play Now. You must be signed in to add this island to your favorites. About this island. Free Play.",
+            "position": 7
+        },
+        {
+            "title": "Passkeys Offer Both Benefits and New Attack Surfaces | Blog",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/passkeys-benefits-and-new-attack-surfaces.html",
+            "snippet": "Commentary: The user info endpoint should be protected with an hCaptcha token to prevent user email enumeration attacks. ... DDoS depending ...",
+            "date": "Mar 12, 2024",
+            "position": 8
+        },
+        {
+            "title": "Attack | Epic Developer Community",
+            "link": "https://dev.epicgames.com/community/snippets/7LXg/unreal-engine-attack",
+            "snippet": "Attack ; Pressed. Released. Key ; In Skeletal Mesh Component. Montage To Play. SwordAndShieldSlash_UE_Montage. Play Rate. 1.0. Starting Position.",
+            "position": 9
+        },
+        {
+            "title": "FFusionVoice::Attack | Unreal Engine 5.5 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Plugins/HarmonixDsp/HarmonixDsp/FusionSampler/FFusionVoice/Attack",
+            "snippet": "FFusionVoice::Attack. Start the note (call after preparing the voice). On ... cpp. void Attack(). Copy full snippet. void Attack(). Remarks. Start the note ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}
