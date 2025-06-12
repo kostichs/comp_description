@@ -125,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sessionControls) sessionControls.style.display = 'none';
         if (resultsSection) resultsSection.style.display = 'none';
         if (progressStatus) progressStatus.style.display = 'none';
+        hideGenerationStatus(); // Hide beautiful progress bar
         if (sessionSelect) sessionSelect.value = '';
         if (newSessionBtn) newSessionBtn.style.display = 'none';
         if (runBtn) runBtn.style.display = 'inline-block';
@@ -196,10 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
             showLoading();
             if (runBtn) runBtn.style.display = 'none';
             uploadForm.style.display = 'none';
-            if (progressStatus) {
-                progressStatus.style.display = 'block';
-                progressStatus.textContent = 'Processing...';
-            }
+            
+            // Show progress status
+            showGenerationStatus('Creating session...', 'processing');
             const formData = new FormData();
             if (inputFile && inputFile.files[0]) {
                 formData.append('file', inputFile.files[0]);
@@ -228,13 +228,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const sessionData = await response.json();
                 currentSessionId = sessionData.session_id;
+                
+                // Update status
+                showGenerationStatus('Processing started...', 'processing');
+                updateGenerationProgressBar(5);
+                
                 await startProcessingImmediately(currentSessionId);
             } catch (error) {
-                if (progressStatus) {
-                    progressStatus.style.display = 'block';
-                    progressStatus.textContent = `Error: ${error.message}`;
-                    progressStatus.style.color = 'red';
-                }
+                // Show error status
+                showGenerationStatus(`Error: ${error.message}`, 'error');
                 // Показываем кнопку New Session при любой ошибке
                 if (newSessionBtn) {
                     newSessionBtn.style.display = 'inline-block';
@@ -339,11 +341,17 @@ document.addEventListener('DOMContentLoaded', () => {
                                      : sessionData.total_companies;
                     updateProgressBar(finalCount, finalCount, true, sessionData);
                 }
+                
+                // Show new session button for completed/error sessions
+                if (newSessionBtn) newSessionBtn.style.display = 'inline-block';
+                
                 ensureResultsControlsAvailable(); // Создаем кнопки, если их нет
                 makeResultsControlsVisible(true); // Делаем их видимыми
             } else {
                 await fetchAndDisplayResults(sessionId, sessionData);
                 makeResultsControlsVisible(false); // Скрываем для других статусов
+                
+
             }
         } catch (error) {
             console.error('Error fetching session data:', error);
@@ -538,11 +546,9 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoading();
         // Деактивируем HubSpot toggle когда начинается обработка
         disableHubSpotToggle();
-        if (progressStatus) {
-            progressStatus.style.display = 'block';
-            progressStatus.textContent = 'Processing...';
-            progressStatus.style.color = '#007bff';
-        }
+        
+
+        
         try {
             const response = await fetch(`/api/sessions/${sessionId}/start`, {
                 method: 'POST'
@@ -553,11 +559,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             startPollingStatus(sessionId);
         } catch (error) {
-            if (progressStatus) {
-                progressStatus.style.display = 'block';
-                progressStatus.textContent = `Error: ${error.message}`;
-                progressStatus.style.color = 'red';
-            }
+            // Show error status
+            showGenerationStatus(`Error: ${error.message}`, 'error');
+            
             // Показываем кнопку New Session при ошибке запуска
             if (newSessionBtn) {
                 newSessionBtn.style.display = 'inline-block';
@@ -684,102 +688,66 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateProgressBar(processedCount, totalCountArg, completed, sessionData) {
-        const progressStatus = document.getElementById('progressStatus');
-        if (!progressStatus) {
-            console.error("updateProgressBar: progressStatus element not found!");
-            return;
-        }
-
         console.log('[NEW] updateProgressBar ARGS:', { processedCount, totalCountArg, completed, sessionDataStatus: sessionData ? sessionData.status : 'N/A' });
-        if (sessionData) {
-            console.log('[NEW] updateProgressBar sessionData details:', {
-                total_companies: sessionData.total_companies,
-                companies_count: sessionData.companies_count, // Может быть полезно для отладки
-                initial_upload_count: sessionData.initial_upload_count,
-                dedup_info: sessionData.deduplication_info ? JSON.stringify(sessionData.deduplication_info) : 'N/A'
-            });
-        }
-
+        
         let effectiveTotal = 0;
-        let effectiveProcessed = processedCount; // По умолчанию
-        let deduplicationTextParts = []; // Массив для частей текста о дедупликации
+        let effectiveProcessed = processedCount;
+        let deduplicationTextParts = [];
 
         if (sessionData) {
-            // 1. Приоритет: sessionData.total_companies (обновляется после дедупликации)
+            // Calculate effective total and processed
             if (typeof sessionData.total_companies === 'number' && sessionData.total_companies > 0) {
                 effectiveTotal = sessionData.total_companies;
-                console.log(`[NEW] updateProgressBar: Case 1 - Using sessionData.total_companies = ${effectiveTotal}`);
-            }
-            // 2. Запасной: sessionData.deduplication_info.final_count
-            else if (sessionData.deduplication_info && typeof sessionData.deduplication_info.final_count === 'number' && sessionData.deduplication_info.final_count > 0) {
+            } else if (sessionData.deduplication_info && typeof sessionData.deduplication_info.final_count === 'number' && sessionData.deduplication_info.final_count > 0) {
                 effectiveTotal = sessionData.deduplication_info.final_count;
-                console.log(`[NEW] updateProgressBar: Case 2 - Using sessionData.deduplication_info.final_count = ${effectiveTotal}`);
-            }
-            // 3. Если процесс еще не завершен, и totalCountArg (обычно длина results) больше 0
-            else if (!completed && typeof totalCountArg === 'number' && totalCountArg > 0) {
+            } else if (typeof totalCountArg === 'number' && totalCountArg > 0) {
                 effectiveTotal = totalCountArg;
-                console.log(`[NEW] updateProgressBar: Case 3 - Using totalCountArg (argument) = ${effectiveTotal} (intermediate)`);
-            }
-            // 4. Крайний случай: sessionData.initial_upload_count (чтобы избежать 0 из 0)
-            else if (typeof sessionData.initial_upload_count === 'number' && sessionData.initial_upload_count > 0) {
-                effectiveTotal = sessionData.initial_upload_count;
-                console.log(`[NEW] updateProgressBar: Case 4 - Using sessionData.initial_upload_count = ${effectiveTotal} (fallback)`);
-            }
-             // 5. Если все еще 0, но totalCountArg (аргумент) не 0, используем его, чтобы не было 0 из 0.
-            else if (typeof totalCountArg === 'number' && totalCountArg > 0) {
-                effectiveTotal = totalCountArg;
-                console.log(`[NEW] updateProgressBar: Case 5 - Using totalCountArg = ${effectiveTotal} (last resort for non-zero display)`);
             }
 
-
-            // Формирование текста о дедупликации и неживых ссылках
+            // Deduplication info
             if (sessionData.deduplication_info) {
                 const dedupInfo = sessionData.deduplication_info;
                 if (typeof dedupInfo.duplicates_removed === 'number' && dedupInfo.duplicates_removed > 0) {
-                    deduplicationTextParts.push(`Duplicates: ${dedupInfo.duplicates_removed}`);
+                    deduplicationTextParts.push(`Duplicates removed: ${dedupInfo.duplicates_removed}`);
                 }
-                // Добавляем информацию о неживых ссылках
                 if (typeof dedupInfo.dead_urls_removed === 'number' && dedupInfo.dead_urls_removed > 0) {
                     deduplicationTextParts.push(`Dead links: ${dedupInfo.dead_urls_removed}`);
                 }
             }
         } else {
-            // Если нет sessionData, используем totalCountArg, если он есть
             effectiveTotal = (typeof totalCountArg === 'number' && totalCountArg > 0) ? totalCountArg : 0;
-            console.log(`[NEW] updateProgressBar: No sessionData. Using totalCountArg = ${effectiveTotal}`);
         }
 
-        // Коррекция processedCount
+        // Adjust processed count
         if (completed) {
-            effectiveProcessed = effectiveTotal; // Если завершено, обработано = всего
-        } else {
-            if (effectiveProcessed > effectiveTotal && effectiveTotal > 0) { // Добавил effectiveTotal > 0 чтобы не обнулять processed, если total еще не определен
-                effectiveProcessed = effectiveTotal; // Обработано не может быть больше общего
-            }
+            effectiveProcessed = effectiveTotal;
+        } else if (effectiveProcessed > effectiveTotal && effectiveTotal > 0) {
+            effectiveProcessed = effectiveTotal;
         }
 
-        // Гарантируем, что значения числовые и не отрицательные
-        effectiveProcessed = Number.isFinite(effectiveProcessed) && effectiveProcessed >= 0 ? effectiveProcessed : 0;
-        effectiveTotal = Number.isFinite(effectiveTotal) && effectiveTotal >= 0 ? effectiveTotal : 0;
-
-        console.log('[NEW] updateProgressBar FINAL values:', { effectiveProcessed, effectiveTotal, completed });
-
-        // Собираем текст о дедупликации и неживых ссылках
-        const additionalInfoHtml = deduplicationTextParts.length > 0 ? `<div class="deduplication-info">${deduplicationTextParts.join(', ')}</div>` : '';
-
-        progressStatus.style.display = 'block';
+        // Calculate percentage
+        const percentage = effectiveTotal > 0 ? Math.min(100, Math.round((effectiveProcessed / effectiveTotal) * 100)) : 0;
+        
+        // Prepare detailed message
+        let detailedMessage = '';
+        const additionalInfo = deduplicationTextParts.length > 0 ? ` (${deduplicationTextParts.join(', ')})` : '';
+        
         if (!completed) {
-            progressStatus.style.color = '#007bff'; // Синий для "в процессе"
-            if (sessionData && sessionData.status === 'error') { // Если есть ошибка, но completed=false
-                 progressStatus.style.color = 'red';
-                 progressStatus.innerHTML = `Error. ${effectiveProcessed} of ${effectiveTotal} processed. ${additionalInfoHtml}`.trim();
+            if (sessionData && sessionData.status === 'error') {
+                detailedMessage = `Error. ${effectiveProcessed} of ${effectiveTotal} processed${additionalInfo}`;
+                showGenerationStatus(detailedMessage, 'error');
             } else {
-                 progressStatus.innerHTML = `Processing... ${effectiveProcessed} of ${effectiveTotal} processed ${additionalInfoHtml}`.trim();
+                detailedMessage = `Processing... ${effectiveProcessed} of ${effectiveTotal} companies${additionalInfo}`;
+                showGenerationStatus(detailedMessage, 'processing');
+                updateGenerationProgressBar(percentage);
             }
-        } else { // completed === true
-            progressStatus.style.color = 'green';
-            progressStatus.innerHTML = `Completed: ${effectiveProcessed} of ${effectiveTotal} processed ${additionalInfoHtml}`.trim();
+        } else {
+            detailedMessage = `Completed: ${effectiveProcessed} of ${effectiveTotal} processed${additionalInfo}`;
+            showGenerationStatus(detailedMessage, 'completed');
+            updateGenerationProgressBar(100);
         }
+
+        console.log('[NEW] updateProgressBar FINAL values:', { effectiveProcessed, effectiveTotal, completed, percentage });
     }
 
     // Connect WebSocket when page loads
@@ -896,5 +864,128 @@ document.addEventListener('DOMContentLoaded', () => {
             // Кнопка Start Processing должна быть скрыта, если видны кнопки результатов
             if (startProcessingBtn) startProcessingBtn.style.display = visible ? 'none' : 'inline-block'; 
         }
+        
+        // Also manage the download button in the new generation progress bar
+        const downloadGenerationResultsBtn = document.getElementById('download-generation-results-btn');
+        if (downloadGenerationResultsBtn) {
+            downloadGenerationResultsBtn.style.display = visible ? 'inline-block' : 'none';
+        }
+    }
+
+    // --- Generation Progress Functions (exactly like criteria) ---
+    function showGenerationStatus(message, type = 'info') {
+        const statusSection = document.getElementById('generation-status');
+        const statusText = document.getElementById('generation-status-text');
+        const progressBar = document.getElementById('generation-progress');
+        const cancelBtn = document.getElementById('cancel-generation-btn');
+        const downloadBtn = document.getElementById('download-generation-results-btn');
+        const runBtn = document.getElementById('runBtn');
+
+        statusSection.style.display = 'block';
+        statusText.textContent = message;
+        statusText.className = type;
+
+        if (type === 'processing') {
+            progressBar.style.display = 'block';
+            cancelBtn.style.display = 'inline-block';
+            if (downloadBtn) downloadBtn.style.display = 'none';
+            if (runBtn) {
+                runBtn.disabled = true;
+                runBtn.textContent = 'Generating...';
+            }
+        } else if (type === 'completed' || message.includes('Completed')) {
+            progressBar.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            if (downloadBtn) downloadBtn.style.display = 'inline-block';
+            if (runBtn) {
+                runBtn.disabled = false;
+                runBtn.textContent = 'Generate';
+            }
+        } else {
+            progressBar.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            if (downloadBtn) downloadBtn.style.display = 'none';
+            if (runBtn) {
+                runBtn.disabled = false;
+                runBtn.textContent = 'Generate';
+            }
+        }
+    }
+
+    function updateGenerationProgressBar(percentage) {
+        const progressBar = document.querySelector('#generation-progress div');
+        if (progressBar) {
+            progressBar.style.width = `${percentage}%`;
+            progressBar.style.transition = 'width 0.3s ease';
+            
+            if (percentage > 0) {
+                progressBar.textContent = `${percentage}%`;
+                progressBar.style.textAlign = 'center';
+                progressBar.style.lineHeight = '20px';
+                progressBar.style.color = 'white';
+                progressBar.style.fontSize = '12px';
+                progressBar.style.fontWeight = 'bold';
+            }
+        }
+    }
+
+    function hideGenerationStatus() {
+        const generationStatus = document.getElementById('generation-status');
+        if (generationStatus) generationStatus.style.display = 'none';
+    }
+
+    // --- Event Handlers for New Generation Progress Bar ---
+    const newGenerationSessionBtn = document.getElementById('new-generation-session-btn');
+    if (newGenerationSessionBtn) {
+        newGenerationSessionBtn.addEventListener('click', async () => {
+            console.log('New Generation Session button clicked');
+            await showNewSessionUI();
+        });
+    }
+
+    const refreshGenerationStatusBtn = document.getElementById('refresh-generation-status-btn');
+    if (refreshGenerationStatusBtn) {
+        refreshGenerationStatusBtn.addEventListener('click', async () => {
+            console.log('Refresh Generation Status button clicked');
+            if (currentSessionId) {
+                await fetchSessionData(currentSessionId);
+            }
+        });
+    }
+
+    const downloadGenerationResultsBtn = document.getElementById('download-generation-results-btn');
+    if (downloadGenerationResultsBtn) {
+        downloadGenerationResultsBtn.addEventListener('click', () => {
+            console.log('Download Generation Results button clicked');
+            if (currentSessionId) {
+                downloadSessionArchive(currentSessionId);
+            }
+        });
+    }
+
+    const cancelGenerationBtn = document.getElementById('cancel-generation-btn');
+    if (cancelGenerationBtn) {
+        cancelGenerationBtn.addEventListener('click', async () => {
+            console.log('Cancel Generation button clicked');
+            if (currentSessionId) {
+                showLoading();
+                try {
+                    const response = await fetch(`/api/sessions/${currentSessionId}/cancel`, {
+                        method: 'POST'
+                    });
+                    if (response.ok) {
+                        const result = await response.json();
+                        showGenerationStatus(`Session cancelled: ${result.status}`, 'error');
+                        // Show new session button
+                        if (newSessionBtn) newSessionBtn.style.display = 'inline-block';
+                    }
+                } catch (error) {
+                    console.error('Error cancelling session:', error);
+                    showGenerationStatus(`Error cancelling session: ${error.message}`, 'error');
+                } finally {
+                    hideLoading();
+                }
+            }
+        });
     }
 });

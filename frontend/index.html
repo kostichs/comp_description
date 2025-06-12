@@ -438,6 +438,25 @@
             <button id="downloadResultsBtn">Download .csv results</button>
         </div>
 
+        <!-- Generation Status Section (like criteria) -->
+        <div id="generation-status" style="display: none; background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <h3>Analysis Status</h3>
+            <div>
+                <p><strong>Status:</strong> <span id="generation-status-text"></span></p>
+                <div id="generation-progress" style="display: none; width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; margin: 10px 0; overflow: hidden;">
+                    <div style="width: 0%; height: 100%; background: linear-gradient(90deg, #28a745, #20c997); border-radius: 10px; animation: progress-pulse 2s ease-in-out infinite alternate;"></div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <button id="cancel-generation-btn" style="display: none;">Cancel</button>
+                <button id="new-generation-session-btn" class="new-session-btn" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; margin-right: 10px;">New session</button>
+                <button id="refresh-generation-status-btn">Refresh</button>
+                <button id="download-generation-results-btn" style="display: none; background: linear-gradient(135deg, #28a745, #20c997); color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer;">Download CSV</button>
+            </div>
+        </div>
+
+        <!-- Legacy simple progress (keep for compatibility) -->
         <div id="progressStatus" style="display:none; margin: 20px 0; font-size: 1.1em; color: #007bff; font-weight: bold;">Processing...</div>
 
             </div> <!-- End Main Content Area -->
