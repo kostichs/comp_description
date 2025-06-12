@@ -282,6 +282,7 @@ class CriteriaAnalysis {
         const fileInput = document.getElementById('criteria-file');
         const loadAllCheckbox = document.getElementById('load-all-companies');
         const useDeepAnalysis = document.getElementById('deep-analysis-checkbox').checked;
+        const writeToHubspotCriteria = document.getElementById('writeToHubspotCriteria').checked;
         
         // Skip file validation if using latest session
         const useLatestSession = document.getElementById('use-latest-session').checked;
@@ -293,6 +294,7 @@ class CriteriaAnalysis {
         formData.append('file', fileInput.files[0]);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
         formData.append('use_deep_analysis', useDeepAnalysis);
+        formData.append('write_to_hubspot_criteria', writeToHubspotCriteria);
         // Отправляем выбранные файлы критериев вместо продуктов
         formData.append('selected_criteria_files', JSON.stringify(this.selectedCriteria));
 
@@ -1708,10 +1710,12 @@ class CriteriaAnalysis {
         const formData = new FormData();
         const loadAllCheckbox = document.getElementById('load-all-companies');
         const useDeepAnalysis = document.getElementById('deep-analysis-checkbox').checked;
+        const writeToHubspotCriteria = document.getElementById('writeToHubspotCriteria').checked;
         
         formData.append('session_id', this.latestSessionId);
         formData.append('load_all_companies', loadAllCheckbox ? loadAllCheckbox.checked : false);
         formData.append('use_deep_analysis', useDeepAnalysis);
+        formData.append('write_to_hubspot_criteria', writeToHubspotCriteria);
         formData.append('selected_criteria_files', JSON.stringify(this.selectedCriteria));
 
         // Debug: Show what's in FormData

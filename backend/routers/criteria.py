@@ -35,7 +35,7 @@ if str(CRITERIA_PROCESSOR_PATH) not in sys.path:
 # Импортируем правильные пути из data_io.py
 from src.data_io import SESSIONS_DIR, SESSIONS_METADATA_FILE
 
-def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 12, selected_products: List[str] = None, selected_criteria_files: List[str] = None):
+def run_criteria_processor(input_file_path: str, load_all_companies: bool = False, session_id: str = None, use_deep_analysis: bool = False, use_parallel: bool = True, max_concurrent: int = 12, selected_products: List[str] = None, selected_criteria_files: List[str] = None, write_to_hubspot_criteria: bool = False):
     """Запускаем criteria_processor как отдельный процесс"""
     import subprocess
     import shutil
@@ -140,6 +140,11 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
             cmd.append("--disable-circuit-breaker")
             logger.info("Circuit Breaker отключен через переменную окружения")
         
+        # Add HubSpot integration flag
+        if write_to_hubspot_criteria:
+            cmd.append("--write-to-hubspot-criteria")
+            logger.info("HubSpot интеграция включена")
+        
         # Меняем рабочую директорию на criteria_processor
         # Устанавливаем UTF-8 кодировку для Windows
         env = os.environ.copy()
@@ -196,7 +201,8 @@ async def run_criteria_analysis_task(
     use_parallel: bool = True,
     max_concurrent: int = 12,
     selected_products: List[str] = None,
-    selected_criteria_files: List[str] = None
+    selected_criteria_files: List[str] = None,
+    write_to_hubspot_criteria: bool = False
 ):
     """Асинхронная задача для запуска анализа критериев"""
     log_info = None
@@ -221,7 +227,8 @@ async def run_criteria_analysis_task(
             use_parallel,
             max_concurrent,
             selected_products,
-            selected_criteria_files
+            selected_criteria_files,
+            write_to_hubspot_criteria
         )
         
         # Проверяем результат выполнения процесса
@@ -263,7 +270,8 @@ async def create_criteria_analysis(
     use_parallel: bool = Form(True),
     max_concurrent: int = Form(12),
     selected_products: str = Form("[]"),  # Backward compatibility
-    selected_criteria_files: str = Form("[]")  # NEW: JSON string of selected criteria files
+    selected_criteria_files: str = Form("[]"),  # NEW: JSON string of selected criteria files
+    write_to_hubspot_criteria: bool = Form(False)  # NEW: HubSpot integration flag
 ):
     """
     Создает новую сессию анализа критериев
@@ -343,7 +351,8 @@ async def create_criteria_analysis(
                 use_parallel,
                 max_concurrent,
                 selected_products_list,
-                selected_criteria_files_list
+                selected_criteria_files_list,
+                write_to_hubspot_criteria
             )
         )
         criteria_tasks[session_id] = task
@@ -371,7 +380,8 @@ async def create_criteria_analysis_from_session(
     use_parallel: bool = Form(True),
     max_concurrent: int = Form(12),
     selected_products: str = Form("[]"),  # Backward compatibility
-    selected_criteria_files: str = Form("[]")  # NEW: JSON string of selected criteria files
+    selected_criteria_files: str = Form("[]"),  # NEW: JSON string of selected criteria files
+    write_to_hubspot_criteria: bool = Form(False)  # NEW: HubSpot integration flag
 ):
     """
     Создает новую сессию анализа критериев используя результаты из существующей сессии
@@ -483,7 +493,8 @@ async def create_criteria_analysis_from_session(
                 use_parallel,
                 max_concurrent,
                 selected_products_list,
-                selected_criteria_files_list
+                selected_criteria_files_list,
+                write_to_hubspot_criteria
             )
         )
         criteria_tasks[new_session_id] = task

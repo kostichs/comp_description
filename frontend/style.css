@@ -162,6 +162,44 @@ button:disabled {
     text-decoration: underline;
 }
 
+/* HubSpot Toggle Styles */
+.hubspot-toggle {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.hubspot-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.hubspot-toggle .toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.hubspot-toggle input[type="checkbox"]:checked + .toggle-icon {
+    border-color: #28a745;
+    background-color: #e8f5e8;
+}
+
+.hubspot-toggle .toggle-icon img {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.hubspot-toggle input[type="checkbox"]:checked + .toggle-icon img {
+    opacity: 1;
+}
+
 /* Status Display */
 #statusDisplay {
     margin-top: 15px;

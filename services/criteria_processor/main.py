@@ -95,6 +95,12 @@ def parse_arguments():
         help='Comma-separated list of selected products to analyze (e.g., "Product 1,Product 2")'
     )
     
+    parser.add_argument(
+        '--write-to-hubspot-criteria',
+        action='store_true',
+        help='Записывать результаты критериев в HubSpot (включено по умолчанию)'
+    )
+    
     return parser.parse_args()
 
 def main():

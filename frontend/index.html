@@ -468,6 +468,14 @@
         <div id="criteria-analysis-page" class="page-content">
             <div class="header">
                 <div class="header-controls" style="display: flex; justify-content: flex-end; width: 100%;">
+                    <!-- HubSpot Toggle -->
+                    <div class="hubspot-toggle" title="Enable/disable writing criteria results to HubSpot CRM">
+                        <input type="checkbox" id="writeToHubspotCriteria">
+                        <label for="writeToHubspotCriteria" class="toggle-icon">
+                            <img src="/static/icons/hubspot.png" alt="HubSpot" height="20">
+                        </label>
+                    </div>
+                    
                     <!-- Analyze Companies Button -->
                     <button type="submit" id="criteria-analyze-btn" form="criteria-upload-form" class="run-button" title="Analyze companies against product criteria for AI, DDOS, WAAP and other products."> Analyze </button>
                 </div>
@@ -517,6 +525,8 @@
                         Enable Deep Analysis (slower, more accurate)
                     </label>
                 </div>
+
+
 
                 <form id="criteria-upload-form" enctype="multipart/form-data">
                     <div id="criteria-dropZoneContainer" 
