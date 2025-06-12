@@ -788,11 +788,11 @@ def run_analysis(companies_file=None, load_all_companies=False, session_id=None,
                     # Join with actual line breaks for proper CSV formatting
                     result_text = "\n".join(result_text_parts)
                     
-                    # Add to Qualified_Products column
+                    # Add to Qualified_Products column - ВСЕГДА ДОБАВЛЯЕМ ВСЕ РЕЗУЛЬТАТЫ
                     if record["Qualified_Products"] == "NOT QUALIFIED":
                         record["Qualified_Products"] = result_text
                     else:
-                        record["Qualified_Products"] += f"\n\n=== SEPARATOR ===\n\n{result_text}"
+                        record["Qualified_Products"] += f"\n\n{result_text}"
                     
                     # Record detailed results
                     product_results["detailed_results"][audience] = audience_results

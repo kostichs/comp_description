@@ -1,0 +1,100 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Play Minecraft: Bedrock Edition Online in a Multiplayer Server",
+            "link": "https://help.minecraft.net/hc/en-us/articles/4410316619533-Play-Minecraft-Bedrock-Edition-online-in-a-multiplayer-server",
+            "snippet": "Play Minecraft: Bedrock Edition Online in a Multiplayer Server. You can play Minecraft: Bedrock Edition with friends online by joining their world, joining a ...",
+            "position": 1
+        },
+        {
+            "title": "Play Minecraft: Java Edition Online in a Multiplayer Server",
+            "link": "https://help.minecraft.net/hc/en-us/articles/32899741198989-How-to-Join-a-Server-with-Friends-in-Minecraft-Java-Edition",
+            "snippet": "Join a Minecraft: Java Edition online server · Launch Minecraft. · Select Multiplayer from the main menu. · Select a method for joining a server. You have several ...",
+            "position": 2
+        },
+        {
+            "title": "Minecraft Live",
+            "link": "https://www.minecraft.net/en-us/live",
+            "snippet": "Build and launch to the moon using rocket science. Download Demo · Learn Online Safety ... Run a Minecraft Java multiplayer server. A square of dirt with ...",
+            "position": 3
+        },
+        {
+            "title": "How To Set Up A Multiplayer Game",
+            "link": "https://edusupport.minecraft.net/hc/en-us/articles/360047555531-How-To-Set-Up-A-Multiplayer-Game",
+            "snippet": "Multiplayer is one of the most popular and effective ways to ... Hour of Code 2024 is live! Update to Minecraft Education v1.21.06 ...",
+            "date": "May 27, 2025",
+            "position": 4
+        },
+        {
+            "title": "Multiplayer Support",
+            "link": "https://help.minecraft.net/hc/en-us/sections/27166460834061",
+            "snippet": "Multiplayer Support. Hello! Welcome to the Minecraft Help Center. Search. Helpful Links. News · Official Minecraft Twitter · Official Discord · Marketplace ...",
+            "position": 5
+        },
+        {
+            "title": "Join a Friend's Online World in Minecraft: Bedrock Edition",
+            "link": "https://help.minecraft.net/hc/en-us/articles/24122512131213-Join-a-Friend-s-Online-World-in-Minecraft-Bedrock-Edition",
+            "snippet": "Play Minecraft: Bedrock Edition local multiplayer. You can join a friend's Minecraft: Bedrock Edition world if you're both friends in Minecraft and online at ...",
+            "position": 6
+        },
+        {
+            "title": "Managing Multiplayer Game Access for a Child Account in ...",
+            "link": "https://help.minecraft.net/hc/en-us/articles/24302916594701-Managing-Multiplayer-Game-Access-for-a-Child-Account-in-Minecraft",
+            "snippet": "Manage multiplayer settings using Xbox Privacy online · Visit Privacy & online safety on the Xbox Settings page. · Sign in using the parent's account. · Click on ...",
+            "position": 7
+        },
+        {
+            "title": "Play Minecraft: Java Edition on a Local Area Network (LAN)",
+            "link": "https://help.minecraft.net/hc/en-us/articles/4410317081741-How-to-Play-Minecraft-Java-Edition-Multiplayer",
+            "snippet": "The host can start a multiplayer game and play in the world on the same computer. ... Play Minecraft: Bedrock Edition Online in a Multiplayer Server · Download ...",
+            "position": 8
+        },
+        {
+            "title": "Simpler Multiplayer (Java edition)",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/360022102912-Simpler-Multiplayer-Java-edition",
+            "snippet": "Bedrock Edition is far superior for being able to play with your friends online as it handles the technical stuff automatically. ... live multiplayer on top of ...",
+            "position": 9
+        },
+        {
+            "title": "Welcome to the Minecraft Official Site | Minecraft",
+            "link": "https://www.minecraft.net/",
+            "snippet": "... Multiplayer · A Hero stands between two opposing armies over text reading Minecraft Legends. Minecraft Legends. Action RPG, Strategy Single-player + Multiplayer.",
+            "sitelinks": [
+                {
+                    "title": "Server Download",
+                    "link": "https://www.minecraft.net/en-us/download/server"
+                },
+                {
+                    "title": "Minecraft Realms Play with...",
+                    "link": "https://www.minecraft.net/en-us/realms"
+                },
+                {
+                    "title": "Minecraft Live",
+                    "link": "https://www.minecraft.net/en-us/live"
+                },
+                {
+                    "title": "Classic",
+                    "link": "https://classic.minecraft.net/"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        }
+    ],
+    "credits": 1
+}

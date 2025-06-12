@@ -1,0 +1,182 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "v10.40.1 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v10-40-1-patch-notes",
+            "snippet": "v10.40.1 Patch Notes. Jump To. Battle Royale. Jump To. Creative. Jump To. Save The World. Jump To. General. Battle Royale. What's New? Out of Time We're heading ...",
+            "position": 1
+        },
+        {
+            "title": "v9.00 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v9-00",
+            "snippet": "00 Patch Notes. Jump To. Battle Royale. Jump To. Creative. Jump To. Save The World. Battle Royale. What's New? Season 9 - Battle Pass New Season, new Battle ...",
+            "sitelinks": [
+                {
+                    "title": "Creative",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v9-00#:~:text=Creative,-What%27s%20New%3F"
+                },
+                {
+                    "title": "Save The World",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v9-00#:~:text=Save%20The%20World,-What%27s%20New%3F"
+                },
+                {
+                    "title": "Missions + Systems",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v9-00#:~:text=Missions%20%2B%20Systems"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "30.20 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite",
+            "snippet": "We've combined Patch Notes and Release Notes into one document! Now you can read all about the updates and changes right here on the Epic Developer ...",
+            "sitelinks": [
+                {
+                    "title": "Talisman Templates",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite#:~:text=Talisman%20Templates,-Today%2C%20you%20can%20dive"
+                },
+                {
+                    "title": "Community Bug Fixes",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite#:~:text=Community%20Bug%20Fixes,-The%20following%20list%20of%20fixes"
+                },
+                {
+                    "title": "Uefn Updates And Fixes",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite#:~:text=UEFN%20Updates%20and%20Fixes,-New%3A"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "v3.5 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/news/v3-5-patch-notes",
+            "snippet": "v3.5 Patch Notes · Fixed an issue where players could fire weapons before the equip animation had finished if they were sprinting. · We're changing the Mini-Boss ...",
+            "position": 4
+        },
+        {
+            "title": "36.00 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes",
+            "snippet": "Find out what's new with the 36.00 release of Fortnite on June 7, 2025! 36.00 Fortnite Ecosystem Updates and Release Notes. On this page.",
+            "sitelinks": [
+                {
+                    "title": "Scene Graph Beta Launch!",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes#:~:text=Scene%20Graph%20Beta%20Launch%21,-Scene%20Graph%20is%20a%20new"
+                },
+                {
+                    "title": "Device Updates And Fixes",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes#:~:text=Device%20Updates%20and%20Fixes,-New%3A"
+                },
+                {
+                    "title": "Uefn Updates And Fixes",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes#:~:text=UEFN%20Updates%20and%20Fixes,-New%3A"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "v3.4 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/news/v3-4-patch-notes",
+            "snippet": "v3.4 Patch Notes · Next Phase of Crossplay Improvements on Console. You can now add, remove, and manage Epic Friends from the main menu. · Fixed a rare bug where ...",
+            "position": 6
+        },
+        {
+            "title": "34.30 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes",
+            "snippet": "34.30 Fortnite Ecosystem Updates and Release Notes in Creative, Unreal Editor for Fortnite, and Verse. ... The v34.30 update gives more control over matchmaking ...",
+            "sitelinks": [
+                {
+                    "title": "Item Spawner Device Updates",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes#:~:text=Item%20Spawner%20Device%20Updates,-True%20dual%20weapons%20can%20now"
+                },
+                {
+                    "title": "Reboot Van Device Updates",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes#:~:text=Reboot%20Van%20Device%20Updates,-Creators%20can%20utilize%20the%20new"
+                },
+                {
+                    "title": "Uefn Updates And Fixes",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes#:~:text=UEFN%20Updates%20and%20Fixes,-New%3A"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "v6.00 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v6-00",
+            "snippet": "00 Patch Notes. Jump To. Battle Royale. Jump To. Save The World. Fortnite Fans,. Season 6 arrives in Battle Royale and brings new goodies with it! Uncover ...",
+            "sitelinks": [
+                {
+                    "title": "Battle Royale",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v6-00#:~:text=Battle%20Royale,-Weapons%20%2B%20Items"
+                },
+                {
+                    "title": "Replay System",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v6-00#:~:text=Replay%20System"
+                },
+                {
+                    "title": "Save The World",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v6-00#:~:text=Save%20The%20World,-General"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "v8.10 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v8-10",
+            "snippet": "Missing in previous patch notes in 8.00 - Added wall version of Speed Boost. Great for elevators. Added Team Settings to Checkpoint device. Added limiting ...",
+            "sitelinks": [
+                {
+                    "title": "Battle Royale",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v8-10#:~:text=Battle%20Royale,-What%27s%20New%3F"
+                },
+                {
+                    "title": "Creative",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v8-10#:~:text=Creative,-What%27s%20New%3F"
+                },
+                {
+                    "title": "Save The World",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v8-10#:~:text=Save%20The%20World,-What%27s%20New%3F"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "v4.3 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v4-3",
+            "snippet": "3 Patch Notes. Players, start your Carts! Jump To. Battle Royale. Jump To. Save The World. 3...2...1,. Players, start your Carts! Patch v4.3 introduces Shopping ...",
+            "sitelinks": [
+                {
+                    "title": "General",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v4-3#:~:text=General,-Turbo%20Build%3A%20Structures%20now"
+                },
+                {
+                    "title": "Battle Royale",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v4-3#:~:text=Battle%20Royale,-Weapons%20%2B%20Items"
+                },
+                {
+                    "title": "Save The World",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v4-3#:~:text=Save%20The%20World,-Missions%20%2B%20Systems"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release notes patch notes update log version history reddit"
+        },
+        {
+            "query": "Release notes patch notes update log version history xbox"
+        },
+        {
+            "query": "Release notes patch notes update log version history ps4"
+        }
+    ],
+    "credits": 1
+}

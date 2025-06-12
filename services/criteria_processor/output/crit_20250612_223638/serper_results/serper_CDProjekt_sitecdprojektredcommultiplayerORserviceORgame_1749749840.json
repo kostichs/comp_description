@@ -1,0 +1,82 @@
+{
+    "searchParameters": {
+        "q": "site:cdprojektred.com (\"multiplayer\" OR \"service\" OR \"game\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "MultiPlayer to SinglePlayer to MultiPlayer ideas",
+            "link": "https://forums.cdprojektred.com/index.php?threads/multiplayer-to-singleplayer-to-multiplayer-ideas.11091295/",
+            "snippet": "I'm kinda afraid that this multiplayer is going to be a COMPLETELY separate game, which isn't in any way tied to single player experience. In my opinion this is kind of a miss, since there could be great ways to tie these experiences to single player campaign. Like what if you're a \"champion\" tier ...",
+            "date": "Jul 23, 2021",
+            "position": 1
+        },
+        {
+            "title": "Co-op multiplayer jobs suggestion - Cyberpunk | Forums",
+            "link": "https://forums.cdprojektred.com/index.php?threads/co-op-multiplayer-jobs-suggestion.11129947/",
+            "snippet": "A Cyberpunk multiplayer standalone game was planned after Cyberpunk 2077, but they cancelled it after the launch of 2077. Their current strategy is to focus on singleplayer games. (they might add some multiplayer features to their next games, but clearly not a priority and probably nothing ...",
+            "date": "Apr 29, 2024",
+            "position": 2
+        },
+        {
+            "title": "Multiplayer and what you think it could be - Cyberpunk | Forums",
+            "link": "https://forums.cdprojektred.com/index.php?threads/multiplayer-and-what-you-think-it-could-be.11068823/",
+            "snippet": "I don't see a lot of talk about this so I'm probably one of the few who are interested in what they have in mind for doing multiplayer. Personally, I hope they plan on creating a class/role system for it instead of being able to be everything like the single player game.",
+            "date": "Jan 3, 2021",
+            "position": 3
+        },
+        {
+            "title": "CP2077 will get multiplayer mode similar to GTA V online?",
+            "link": "https://forums.cdprojektred.com/index.php?threads/cp2077-will-get-multiplayer-mode-similar-to-gta-v-online.11101069/",
+            "snippet": "SO, the short version is as an Update to CP2077 100% canceled and not happening. But a CP multiplayer game will probably happen at some point. RED Point.",
+            "date": "Mar 12, 2022",
+            "position": 4
+        },
+        {
+            "title": "IF multiplayer is going to be a thing, what do you think ...",
+            "link": "https://forums.cdprojektred.com/index.php?threads/if-multiplayer-is-going-to-be-a-thing-what-do-you-think-about-online-rp-vote.10983479/",
+            "snippet": "It's already so hard that most game fail ever while being solo games, but multiplayer I don't think that exist. Unless you consider fetch quests to be actual roleplay that is.",
+            "date": "Sep 16, 2018",
+            "position": 5
+        },
+        {
+            "title": "Multiplayer is in the works, how can we help? | Page 4",
+            "link": "https://forums.cdprojektred.com/index.php?threads/multiplayer-is-in-the-works-how-can-we-help.11009878/page-4",
+            "snippet": "From my experience i have seen that in order for a multiplayer game to thrive it must have these 3 Important requirements for a successful multiplayer game. 1. The Cyberpunk world but in multiplayer, there must be little to no downgrades from the single player experience. The multiplayer has to be ...",
+            "date": "Jul 2, 2019",
+            "position": 6
+        },
+        {
+            "title": "Would You Rather See Multiplayer Or More DLC ...",
+            "link": "https://forums.cdprojektred.com/index.php?threads/would-you-rather-see-multiplayer-or-more-dlc-expansions.11071430/page-9",
+            "snippet": "If I could have it all I would pick both - I would love to see a solid expansion or two in addition to polish to the current base game and then 2 or 3 years from now a multiplayer world to keep things going long run.",
+            "date": "Jan 8, 2021",
+            "position": 7
+        },
+        {
+            "title": "A multiplayer game, really? Where are the players interactions?",
+            "link": "https://forums.cdprojektred.com/index.php?threads/a-multiplayer-game-really-where-are-the-players-interactions.31139/post-1506689",
+            "snippet": "A multiplayer game, really? Where are the players interactions? I am talking as a player of board game, the principle behind this one is not bad, but it...",
+            "date": "Jul 13, 2014",
+            "position": 8
+        },
+        {
+            "title": "Multiplayer Archives",
+            "link": "https://en.cdprojektred.com/job-category/multiplayer/",
+            "snippet": "Buy now! The Witcher Adventure Game. Official websiteForum. Cyberpunk. Official websiteForumBlog. REDkit. Official website. Contact. Media. media@cdprojektred.com. Business inquiries. biz@cdprojektred.com. Contact for YouTubers/Streamers. creators@cdprojektred.com. Headquarters. CD PROJEKT S.A. ul. Jagiellonska 74 03- ...",
+            "position": 9
+        },
+        {
+            "title": "[POLL] The Multiplayer Thread",
+            "link": "https://forums.cdprojektred.com/index.php?threads/poll-the-multiplayer-thread.10970882/",
+            "snippet": "From what little has been shown and described of this game, this looks like it will be the first really in-depth Cyberpunk game that I'm aware of. As such, I specifically do not want any form of multiplayer. I want to just be in the world and not getting distracted by randos bunny-hopping ...",
+            "date": "Jun 15, 2018",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

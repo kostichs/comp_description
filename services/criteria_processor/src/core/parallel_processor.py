@@ -717,17 +717,27 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                     
                     # Extract the product results from the returned list
                     if product_results and len(product_results) > 0:
-                        # Get the All_Results from the first result (they should all be the same for this product)
-                        product_result = product_results[0]
-                        product_all_results = product_result.get("All_Results", {})
-                        product_qualified_text = product_result.get("Qualified_Products", "")
+                        # ИСПРАВЛЕНИЕ: Объединяем результаты ВСЕХ аудиторий для этого продукта
+                        product_all_results = None
+                        all_qualified_texts = []
+                        
+                        for product_result in product_results:
+                            # Берем All_Results из любого результата (они одинаковые для продукта)
+                            if product_all_results is None:
+                                product_all_results = product_result.get("All_Results", {})
+                            
+                            # Собираем текст квалификации от каждой аудитории
+                            product_qualified_text = product_result.get("Qualified_Products", "")
+                            if product_qualified_text and product_qualified_text != "NOT QUALIFIED":
+                                all_qualified_texts.append(product_qualified_text)
                         
                         # Store results for this product
-                        all_products_results[product] = product_all_results
+                        all_products_results[product] = product_all_results or {}
                         
-                        # Add to qualified products text
-                        if product_qualified_text and product_qualified_text != "NOT QUALIFIED":
-                            qualified_products_text.append(f"=== {product.upper()} ===\n{product_qualified_text}")
+                        # Объединяем все квалификации для этого продукта
+                        if all_qualified_texts:
+                            combined_qualified_text = "\n\n".join(all_qualified_texts)
+                            qualified_products_text.append(f"=== {product.upper()} ===\n{combined_qualified_text}")
                         else:
                             qualified_products_text.append(f"=== {product.upper()} ===\nNOT QUALIFIED")
                     

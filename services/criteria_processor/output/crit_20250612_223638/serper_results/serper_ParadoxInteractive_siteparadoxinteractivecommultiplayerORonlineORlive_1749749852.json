@@ -1,0 +1,106 @@
+{
+    "searchParameters": {
+        "q": "site:paradoxinteractive.com (\"multiplayer\" OR \"online\" OR \"live\" OR \"live-service\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "FOUNDRY",
+            "link": "https://www.paradoxinteractive.com/games/foundry/about",
+            "snippet": "FOUNDRY can be played alone or cooperatively with friends. The multiplayer mode works over the internet as well as offline through LAN networking. There are ...",
+            "position": 1
+        },
+        {
+            "title": "Europa Universalis IV",
+            "link": "https://www.paradoxinteractive.com/games/europa-universalis-iv",
+            "snippet": "Engage in Cross-platform Multiplayer. Battle against your friends or try the co-operative multiplayer mode that allows several players to work together to ...",
+            "position": 2
+        },
+        {
+            "title": "Grandest LAN",
+            "link": "https://www.paradoxinteractive.com/games/europa-universalis-iv/grandest-lan",
+            "snippet": "Together, with your friends and other fans, you can create the greatest story possible, streamed live to the world. ... multiplayer session of EUIV. This ...",
+            "position": 3
+        },
+        {
+            "title": "Crusader Kings III",
+            "link": "https://www.paradoxinteractive.com/games/crusader-kings-iii",
+            "snippet": "Discover five legendary rulers, live their legends, or forge your own. Meet the legends. Media. Immerse yourself in Crusader Kings III. Crusader Kings III ...",
+            "position": 4
+        },
+        {
+            "title": "Paradox Arc",
+            "link": "https://www.paradoxinteractive.com/our-games/paradox-arc",
+            "snippet": "All of the depth, diplomacy, conflict and conquest of a turn-based 4X epic but played in fast-paced 60-minute competitive sessions. Play Solo or Multiplayer for ...",
+            "position": 5
+        },
+        {
+            "title": "Developer Diary | Achievements, Modding & Multiplayer",
+            "link": "https://www.paradoxinteractive.com/games/millennia/news/achievements-modding-multiplayer",
+            "snippet": "... Multiplayer. Modding. At launch, there will not be any direct ... online, and then next player in order can download it and take their ...",
+            "date": "Mar 14, 2024",
+            "position": 6
+        },
+        {
+            "title": "Europa Universalis III",
+            "link": "https://www.paradoxinteractive.com/games/europa-universalis-iii",
+            "snippet": "Co-operative multiplayer over LAN or Internet for up to 32 players. ... Engage in the thriving Europa Universalis III online community: download modifications to ...",
+            "position": 7
+        },
+        {
+            "title": "Victoria II",
+            "link": "https://www.paradoxinteractive.com/games/victoria-ii/about",
+            "snippet": "Improved graphics and interface, as well as multiplayer support. A streamlined interface makes the game easily accessible. Automation of various tasks ...",
+            "position": 8
+        },
+        {
+            "title": "Magicka",
+            "link": "https://www.paradoxinteractive.com/games/magicka",
+            "snippet": "In the challenge mode, players fight off waves of enemies to earn their place on local and online leaderboards. Main features. Innovative and dynamic ...",
+            "position": 9
+        },
+        {
+            "title": "Our games",
+            "link": "https://www.paradoxinteractive.com/our-games/discover",
+            "snippet": "Discover five legendary rulers, live their legends, or forge your own. Meet the legends. Our Community. PDX_wiki. WikisExplore our official Wiki network! pdx ...",
+            "sitelinks": [
+                {
+                    "title": "On Sale",
+                    "link": "https://www.paradoxinteractive.com/our-games/on-sale"
+                },
+                {
+                    "title": "Europa Universalis V",
+                    "link": "https://www.paradoxinteractive.com/games/europa-universalis-v"
+                },
+                {
+                    "title": "All games",
+                    "link": "https://www.paradoxinteractive.com/our-games/all-games"
+                },
+                {
+                    "title": "Crusader Kings III",
+                    "link": "https://www.paradoxinteractive.com/games/crusader-kings-iii/add-ons/crusader-kings-iii-khans-of-the-steppe"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Multiplayer online live live service free"
+        },
+        {
+            "query": "Multiplayer online live live service android"
+        },
+        {
+            "query": "Multiplayer online live live service ps4"
+        },
+        {
+            "query": "Multiplayer online live live service xbox"
+        }
+    ],
+    "credits": 1
+}

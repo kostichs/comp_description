@@ -1,0 +1,90 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com \"Add to Cart\", \"Checkout\" buttons",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "FINAL FANTASY X/X-2 HD Remaster | Square Enix",
+            "link": "https://weblet.square-enix.com/elink.php?doc=FFX2HD&code=WEBSITE&lang=us&id=STORE20&store=GameStop&platform=Xbox+One&edition=Standard+Edition",
+            "snippet": "... checkout. Shopping In-Store? Visit your nearest store and make your ... Add to Cart Verify Address Deliver it. GS Pro Credit Card. Get A FREE Pro ...",
+            "rating": 4.7,
+            "ratingCount": 144,
+            "currency": "$",
+            "price": 24.99,
+            "position": 1
+        },
+        {
+            "title": "Dragon Quest Builders Day One Edition - PlayStation 4",
+            "link": "https://xmail.square-enix.com/fe/track/link/z4vuvoj3c4hu/3389370d71ad1ade5670c4ef8c35736b/806/en/2/eyJ1c2VyIjp7ImNvdW50cnkiOiJVUyIsImV4dHJhIjoieTV3ZGpVZ3RnYUpZWnUwUU40aUtTcXpqaWNaMkphK0RYRy9mWW1BZlliK0NIa1BTWmtocDJhdlhVOHFnNll4ViIsImxhbmciOiJlbiIsImxvY2FsZSI6ImVuX1VTIn19",
+            "snippet": "... checkout. Shopping In-Store? Visit your nearest store and make your ... Add to Cart Verify Address Add to Cart. GS Pro Credit Card. Get A FREE Pro ...",
+            "rating": 4.4,
+            "ratingCount": 147,
+            "priceRange": "$14.99 to $49.99",
+            "position": 2
+        },
+        {
+            "title": "World of Final Fantasy | Square Enix",
+            "subtitle": "",
+            "link": "https://weblet.square-enix.com/elink.php?doc=WOF&code=WEBSITE&lang=us&id=STORE09&store=Gamestop&platform=PSVita&edition=Standard+Edition",
+            "snippet": "Extra 10% Trade Credit On Games, Consoles, And More. $25/year. ADD TO CART ... Add items to your cart and select the Pick Up In-Store option during checkout.",
+            "position": 3
+        },
+        {
+            "title": "Kingdom Hearts III | Square Enix",
+            "link": "https://weblet.square-enix.com/elink.php?doc=KH3&code=WEBSITE&lang=us&id=STORE17&store=Gamestop&platform=PS4&edition=Digital+Edition",
+            "snippet": "... checkout. Shopping In-Store? Visit your nearest store and make your ... Add to Cart Verify Address Deliver it. GS Pro Credit Card. Get A FREE Pro ...",
+            "rating": 4.5,
+            "ratingCount": 4505,
+            "currency": "$",
+            "price": 14.99,
+            "position": 4
+        },
+        {
+            "title": "Final Fantasy XII: The Zodiac Age - PlayStation 4",
+            "link": "https://weblet.square-enix.com/elink.php?doc=FFXIITZA&code=WEBSITE&lang=us&id=STORE11&store=Amazon.com&platform=PS4&edition=Standard+Edition",
+            "snippet": "... checkout. Add to Cart ... I usually hit that fast travel button quicker than you can say \"where are we headed?\".",
+            "rating": 4.8,
+            "ratingCount": 2682,
+            "currency": "$",
+            "price": 19.99,
+            "position": 5
+        },
+        {
+            "title": "World of Final Fantasy Limited Edition - PlayStation 4",
+            "link": "https://weblet.square-enix.com/elink.php?doc=WOF&code=WEBSITE&lang=us&id=STORE10&store=Amazon.com&platform=PS4&edition=Standard+Edition",
+            "snippet": "... checkout. Add to Cart ... button....\" Read more. \"...are automatically sorted by mirages used but there is no indication from the user interface and the ...",
+            "rating": 4.1,
+            "ratingCount": 267,
+            "currency": "$",
+            "price": 79.41,
+            "position": 6
+        },
+        {
+            "title": "Panasonic SoundSlayer Final Fantasy XIV Online Edition ...",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIV&l=panasonicsoundslayer",
+            "snippet": "... checkout. Add to Cart ... Buttons located on the lateral sides of the unit are discrete and easy to use....\" Read more. 26Customers mention. 14Positive. 12 ...",
+            "rating": 4.1,
+            "ratingCount": 329,
+            "currency": "$",
+            "price": 248.99,
+            "position": 7
+        },
+        {
+            "title": "Kingdom Hearts III - Xbox One Deluxe Edition ...",
+            "link": "https://weblet.square-enix.com/elink.php?doc=KH3&code=WEBSITE&lang=us&id=STORE22&store=Amazon.com&platform=Xbox+One&edition=Deluxe+Edition",
+            "snippet": "... checkout. Add to Cart ... Please use the buttons below to vote about your experience today. Best regards, Amazon\". Great game so far, the only issue I have ...",
+            "rating": 4.5,
+            "ratingCount": 461,
+            "currency": "$",
+            "price": 38.49,
+            "originalPrice": 41,
+            "position": 8
+        }
+    ],
+    "credits": 1
+}

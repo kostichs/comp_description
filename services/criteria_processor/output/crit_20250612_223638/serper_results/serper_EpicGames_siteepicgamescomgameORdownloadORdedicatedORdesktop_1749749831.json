@@ -1,0 +1,131 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"game\" OR \"download\" OR \"dedicated\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Epic Games Store | Download & Play PC Games, Mods, DLC ...",
+            "link": "https://store.epicgames.com/",
+            "snippet": "Welcome to Epic Games Store! Download and play PC Games of every genre. We have ... RoadCraft. Base Game. RoadCraft. $39.99 · Soulmask. Base Game. Soulmask.",
+            "sitelinks": [
+                {
+                    "title": "Free Games",
+                    "link": "https://store.epicgames.com/en-US/free-games"
+                },
+                {
+                    "title": "Fortnite",
+                    "link": "https://store.epicgames.com/en-US/p/fortnite"
+                },
+                {
+                    "title": "Distribute on Epic Games Store",
+                    "link": "https://store.epicgames.com/en-US/distribution"
+                },
+                {
+                    "title": "How can we help?",
+                    "link": "https://www.epicgames.com/help/en-US/"
+                }
+            ],
+            "priceRange": "$4 to $20",
+            "position": 1
+        },
+        {
+            "title": "Happy Game | Download and Buy Today",
+            "link": "https://store.epicgames.com/en-US/p/happy-game-35a105",
+            "snippet": "Download and play Happy Game at the Epic Games Store. Check for platform availability and price!",
+            "date": "May 6, 2025",
+            "priceRange": "$6.99 to $15.99",
+            "position": 2
+        },
+        {
+            "title": "Epic Games Store | Download & Play PC Games, Mods ...",
+            "link": "https://epicgames.com/",
+            "snippet": "Welcome to Epic Games Store! Download and play PC Games of every genre. We have ... Locked free game. Mystery Game. Unlocking in 00:14:59:51 · Top New Releases.",
+            "sitelinks": [
+                {
+                    "title": "Free Games",
+                    "link": "https://store.epicgames.com/en-US/free-games"
+                },
+                {
+                    "title": "About",
+                    "link": "https://www.epicgames.com/site/en-US/about"
+                },
+                {
+                    "title": "Download Epic Games Launcher",
+                    "link": "https://store.epicgames.com/en-US/download"
+                },
+                {
+                    "title": "Status",
+                    "link": "https://status.epicgames.com/"
+                }
+            ],
+            "priceRange": "$20 to $70",
+            "position": 3
+        },
+        {
+            "title": "Download A Free PC Game Every Week - Epic Games Store",
+            "link": "https://store.epicgames.com/en-US/free-games",
+            "snippet": "We offer Free Games at the Epic Games Store every week! Claim and download the video game and it is yours forever. Also, see our free-to-play game ...",
+            "position": 4
+        },
+        {
+            "title": "Download the Epic Games Launcher - Epic Games Store",
+            "link": "https://store.epicgames.com/en-US/download",
+            "snippet": "Download the Epic Games Launcher for PC, macOS, iPhone, and Android ... Get a new free game every Thursday on Mobile and PC! App available globally ...",
+            "position": 5
+        },
+        {
+            "title": "Wanderers | Download and Play for Free",
+            "link": "https://store.epicgames.com/en-US/p/wanderers-b35286",
+            "snippet": "Download and play Wanderers for FREE at the Epic Games Store ... You can play now to experience the game while it's being built or wait until it ...",
+            "date": "Jul 30, 2024",
+            "position": 6
+        },
+        {
+            "title": "Windows Games | Download the Best Windows PC Games",
+            "link": "https://store.epicgames.com/en-US/c/windows-games",
+            "snippet": "Download and play the best Windows Games for PC. We offer video games ... Base Game. Word Construct Solitaire. Now On Epic. Stellar Blade™. Base Game.",
+            "position": 7
+        },
+        {
+            "title": "\"Your account is unable to download any more free games ...",
+            "link": "https://www.epicgames.com/help/en-US/c-Category_EpicGamesStore/c-EpicGamesStore_ErrorCodes/your-account-is-unable-to-download-any-more-free-games-at-this-time-error-a000084910",
+            "snippet": "\"Your account is unable to download any more free games at this time\" error · Turn off your VPN if you are using one. · Try claiming the game using mobile data ...",
+            "position": 8
+        },
+        {
+            "title": "Can I rate a game on the Epic Games Store?",
+            "link": "https://www.epicgames.com/help/en-US/c-Category_EpicGamesStore/c-EpicGamesStore_Tutorials/can-i-rate-a-game-on-the-epic-games-store-a000090306",
+            "snippet": "Our rating system will ask random players who have played a game for more than two hours to give a rating on a five-point scale ... Download · Player support ...",
+            "position": 9
+        },
+        {
+            "title": "IS-DS01: Out of disc space before trying to install a game",
+            "link": "https://www.epicgames.com/help/en-US/c-Category_EpicGamesStore/c-EpicGamesStore_ErrorCodes/is-ds01-out-of-disc-space-before-trying-to-install-a-game-a000084824",
+            "snippet": "You'll get this error when you try to download a game and your hard drive doesn't have enough free space to install it. Free up some space on your hard drive ...",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game download dedicated desktop windows 10"
+        },
+        {
+            "query": "Game download dedicated desktop mac"
+        },
+        {
+            "query": "Game download dedicated desktop windows 7"
+        },
+        {
+            "query": "Game download dedicated desktop xbox"
+        },
+        {
+            "query": "Game download dedicated desktop android"
+        }
+    ],
+    "credits": 1
+}

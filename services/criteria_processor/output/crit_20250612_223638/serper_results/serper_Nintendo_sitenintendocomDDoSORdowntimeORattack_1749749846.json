@@ -1,0 +1,91 @@
+{
+    "searchParameters": {
+        "q": "site:nintendo.com (\"DDoS\" OR \"downtime\" OR \"attack\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Attack Hole: Hero Edition",
+            "link": "https://www.nintendo.com/us/store/products/attack-hole-hero-edition-switch/?srsltid=AfmBOordGJbmRaqteUY0pQpoX-B0GQGISGueu8X9Amb_haAYnShSqWQ8",
+            "snippet": "Attack Hole: Hero Edition ... Supported – Game behavior is consistent with Nintendo Switch. Swallow everything and become the biggest black hole!",
+            "currency": "$",
+            "price": 5.99,
+            "position": 1
+        },
+        {
+            "title": "SUPER TRENCH ATTACK for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/super-trench-attack-switch/?srsltid=AfmBOopDwg39sYfEYkwf_nnaJ_71ZJkUc4KNxd4zAuCCTsDd-5BTk_-9",
+            "snippet": "Engage in a fearless fight against Black Army's oppression and help end the World War. Super Trench Attack is an action packed, fun RPG, dual stick shooter.",
+            "currency": "$",
+            "price": 8,
+            "position": 2
+        },
+        {
+            "title": "Attack of the Karens for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/attack-of-the-karens-switch/?srsltid=AfmBOoqvQZlKglJPJUZ5iht81inR2_caBJGninsoAsSCXm8h9ld2QR3-",
+            "snippet": "Attack of the Karens · Piloting the Manager X-15, embark on a mission to rid the world of evil cyborg Karens and save your city from entitlement forever!",
+            "currency": "$",
+            "price": 50,
+            "position": 3
+        },
+        {
+            "title": "Uboat Attack | Nintendo Switch download software | Games",
+            "link": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-download-software/Uboat-Attack-2636711.html?srsltid=AfmBOooxiTrBcedTgmn7RFLfXdnFGQcgsHnL_WCfw3wBZ6cdRJ0HRYKA",
+            "snippet": "Uboat Attack. System: Nintendo Switch Release date: 30/08/2024. Download to console. £7.20. Price on Nintendo eShop (inc. VAT) ...",
+            "currency": "£",
+            "price": 7.2,
+            "position": 4
+        },
+        {
+            "title": "Infantry Attack: Strike From Above",
+            "link": "https://www.nintendo.com/en-ca/store/products/infantry-attack-strike-from-above-70050000047983-switch/?srsltid=AfmBOophjiwk63wbx8pDSl2350pdtoy0dSIj5h1PZZoeuoYOhUNmLvg8",
+            "snippet": "Infantry Attack: Strike From Above · Equip yourself with a new secondary weapon and show your opponents who's the real boss! · About this item · About Nintendo.",
+            "currency": "$",
+            "price": 50,
+            "position": 5
+        },
+        {
+            "title": "Arcade Archives Rush'n Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/arcade-archives-rushn-attack-switch/?srsltid=AfmBOooInTLCfzd_6rd550h22_L402PkOjiaivtCcQBXcY-C7rhFXA5n",
+            "snippet": "\"Rush'n Attack\" is an action game released by KONAMI in 1985. Infiltrate an enemy base and get past four obstacles to rescue your comrades!",
+            "currency": "$",
+            "price": 9.87,
+            "position": 6
+        },
+        {
+            "title": "AMAZE! Time Attack Edition for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/amaze-time-attack-edition-switch/?srsltid=AfmBOorNjqd2Ye35Ctq7vXF4wpyl2yNQxOZ94eAyyki6Ij7tiITJr-sF",
+            "snippet": "Buy AMAZE! Time Attack Edition and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 4.99,
+            "position": 7
+        },
+        {
+            "title": "Air Jet Fighter Combat - Europe Fly Plane Attack",
+            "link": "https://www.nintendo.com/en-ca/store/products/air-jet-fighter-combat-europe-fly-plane-attack-switch/?srsltid=AfmBOoogG-rwytUw-Qy7tDaOpWqsTMK7pQA3kAezV8sZ1KqYmd8UqP0b",
+            "snippet": "Welcome to Air Fighter Air Attack. Functions: - Realistic graphics - Realistic physics - Stunning 3D models - Photorealistic skybox - Different type ...",
+            "currency": "$",
+            "price": 50,
+            "position": 8
+        },
+        {
+            "title": "Persona®5 Strikers All-Out Attack Pack for Nintendo Switch",
+            "link": "https://www.nintendo.com/us/store/products/persona-5-strikers-all-out-attack-pack-70050000023826-switch/?srsltid=AfmBOorts0RJOOeli0fIMO5Kkl3Eoj14I1gZ2ITckd3iHmXYevFi1Cnp",
+            "snippet": "Buy Persona®5 Strikers All-Out Attack Pack and shop other great Nintendo products online at the official My Nintendo Store.",
+            "currency": "$",
+            "price": 4.99,
+            "position": 9
+        },
+        {
+            "title": "The Wonderful 101 Development Staff - Page 4 - Iwata Asks",
+            "link": "https://iwataasks.nintendo.com/interviews/wiiu/thewonderful101/1/3/",
+            "snippet": "It's what it sounds like. It allows you to attack in waves by creating multiple Unite Morphs at the same time. Before that you could only create one Unite Morph ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

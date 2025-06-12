@@ -1,0 +1,27 @@
+{
+    "searchParameters": {
+        "q": "site:paradoxinteractive.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Foundry Dev Blog #12 - Experimental Branch",
+            "link": "https://www.paradoxinteractive.com/games/foundry/news/dev-blog-12-experimental-branch",
+            "snippet": "itch.io Game Launcher. foundry-news-12-3. Here you can manage your versions inside the itch.io launcher. Savegames. Do NOT overwrite your old ...",
+            "date": "Oct 25, 2020",
+            "position": 1
+        },
+        {
+            "title": "Dev Diary #60 - Modding",
+            "link": "https://www.paradoxinteractive.com/games/victoria-3/news/victoria-3-dev-diary-60-modding",
+            "snippet": "When you fire up Victoria 3, you'll be greeted by the game's launcher. If you look in the upper-left of the launcher, you'll see four little ...",
+            "date": "Sep 28, 2022",
+            "position": 2
+        }
+    ],
+    "credits": 1
+}
