@@ -865,11 +865,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (startProcessingBtn) startProcessingBtn.style.display = visible ? 'none' : 'inline-block'; 
         }
         
-        // Also manage the download button in the new generation progress bar
-        const downloadGenerationResultsBtn = document.getElementById('download-generation-results-btn');
-        if (downloadGenerationResultsBtn) {
-            downloadGenerationResultsBtn.style.display = visible ? 'inline-block' : 'none';
-        }
+
     }
 
     // --- Generation Progress Functions (exactly like criteria) ---
@@ -877,8 +873,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusSection = document.getElementById('generation-status');
         const statusText = document.getElementById('generation-status-text');
         const progressBar = document.getElementById('generation-progress');
-        const cancelBtn = document.getElementById('cancel-generation-btn');
-        const downloadBtn = document.getElementById('download-generation-results-btn');
         const runBtn = document.getElementById('runBtn');
 
         statusSection.style.display = 'block';
@@ -887,24 +881,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (type === 'processing') {
             progressBar.style.display = 'block';
-            cancelBtn.style.display = 'inline-block';
-            if (downloadBtn) downloadBtn.style.display = 'none';
             if (runBtn) {
                 runBtn.disabled = true;
                 runBtn.textContent = 'Generating...';
             }
         } else if (type === 'completed' || message.includes('Completed')) {
             progressBar.style.display = 'none';
-            cancelBtn.style.display = 'none';
-            if (downloadBtn) downloadBtn.style.display = 'inline-block';
             if (runBtn) {
                 runBtn.disabled = false;
                 runBtn.textContent = 'Generate';
             }
         } else {
             progressBar.style.display = 'none';
-            cancelBtn.style.display = 'none';
-            if (downloadBtn) downloadBtn.style.display = 'none';
             if (runBtn) {
                 runBtn.disabled = false;
                 runBtn.textContent = 'Generate';
@@ -934,58 +922,5 @@ document.addEventListener('DOMContentLoaded', () => {
         if (generationStatus) generationStatus.style.display = 'none';
     }
 
-    // --- Event Handlers for New Generation Progress Bar ---
-    const newGenerationSessionBtn = document.getElementById('new-generation-session-btn');
-    if (newGenerationSessionBtn) {
-        newGenerationSessionBtn.addEventListener('click', async () => {
-            console.log('New Generation Session button clicked');
-            await showNewSessionUI();
-        });
-    }
 
-    const refreshGenerationStatusBtn = document.getElementById('refresh-generation-status-btn');
-    if (refreshGenerationStatusBtn) {
-        refreshGenerationStatusBtn.addEventListener('click', async () => {
-            console.log('Refresh Generation Status button clicked');
-            if (currentSessionId) {
-                await fetchSessionData(currentSessionId);
-            }
-        });
-    }
-
-    const downloadGenerationResultsBtn = document.getElementById('download-generation-results-btn');
-    if (downloadGenerationResultsBtn) {
-        downloadGenerationResultsBtn.addEventListener('click', () => {
-            console.log('Download Generation Results button clicked');
-            if (currentSessionId) {
-                downloadSessionArchive(currentSessionId);
-            }
-        });
-    }
-
-    const cancelGenerationBtn = document.getElementById('cancel-generation-btn');
-    if (cancelGenerationBtn) {
-        cancelGenerationBtn.addEventListener('click', async () => {
-            console.log('Cancel Generation button clicked');
-            if (currentSessionId) {
-                showLoading();
-                try {
-                    const response = await fetch(`/api/sessions/${currentSessionId}/cancel`, {
-                        method: 'POST'
-                    });
-                    if (response.ok) {
-                        const result = await response.json();
-                        showGenerationStatus(`Session cancelled: ${result.status}`, 'error');
-                        // Show new session button
-                        if (newSessionBtn) newSessionBtn.style.display = 'inline-block';
-                    }
-                } catch (error) {
-                    console.error('Error cancelling session:', error);
-                    showGenerationStatus(`Error cancelling session: ${error.message}`, 'error');
-                } finally {
-                    hideLoading();
-                }
-            }
-        });
-    }
 });
