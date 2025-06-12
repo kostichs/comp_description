@@ -1,0 +1,52 @@
+# Команды для обновления до версии v12a
+# КРИТИЧЕСКИЕ ИСПРАВЛЕНИЯ: OpenAI model fix + simplified progress tracking
+
+# 1. Остановить контейнер
+docker stop company-canvas-app || echo "Container not running"
+
+# 2. Удалить старый контейнер
+docker rm company-canvas-app || echo "Container not found"
+
+# 3. Скачать новую версию v12a
+docker pull sergeykostichev/company-canvas-app:v12a
+
+# 4. Запустить новый контейнер с версией v12a
+docker run -d \
+  --name company-canvas-app \
+  -p 80:8000 \
+  -e SCRAPINGBEE_API_KEY="YOUR_SCRAPINGBEE_KEY" \
+  -e HUBSPOT_API_KEY="YOUR_HUBSPOT_KEY" \
+  -e OPENAI_API_KEY="YOUR_OPENAI_KEY" \
+  -e SERPER_API_KEY="YOUR_SERPER_KEY" \
+  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/YOUR_PORTAL_ID/record/0-2/" \
+  -e DEBUG="false" \
+  -v /srv/company-canvas/output:/app/output \
+  -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
+  --restart unless-stopped \
+  sergeykostichev/company-canvas-app:v12a
+
+# 5. Проверить статус
+echo "Waiting 10 seconds for container to start..."
+sleep 10
+docker ps | grep company-canvas-app
+
+# 6. Проверить логи
+echo "Recent logs:"
+docker logs --tail 20 company-canvas-app
+
+echo "v12a deployment completed!"
+echo "URL: http://YOUR_VM_IP"
+echo ""
+echo "КРИТИЧЕСКИЕ ИСПРАВЛЕНИЯ v12a:"
+echo "✅ FIXED: OpenAI model changed from gpt-3.5-turbo to gpt-4o (128K token limit)"
+echo "✅ FIXED: Unknown criteria results - now returns ND instead of None"
+echo "✅ FIXED: Progress tracking simplified - shows only companies processed (X/Y companies)"
+echo "✅ FIXED: Removed complex criteria counting that showed thousands of criteria"
+echo "✅ IMPROVED: Better error handling for token limit exceeded errors"
+echo ""
+echo "Основные улучшения:"
+echo "- Критерий 'Has login system' теперь работает корректно"
+echo "- Прогресс бар показывает только обработанные компании"
+echo "- Нет больше огромных чисел в счетчике критериев"
+echo ""
+echo "Проверьте анализ критериев - теперь должен работать без ошибок Unknown!" 

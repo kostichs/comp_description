@@ -39,11 +39,11 @@ docker login
 
 ### 1.5. Тегирование и публикация
 ```bash
-# Тегировать образ (новая версия v11a: UI improvements & file selection)
-docker tag company-canvas-app sergeykostichev/company-canvas-app:v11a
+# Тегировать образ (новая версия v12a: Critical OpenAI & Progress Fixes)
+docker tag company-canvas-app sergeykostichev/company-canvas-app:v12a
 
 # Отправить на Docker Hub
-docker push sergeykostichev/company-canvas-app:v11a
+docker push sergeykostichev/company-canvas-app:v12a
 ```
 
 ## Шаг 2: Развертывание на виртуальной машине
@@ -65,7 +65,7 @@ docker rmi sergeykostichev/company-canvas-app:v10f
 
 ### 2.3. Скачивание нового образа
 ```bash
-docker pull sergeykostichev/company-canvas-app:v11a
+docker pull sergeykostichev/company-canvas-app:v12a
 ```
 
 ### 2.4. Создание директорий для данных
@@ -96,7 +96,7 @@ docker run -d --restart unless-stopped -p 80:8000 \
   --name company-canvas-prod \
   -v /srv/company-canvas/output:/app/output \
   -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
-  sergeykostichev/company-canvas-app:v11a
+  sergeykostichev/company-canvas-app:v12a
 ```
 
 ### 2.6. Проверка работы

@@ -1,0 +1,29 @@
+# VM Commands for v12b Deployment - General Criteria Logic Fix
+# Run these commands on the VM to deploy the updated version
+
+# 1. Stop current container
+sudo docker stop company-canvas-app || true
+
+# 2. Remove current container
+sudo docker rm company-canvas-app || true
+
+# 3. Pull new image
+sudo docker pull sergeykostichev/company-canvas-app:v12b
+
+# 4. Run new container
+sudo docker run -d \
+  --name company-canvas-app \
+  -p 8000:8000 \
+  -v /home/azureuser/app_data:/app/output \
+  --restart unless-stopped \
+  sergeykostichev/company-canvas-app:v12b
+
+# 5. Check status
+sudo docker ps
+sudo docker logs company-canvas-app --tail 20
+
+# 6. Test endpoint
+curl -f http://localhost:8000/health || echo "Health check failed"
+
+echo "Deployment v12b completed!"
+echo "Key fix: General criteria failures now properly stop processing (no qualification/mandatory/NTH analysis)" 

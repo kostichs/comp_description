@@ -75,6 +75,13 @@ def process_single_company_for_product(args):
             "detailed_results": {}
         }
         
+        # CRITICAL: If general criteria failed, stop processing immediately
+        if not general_passed:
+            log_info(f"❌ [{product}] {company_name} НЕ ПРОШЛА general критерии - ПРЕРЫВАЕМ анализ")
+            record["Qualified_Products"] = "NOT QUALIFIED - Failed General Criteria"
+            record["All_Results"] = product_results
+            return [record]
+        
         # Check Qualification Questions for this product
         qualification_questions = product_data["qualification_questions"]
         temp_qualification_info = {}
