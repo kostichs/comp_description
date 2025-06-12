@@ -209,11 +209,11 @@ class CriteriaAnalysis {
         const criteriaDropZone = document.getElementById('criteria-drop-zone');
         
         if (!criteriaDropZone) {
-            console.error('❌ Criteria drop zone not found!');
+            console.error('Criteria drop zone not found!');
             return;
         }
         
-        console.log('✅ Setting up criteria drag & drop handlers');
+        console.log('Setting up criteria drag & drop handlers');
         
         criteriaDropZone.addEventListener('dragover', (event) => {
             event.preventDefault();
@@ -227,7 +227,7 @@ class CriteriaAnalysis {
         });
         
         criteriaDropZone.addEventListener('drop', (event) => {
-            console.log('🎯 Drop event on criteria zone!');
+            console.log('Drop event on criteria zone!');
             event.preventDefault();
             criteriaDropZone.style.backgroundColor = '#f8fff8';
             criteriaDropZone.style.borderColor = '#28a745';
@@ -238,39 +238,39 @@ class CriteriaAnalysis {
     }
 
     handleCriteriaFileDrop(event) {
-        console.log('🎯 handleCriteriaFileDrop called from class method!');
+        console.log(' handleCriteriaFileDrop called from class method!');
         
         const files = event.dataTransfer.files;
-        console.log('📁 Files dropped:', files.length);
+        console.log('Files dropped:', files.length);
         
         if (files.length === 0) {
-            console.log('⚠️ No files in drop event');
+            console.log('No files in drop event');
             return;
         }
         
         // Log file details
         for (let i = 0; i < files.length; i++) {
-            console.log(`📄 File ${i + 1}: ${files[i].name} (${files[i].size} bytes, type: ${files[i].type})`);
+            console.log(` File ${i + 1}: ${files[i].name} (${files[i].size} bytes, type: ${files[i].type})`);
         }
         
         // Process all files sequentially  
         const processFiles = async () => {
             for (let file of files) {
-                console.log(`🔄 Processing file: ${file.name}`);
+                console.log(`Processing file: ${file.name}`);
                 await this.uploadCriteriaFile(file);
             }
             
             // После загрузки всех файлов, полностью обновляем интерфейс
-            console.log('🔄 All criteria files uploaded, refreshing complete interface');
+            console.log(' All criteria files uploaded, refreshing complete interface');
             await this.loadCriteriaFiles();
             
             // МГНОВЕННОЕ обновление чекбоксов продуктов
-            console.log('🔄 Force refreshing product checkboxes...');
+            console.log(' Force refreshing product checkboxes...');
             this.displayCriteriaFiles(); // Принудительно перерисовываем чекбоксы
         };
         
         processFiles().catch(error => {
-            console.error('❌ Error processing dropped criteria files:', error);
+            console.error(' Error processing dropped criteria files:', error);
             alert(`Error processing files: ${error.message}`);
         });
     }
@@ -353,7 +353,7 @@ class CriteriaAnalysis {
             // Keep analyze button disabled during processing
             if (analyzeBtn) {
                 analyzeBtn.disabled = true;
-                analyzeBtn.textContent = '⏳ Analyzing...';
+                analyzeBtn.textContent = ' Analyzing...';
             }
         } else if (type === 'completed' || message.includes('завершен') || message.includes('completed')) {
             progressBar.style.display = 'none';
@@ -433,22 +433,22 @@ class CriteriaAnalysis {
             if (data.detailed_progress && data.progress) {
                 // Добавляем детальную информацию о критериях
                 if (data.progress.criteria && data.progress.criteria !== "0/0") {
-                    statusMessage += `\n📊 Criteria: ${data.progress.criteria}`;
+                    statusMessage += `\n Criteria: ${data.progress.criteria}`;
                 }
                 
                 // Добавляем информацию о компаниях
                 if (data.progress.companies && data.progress.companies !== "0/0") {
-                    statusMessage += `\n🏢 Companies: ${data.progress.companies}`;
+                    statusMessage += `\n Companies: ${data.progress.companies}`;
                 }
                 
                 // Добавляем breakdown по типам критериев
                 if (data.criteria_summary) {
-                    statusMessage += `\n📋 ${data.criteria_summary}`;
+                    statusMessage += `\n ${data.criteria_summary}`;
                 }
                 
                 // Добавляем текущую информацию
                 if (data.current && data.current.company && data.current.product) {
-                    statusMessage += `\n🔄 Processing: ${data.current.company} → ${data.current.product}`;
+                    statusMessage += `\n Processing: ${data.current.company} → ${data.current.product}`;
                 }
                 
                 // Добавляем информацию об аудитории
@@ -469,11 +469,11 @@ class CriteriaAnalysis {
                 setTimeout(() => this.loadResults(), 1000);
             } else if (data.status === 'failed') {
                 const errorMsg = data.error || 'Analysis failed';
-                this.showStatus(`❌ Analysis failed: ${errorMsg}`, 'error');
+                this.showStatus(`Analysis failed: ${errorMsg}`, 'error');
                 this.updateProgressBar(0);
                 this.stopStatusChecking();
             } else if (data.status === 'cancelled') {
-                this.showStatus('🛑 Analysis cancelled', 'error');
+                this.showStatus('Analysis cancelled', 'error');
                 this.updateProgressBar(0);
                 this.stopStatusChecking();
             } else {
@@ -1057,15 +1057,15 @@ class CriteriaAnalysis {
                 throw new Error('Failed to load criteria files');
             }
 
-            console.log('🔄 loadCriteriaFiles: API response received');
-            console.log('   📁 Files count:', result.files ? result.files.length : 0);
+            console.log(' loadCriteriaFiles: API response received');
+            console.log('📁 Files count:', result.files ? result.files.length : 0);
 
             this.criteriaFiles = result.files;
             this.availableProducts = result.products || []; // Сохраняем для совместимости
             
             // Сохраняем предыдущие выборы файлов если они были
             const previouslySelected = [...this.selectedCriteria];
-            console.log('   🔒 Previously selected files:', previouslySelected);
+            console.log(' Previously selected files:', previouslySelected);
             
             // Умная логика выбора файлов
             if (previouslySelected.length > 0) {
@@ -1078,7 +1078,7 @@ class CriteriaAnalysis {
                 this.selectedCriteria = this.criteriaFiles.map(f => f.filename);
             }
             
-            console.log('   ✅ Final selected files:', this.selectedCriteria);
+            console.log(' Final selected files:', this.selectedCriteria);
             
             this.displayCriteriaFiles();
 
@@ -1094,9 +1094,9 @@ class CriteriaAnalysis {
         // ПРИНУДИТЕЛЬНАЯ ОЧИСТКА контейнера
         container.innerHTML = '';
         
-        console.log('🔄 displayCriteriaFiles called');
-        console.log('   📁 Available files:', this.criteriaFiles.length);
-        console.log('   ✅ Selected criteria:', this.selectedCriteria);
+        console.log(' displayCriteriaFiles called');
+        console.log('   Available files:', this.criteriaFiles.length);
+        console.log('   Selected criteria:', this.selectedCriteria);
         
         if (!this.criteriaFiles || this.criteriaFiles.length === 0) {
             container.innerHTML = '<p style="color: #6c757d;">No criteria files found</p>';
@@ -1113,7 +1113,7 @@ class CriteriaAnalysis {
         filesList.appendChild(filesTitle);
 
         this.criteriaFiles.forEach(file => {
-            console.log(`   🎯 Creating file item for: ${file.filename}`);
+            console.log(`   Creating file item for: ${file.filename}`);
             
             const fileItem = document.createElement('div');
             fileItem.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 4px;';
@@ -1141,7 +1141,7 @@ class CriteriaAnalysis {
             
             // ПРАВИЛЬНЫЙ биндинг события для файла
             checkbox.addEventListener('change', (e) => {
-                console.log(`🎯 File checkbox changed for ${file.filename}: ${e.target.checked}`);
+                console.log(`File checkbox changed for ${file.filename}: ${e.target.checked}`);
                 this.toggleFileSelection(file.filename, e.target.checked);
             });
             
@@ -1183,7 +1183,7 @@ class CriteriaAnalysis {
         // ПРИНУДИТЕЛЬНОЕ добавление в DOM
         container.appendChild(filesList);
         
-        console.log('✅ displayCriteriaFiles completed, DOM updated');
+        console.log(' displayCriteriaFiles completed, DOM updated');
         
         this.updateSelectedCriteriaDisplay();
     }
@@ -1503,20 +1503,20 @@ class CriteriaAnalysis {
             const result = await response.json();
 
             if (!response.ok) {
-                console.log(`❌ Server error: ${result.detail || 'Unknown error'}`);
+                console.log(` Server error: ${result.detail || 'Unknown error'}`);
                 throw new Error(result.detail || 'Failed to upload criteria file');
             }
 
-            console.log(`✅ Upload successful: ${result.filename}`);
+            console.log(` Upload successful: ${result.filename}`);
             alert(`Criteria file uploaded successfully: ${result.filename}`);
             
             // МГНОВЕННОЕ обновление после загрузки КАЖДОГО файла
-            console.log('🔄 INSTANT refresh after file upload...');
+            console.log(' INSTANT refresh after file upload...');
             await this.loadCriteriaFiles();
             this.displayCriteriaFiles();
 
         } catch (error) {
-            console.error('❌ Error uploading criteria file:', error);
+            console.error(' Error uploading criteria file:', error);
             alert(`Error uploading file: ${error.message}`);
         }
     }

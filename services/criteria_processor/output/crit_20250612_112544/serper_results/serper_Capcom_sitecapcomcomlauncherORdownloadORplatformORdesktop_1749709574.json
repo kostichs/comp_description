@@ -1,0 +1,73 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Link a platform account to your CAPCOM ID in-game",
+            "link": "https://cid.capcom.com/en/guide/game/connect/",
+            "snippet": "Guide for linking/pairing your account from a game screen. We will explain how to link/pair your CAPCOM ID with your Platform Account from a game screen.",
+            "position": 1
+        },
+        {
+            "title": "Download Chips (MMBN 3) | Mega Man Battle Network ...",
+            "link": "http://game.capcom.com/manual/REXEAC/vol1/en/steam/page/3/9",
+            "snippet": "Press on the MegaMan screen to open the Download Chip screen. Select and confirm the Chip that you would like and it will be sent to your Pack.",
+            "position": 2
+        },
+        {
+            "title": "Capcom USA > Games",
+            "link": "https://offers.capcom.com/",
+            "snippet": "Choose Platform, All, Android, Apple iOS, Luna, Nintendo Switch, Nintendo Switch 2, PlayStation 4, PlayStation 5, Steam, Xbox 360, Xbox One, Xbox Series X/S.",
+            "position": 3
+        },
+        {
+            "title": "Patch Cards and Download Chips | Mega Man Battle ...",
+            "link": "http://game.capcom.com/manual/REXEAC/vol2/en/steam/page/1/10",
+            "snippet": "Press on the MegaMan screen to open the Download Chip and Patch Card screen. Select and confirm the desired Download Chip to acquire the shown Chip.",
+            "position": 4
+        },
+        {
+            "title": "How to Link/Pair your Platform Account",
+            "link": "https://cid.capcom.com/en/guide/",
+            "snippet": "We will explain how to link/pair your CAPCOM ID with your Platform Account. PlayStation™Network / Xbox network / Steam · Nintendo game account ...",
+            "position": 5
+        },
+        {
+            "title": "choose download region - Mega Man - Capcom",
+            "link": "https://megaman.capcom.com/sfxmm/",
+            "snippet": "... rights to withdraw consent.Cookie Policy. Change Settings. I Accept. CHOOSE DOWNLOAD REGION. ©CAPCOM CO., LTD. ALL RIGHTS RESERVED. PRIVACY POLICY COOKIE ...",
+            "position": 6
+        },
+        {
+            "title": "Support",
+            "link": "https://cid.capcom.com/en/support/",
+            "snippet": "□PlayStation™Network / Xbox network / Steam Select the Platform Account you want to link from Account Page and continue the process. ≫CAPCOM ID Account Page",
+            "position": 7
+        },
+        {
+            "title": "Cross-platform Play",
+            "link": "https://game.capcom.com/manual/reverse/en/ps4/page/1/4",
+            "snippet": "This game supports cross-platform multiplayer. Cross-platform play can be turned on or off via the Cross-platform Play setting in the Options menu.",
+            "position": 8
+        },
+        {
+            "title": "CAPCOM: MONSTER HUNTER 4U | Official Web Manual",
+            "link": "http://game.capcom.com/manual/MH4U/en-UK/page-162.html",
+            "snippet": "Monster Hunter 4 Ultimate allows you to play with other players via the internet, download quests and other bonuses, and acquire downloadable content via the ...",
+            "position": 9
+        },
+        {
+            "title": "Okami HD",
+            "link": "https://www.capcom.com/okami/",
+            "snippet": "Okami HD. Platform. Luna, Nintendo Switch, PlayStation 4, Steam, Xbox One. Edition. Standard. Format. Physical, Digital. Blood and Gore; Crude Humor; Fantasy ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

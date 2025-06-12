@@ -278,62 +278,16 @@ class ProcessingStateManager:
             log_error(f"❌ Ошибка сохранения состояния: {e}")
     
     def initialize_criteria_totals(self, products_data: dict, companies_count: int, general_criteria: list = None):
-        """Инициализирует общее количество критериев для отслеживания прогресса"""
-        total_criteria = 0
-        criteria_breakdown = {
+        """Простая инициализация - только счетчик компаний"""
+        # Убираем сложный подсчет критериев, оставляем только компании
+        self._current_state["total_criteria"] = 0
+        self._current_state["processed_criteria"] = 0
+        self._current_state["criteria_breakdown"] = {
             "general": {"total": 0, "processed": 0, "passed": 0},
             "qualification": {"total": 0, "processed": 0, "passed": 0},
             "mandatory": {"total": 0, "processed": 0, "passed": 0},
             "nth": {"total": 0, "processed": 0, "passed": 0}
         }
-        
-        # General критерии проверяются ОДИН РАЗ для всех компаний
-        if general_criteria:
-            general_count = len(general_criteria)
-            criteria_breakdown["general"]["total"] = general_count * companies_count
-            total_criteria += general_count * companies_count
-            log_info(f"📊 General критерии: {general_count} критериев × {companies_count} компаний = {general_count * companies_count}")
-        
-        # Подсчитываем критерии для каждого продукта
-        for product_name, product_data in products_data.items():
-            product_total = 0
-            
-            # Qualification criteria - проверяются для каждой компании
-            if "qualification_questions" in product_data:
-                # Считаем общее количество вопросов квалификации для этого продукта
-                qual_count = sum(len(questions) for questions in product_data["qualification_questions"].values())
-                product_qual_total = qual_count * companies_count
-                criteria_breakdown["qualification"]["total"] += product_qual_total
-                total_criteria += product_qual_total
-                product_total += product_qual_total
-                log_info(f"📊 {product_name} Qualification: {qual_count} критериев × {companies_count} компаний = {product_qual_total}")
-            
-            # Mandatory criteria - проверяются только для квалифицированных компаний
-            if "mandatory_df" in product_data and not product_data["mandatory_df"].empty:
-                mandatory_count = len(product_data["mandatory_df"])
-                # Предполагаем что в среднем 50% компаний пройдут квалификацию
-                estimated_qualified = max(1, companies_count // 2)
-                product_mandatory_total = mandatory_count * estimated_qualified
-                criteria_breakdown["mandatory"]["total"] += product_mandatory_total
-                total_criteria += product_mandatory_total
-                product_total += product_mandatory_total
-                log_info(f"📊 {product_name} Mandatory: {mandatory_count} критериев × ~{estimated_qualified} квалифицированных компаний = {product_mandatory_total}")
-            
-            # NTH criteria - проверяются только для компаний прошедших mandatory
-            if "nth_df" in product_data and not product_data["nth_df"].empty:
-                nth_count = len(product_data["nth_df"])
-                # Предполагаем что в среднем 30% компаний дойдут до NTH
-                estimated_nth = max(1, companies_count // 3)
-                product_nth_total = nth_count * estimated_nth
-                criteria_breakdown["nth"]["total"] += product_nth_total
-                total_criteria += product_nth_total
-                product_total += product_nth_total
-                log_info(f"📊 {product_name} NTH: {nth_count} критериев × ~{estimated_nth} компаний до NTH = {product_nth_total}")
-            
-            log_info(f"📊 {product_name} ИТОГО: {product_total} критериев")
-        
-        self._current_state["total_criteria"] = total_criteria
-        self._current_state["criteria_breakdown"] = criteria_breakdown
         self._current_state["updated_at"] = datetime.now().isoformat()
         
         # Сохраняем состояние в файл
@@ -343,7 +297,7 @@ class ProcessingStateManager:
         except Exception as e:
             log_error(f"❌ Ошибка сохранения состояния: {e}")
         
-        log_info(f"📊 ОБЩИЙ ИТОГ критериев: {total_criteria} (реалистичная оценка с учетом фильтрации)")
+        log_info(f"📊 Инициализация: отслеживаем только прогресс по компаниям ({companies_count} компаний)")
     
     def record_criterion_result(self, criterion_type: str, result: str):
         """Записывает результат обработки критерия
@@ -371,9 +325,9 @@ class ProcessingStateManager:
             self.save_progress()
     
     def get_criteria_progress_percentage(self) -> float:
-        """Возвращает процент выполнения по критериям"""
-        total = self._current_state["total_criteria"]
-        processed = self._current_state["processed_criteria"]
+        """Возвращает процент выполнения по компаниям"""
+        total = self._current_state["total_companies"]
+        processed = self._current_state["processed_companies"]
         
         if total > 0:
             return min(100.0, (processed / total) * 100.0)

@@ -359,16 +359,7 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                         "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
                     }
                     
-                    # Отслеживаем результат
-                    if state_manager:
-                        if sync_value == "Passed":
-                            state_manager.record_criterion_result("mandatory", "Pass")
-                        elif sync_value == "Not Passed":
-                            state_manager.record_criterion_result("mandatory", "Fail")
-                        elif sync_value == "ND":
-                            state_manager.record_criterion_result("mandatory", "ND")
-                        else:
-                            state_manager.record_criterion_result("mandatory", "Error")
+                    # Убираем отслеживание individual критериев
                     
                     detailed_mandatory_results.append(criterion_info)
                 
@@ -395,16 +386,7 @@ def check_mandatory_criteria_batch(company_info, audience, mandatory_df, session
                 "result": "Pass" if sync_value == "Passed" else "Fail" if sync_value == "Not Passed" else "ND" if sync_value == "ND" else "Unknown"
             }
             
-            # Отслеживаем результат
-            if state_manager:
-                if sync_value == "Passed":
-                    state_manager.record_criterion_result("mandatory", "Pass")
-                elif sync_value == "Not Passed":
-                    state_manager.record_criterion_result("mandatory", "Fail")
-                elif sync_value == "ND":
-                    state_manager.record_criterion_result("mandatory", "ND")
-                else:
-                    state_manager.record_criterion_result("mandatory", "Error")
+            # Убираем отслеживание individual критериев
             
             detailed_mandatory_results.append(criterion_info)
         
@@ -495,9 +477,7 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                                 criterion_info["result"] = "Pass"
                                 qualified_count += 1
                                 found_match = True
-                                # Отслеживаем результат
-                                if state_manager:
-                                    state_manager.record_criterion_result("nth", "Pass")
+                                                    # Убираем отслеживание individual критериев
                                 break
                         except (ValueError, IndexError):
                             # Если не можем извлечь номер, используем старую логику
@@ -505,9 +485,7 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                 
                 if not found_match:
                     criterion_info["result"] = "Fail"
-                    # Отслеживаем результат
-                    if state_manager:
-                        state_manager.record_criterion_result("nth", "Fail")
+                    # Убираем отслеживание individual критериев
                 
                 detailed_criteria_results.append(criterion_info)
             
@@ -567,16 +545,7 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
                     if sync_value == "Passed":
                         qualified_count += 1
                     
-                    # Отслеживаем результат
-                    if state_manager:
-                        if sync_value == "Passed":
-                            state_manager.record_criterion_result("nth", "Pass")
-                        elif sync_value == "Not Passed":
-                            state_manager.record_criterion_result("nth", "Fail")
-                        elif sync_value == "ND":
-                            state_manager.record_criterion_result("nth", "ND")
-                        else:
-                            state_manager.record_criterion_result("nth", "Error")
+                    # Убираем отслеживание individual критериев
                     
                     detailed_criteria_results.append(criterion_info)
                 
@@ -607,16 +576,7 @@ def check_nth_criteria_batch(company_info, audience, nth_df, session_id=None, us
             if sync_value == "Passed":
                 qualified_count += 1
             
-            # Отслеживаем результат
-            if state_manager:
-                if sync_value == "Passed":
-                    state_manager.record_criterion_result("nth", "Pass")
-                elif sync_value == "Not Passed":
-                    state_manager.record_criterion_result("nth", "Fail")
-                elif sync_value == "ND":
-                    state_manager.record_criterion_result("nth", "ND")
-                else:
-                    state_manager.record_criterion_result("nth", "Error")
+            # Убираем отслеживание individual критериев
             
             detailed_criteria_results.append(criterion_info)
         
@@ -679,11 +639,7 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                 # Store detailed general criteria information
                 general_status[f"{company_name}_detailed"] = temp_general_info
                 
-                # Отслеживаем результаты general критериев
-                if state_manager:
-                    # Записываем результат для каждого general критерия
-                    for criterion in general_criteria:
-                        state_manager.record_criterion_result("general", "Passed" if general_passed else "Failed")
+                # Не отслеживаем individual критерии, только компании
                 
                 if general_passed:
                     log_info("✅ General пройдены")
@@ -697,10 +653,7 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
             except Exception as e:
                 log_error(f"❌ Ошибка проверки general критериев для {company_name}: {e}")
                 general_status[company_name] = False
-                # Записываем ошибку в state manager
-                if state_manager:
-                    for criterion in general_criteria:
-                        state_manager.record_criterion_result("general", "Error")
+                # Убираем отслеживание individual критериев
                 if state_manager:
                     state_manager.save_progress(0, index + 1, stage="general_criteria")
         

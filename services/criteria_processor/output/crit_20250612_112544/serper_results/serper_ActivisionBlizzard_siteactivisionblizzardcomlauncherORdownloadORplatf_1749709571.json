@@ -1,0 +1,68 @@
+{
+    "searchParameters": {
+        "q": "site:activisionblizzard.com (\"launcher\" OR \"download\" OR \"platform\" OR \"desktop\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Tidy up your digital life with these organizer apps",
+            "link": "https://newsroom.activisionblizzard.com/p/tidy-up-your-digital-life-with-these",
+            "snippet": "Stardock Software has a whole host of programs and apps that can alter your desktop and file organization but Fences stands out for us. Fences ...",
+            "date": "Aug 25, 2023",
+            "position": 1
+        },
+        {
+            "title": "Media Contacts",
+            "link": "https://www.activisionblizzard.com/media-contacts",
+            "snippet": "Media Downloads. File Name 10. Download Icon. Test · File Name 9. Download Icon. Download · File Name 8. Download Icon. Download · File Name 7. Download Icon.",
+            "position": 2
+        },
+        {
+            "title": "Activision Blizzard | Annual Reports",
+            "link": "https://www.activisionblizzard.com/annual-reports",
+            "snippet": "Download annual reports to learn more about Activision Blizzard's performance. 2022 Annual Report May 1, 2022 DOWNLOAD",
+            "position": 3
+        },
+        {
+            "title": "Advanced Warfare",
+            "link": "https://investor.activisionblizzard.com/static-files/a87d3146-cf4e-4387-ad90-92578ab062a9",
+            "snippet": "If Day Zero Edition not available at retailer, pre-order customer may receive a pre-order refund, or may purchase a launch unit and obtain a code to download ...",
+            "position": 4
+        },
+        {
+            "title": "Call of Duty: World at War Downloadable Maps now Available",
+            "link": "https://investor.activisionblizzard.com/news-releases/news-release-details/call-duty-world-war-downloadable-maps-now-available",
+            "snippet": "(Nasdaq: ATVI) and Treyarch today announced the Call of Duty(R): World at War Map Pack 1 is now available for download on Xbox 360(TM) and PLAYSTATION(R)3 ...",
+            "position": 5
+        },
+        {
+            "title": "Activision Blizzard | About",
+            "link": "https://www.activisionblizzard.com/about-us",
+            "snippet": "Activision Blizzard Media is the gateway for brands to the #1 cross-platform gaming company in the western world, with hundreds of millions of players across ...",
+            "position": 6
+        },
+        {
+            "title": "Senior Environment Artist - Infinity Ward",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025432EXTERNAL/Senior-Environment-Artist-Infinity-Ward",
+            "snippet": "Job Description: Your Platform. Founded in 2002, Infinity Ward is the original studio behind the Call of Duty® franchise. The titles developed by Infinity ...",
+            "position": 7
+        },
+        {
+            "title": "Principal Online Programmer in Warsaw, Poland",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025452EXTERNAL/Principal-Online-Programmer",
+            "snippet": "Experience with multi-platform development, including PC, Xbox, and PlayStation. Comfortable working with RESTful APIs, JSON, and network protocol design ...",
+            "position": 8
+        },
+        {
+            "title": "Senior Manager – App Store Optimization (ASO)",
+            "link": "https://careers.activisionblizzard.com/job/ACCOUSR025323EXTERNAL/Senior-Manager-App-Store-Optimization-ASO",
+            "snippet": "Collaborate with Apple, Google, and other platform partners to maximize the conversion impact of Featuring opportunities and implement best practices. Assist in ...",
+            "position": 9
+        }
+    ],
+    "credits": 1
+}
