@@ -1,0 +1,91 @@
+{
+    "searchParameters": {
+        "q": "site:ubisoft.com (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Y10S2.1 Patch Notes",
+            "link": "https://www.ubisoft.com/en-gb/game/rainbow-six/siege/news-updates/6d9GuIXMWRbgoPQZYdUVip/y10s21-patch-notes",
+            "snippet": "Y10S2.0 PATCH NOTES ADDENDUM. Updates and fixes made over the course of the Y10S2 Season Test Server. Read More.",
+            "date": "9 hours ago",
+            "position": 1
+        },
+        {
+            "title": "Patch Notes 2.60.1 - FOR HONOR",
+            "link": "https://www.ubisoft.com/en-us/game/for-honor/news-updates/1uyGJ38RqfLbgGnZBHC0wr/patch-notes-2601-for-honor",
+            "snippet": "Patch Notes 2.60.1 - FOR HONOR ; IMPROVEMENT ; Menus - Heros page. It's now possible to change the loadout preview directly from the character ...",
+            "date": "4 hours ago",
+            "position": 2
+        },
+        {
+            "title": "[May 20th, 2025] Y10S2 Test Server Patch Notes - Day 1",
+            "link": "https://redirection.ubisoft.com/site/entrance?entrance=rainbow6.com/daybreak_bugfixes_reddit",
+            "snippet": "DAY 1 BUG FIXES Operation Daybreak season Patch Notes: Please bear in mind that all changes made in the TS are for testing purposes and do ...",
+            "date": "May 20, 2025",
+            "position": 3
+        },
+        {
+            "title": "AC Shadows Title Update 1.0.5 - Release Notes",
+            "link": "https://www.ubisoft.com/en-sg/game/assassins-creed/news/3hJ2jNQEK4AXQGMg79pm2h/ac-shadows-title-update-105-release-notes",
+            "snippet": "AC Shadows Title Update 1.0.5 - Release Notes · PATCH SIZES: PS5: ~3.31 GB · PATCH HIGHLIGHTS · \"Thrown to the Dogs\" Quest Unlocked · SPECIAL ...",
+            "date": "May 26, 2025",
+            "position": 4
+        },
+        {
+            "title": "Y10S2.1 Patch Notes",
+            "link": "https://www.ubisoft.com/es-mx/game/rainbow-six/siege/news-updates/6d9GuIXMWRbgoPQZYdUVip/y10s21-patch-notes",
+            "snippet": "Y10S2.0 PATCH NOTES ADDENDUM. Updates and fixes made over the course of the Y10S2 Season Test Server. Más Info.",
+            "date": "9 hours ago",
+            "position": 5
+        },
+        {
+            "title": "Y9S4.3 PATCH NOTES",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/51gYeQ7iJLRZgn91y0QCuZ/y9s43-patch-notes",
+            "snippet": "Y9S4.3 PATCH NOTES. Here you can find the fixes for the Y9S4.3 patch. Improved boot time by reducing unnecessary reboots (PC Only).",
+            "date": "Feb 5, 2025",
+            "position": 6
+        },
+        {
+            "title": "Y10S1.3 PATCH NOTES",
+            "link": "https://www.ubisoft.com/en-ca/game/rainbow-six/siege/news-updates/3adVE0FPbli42OBNXPdrr3/y10s13-patch-notes",
+            "snippet": "Y10S1.3 PATCH NOTES. See the upcoming changes to Rainbow Six Siege with the release of Y10S1.3. BUG FIXES. GAMEPLAY.",
+            "date": "Apr 15, 2025",
+            "position": 7
+        },
+        {
+            "title": "Y9S1.3 PATCH NOTES",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/6ZsfBMeGT0Anuu0IHjDQ0P/y9s13-patch-notes",
+            "snippet": "Y10S2.0 PATCH NOTES ADDENDUM. Updates and fixes made over the course of the Y10S2 Season Test Server. Read More.",
+            "date": "May 2, 2024",
+            "position": 8
+        },
+        {
+            "title": "Y8S4.2 Patch Notes",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/5YK5Mlv2HjWgV9S2uUXYEO/y8s42-patch-notes",
+            "snippet": "Y8S4.2 PATCH NOTES. You can find here the updates and fixes for the Y8S4.2 patch. Y8S4.2 Patch Size. Find the download sizes for each ...",
+            "date": "Jan 23, 2024",
+            "position": 9
+        },
+        {
+            "title": "Y10S1.2 PATCH NOTES",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/1T6bSlv03vnlIl69xjl6Pd/y10s12-patch-notes",
+            "snippet": "Y10S1.2 PATCH NOTES. See the upcoming changes to Rainbow Six Siege with the release of Y10S1.2. BUG FIXES. OPERATORS.",
+            "date": "Apr 1, 2025",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release notes patch notes update log version history xbox"
+        },
+        {
+            "query": "Release notes patch notes update log version history ps4"
+        }
+    ],
+    "credits": 1
+}

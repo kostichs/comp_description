@@ -5,8 +5,11 @@
 import os
 import sys
 import json
+import shutil
 import pandas as pd
 from datetime import datetime
+from pathlib import Path
+from typing import List, Dict
 
 # Добавляем корень проекта в sys.path для импорта HubSpot интеграции
 current_file = os.path.abspath(__file__)
@@ -254,4 +257,4 @@ def flatten_result_for_csv(result):
             else:
                 flat[key] = value
     
-    return flat 
+    return flat

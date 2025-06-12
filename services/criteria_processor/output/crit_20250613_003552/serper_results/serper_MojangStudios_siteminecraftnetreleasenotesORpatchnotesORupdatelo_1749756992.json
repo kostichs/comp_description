@@ -1,0 +1,103 @@
+{
+    "searchParameters": {
+        "q": "site:minecraft.net (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Minecraft Dungeons Patch Notes",
+            "link": "https://help.minecraft.net/hc/en-us/articles/360044268272",
+            "snippet": "Minecraft Dungeons Patch Notes · 1.17.0.0 - November 30, 2022 · 1.2.0.0 - June 22, 2020.",
+            "position": 1
+        },
+        {
+            "title": "Version update notification & release notes",
+            "link": "https://edusupport.minecraft.net/hc/en-us/community/posts/4421296660372-Version-update-notification-release-notes",
+            "snippet": "I am looking for the official Microsoft Minecraft Education Edition version release notes URL and the ability to be notified by email or RSS when a new version ...",
+            "date": "Feb 16, 2022",
+            "position": 2
+        },
+        {
+            "title": "Minecraft Legends hotfix highlights",
+            "link": "https://www.minecraft.net/en-us/article/minecraft-legends-hotfix-highlights",
+            "snippet": "Minecraft Legends update 1.17.28951 introduces a variety of improvements, and you can check out the full patch notes on our Help site.",
+            "date": "Apr 28, 2023",
+            "position": 3
+        },
+        {
+            "title": "Patch notes as homepage option",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/360059520311-Patch-notes-as-homepage-option",
+            "snippet": "Patch notes as homepage option. There should be a setting that allows the patch notes to be the default screen that shows up when you open the launcher. Also ...",
+            "position": 4
+        },
+        {
+            "title": "A major update and a new Lost Legend",
+            "link": "https://www.minecraft.net/en-us/article/a-major-update-and-new-lost-legend",
+            "snippet": "For the full list of new features and improvements, make sure to check out the patch notes. And in case you missed it, we also released ...",
+            "date": "Aug 16, 2023",
+            "position": 5
+        },
+        {
+            "title": "Minecraft Preview 1.20.60.23",
+            "link": "https://www.minecraft.net/en-us/article/minecraft-preview-1-20-60-23",
+            "snippet": "View release notes in GitHub for additional details and an aggregate summary of all v0.4.X iteration updates. Molang. Released Molang queries ...",
+            "date": "Dec 13, 2023",
+            "position": 6
+        },
+        {
+            "title": "Local games to have save version history",
+            "link": "https://feedback.minecraft.net/hc/en-us/community/posts/360069233952-Local-games-to-have-save-version-history",
+            "snippet": "Local games to have save version history. I only play with my brother split screen on a local game. We have no access to xbox live gold. It ...",
+            "date": "Jun 20, 2020",
+            "position": 7
+        },
+        {
+            "title": "New Lost Legend and the day 30 patch",
+            "link": "https://www.minecraft.net/nb-no/article/new-lost-legend-and-day-30-patch",
+            "snippet": "For a full rundown of the changes, check out the official patch notes! And that concludes our Minecraft Legends updates... for now. With the ...",
+            "date": "May 18, 2023",
+            "position": 8
+        },
+        {
+            "title": "Play Minecraft Legends' biggest update",
+            "link": "https://www.minecraft.net/en-us/article/play-minecraft-legends-biggest-update",
+            "snippet": "Make sure you check out the patch notes for a more complete list of all the changes. You can also see some of the features in action in our ...",
+            "date": "Nov 29, 2023",
+            "sitelinks": [
+                {
+                    "title": "The Fearless Frog",
+                    "link": "https://www.minecraft.net/en-us/article/play-minecraft-legends-biggest-update#:~:text=range.-,The%20fearless%20frog"
+                },
+                {
+                    "title": "The Clanger",
+                    "link": "https://www.minecraft.net/en-us/article/play-minecraft-legends-biggest-update#:~:text=%21-,The%20clanger"
+                },
+                {
+                    "title": "And Even More Improvements!",
+                    "link": "https://www.minecraft.net/en-us/article/play-minecraft-legends-biggest-update#:~:text=And%20even%20more%20improvements%21"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Minecraft - 1.12.0 (Bedrock)",
+            "link": "https://feedback.minecraft.net/hc/en-us/articles/360030428752-Minecraft-1-12-0-Bedrock",
+            "snippet": "Made improvements to the patch notes to make sure the correct ones show up after an update; The Marketplace search screen now displays the ...",
+            "date": "Jul 9, 2019",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release notes patch notes update log version history xbox"
+        },
+        {
+            "query": "Release notes patch notes update log version history ps4"
+        }
+    ],
+    "credits": 1
+}

@@ -2,20 +2,19 @@
 Роутер для анализа критериев компаний (изолированный микросервис)
 """
 
-import sys
 import os
-import time
-import logging
-import tempfile
+import sys
+import json
 import shutil
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Any, Optional
+import logging
 import asyncio
 import aiofiles
 import pandas as pd
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form, BackgroundTasks
-from starlette.background import BackgroundTask
+from datetime import datetime
+from pathlib import Path
+from typing import List, Dict, Any, Optional
+from fastapi import APIRouter, File, Form, UploadFile, HTTPException
+from starlette.background import BackgroundTasks
 from fastapi.responses import FileResponse, JSONResponse
 from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR, SESSIONS_METADATA_FILE
 from .sessions import cleanup_old_sessions  # Добавляем импорт функции очистки
@@ -110,7 +109,7 @@ def run_criteria_processor(input_file_path: str, load_all_companies: bool = Fals
                             df = pd.read_csv(file_path)
                             if 'Product' in df.columns:
                                 file_products = df['Product'].unique().tolist()
-                                file_products = [p for p in file_products if pd.notna(p) and str(p).strip()]
+                                file_products = [str(p).strip() for p in file_products if pd.notna(p) and str(p).strip()]
                                 selected_products_from_files.extend(file_products)
                                 logger.info(f"From file {filename} extracted products: {file_products}")
                     except Exception as e:
@@ -269,6 +268,38 @@ async def run_criteria_analysis_task(
         if session_id in criteria_tasks:
             del criteria_tasks[session_id]
 
+def cleanup_old_sessions(max_sessions: int = 10) -> None:
+    """
+    Очищает старые сессии из output директории, оставляя только последние N сессий
+    """
+    try:
+        output_path = Path("services/criteria_processor/output")
+        if not output_path.exists():
+            return
+            
+        # Получаем список всех папок
+        sessions = []
+        for session_dir in output_path.iterdir():
+            if session_dir.is_dir():
+                sessions.append({
+                    "path": session_dir,
+                    "modified": session_dir.stat().st_mtime
+                })
+        
+        # Если сессий больше максимума, удаляем старые
+        if len(sessions) > max_sessions:
+            # Сортируем по времени модификации (новые сверху)
+            sessions.sort(key=lambda x: x["modified"], reverse=True)
+            
+            # Удаляем старые сессии
+            for session in sessions[max_sessions:]:
+                shutil.rmtree(session["path"])
+                logger.info(f"🗑️ Удалена старая сессия: {session['path'].name}")
+            
+            logger.info(f"✅ Очистка завершена, оставлено {max_sessions} последних сессий")
+    except Exception as e:
+        logger.error(f"❌ Ошибка при очистке старых сессий: {e}")
+
 @router.post("/analyze")
 async def create_criteria_analysis(
     background_tasks: BackgroundTasks,
@@ -277,9 +308,9 @@ async def create_criteria_analysis(
     use_deep_analysis: bool = Form(False),
     use_parallel: bool = Form(True),
     max_concurrent: int = Form(12),
-    selected_products: str = Form("[]"),  # Backward compatibility
-    selected_criteria_files: str = Form("[]"),  # NEW: JSON string of selected criteria files
-    write_to_hubspot_criteria: bool = Form(False)  # NEW: HubSpot integration flag
+    selected_products: str = Form("[]"),
+    selected_criteria_files: str = Form("[]"),
+    write_to_hubspot_criteria: bool = Form(False)
 ):
     """
     Создает новую сессию анализа критериев
