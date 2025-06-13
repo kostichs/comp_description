@@ -374,8 +374,28 @@ class PipelineAdapter:
         
         # Заменяем список компаний на список без дубликатов
         company_names = unique_companies
+        
+        # КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Фильтруем компании с мертвыми ссылками
+        valid_companies = []
+        dead_url_companies = []
+        
+        for company in company_names:
+            company_status = company.get('status') if isinstance(company, dict) else 'VALID'
+            company_name = company['name'] if isinstance(company, dict) else company
             
-        logger.info(f"Loaded {len(company_names)} company names from {input_file_path}")
+            if company_status == 'DEAD_URL':
+                dead_url_companies.append(company_name)
+                logger.warning(f"Исключена компания с мертвой ссылкой: {company_name}")
+            else:
+                valid_companies.append(company)
+        
+        # Заменяем список на только валидные компании
+        company_names = valid_companies
+        
+        if dead_url_companies:
+            logger.warning(f"ИСКЛЮЧЕНО {len(dead_url_companies)} компаний с мертвыми ссылками: {', '.join(dead_url_companies)}")
+            
+        logger.info(f"Loaded {len(company_names)} valid company names from {input_file_path} (after filtering dead URLs)")
         
         # Конфигурация выполнения различных частей пайплайна
         run_standard_cfg = False  # Standard pipeline отключен

@@ -245,6 +245,27 @@ async def get_url_status_and_final_location_async(
 
             if status_code and 200 <= status_code < 400:
                 final_sb_url = final_url_or_error # Если успешно, это должен быть final_url
+                
+                # КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Дополнительная валидация для ScrapingBee
+                # Если aiohttp не смог разрешить DNS, но ScrapingBee вернул 200 - это подозрительно
+                if "Ошибка разрешения DNS" in last_aiohttp_error_message:
+                    logger.warning(f"[URL_CHECK] ПОДОЗРИТЕЛЬНО: DNS не резолвится, но ScrapingBee вернул {status_code} для {url_for_sb}")
+                    logger.warning(f"[URL_CHECK] Это может быть redirect на поисковик или заглушка. Считаем URL мертвым.")
+                    return False, None, f"{last_aiohttp_error_message}; ScrapingBee suspicious success (possible search engine redirect)"
+                
+                # Проверяем, не является ли финальный URL поисковиком или заглушкой
+                search_engines = ['google.com', 'bing.com', 'yahoo.com', 'duckduckgo.com', 'search.yahoo.com']
+                dummy_indicators = ['godaddy.com', 'namecheap.com', 'domain-for-sale', 'parking-page']
+                
+                final_domain = normalize_domain(final_sb_url) if final_sb_url else ""
+                if any(engine in final_domain for engine in search_engines):
+                    logger.warning(f"[URL_CHECK] ScrapingBee перенаправил на поисковик: {final_sb_url}. URL считается мертвым.")
+                    return False, None, f"ScrapingBee redirected to search engine: {final_sb_url}"
+                
+                if any(indicator in final_domain for indicator in dummy_indicators):
+                    logger.warning(f"[URL_CHECK] ScrapingBee перенаправил на парковочную страницу: {final_sb_url}. URL считается мертвым.")
+                    return False, None, f"ScrapingBee redirected to parking page: {final_sb_url}"
+                
                 logger.info(f"[URL_CHECK] ScrapingBee для {url_for_sb}: статус {status_code}, финальный URL: {final_sb_url}")
                 return True, final_sb_url, None
             elif status_code and status_code in [403, 429]:  # Блокировка ботов - сайт живой
