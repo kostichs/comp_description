@@ -745,14 +745,14 @@ def run_parallel_analysis(companies_file=None, load_all_companies=False, session
                         # Объединяем все квалификации для этого продукта
                         if all_qualified_texts:
                             combined_qualified_text = "\n\n".join(all_qualified_texts)
-                            qualified_products_text.append(f"=== {product.upper()} ===\n{combined_qualified_text}")
+                            qualified_products_text.append(f"{product.upper()}\n{combined_qualified_text}")
                         else:
-                            qualified_products_text.append(f"=== {product.upper()} ===\nNOT QUALIFIED")
+                            qualified_products_text.append(f"{product.upper()}\nNOT QUALIFIED")
                     
                 except Exception as e:
                     log_error(f"  ❌ Ошибка обработки {company_name} для продукта {product}: {e}")
                     all_products_results[product] = {"error": str(e)}
-                    qualified_products_text.append(f"=== {product.upper()} ===\nERROR: {str(e)}")
+                    qualified_products_text.append(f"{product.upper()}\nERROR: {str(e)}")
             
             # Consolidate all results
             consolidated_record["All_Results"] = all_products_results
