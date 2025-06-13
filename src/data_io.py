@@ -326,7 +326,8 @@ def save_results_csv(results: list[dict], output_path: str, expected_fields: lis
 
 def save_results_json(results: List[Dict[str, Any]], output_path: str, append_mode: bool = False):
     """
-    Сохраняет структурированные данные о компаниях в JSON файл.
+    Сохраняет полные результаты обработки компаний в JSON файл.
+    Включает все данные из CSV плюс структурированные данные.
     
     Args:
         results: Список результатов с данными компаний
@@ -336,29 +337,37 @@ def save_results_json(results: List[Dict[str, Any]], output_path: str, append_mo
     # Создаем директорию, если она не существует
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     
-    # Подготавливаем структурированные данные
-    structured_data = []
+    # Подготавливаем полные данные результатов
+    json_data = []
     
     for result in results:
-        # Если в результате есть structured_data, используем их
-        if result.get("structured_data") and isinstance(result.get("structured_data"), dict):
-            structured_result = result["structured_data"]
-        else:
-            # Иначе создаем структуру из доступных полей
-            structured_result = {
-                "company_name": result.get("name", ""),
-                "founding_year": result.get("founding_year", None),
-                "headquarters_location": result.get("headquarters_location", None),
-                "industry": result.get("industry", None),
-                "main_products_services": result.get("main_products_services", None),
-                "employees_count": result.get("employees_count", None),
-                "description": result.get("description", ""),
-                "homepage": result.get("homepage", None),
-                "linkedin": result.get("linkedin", None),
-                "timestamp": result.get("timestamp", None)
-            }
+        # Создаем полную структуру данных, включающую все поля
+        json_result = {
+            # Основные поля из CSV
+            "Company_Name": result.get("Company_Name", ""),
+            "Official_Website": result.get("Official_Website", ""),
+            "LinkedIn_URL": result.get("LinkedIn_URL", ""),
+            "Description": result.get("Description", ""),
+            "Timestamp": result.get("Timestamp", ""),
+            "HubSpot_Company_ID": result.get("HubSpot_Company_ID", ""),
+            "Quality_Status": result.get("Quality_Status", ""),
+            
+            # Структурированные данные (если есть)
+            "structured_data": result.get("structured_data", {}),
+            
+            # Дополнительные поля (валидация, интеграции и т.д.)
+            "validation": result.get("validation", {}),
+            "integrations": result.get("integrations", {}),
+            
+            # Любые другие поля, которые могут быть в результате
+        }
         
-        structured_data.append(structured_result)
+        # Добавляем все остальные поля, которые не были явно указаны выше
+        for key, value in result.items():
+            if key not in json_result:
+                json_result[key] = value
+        
+        json_data.append(json_result)
     
     # Если в режиме добавления и файл существует, загружаем существующие данные
     existing_data = []
@@ -373,21 +382,22 @@ def save_results_json(results: List[Dict[str, Any]], output_path: str, append_mo
             existing_data = []
     
     # Объединяем существующие и новые данные
-    final_data = existing_data + structured_data
+    final_data = existing_data + json_data
     
     # Сохраняем в JSON
     try:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(final_data, f, indent=2, ensure_ascii=False)
-        logging.info(f"Saved {len(structured_data)} structured result(s) to {output_path}")
+        logging.info(f"Saved {len(json_data)} complete result(s) to {output_path}")
         return True
     except Exception as e:
-        logging.error(f"Error saving structured data to {output_path}: {e}")
+        logging.error(f"Error saving complete results to {output_path}: {e}")
         return False
 
 def save_structured_data_incrementally(result: Dict[str, Any], output_path: str):
     """
-    Сохраняет структурированные данные об одной компании в JSON файл инкрементально.
+    Сохраняет полные данные об одной компании в JSON файл инкрементально.
+    Включает все данные из CSV плюс структурированные данные.
     
     Args:
         result: Результат с данными одной компании
@@ -396,23 +406,29 @@ def save_structured_data_incrementally(result: Dict[str, Any], output_path: str)
     # Создаем директорию, если она не существует
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     
-    # Подготавливаем структурированные данные
-    if result.get("structured_data") and isinstance(result.get("structured_data"), dict):
-        structured_result = result["structured_data"]
-    else:
-        # Иначе создаем структуру из доступных полей
-        structured_result = {
-            "company_name": result.get("name", ""),
-            "founding_year": result.get("founding_year", None),
-            "headquarters_location": result.get("headquarters_location", None),
-            "industry": result.get("industry", None),
-            "main_products_services": result.get("main_products_services", None),
-            "employees_count": result.get("employees_count", None),
-            "description": result.get("description", ""),
-            "homepage": result.get("homepage", None),
-            "linkedin": result.get("linkedin", None),
-            "timestamp": result.get("timestamp", None)
-        }
+    # Подготавливаем полные данные результата
+    json_result = {
+        # Основные поля из CSV
+        "Company_Name": result.get("Company_Name", ""),
+        "Official_Website": result.get("Official_Website", ""),
+        "LinkedIn_URL": result.get("LinkedIn_URL", ""),
+        "Description": result.get("Description", ""),
+        "Timestamp": result.get("Timestamp", ""),
+        "HubSpot_Company_ID": result.get("HubSpot_Company_ID", ""),
+        "Quality_Status": result.get("Quality_Status", ""),
+        
+        # Структурированные данные (если есть)
+        "structured_data": result.get("structured_data", {}),
+        
+        # Дополнительные поля (валидация, интеграции и т.д.)
+        "validation": result.get("validation", {}),
+        "integrations": result.get("integrations", {}),
+    }
+    
+    # Добавляем все остальные поля, которые не были явно указаны выше
+    for key, value in result.items():
+        if key not in json_result:
+            json_result[key] = value
     
     # Загружаем существующие данные, если файл существует
     existing_data = []
@@ -427,17 +443,17 @@ def save_structured_data_incrementally(result: Dict[str, Any], output_path: str)
             existing_data = []
     
     # Добавляем новые данные
-    existing_data.append(structured_result)
+    existing_data.append(json_result)
     
     # Сохраняем в JSON
     try:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(existing_data, f, indent=2, ensure_ascii=False)
-        logging.info(f"Added 1 structured result to {output_path}")
+        logging.info(f"Added 1 complete result to {output_path}")
         return True
     except Exception as e:
-        logging.error(f"Error saving structured data to {output_path}: {e}")
-        return False 
+        logging.error(f"Error saving complete result to {output_path}: {e}")
+        return False
 
 def merge_original_with_results(original_file_path: str, results_file_path: str, output_file_path: str) -> bool:
     """

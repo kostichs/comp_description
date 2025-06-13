@@ -19,7 +19,7 @@ import time
 
 from src.pipeline.adapter import PipelineAdapter
 from src.pipeline.core import process_companies
-from src.data_io import load_and_prepare_company_names, save_results_csv, load_session_metadata, save_session_metadata
+from src.data_io import load_and_prepare_company_names, save_results_csv, save_results_json, load_session_metadata, save_session_metadata
 from .client import HubSpotClient
 
 logger = logging.getLogger(__name__)
@@ -600,6 +600,17 @@ class HubSpotPipelineAdapter(PipelineAdapter):
         # Перезаписываем CSV файл с правильно упорядоченными результатами
         save_results_csv(ordered_results, output_csv_path, expected_csv_fieldnames, append_mode=False)
         logger.info(f"Saved {len(ordered_results)} results in correct order to {output_csv_path}")
+        
+        # ДОБАВЛЯЕМ JSON СОХРАНЕНИЕ
+        # Создаем путь к JSON файлу в папке json сессии
+        session_dir_path = Path(output_csv_path).parent
+        json_dir = session_dir_path / "json"
+        json_dir.mkdir(exist_ok=True)
+        json_file_path = json_dir / f"{self.session_id or 'results'}.json"
+        
+        # Сохраняем результаты в JSON
+        save_results_json(ordered_results, str(json_file_path), append_mode=False)
+        logger.info(f"Saved {len(ordered_results)} results to JSON: {json_file_path}")
 
         # Объединение исходного файла с результатами
         try:

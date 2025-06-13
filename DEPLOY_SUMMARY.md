@@ -1,14 +1,14 @@
 # Company Canvas Deployment Summary
 
-## Latest Version: v12a ✅ (Critical Fixes)
+## Latest Version: v13a ✅ (URL Validation & Data Alignment Fixes)
 
 ### Quick Deployment (Current Version)
 ```bash
 # Stop old version
 docker stop company-canvas-app && docker rm company-canvas-app
 
-# Pull and start v12a (latest)
-docker pull sergeykostichev/company-canvas-app:v12a
+# Pull and start v13a (latest)
+docker pull sergeykostichev/company-canvas-app:v13a
 
 docker run -d --restart unless-stopped --name company-canvas-app -p 80:8000 \
   -e OPENAI_API_KEY="YOUR_KEY" \
@@ -19,12 +19,27 @@ docker run -d --restart unless-stopped --name company-canvas-app -p 80:8000 \
   -e DEBUG="false" \
   -v /srv/company-canvas/output:/app/output \
   -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
-  sergeykostichev/company-canvas-app:v12a
+  sergeykostichev/company-canvas-app:v13a
 ```
 
 ## Version History
 
-### v12a (Current) - Critical OpenAI & Progress Fixes
+### v13a (Current) - URL Validation & Data Alignment Fixes
+**Released:** June 13, 2025
+**Key Changes:**
+- 🔧 **CRITICAL FIX:** URL validation logic - dead links now properly detected and filtered out
+- 🐛 **CRITICAL FIX:** Data alignment issue - company descriptions now match correct companies in CSV
+- 📊 **FIXED:** HubSpot adapter result saving order - eliminates misaligned CSV data
+- ⚡ **IMPROVED:** Enhanced URL validation with DNS error detection and suspicious response filtering
+- 🎯 **IMPROVED:** Proper merge logic using URLs as unique keys instead of row indices
+
+**Technical Fixes:**
+- Fixed `normalize_urls.py` to detect ScrapingBee DNS errors and search engine redirects
+- Fixed `merge_original_with_results` function to merge by URL matching instead of row indices
+- Fixed HubSpot adapter to collect all results in memory before ordered saving
+- Added comprehensive URL validation with fallback detection
+
+### v12a - Critical OpenAI & Progress Fixes
 **Released:** June 12, 2025
 **Key Changes:**
 - 🔧 **CRITICAL FIX:** Changed OpenAI model from gpt-3.5-turbo to gpt-4o (16K → 128K token limit)

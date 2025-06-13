@@ -1,0 +1,53 @@
+# Команды для обновления до версии v13a
+# КРИТИЧЕСКИЕ ИСПРАВЛЕНИЯ: URL validation fix + data alignment fix
+
+# 1. Остановить контейнер
+docker stop company-canvas-app || echo "Container not running"
+
+# 2. Удалить старый контейнер
+docker rm company-canvas-app || echo "Container not found"
+
+# 3. Скачать новую версию v13a
+docker pull sergeykostichev/company-canvas-app:v13a
+
+# 4. Запустить новый контейнер с версией v13a
+docker run -d \
+  --name company-canvas-app \
+  -p 80:8000 \
+  -e SCRAPINGBEE_API_KEY="YOUR_SCRAPINGBEE_KEY" \
+  -e HUBSPOT_API_KEY="YOUR_HUBSPOT_KEY" \
+  -e OPENAI_API_KEY="YOUR_OPENAI_KEY" \
+  -e SERPER_API_KEY="YOUR_SERPER_KEY" \
+  -e HUBSPOT_BASE_URL="https://app.hubspot.com/contacts/YOUR_PORTAL_ID/record/0-2/" \
+  -e DEBUG="false" \
+  -v /srv/company-canvas/output:/app/output \
+  -v /srv/company-canvas/sessions_metadata.json:/app/sessions_metadata.json \
+  --restart unless-stopped \
+  sergeykostichev/company-canvas-app:v13a
+
+# 5. Проверить статус
+echo "Waiting 10 seconds for container to start..."
+sleep 10
+docker ps | grep company-canvas-app
+
+# 6. Проверить логи
+echo "Recent logs:"
+docker logs --tail 20 company-canvas-app
+
+echo "v13a deployment completed!"
+echo "URL: http://YOUR_VM_IP"
+echo ""
+echo "КРИТИЧЕСКИЕ ИСПРАВЛЕНИЯ v13a:"
+echo "✅ FIXED: URL validation logic - dead links now properly detected and filtered"
+echo "✅ FIXED: Data alignment issue - company descriptions now match correct companies"
+echo "✅ FIXED: HubSpot adapter result saving order - no more misaligned CSV data"
+echo "✅ IMPROVED: Enhanced URL validation with DNS error detection"
+echo "✅ IMPROVED: Proper merge logic using URLs as unique keys"
+echo ""
+echo "Основные улучшения:"
+echo "- Мертвые ссылки теперь корректно отфильтровываются"
+echo "- Описания компаний больше не смещаются в CSV файлах"
+echo "- HubSpot интеграция сохраняет результаты в правильном порядке"
+echo "- Улучшенная валидация URL с проверкой DNS ошибок"
+echo ""
+echo "Проверьте обработку файлов с мертвыми ссылками - теперь должно работать корректно!" 
