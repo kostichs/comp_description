@@ -65,7 +65,8 @@ async def _process_single_company_async(
     second_column_data: Optional[Dict[str, str]] = None,
     hubspot_client: Optional[Any] = None,
     use_raw_llm_data_as_description: bool = False,
-    write_to_hubspot: bool = True
+    write_to_hubspot: bool = True,
+    predator_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Process a single company asynchronously
@@ -114,6 +115,7 @@ async def _process_single_company_async(
         "Description": None,
         "Timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "HubSpot_Company_ID": "",
+        "Predator_ID": predator_id or "",  # Добавляем predator_id из входных данных
         "structured_data": {}
     }
     
@@ -215,7 +217,7 @@ async def _process_single_company_async(
                             
                             if description_is_fresh and hubspot_company:
                                 logger.info(f"{run_stage_log} - Company with domain {found_homepage_url} found in HubSpot with fresh description")
-                                description_text, timestamp, linkedin_url_from_hubspot = hubspot_client.get_company_details_from_hubspot_data(hubspot_company)
+                                description_text, timestamp, linkedin_url_from_hubspot, predator_id_from_hubspot = hubspot_client.get_company_details_from_hubspot_data(hubspot_company)
                                 if description_text:
                                     logger.info(f"{run_stage_log} - Using existing description from HubSpot")
                                     skip_deep_search = True
@@ -224,12 +226,20 @@ async def _process_single_company_async(
                                         "homepage": found_homepage_url,
                                         "extracted_homepage_url": found_homepage_url,
                                         "hubspot_id": hubspot_company.get("id"),
-                                        "hubspot_source": True
+                                        "hubspot_source": True,
+                                        "predator_id": predator_id_from_hubspot
                                     }
                                     llm_deep_search_raw_result = description_text
                                     # Используем LinkedIn из HubSpot если он есть и у нас его нет
                                     if linkedin_url_from_hubspot and not linkedin_url:
                                         linkedin_url = linkedin_url_from_hubspot
+                                    # Используем predator_id из HubSpot если он есть и у нас его нет
+                                    if predator_id_from_hubspot and not predator_id:
+                                        predator_id = predator_id_from_hubspot
+                                        result_data["Predator_ID"] = predator_id  # Обновляем result_data
+                                    # Если predator_id из HubSpot есть, всегда обновляем result_data
+                                    elif predator_id_from_hubspot:
+                                        result_data["Predator_ID"] = predator_id_from_hubspot
                         except Exception as e:
                             logger.error(f"{run_stage_log} - Error checking HubSpot: {e}", exc_info=True)
                     
@@ -601,6 +611,7 @@ async def _process_single_company_async(
                         url=found_homepage_url,
                         description=description_text,
                         linkedin_url=linkedin_url,
+                        predator_id=predator_id,  # Добавляем predator ID
                         aiohttp_session=aiohttp_session,  # Добавляем HTTP сессию
                         sb_client=sb_client  # Добавляем ScrapingBee клиент
                     )
@@ -804,10 +815,12 @@ async def process_companies(
         async with semaphore:  # Семафор ограничивает количество одновременных задач
             # Получаем имя компании и второй столбец, если они предоставлены как кортеж или словарь
             local_second_column_data = second_column_data.copy() if second_column_data else {}
+            company_predator = None  # Инициализируем predator ID
             
             if isinstance(company_input_item, dict):
                 company_name = company_input_item.get('name')
                 company_url = company_input_item.get('url')
+                company_predator = company_input_item.get('predator')
                 
                 # Если URL есть, нормализуем его и добавляем во второй столбец данных
                 if company_url:
@@ -849,7 +862,8 @@ async def process_companies(
                     second_column_data=local_second_column_data,
                     hubspot_client=hubspot_client,
                     use_raw_llm_data_as_description=use_raw_llm_data_as_description,
-                    write_to_hubspot=write_to_hubspot
+                    write_to_hubspot=write_to_hubspot,
+                    predator_id=company_predator  # Передаем predator ID
                 )
                 
                 logger.info(f"[{company_index+1}/{total_companies}] Successfully processed company: {company_name}")

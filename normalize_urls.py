@@ -552,8 +552,15 @@ async def normalize_and_remove_duplicates(
     company_name_col = df.columns[0]
     website_col = df.columns[1]
     
+    # Сохраняем дополнительные колонки (например, predator)
+    additional_columns = df.columns[2:].tolist() if len(df.columns) > 2 else []
+    
     original_company_count = len(df)
     logger.info(f"Начальная обработка {original_company_count} компаний из файла {input_file}")
+    
+    # Логируем найденные дополнительные колонки
+    if additional_columns:
+        logger.info(f"Найдены дополнительные колонки: {additional_columns}")
 
     all_companies_data = []  # Все компании с их статусами
     dead_urls_count = 0
@@ -590,28 +597,38 @@ async def normalize_and_remove_duplicates(
     for i, result in enumerate(results):
         company_name = str(df.iloc[i][company_name_col])
         original_url = str(df.iloc[i][website_col])
+        
+        # Собираем дополнительные данные для текущей строки
+        additional_data = {}
+        for col in additional_columns:
+            if col in df.columns:
+                additional_data[col] = str(df.iloc[i][col]) if pd.notna(df.iloc[i][col]) else ""
 
         if isinstance(result, Exception):
             logger.error(f"Ошибка при обработке URL {original_url} для компании {company_name}: {result}")
             processing_messages.append({"type": "error", "message": f"URL {original_url} ({company_name}) вызвал ошибку: {result}", "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-            all_companies_data.append({
+            company_data = {
                 "name": company_name, 
                 "original_url": original_url, 
                 "final_url": original_url,
                 "status": "DEAD_URL",
                 "error_message": str(result)
-            })
+            }
+            company_data.update(additional_data)  # Добавляем дополнительные данные
+            all_companies_data.append(company_data)
             dead_urls_count += 1 
             continue
 
         is_live, final_url, error_message = result
         if is_live and final_url:
-            all_companies_data.append({
+            company_data = {
                 "name": company_name, 
                 "original_url": original_url, 
                 "final_url": final_url,
                 "status": "VALID"
-            })
+            }
+            company_data.update(additional_data)  # Добавляем дополнительные данные
+            all_companies_data.append(company_data)
             if final_url != original_url and normalize_domain(final_url) != normalize_domain(original_url): # Считаем редиректом, только если домен изменился
                 redirected_urls_updated_count += 1
                 msg = f"URL для '{company_name}' изменен с {original_url} на {final_url} из-за редиректа."
@@ -622,13 +639,15 @@ async def normalize_and_remove_duplicates(
             msg = f"URL {original_url} для компании '{company_name}' неживой. Причина: {error_message}. Компания будет помечена как DEAD_URL."
             logger.warning(msg)
             processing_messages.append({"type": "warning", "message": msg, "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")})
-            all_companies_data.append({
+            company_data = {
                 "name": company_name, 
                 "original_url": original_url, 
                 "final_url": original_url,
                 "status": "DEAD_URL",
                 "error_message": error_message or "URL неживой"
-            })
+            }
+            company_data.update(additional_data)  # Добавляем дополнительные данные
+            all_companies_data.append(company_data)
             
     logger.info(f"Проверка URL завершена. Живых URL: {len([c for c in all_companies_data if c['status'] == 'VALID'])}, Неживых URL: {dead_urls_count}, Обновлено редиректов: {redirected_urls_updated_count}")
 
@@ -653,12 +672,21 @@ async def normalize_and_remove_duplicates(
     logger.info(f"Проверка дубликатов завершена. Найдено дубликатов: {duplicates_count}.")
     
     # Создание DataFrame для сохранения (сохраняем ВСЕ компании с их статусами)
-    output_df = pd.DataFrame([{
-        "Company Name": cd["name"], 
-        "Website": normalize_domain(cd["final_url"]) if cd["status"] == "VALID" else normalize_domain(cd["original_url"]),  # Сохраняем нормализованный домен
-        "Status": cd["status"],
-        "Error_Message": cd.get("error_message", "")
-    } for cd in all_companies_data])
+    output_rows = []
+    for cd in all_companies_data:
+        row = {
+            "Company Name": cd["name"], 
+            "Website": normalize_domain(cd["final_url"]) if cd["status"] == "VALID" else normalize_domain(cd["original_url"]),  # Сохраняем нормализованный домен
+            "Status": cd["status"],
+            "Error_Message": cd.get("error_message", "")
+        }
+        # Добавляем дополнительные колонки
+        for col in additional_columns:
+            if col in cd:
+                row[col] = cd[col]
+        output_rows.append(row)
+    
+    output_df = pd.DataFrame(output_rows)
 
     try:
         if output_file_path.suffix.lower() in ['.xlsx', '.xls']:

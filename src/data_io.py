@@ -18,13 +18,14 @@ PROJECT_ROOT = Path(__file__).parent.parent
 def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) -> Optional[List[Dict[str, Optional[str]]]]:
     """
     Loads company data from Excel/CSV. Requires exactly two columns: Company Name and Website URL.
+    Optionally supports 'predator' column for HubSpot integration.
     
     Args:
         file_path: Path to the input file
         col_index: Index of the first column to load (default 0)
     
     Returns:
-        List of dictionaries, where each dictionary has 'name', 'url', and optionally 'status' keys.
+        List of dictionaries, where each dictionary has 'name', 'url', optionally 'status' and 'predator' keys.
         Returns None if file could not be loaded, is empty, or doesn't have required two columns.
     """
     file_path_str = str(file_path)
@@ -34,12 +35,26 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
         # Определяем формат файла и загружаем его
         reader = pd.read_excel if file_path_str.lower().endswith(('.xlsx', '.xls')) else pd.read_csv
         
-        # Сначала попробуем загрузить весь файл, чтобы определить количество столбцов
+        # Сначала попробуем загрузить весь файл, чтобы определить количество столбцов и наличие колонки predator
         df_loaded = reader(file_path_str)
         
         # Проверяем наличие колонки Status (новый формат после normalize_and_remove_duplicates)
         has_status_column = 'Status' in df_loaded.columns
+        
+        # Ищем колонку с predator (гибкий поиск)
+        predator_column_name = None
+        has_predator_column = False
+        for col in df_loaded.columns:
+            if 'predator' in str(col).lower():
+                predator_column_name = col
+                has_predator_column = True
+                break
+        
         has_two_or_more_columns = df_loaded.shape[1] >= 2
+        
+        # Логируем наличие колонки predator
+        if has_predator_column:
+            logging.info(f"Detected predator column '{predator_column_name}' in {file_path_str}, will include predator data")
         
         if has_status_column:
             # Новый формат с колонкой Status
@@ -54,8 +69,13 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
         elif has_two_or_more_columns:
             # Старый формат с двумя колонками
             logging.info(f"Detected two or more columns in {file_path_str}, using first two columns")
-            # Используем первые два столбца
-            df_loaded = reader(file_path_str, usecols=[0, 1], header=0)
+            # Если есть predator колонка, загружаем её тоже
+            if has_predator_column:
+                # Загружаем первые два столбца плюс predator
+                df_loaded = reader(file_path_str, header=0)  # Загружаем весь файл
+            else:
+                # Используем только первые два столбца
+                df_loaded = reader(file_path_str, usecols=[0, 1], header=0)
         else:
             # Отклоняем файлы с одной колонкой
             logging.error(f"File {file_path_str} has only one column. Two columns required: Company Name and Website URL")
@@ -88,6 +108,14 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
     if df_loaded is not None and not df_loaded.empty:
         # Проверяем наличие колонки Status для определения формата
         has_status_column = 'Status' in df_loaded.columns
+        # Переопределяем has_predator_column для текущего df_loaded
+        predator_column_name = None
+        has_predator_column = False
+        for col in df_loaded.columns:
+            if 'predator' in str(col).lower():
+                predator_column_name = col
+                has_predator_column = True
+                break
         
         if has_status_column:
             # Новый формат с колонкой Status - обрабатываем все компании включая помеченные
@@ -95,8 +123,13 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
             website_series = df_loaded.iloc[:, 1].astype(str).str.strip()
             status_series = df_loaded['Status'].astype(str).str.strip()
             
+            # Получаем данные predator если колонка существует
+            predator_series = None
+            if has_predator_column and predator_column_name:
+                predator_series = df_loaded[predator_column_name].astype(str).str.strip()
+            
             result_list_of_dicts = []
-            for name, website, status in zip(company_names_series, website_series, status_series):
+            for i, (name, website, status) in enumerate(zip(company_names_series, website_series, status_series)):
                 if name and name.lower() not in ['nan', '']:
                     # Нормализуем URL если он есть и статус VALID
                     url_value = None
@@ -113,12 +146,25 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
                             # Для невалидных компаний сохраняем URL как есть
                             url_value = website
                     
+                    # Получаем значение predator для текущей строки
+                    predator_value = None
+                    if predator_series is not None and i < len(predator_series):
+                        predator_val = predator_series.iloc[i]
+                        if predator_val is not None and str(predator_val).lower() not in ['nan', '']:
+                            predator_value = predator_val
+                    
                     # Добавляем в результат
-                    result_list_of_dicts.append({
+                    company_data = {
                         'name': name, 
                         'url': url_value,
                         'status': status if status.lower() not in ['nan', ''] else 'VALID'
-                    })
+                    }
+                    
+                    # Добавляем predator если есть (включая "0")
+                    if predator_value is not None:
+                        company_data['predator'] = predator_value
+                    
+                    result_list_of_dicts.append(company_data)
             
             if result_list_of_dicts:
                 valid_count = len([c for c in result_list_of_dicts if c.get('status') == 'VALID'])
@@ -135,8 +181,13 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
             company_names_series = df_loaded.iloc[:, 0].astype(str).str.strip()
             second_column_series = df_loaded.iloc[:, 1].astype(str).str.strip()
             
+            # Получаем данные predator если колонка существует
+            predator_series = None
+            if has_predator_column and predator_column_name:
+                predator_series = df_loaded[predator_column_name].astype(str).str.strip()
+            
             result_list_of_dicts = []
-            for name, second_value in zip(company_names_series, second_column_series):
+            for i, (name, second_value) in enumerate(zip(company_names_series, second_column_series)):
                 if name and name.lower() not in ['nan', '']:
                     # Если URL во втором столбце есть, нормализуем его
                     url_value = None
@@ -149,8 +200,21 @@ def load_and_prepare_company_names(file_path: str | Path, col_index: int = 0) ->
                             if normalized_url != second_value:
                                 logging.info(f"Normalized URL for '{name}': '{second_value}' -> '{normalized_url}'")
                     
+                    # Получаем значение predator для текущей строки
+                    predator_value = None
+                    if predator_series is not None and i < len(predator_series):
+                        predator_val = predator_series.iloc[i]
+                        if predator_val is not None and str(predator_val).lower() not in ['nan', '']:
+                            predator_value = predator_val
+                    
                     # Добавляем в результат (старый формат без статуса)
-                    result_list_of_dicts.append({'name': name, 'url': url_value})
+                    company_data = {'name': name, 'url': url_value}
+                    
+                    # Добавляем predator если есть (включая "0")
+                    if predator_value is not None:
+                        company_data['predator'] = predator_value
+                    
+                    result_list_of_dicts.append(company_data)
             
             if result_list_of_dicts:
                 logging.info(f"Loaded {len(result_list_of_dicts)} companies with name and URL from {file_path_str}")
@@ -303,7 +367,7 @@ def save_results_csv(results: list[dict], output_path: str, expected_fields: lis
     elif results and len(results) > 0:
         fieldnames = list(results[0].keys())
     else:
-        fieldnames = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp"]
+        fieldnames = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "HubSpot_Company_ID", "Predator_ID"]
     
     # Determine mode based on append_mode and file existence
     file_exists = os.path.exists(output_path)
@@ -350,6 +414,7 @@ def save_results_json(results: List[Dict[str, Any]], output_path: str, append_mo
             "Description": result.get("Description", ""),
             "Timestamp": result.get("Timestamp", ""),
             "HubSpot_Company_ID": result.get("HubSpot_Company_ID", ""),
+            "Predator_ID": result.get("Predator_ID", ""),
             "Quality_Status": result.get("Quality_Status", ""),
             
             # Структурированные данные (если есть)
@@ -415,6 +480,7 @@ def save_structured_data_incrementally(result: Dict[str, Any], output_path: str)
         "Description": result.get("Description", ""),
         "Timestamp": result.get("Timestamp", ""),
         "HubSpot_Company_ID": result.get("HubSpot_Company_ID", ""),
+        "Predator_ID": result.get("Predator_ID", ""),
         "Quality_Status": result.get("Quality_Status", ""),
         
         # Структурированные данные (если есть)
@@ -595,14 +661,27 @@ def merge_original_with_results(original_file_path: str, results_file_path: str,
             if col not in merged_df.columns:
                 merged_df[col] = results_df[col]
             else:
-                # Если колонка уже существует, добавляем с суффиксом
-                new_col_name = f"{col}_result"
-                counter = 1
-                while new_col_name in merged_df.columns:
-                    new_col_name = f"{col}_result_{counter}"
-                    counter += 1
-                merged_df[new_col_name] = results_df[col]
-                logging.info(f"Колонка '{col}' переименована в '{new_col_name}' для избежания дублирования")
+                # Специальная обработка для predator данных
+                if col == "Predator_ID" and "predator" in merged_df.columns:
+                    # Если в результатах есть Predator_ID, а в исходном файле predator,
+                    # то обновляем исходную колонку predator значениями из Predator_ID
+                    for idx in merged_df.index:
+                        if pd.isna(merged_df.loc[idx, "predator"]) or merged_df.loc[idx, "predator"] == "":
+                            # Если в исходном файле predator пустой, заполняем из результатов
+                            if idx < len(results_df) and not pd.isna(results_df.loc[idx, col]):
+                                merged_df.loc[idx, "predator"] = results_df.loc[idx, col]
+                    # Также добавляем колонку Predator_ID для полноты
+                    merged_df[col] = results_df[col]
+                    logging.info(f"Обновлена колонка 'predator' значениями из '{col}' и добавлена колонка '{col}'")
+                else:
+                    # Если колонка уже существует, добавляем с суффиксом
+                    new_col_name = f"{col}_result"
+                    counter = 1
+                    while new_col_name in merged_df.columns:
+                        new_col_name = f"{col}_result_{counter}"
+                        counter += 1
+                    merged_df[new_col_name] = results_df[col]
+                    logging.info(f"Колонка '{col}' переименована в '{new_col_name}' для избежания дублирования")
         
         # Создаем директорию если её нет
         os.makedirs(os.path.dirname(output_file_path), exist_ok=True)

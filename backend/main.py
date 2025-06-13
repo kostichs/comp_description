@@ -115,7 +115,7 @@ async def execute_pipeline_for_session_async(
         return
 
     # Определяем базовые поля для CSV
-    base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "validation_status", "validation_warning"]
+    base_ordered_fields = ["Company_Name", "Official_Website", "LinkedIn_URL", "Description", "Timestamp", "validation_status", "validation_warning", "HubSpot_Company_ID", "Predator_ID"]
     # logger.info(f"[EXECUTE_PIPELINE] Defined base_ordered_fields: {base_ordered_fields}") # Можно оставить для отладки
     
     additional_llm_fields = []

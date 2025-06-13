@@ -131,7 +131,8 @@ class HubSpotAdapter:
         company_name: str, 
         url: str, 
         description: str,
-        linkedin_url: Optional[str] = None  # Добавляем LinkedIn URL
+        linkedin_url: Optional[str] = None,  # Добавляем LinkedIn URL
+        predator_id: Optional[str] = None  # Добавляем predator ID
     ) -> Optional[Dict[str, Any]]:
         """
         Создание новой компании в HubSpot.
@@ -160,8 +161,20 @@ class HubSpotAdapter:
             }
             if linkedin_url: # Добавляем LinkedIn если есть
                 properties["linkedin_company_page"] = linkedin_url
+            if predator_id is not None and str(predator_id).strip() != "": # Проверяем что predator не пустой
+                # Конвертируем predator_id в число, так как HubSpot ожидает числовое значение
+                try:
+                    predator_id_numeric = int(str(predator_id).strip())
+                    properties["gcore_predator_id"] = predator_id_numeric
+                    logger.info(f"Adding predator_id {predator_id_numeric} for company '{company_name}' to HubSpot")
+                except (ValueError, TypeError):
+                    logger.warning(f"Invalid predator_id format '{predator_id}' for company '{company_name}'. HubSpot expects a numeric value. Skipping predator_id.")
+            elif predator_id is None:
+                # Если predator_id явно None, очищаем поле пустой строкой (так работает HubSpot API)
+                properties["gcore_predator_id"] = ""
+                logger.info(f"Clearing predator_id for company '{company_name}' in HubSpot")
             
-            logger.info(f"Creating new company '{company_name}' with domain '{domain}' in HubSpot. LinkedIn: {linkedin_url}")
+            logger.info(f"Creating new company '{company_name}' with domain '{domain}' in HubSpot. LinkedIn: {linkedin_url}, Predator: {predator_id}")
             company = await self.client.create_company(domain, properties)
             
             if company:
@@ -182,6 +195,7 @@ class HubSpotAdapter:
         url: str,
         description: str,
         linkedin_url: Optional[str] = None, # Добавляем LinkedIn URL
+        predator_id: Optional[str] = None, # Добавляем predator ID
         aiohttp_session=None, # Добавляем HTTP сессию
         sb_client=None # Добавляем ScrapingBee клиент
     ) -> Tuple[bool, Optional[str]]:
@@ -189,6 +203,8 @@ class HubSpotAdapter:
         Сохранение описания компании в HubSpot.
         Возвращает кортеж (успех, ID компании в HubSpot или None).
         """
+        logger.info(f"save_company_description called for '{company_name}' with predator_id: '{predator_id}' (type: {type(predator_id)})")
+        
         if not self.client.api_key:
             logger.warning("HubSpot API key not available in HubSpotAdapter. Skipping save.")
             return False, None # Возвращаем ID как None
@@ -213,8 +229,20 @@ class HubSpotAdapter:
                 }
                 if linkedin_url: # Добавляем LinkedIn если есть
                     properties_to_update["linkedin_company_page"] = linkedin_url
+                if predator_id is not None and str(predator_id).strip() != "": # Проверяем что predator не пустой
+                    # Конвертируем predator_id в число, так как HubSpot ожидает числовое значение
+                    try:
+                        predator_id_numeric = int(str(predator_id).strip())
+                        properties_to_update["gcore_predator_id"] = predator_id_numeric
+                        logger.info(f"Updating predator_id to {predator_id_numeric} for company '{company_name}' in HubSpot")
+                    except (ValueError, TypeError):
+                        logger.warning(f"Invalid predator_id format '{predator_id}' for company '{company_name}'. HubSpot expects a numeric value. Skipping predator_id.")
+                elif predator_id is None:
+                    # Если predator_id явно None, очищаем поле пустой строкой (так работает HubSpot API)
+                    properties_to_update["gcore_predator_id"] = ""
+                    logger.info(f"Clearing predator_id for company '{company_name}' in HubSpot")
                 
-                logger.info(f"Updating description and LinkedIn for company '{company_name}' (ID: {company_id}) in HubSpot. LinkedIn: {linkedin_url}")
+                logger.info(f"Updating description, LinkedIn and predator for company '{company_name}' (ID: {company_id}) in HubSpot. LinkedIn: {linkedin_url}, Predator: {predator_id}")
                 result = await self.client.update_company_properties(company_id, properties_to_update)
                 
                 if result:
@@ -225,7 +253,7 @@ class HubSpotAdapter:
                     return False, None # Возвращаем ID как None
             else: # Компания не найдена, создаем новую
                 logger.info(f"Company '{company_name}' not found in HubSpot, creating new entry.")
-                new_company = await self.create_company(company_name, url, description, linkedin_url)
+                new_company = await self.create_company(company_name, url, description, linkedin_url, predator_id)
                 if new_company:
                     company_id_to_return = new_company.get("id")
                     return True, company_id_to_return # Возвращаем ID новой компании
@@ -241,15 +269,20 @@ class HubSpotAdapter:
         """
         return self.client._normalize_domain(url) # Используем метод из HubSpotClient
     
-    def get_company_details_from_hubspot_data(self, company_data: Dict[str, Any]) -> Tuple[str, str, Optional[str]]:
+    def get_company_details_from_hubspot_data(self, company_data: Dict[str, Any]) -> Tuple[str, str, Optional[str], Optional[str]]:
         """
-        Извлечение описания, временной метки и URL LinkedIn из данных о компании HubSpot.
+        Извлечение описания, временной метки, URL LinkedIn и predator ID из данных о компании HubSpot.
         """
         properties = company_data.get("properties", {})
         description = properties.get("ai_description", "") 
         timestamp = properties.get("ai_description_updated", "") 
         linkedin_url = properties.get("linkedin_company_page") # Может быть None
-        return description, timestamp, linkedin_url
+        predator_id = properties.get("gcore_predator_id") # Может быть пустая строка или число в виде строки
+        # HubSpot возвращает все как строки! Пустое значение = пустая строка ""
+        # Нормализуем: если пустая строка, делаем None для внутренней обработки
+        if predator_id is not None and str(predator_id).strip() == "":
+            predator_id = None
+        return description, timestamp, linkedin_url, predator_id
 
 class HubSpotPipelineAdapter(PipelineAdapter):
     """
@@ -371,6 +404,11 @@ class HubSpotPipelineAdapter(PipelineAdapter):
             logger.error(f"No valid company names in {input_file_path}")
             return 0, 0, []
             
+        # ОТЛАДКА: Логируем загруженные данные
+        logger.info(f"DEBUG: Loaded {len(company_data_list)} companies from {input_file_path}")
+        for i, company in enumerate(company_data_list):
+            logger.info(f"DEBUG: Company {i+1}: {company}")
+            
         # Создаем или очищаем CSV файл перед началом обработки
         save_results_csv([], output_csv_path, expected_csv_fieldnames, append_mode=False)
         logger.info(f"Created empty CSV file with headers at {output_csv_path}")
@@ -417,19 +455,57 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                 # description_is_fresh будет True, если найдено свежее описание и обработку можно пропустить
                 description_is_fresh, hubspot_company_data = await self.hubspot_adapter.check_company_description(company_name, company_url, aiohttp_session, sb_client)
                 
+                # ВАЖНО: Если компания найдена в HubSpot, всегда проверяем и обновляем predator
+                if hubspot_company_data:
+                    description, timestamp, linkedin_url, predator_id_from_hubspot = self.hubspot_adapter.get_company_details_from_hubspot_data(hubspot_company_data)
+                    hubspot_id = hubspot_company_data.get("id")
+                    
+                    # Используем predator из входного файла если есть, иначе из HubSpot
+                    predator_from_file = company_info_dict.get('predator')
+                    final_predator_id = predator_from_file or predator_id_from_hubspot or ""
+                    
+                    # ОТЛАДКА: Логируем predator данные
+                    logger.info(f"DEBUG predator for '{company_name}': file={predator_from_file}, hubspot={predator_id_from_hubspot}, final={final_predator_id}")
+                    
+                    # ВАЖНО: Если есть predator в файле и его нет в HubSpot ИЛИ он отличается, обновляем HubSpot
+                    # HubSpot возвращает predator как строку, поэтому сравниваем строки
+                    predator_hubspot_str = str(predator_id_from_hubspot).strip() if predator_id_from_hubspot else ""
+                    predator_file_str = str(predator_from_file).strip() if predator_from_file else ""
+                    
+                    if predator_file_str and (not predator_hubspot_str or predator_file_str != predator_hubspot_str) and write_to_hubspot:
+                        logger.info(f"Updating predator_id in HubSpot for '{company_name}': {predator_from_file}")
+                        try:
+                            # Обновляем только predator_id в HubSpot, не трогая описание
+                            success, error_msg = await self.hubspot_adapter.save_company_description(
+                                hubspot_company_data,  # Первый позиционный параметр
+                                company_name,
+                                company_url,
+                                description,  # Используем существующее описание
+                                linkedin_url,  # Используем существующий LinkedIn
+                                predator_from_file,  # Обновляем predator_id
+                                aiohttp_session,
+                                sb_client
+                            )
+                            if success:
+                                logger.info(f"Successfully updated predator_id for '{company_name}' in HubSpot")
+                            else:
+                                logger.warning(f"Failed to update predator_id for '{company_name}' in HubSpot: {error_msg}")
+                        except Exception as e:
+                            logger.error(f"Error updating predator_id for '{company_name}' in HubSpot: {e}")
+                
                 # ИСПРАВЛЕНО: если description_is_fresh == True, значит, описание свежее и компания есть в HubSpot
                 if description_is_fresh and hubspot_company_data: 
                     logger.info(f"Company '{company_name}' has a fresh description in HubSpot. Skipping processing.")
-                    description, timestamp, linkedin_url = self.hubspot_adapter.get_company_details_from_hubspot_data(hubspot_company_data)
-                    hubspot_id = hubspot_company_data.get("id") # <--- Получаем ID
+                    
                     result_from_hubspot = {
                         "Company_Name": company_name,
                         "Official_Website": company_url or hubspot_company_data.get("properties",{}).get("domain",""), 
-                        "LinkedIn_URL": linkedin_url or "", 
+                        "LinkedIn_URL": linkedin_url or "",
+                        "Predator_ID": final_predator_id, 
                         "Description": description,
                         "Timestamp": timestamp,
                         "Data_Source": "HubSpot",
-                        "HubSpot_Company_ID": format_hubspot_company_id(hubspot_id) # <--- Добавляем ID в результат
+                        "HubSpot_Company_ID": format_hubspot_company_id(hubspot_id), # <--- Добавляем ID в результат
                     }
                     
                     for field in expected_csv_fieldnames:
@@ -508,12 +584,18 @@ class HubSpotPipelineAdapter(PipelineAdapter):
             should_append_json = len(all_results) > 0 # Аналогично для JSON, если он используется таким же образом
 
             # Преобразуем companies_to_process_standard в формат, ожидаемый process_companies
-            # List[Union[str, Tuple[str, str]]]
+            # List[Union[str, Tuple[str, str]]] -> List[Union[str, Tuple[str, str], Dict]]
             company_names_for_core_processing = []
             for company_dict in companies_to_process_standard:
                 name = company_dict['name']
                 url = company_dict.get('url')
-                if url:
+                predator = company_dict.get('predator')
+                
+                # Если есть predator данные, передаем как словарь
+                if predator:
+                    company_data = {'name': name, 'url': url, 'predator': predator}
+                    company_names_for_core_processing.append(company_data)
+                elif url:
                     company_names_for_core_processing.append((name, url))
                 else:
                     company_names_for_core_processing.append(name)

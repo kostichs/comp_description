@@ -126,7 +126,7 @@ class HubSpotClient:
                         #     }]
                         # }
                     ],
-                    "properties": ["name", "domain", "website", "hs_additional_domains", "ai_description", "ai_description_updated", "linkedin_company_page"],
+                    "properties": ["name", "domain", "website", "hs_additional_domains", "ai_description", "ai_description_updated", "linkedin_company_page", "gcore_predator_id"],
                     "limit": 10  # Увеличиваем лимит на случай нескольких совпадений
                 }
                 
