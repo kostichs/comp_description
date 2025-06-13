@@ -437,11 +437,8 @@ class HubSpotPipelineAdapter(PipelineAdapter):
                             result_from_hubspot[field] = ""
 
                     all_results.append(result_from_hubspot)
-                    
-                    # Убираем поле Data_Source перед сохранением в CSV
-                    hubspot_result_for_csv = {key: value for key, value in result_from_hubspot.items() if key != "Data_Source"}
-                    save_results_csv([hubspot_result_for_csv], output_csv_path, expected_csv_fieldnames, append_mode=True)
                     success_count +=1
+                    # НЕ СОХРАНЯЕМ СРАЗУ - будем сохранять все в правильном порядке в конце
                     if broadcast_update:
                         # Учитываем уже обработанные компании для корректного прогресс-бара
                         total_companies_count = len(company_data_list)
@@ -491,15 +488,8 @@ class HubSpotPipelineAdapter(PipelineAdapter):
             logger.info(f"{len(companies_to_process_standard)} companies will be processed by standard pipeline.")
             logger.info(f"{len(companies_with_template_descriptions)} companies received template descriptions.")
         
-        # Сохраняем компании с шаблонными описаниями в CSV
+        # НЕ СОХРАНЯЕМ шаблонные описания сразу - будем сохранять все в правильном порядке в конце
         if companies_with_template_descriptions:
-            # Убираем поле Data_Source из сохранения, чтобы не засорять результирующий файл
-            template_results_for_csv = []
-            for template_result in companies_with_template_descriptions:
-                csv_result = {key: value for key, value in template_result.items() if key != "Data_Source"}
-                template_results_for_csv.append(csv_result)
-            
-            save_results_csv(template_results_for_csv, output_csv_path, expected_csv_fieldnames, append_mode=True)
             all_results.extend(companies_with_template_descriptions)
             success_count += len(companies_with_template_descriptions)
             
@@ -579,6 +569,37 @@ class HubSpotPipelineAdapter(PipelineAdapter):
             
             all_results.extend(std_results)
             # Результаты уже сохранены в CSV внутри process_companies_batch
+
+        # КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Сохраняем ВСЕ результаты в правильном порядке
+        logger.info(f"Saving all {len(all_results)} results in the correct order...")
+        
+        # Создаем упорядоченный список результатов в исходном порядке компаний
+        ordered_results = []
+        for company_info_dict in company_data_list:
+            company_name = company_info_dict["name"]
+            company_url = company_info_dict.get("url", "")
+            
+            # Ищем результат для этой компании по URL (основной ключ)
+            matching_result = None
+            for result in all_results:
+                result_name = result.get("Company_Name", "")
+                result_url = result.get("Official_Website", "")
+                
+                # Сопоставляем по URL для точного соответствия
+                if result_url == company_url and result_name == company_name:
+                    matching_result = result
+                    break
+            
+            if matching_result:
+                # Убираем поле Data_Source перед сохранением
+                csv_result = {key: value for key, value in matching_result.items() if key != "Data_Source"}
+                ordered_results.append(csv_result)
+            else:
+                logger.warning(f"No result found for company '{company_name}' with URL '{company_url}' - this should not happen!")
+        
+        # Перезаписываем CSV файл с правильно упорядоченными результатами
+        save_results_csv(ordered_results, output_csv_path, expected_csv_fieldnames, append_mode=False)
+        logger.info(f"Saved {len(ordered_results)} results in correct order to {output_csv_path}")
 
         # Объединение исходного файла с результатами
         try:

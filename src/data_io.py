@@ -478,10 +478,94 @@ def merge_original_with_results(original_file_path: str, results_file_path: str,
         
         logging.info(f"После очистки пустых столбцов - Исходный файл: {original_df.shape[1]} колонок, Файл результатов: {results_df.shape[1]} колонок")
         
-        # Проверяем, что количество строк совпадает
+        # КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: ВСЕГДА объединяем по именам компаний, а не по индексам
+        # Это исправляет проблему смещения данных при дубликатах и мертвых ссылках
+        
         if original_df.shape[0] != results_df.shape[0]:
             logging.warning(f"Количество строк не совпадает: исходный {original_df.shape[0]}, результаты {results_df.shape[0]}")
-            # Берем минимальное количество строк
+        
+        # Пытаемся объединить по имени компании (ВСЕГДА, не только при несовпадении строк)
+        company_col_original = None
+        company_col_results = None
+        
+        # Ищем колонку с именем компании в исходном файле
+        for col in original_df.columns:
+            if 'company' in col.lower() or 'name' in col.lower():
+                company_col_original = col
+                break
+        if not company_col_original and len(original_df.columns) > 0:
+            company_col_original = original_df.columns[0]  # Первая колонка по умолчанию
+            
+        # Ищем колонку с именем компании в файле результатов
+        for col in results_df.columns:
+            if 'company' in col.lower() or 'name' in col.lower():
+                company_col_results = col
+                break
+        if not company_col_results and len(results_df.columns) > 0:
+            company_col_results = results_df.columns[0]  # Первая колонка по умолчанию
+        
+        # Ищем колонку с URL в исходном файле
+        url_col_original = None
+        for col in original_df.columns:
+            if 'url' in col.lower() or 'website' in col.lower() or 'site' in col.lower():
+                url_col_original = col
+                break
+        
+        # Ищем колонку с URL в файле результатов  
+        url_col_results = None
+        for col in results_df.columns:
+            if 'url' in col.lower() or 'website' in col.lower() or 'site' in col.lower():
+                url_col_results = col
+                break
+        
+        # КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Объединяем по URL (основной ключ), а не по именам компаний
+        if url_col_original and url_col_results:
+            logging.info(f"Объединяем по URL: '{url_col_original}' <-> '{url_col_results}'")
+            
+            # Объединяем по URL - это правильный уникальный ключ
+            merged_df = original_df.merge(
+                results_df, 
+                left_on=url_col_original, 
+                right_on=url_col_results, 
+                how='left',  # Сохраняем все исходные записи
+                suffixes=('', '_result')
+            )
+            
+            # Удаляем дублированную колонку URL из результатов
+            if f"{url_col_results}_result" in merged_df.columns:
+                merged_df = merged_df.drop(columns=[f"{url_col_results}_result"])
+                
+        elif company_col_original and company_col_results:
+            logging.warning("URL колонки не найдены, используем fallback объединение по именам компаний")
+            logging.info(f"Объединяем по именам компаний: '{company_col_original}' <-> '{company_col_results}'")
+            
+            # Fallback: объединяем по именам компаний
+            merged_df = original_df.merge(
+                results_df, 
+                left_on=company_col_original, 
+                right_on=company_col_results, 
+                how='left',  # Сохраняем все исходные записи
+                suffixes=('', '_result')
+            )
+            
+            # Удаляем дублированную колонку имени компании из результатов
+            if f"{company_col_results}_result" in merged_df.columns:
+                merged_df = merged_df.drop(columns=[f"{company_col_results}_result"])
+            
+            logging.info(f"Объединение по именам завершено: {merged_df.shape[0]} строк, {merged_df.shape[1]} колонок")
+            
+            # Сохраняем объединенный файл
+            os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+            if output_file_path.lower().endswith(('.xlsx', '.xls')):
+                merged_df.to_excel(output_file_path, index=False)
+            else:
+                merged_df.to_csv(output_file_path, index=False, encoding='utf-8-sig')
+            
+            logging.info(f"Объединенный файл сохранен: {output_file_path}")
+            return True
+        else:
+            logging.error("Не удалось найти колонки с именами компаний для объединения")
+            # В крайнем случае используем объединение по индексам
             min_rows = min(original_df.shape[0], results_df.shape[0])
             original_df = original_df.iloc[:min_rows]
             results_df = results_df.iloc[:min_rows]
