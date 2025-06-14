@@ -1,0 +1,74 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"DDoS protection\" OR \"DDoS mitigation\" OR \"protected against DDoS\" OR \"attack prevention\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "DDOS Protection needed | EA Forums - 6777906",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/ddos-protection-needed/6777906/replies/6777923",
+            "snippet": "DDOS Protection needed. So, I am one of the community owners on Batlefield 1. We reported this issue time and time again and we have constantly been ignored ...",
+            "position": 1
+        },
+        {
+            "title": "FIX THE GAME TO STOP DDOS!! - Apex Legends",
+            "link": "https://forums.ea.com/discussions/apex-legends-feedback-en/fix-the-game-to-stop-ddos/8655398/replies/8655399",
+            "snippet": "Diamond and higher ranks have a newer version of DDoS protection. It won't be perfect, though I think it's safe to say that they're still improving on this.",
+            "position": 2
+        },
+        {
+            "title": "DDOS Protection needed | EA Forums - 6777906",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/ddos-protection-needed/6777906",
+            "snippet": "we need a fix for it plain and simple. the BF1 Rental Server Programme, needs some sort of ddos protection. a lot of servers (including dice ...",
+            "date": "May 28, 2024",
+            "position": 3
+        },
+        {
+            "title": "Re: DDOS Protection needed - Battlefield",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/re-ddos-protection-needed/6777929",
+            "snippet": "Re: DDOS Protection needed. Well this issue is not new, hope it will get fixed soon. https://answers.ea.com/t5/Battlefield-1/Crashing-operations-servers ...",
+            "position": 4
+        },
+        {
+            "title": "Re: DDOS Protection needed - Battlefield",
+            "link": "https://answers.ea.com/t5/Battlefield-1/DDOS-Protection-needed/m-p/13883301",
+            "snippet": "11 months ago. Re: DDOS Protection needed. @DR_QQ008. I hardly forget. Like. 0. Reply. No RepliesBe the first to reply. About Battlefield Franchise Discussion.",
+            "position": 5
+        },
+        {
+            "title": "Re: DDOS Protection needed - Battlefield",
+            "link": "https://forums.ea.com/discussions/battlefield-franchise-discussion-en/re-ddos-protection-needed/6777951",
+            "snippet": "Re: DDOS Protection needed · About Battlefield Franchise Discussion · Recent Discussions.",
+            "position": 6
+        },
+        {
+            "title": "Re: FIX THE GAME TO STOP DDOS!!",
+            "link": "https://forums.ea.com/discussions/-/-/8655399",
+            "snippet": "Diamond and higher ranks have a newer version of DDoS protection. It won't be perfect, though I think it's safe to say that they're still improving on this.",
+            "position": 7
+        },
+        {
+            "title": "Re: DDOS Protection needed - Battlefield",
+            "link": "https://answers.ea.com/t5/Battlefield-1/DDOS-Protection-needed/m-p/13811558",
+            "snippet": "Re: DDOS Protection needed. @UBBE16 Yeah i provided pretty much.My own money and time.Good enough? Like. 1. Reply. 1 Reply. Replies sorted by Oldest. Sort By.",
+            "position": 8
+        },
+        {
+            "title": "Re: DDOS Protection needed | EA Forums - 6777924",
+            "link": "https://forums.ea.com/discussions/-/-/6777924",
+            "snippet": "Re: DDOS Protection needed. EA please fix this problem. Like. 4. Reply. No RepliesBe the first to reply. About Battlefield Franchise Discussion. Discuss the ...",
+            "position": 9
+        },
+        {
+            "title": "Re: DDOS Protection needed - Battlefield",
+            "link": "https://answers.ea.com/t5/Battlefield-1/DDOS-Protection-needed/m-p/13770398",
+            "snippet": "Re: DDOS Protection needed. @Nort8D Not to forget the laughable 200 slot banlist when there is multiple known platoons full of server crashers and cheaters ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

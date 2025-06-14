@@ -1,0 +1,136 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"DDoS protection\" OR \"DDoS mitigation\" OR \"protected against DDoS\" OR \"attack prevention\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/498034",
+            "snippet": "Currently Unplayable... The servers are crashing every 1-5min, unable to do anything - please, get some DDoS protection or something -.",
+            "date": "May 7, 2024",
+            "sitelinks": [
+                {
+                    "title": "Currently Unplayable... The servers are crashing every 1-5min, unable to do anything - please, get some DDoS protection or something -.",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/498034#:~:text=Currently%20Unplayable...,DDoS%20protection%20or%20something%20%2D"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=6456683",
+            "snippet": "No MMO is going to invest hundreds of millions into DDoS protection when these attacks don't cost them anywhere near that much. The big tech ...",
+            "date": "May 10, 2024",
+            "sitelinks": [
+                {
+                    "title": "No MMO is going to invest hundreds of millions into DDoS protection when these attacks don't cost them anywhere near that much. The big tech ...",
+                    "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=6456683#:~:text=No%20MMO%20is%20going%20to,that%20much.%20The%20big%20tech"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/510586",
+            "snippet": "DDoS \"Protection\" is more about mitigating the effects of it rather than actually preventing it. 2) The ultimate equation, is it even worth ...",
+            "date": "Sep 15, 2024",
+            "sitelinks": [
+                {
+                    "title": "DDoS \"Protection\" is more about mitigating the effects of it rather than actually preventing it. 2) The ultimate equation, is it even worth ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/510586#:~:text=DDoS%20%22Protection%22%20is%20more%20about,equation%2C%20is%20it%20even%20worth"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/498029",
+            "snippet": "The only time you can truly test if ddos mitigation works, is if you dont put your servers down. If the servers are down, ddos attacks are ...",
+            "date": "May 7, 2024",
+            "sitelinks": [
+                {
+                    "title": "The only time you can truly test if ddos mitigation works, is if you dont put your servers down. If the servers are down, ddos attacks are ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/498029#:~:text=The%20only%20time%20you%20can,are%20down%2C%20ddos%20attacks%20are"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/514429",
+            "snippet": "This yet another failure of ddos mitigation? Kisa34's Avatar · Kisa34 said:Player 01-06-2025 10:19 AM. (2). Yep. Every single NA Data Center is ...",
+            "date": "Jan 6, 2025",
+            "sitelinks": [
+                {
+                    "title": "This yet another failure of ddos mitigation? Kisa34's Avatar · Kisa34 said:Player 01-06-2025 10:19 AM. (2). Yep. Every single NA Data Center is ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/514429#:~:text=This%20yet%20another%20failure%20of,single%20NA%20Data%20Center%20is"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=2389258",
+            "snippet": "I'm sure all of these targeted companies are investing as much on DDoS mitigation as is wise for their business to do. With how much money they milk from ...",
+            "position": 6
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=5112304",
+            "snippet": "... DDOS protection as a service. So I assume that NTT is trying as hard as they can to stop these DDOS attacks. Last edited by WindyGamer; 07 ...",
+            "date": "Jul 31, 2019",
+            "sitelinks": [
+                {
+                    "title": "... DDOS protection as a service. So I assume that NTT is trying as hard as they can to stop these DDOS attacks. Last edited by WindyGamer; 07 ...",
+                    "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=5112304#:~:text=DDOS%20protection%20as%20a%20service.,Last%20edited%20by%20WindyGamer%3B%2007"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=6028512",
+            "snippet": "The DDoS protection made me get high latency from the west coast of the US, and I don't mean the average latency I'd get in other games, but ...",
+            "date": "Jul 20, 2022",
+            "sitelinks": [
+                {
+                    "title": "The DDoS protection made me get high latency from the west coast of the US, and I don't mean the average latency I'd get in other games, but ...",
+                    "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=6028512#:~:text=The%20DDoS%20protection%20made%20me,get%20in%20other%20games%2C%20but"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/499613-FFXIVHEALERSTRIKE?p=6623818",
+            "snippet": "We have no shortage of mobility (or attack prevention in WHM's case) in our AoE spells. Our single target casts are no different to RDM in ...",
+            "date": "Nov 13, 2024",
+            "sitelinks": [
+                {
+                    "title": "We have no shortage of mobility (or attack prevention in WHM's case) in our AoE spells. Our single target casts are no different to RDM in ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/499613-FFXIVHEALERSTRIKE?p=6623818#:~:text=We%20have%20no%20shortage%20of,no%20different%20to%20RDM%20in"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=6562472",
+            "snippet": "... a few hours ago and it's literally morning time. That doesn't sound like DDoS protection worthy. Reply With Quote · 123456789101112131415 ...",
+            "date": "Jul 31, 2024",
+            "sitelinks": [
+                {
+                    "title": "... a few hours ago and it's literally morning time. That doesn't sound like DDoS protection worthy. Reply With Quote · 123456789101112131415 ...",
+                    "link": "https://forum.square-enix.com/ffxiv/showthread.php?p=6562472#:~:text=a%20few%20hours%20ago%20and,89101112131415"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,35 @@
+{
+    "searchParameters": {
+        "q": "site:krafton.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "KRAFTON Launches inZOI: Character Studio on Steam",
+            "link": "https://krafton.com/en/news/press/krafton-launches-inzoi-character-studio-on-steam/",
+            "snippet": "By providing a dedicated platform for inZOI mods through CurseForge, KRAFTON is ensuring that the community has the best tools and resources ...",
+            "date": "Aug 16, 2024",
+            "position": 1
+        },
+        {
+            "title": "KRAFTON INVESTS IN SHORT-FORM VIDEO PLATFORM ...",
+            "link": "https://www.krafton.com/en/news/press/krafton-invests-in-short-form-video-platform-spoon-labs-with-focus-on-dramatic-content/",
+            "snippet": "Recently, it has expanded its business into the short-form video platform sector and launched a dedicated platform hosting short films, 'Vigloo' ...",
+            "date": "Sep 11, 2024",
+            "position": 2
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Game launcher download our client dedicated platform desktop app free"
+        },
+        {
+            "query": "Game launcher download our client dedicated platform desktop app ios"
+        }
+    ],
+    "credits": 1
+}

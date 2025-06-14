@@ -1,0 +1,142 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Can't Start Game, Launcher Zoomed In",
+            "link": "https://forum.square-enix.com/ffxiv/threads/407918",
+            "snippet": "Can't Start Game, Launcher Zoomed In. Hello, My launcher won't let me log in, since the update my launcher has been zoomed in and there is ...",
+            "date": "Oct 30, 2019",
+            "sitelinks": [
+                {
+                    "title": "Can't Start Game, Launcher Zoomed In. Hello, My launcher won't let me log in, since the update my launcher has been zoomed in and there is ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/407918#:~:text=Can't%20Start%20Game%2C%20Launcher%20Zoomed,zoomed%20in%20and%20there%20is"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "A Steam game launcher fix",
+            "link": "https://forum.square-enix.com/ffxiv/threads/457394",
+            "snippet": "A Steam game launcher fix. TL;DR: Navigate to the steam install folder (example. C:\\Program Files (x86)\\Steam\\steamapps\\ ...",
+            "date": "Mar 9, 2022",
+            "sitelinks": [
+                {
+                    "title": "A Steam game launcher fix. TL;DR: Navigate to the steam install folder (example. C:\\Program Files (x86)\\Steam\\steamapps\\ ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/457394#:~:text=A%20Steam%20game%20launcher%20fix,folder%20(example.%20C%3A%5CProgram%20Files%20(x86)%5CSteam%5Csteamapps%5C"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "FINAL FANTASY VII",
+            "link": "https://support.na.square-enix.com/faqarticle.php?kid=64263&id=444&la=1&ret=faq&pv=10&page=1&c=0&sc=0&so=0",
+            "snippet": "[Q64263] I'm having problems logging into the game launcher. ... In order to play the game, you will need to enter the username or the email address associated ...",
+            "sitelinks": [
+                {
+                    "title": "[Q64263] I'm having problems logging into the game launcher. ... In order to play the game, you will need to enter the username or the email address associated ...",
+                    "link": "https://support.na.square-enix.com/faqarticle.php?kid=64263&id=444&la=1&ret=faq&pv=10&page=1&c=0&sc=0&so=0#:~:text=%5BQ64263%5D%20I'm%20having%20problems%20logging,into%20the%20game%20launcher.&text=In%20order%20to%20play%20the,or%20the%20email%20address%20associated"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "FFXIV Launcher Script Error",
+            "link": "https://forum.square-enix.com/ffxiv/threads/471688",
+            "snippet": "It seems that the game launcher is having trouble loading up properly. I would recommend trying out the following troubleshooting to see if it may help with ...",
+            "date": "Sep 12, 2022",
+            "sitelinks": [
+                {
+                    "title": "It seems that the game launcher is having trouble loading up properly. I would recommend trying out the following troubleshooting to see if it may help with ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/471688#:~:text=It%20seems%20that%20the%20game,troubleshooting%20to%20see%20if%20it"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum - steam deck 7.25",
+            "link": "https://forum.square-enix.com/ffxiv/threads/518701",
+            "snippet": "After update I get a message \"Platform Error'' ''The game launcher cannot be accessed on your current paltform\"",
+            "date": "May 26, 2025",
+            "sitelinks": [
+                {
+                    "title": "After update I get a message \"Platform Error'' ''The game launcher cannot be accessed on your current paltform\"",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/518701#:~:text=After%20update%20I%20get%20a,accessed%20on%20your%20current%20paltform%22"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "ffxiv game launcher Tiny login textboxes",
+            "link": "https://forum.square-enix.com/ffxiv/threads/518251",
+            "snippet": "Steps: 1. When I logging into the game in the game launcher the text boxes for user login, password, check box if u want user name to ...",
+            "date": "May 12, 2025",
+            "sitelinks": [
+                {
+                    "title": "Steps: 1. When I logging into the game in the game launcher the text boxes for user login, password, check box if u want user name to ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/518251#:~:text=Steps%3A,u%20want%20user%20name%20to"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Windows Update broke game launcher",
+            "link": "https://forum.square-enix.com/ffxiv/threads/325473",
+            "snippet": "TL;DR: Updated windows last night and it broke the game launcher. Copy-pasted some DLL files, reinstalled, directx shenanigans, couldn't fix it.",
+            "date": "May 23, 2017",
+            "sitelinks": [
+                {
+                    "title": "TL;DR: Updated windows last night and it broke the game launcher. Copy-pasted some DLL files, reinstalled, directx shenanigans, couldn't fix it.",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/325473#:~:text=TL%3BDR%3A%20Updated%20windows%20last%20night,directx%20shenanigans%2C%20couldn't%20fix%20it."
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/514375",
+            "snippet": "but now after installing the full game launcher it opens not only the app site window but also the cd keys popup that had all the dawntrail ...",
+            "date": "Jan 4, 2025",
+            "sitelinks": [
+                {
+                    "title": "but now after installing the full game launcher it opens not only the app site window but also the cd keys popup that had all the dawntrail ...",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/514375#:~:text=but%20now%20after%20installing%20the,that%20had%20all%20the%20dawntrail"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/457434",
+            "snippet": "Unable to complete version update 30437. After launching the game launcher through steam and then I log in and click play I get this error:",
+            "date": "Mar 10, 2022",
+            "sitelinks": [
+                {
+                    "title": "Unable to complete version update 30437. After launching the game launcher through steam and then I log in and click play I get this error:",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/457434#:~:text=Unable%20to%20complete%20version%20update,play%20I%20get%20this%20error%3A"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "PS4 Game Launcher won't load",
+            "link": "https://forum.square-enix.com/ffxiv/threads/162875",
+            "snippet": "Hey guys, i just came home and downloaded the new patch, sadly I've got the problem that the Game Launcher wont load anymore on my PS4.",
+            "date": "Apr 24, 2014",
+            "sitelinks": [
+                {
+                    "title": "Hey guys, i just came home and downloaded the new patch, sadly I've got the problem that the Game Launcher wont load anymore on my PS4.",
+                    "link": "https://forum.square-enix.com/ffxiv/threads/162875#:~:text=Hey%20guys%2C,load%20anymore%20on%20my%20PS4."
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

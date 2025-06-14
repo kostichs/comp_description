@@ -21,9 +21,9 @@ import logging
 import uvicorn
 
 # Import domain routers
-from .api.descriptions import router as descriptions_router
-from .api.criteria import router as criteria_router
-from .api.integrations.clay.routes import router as clay_router
+from backend.api.descriptions import router as descriptions_router
+from backend.api.criteria import router as criteria_router
+from backend.api.integrations.clay.routes import router as clay_router
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

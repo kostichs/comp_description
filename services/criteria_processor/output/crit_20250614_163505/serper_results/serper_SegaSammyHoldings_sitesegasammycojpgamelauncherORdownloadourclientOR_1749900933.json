@@ -1,0 +1,12 @@
+{
+    "searchParameters": {
+        "q": "site:segasammy.co.jp (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [],
+    "credits": 1
+}

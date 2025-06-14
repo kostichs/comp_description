@@ -1,0 +1,77 @@
+{
+    "searchParameters": {
+        "q": "site:krafton.com (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "News",
+            "link": "https://dndm.krafton.com/en/news",
+            "snippet": "Notices. A new Dark and Darker Mobile is coming. 2025.05.13. Patch Notes - Updates & Fixes (5/14). Patch Notes. Patch Notes - Updates & Fixes (5/14).",
+            "position": 1
+        },
+        {
+            "title": "Patch Notes",
+            "link": "https://support.krafton.com/hc/en-us/sections/19479022408217-Patch-Notes",
+            "snippet": "Patch Notes [v.2.01] · Patch Notes [v.1.02] · Patch Notes [v.1.01] · Patch Notes [v.3.01] · Patch Notes [v.1.01]. © 2023 KRAFTON, Inc. All rights reserved.",
+            "position": 2
+        },
+        {
+            "title": "Abyss of Dungeons - Patch Notes",
+            "link": "https://dndm.krafton.com/en/news/8756",
+            "snippet": "Pre-Season Update Patch Notes (06/11) · Basic attack power increased by 15%. · Basic Attack. Move speed penalty reduced from 0.6 to 0.75. · Basic ...",
+            "date": "4 days ago",
+            "position": 3
+        },
+        {
+            "title": "NEWS",
+            "link": "https://defensederby.krafton.com/en/news",
+            "snippet": "NEWS · [Notice] Prior Notice Regarding the End of Service of Defense Derby · patch notes#10 · Update #9 Patch Notes · Development Note #7 · Update #8-1 Patch Notes.",
+            "position": 4
+        },
+        {
+            "title": "Dark and Darker Mobile",
+            "link": "https://dndm.krafton.com/en/",
+            "snippet": "Patch Notes. 2025.05.12. Patch Notes - Updates & Fixes (5/14). View Details · Pre-Season #3 Update Patch Notes. Patch Notes. 2025.04.14. Pre-Season #3 Update ...",
+            "position": 5
+        },
+        {
+            "title": "Patch Notes - Updates & Fixes (3/26)",
+            "link": "https://dndm.krafton.com/en/news/8383",
+            "snippet": "Patch Notes - Updates & Fixes (3/26) · Damage reduced from 130% to 115%. · Cooldown increased from 0 sec to 3 sec. · End lag increased from 0.87 ...",
+            "date": "Mar 25, 2025",
+            "position": 6
+        },
+        {
+            "title": "PUBG: BATTLEGROUNDS - Assets - KRAFTON Press Room",
+            "link": "https://press.krafton.com/PUBG/Focus/Season-102-Patch-Notes",
+            "snippet": "ABOUT PUBG: BATTLEGROUNDS ; 21/01/2021 · [Screenshots] Update 10.2 Patch Notes ; 09/04/2025 · [Static Assets] Update 35.2 ; 09/04/2025 · [Static Assets] Update 35.1.",
+            "position": 7
+        },
+        {
+            "title": "Patch Notes - Updates & Fixes (5/14)",
+            "link": "https://dndm.krafton.com/en/news/8645",
+            "snippet": "Here are the patch notes for the maintenance scheduled for May 14 (Wed). This patch will introduce balance adjustments made in response to ...",
+            "date": "May 12, 2025",
+            "position": 8
+        },
+        {
+            "title": "Patch Notes [v.3.01]",
+            "link": "https://support.krafton.com/hc/en-us/articles/20009674169881-Patch-Notes-v-3-01",
+            "snippet": "Patch Notes [v.3.01] · Added New Game Plus. · General performance optimizations across all platforms · Players no longer take damage when vaulting over obstacles ...",
+            "position": 9
+        },
+        {
+            "title": "Patch Notes [v.2.01]",
+            "link": "https://support.krafton.com/hc/en-us/articles/20009697951257-Patch-Notes-v-2-01",
+            "snippet": "Patch Notes [v.2.01] · Optimized streaming to reduce memory usage in: · Fixed a memory leak with the Reforge 3d Printers.",
+            "date": "Jun 26, 2023",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

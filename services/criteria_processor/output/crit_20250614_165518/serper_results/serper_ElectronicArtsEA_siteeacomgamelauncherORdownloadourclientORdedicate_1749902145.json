@@ -1,0 +1,138 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "The all new EA app for Windows",
+            "link": "https://www.ea.com/news/ea-app",
+            "snippet": "The EA app is our fastest and lightest PC client to date. With the new streamlined design you will easily find the games and content you're looking for.",
+            "sitelinks": [
+                {
+                    "title": "The EA app is our fastest and lightest PC client to date. With the new streamlined design you will easily find the games and content you're looking for.",
+                    "link": "https://www.ea.com/news/ea-app#:~:text=The%20EA%20app%20is%20our,and%20content%20you're%20looking%20for"
+                }
+            ],
+            "position": 1
+        },
+        {
+            "title": "Re: New Game Launcher is now live | EA Forums - 11004929",
+            "link": "https://forums.ea.com/discussions/-/-/11004929",
+            "snippet": "Re: New Game Launcher is now live. For me on the new launcher. Was not told in advance i was \"selected\". The update on my internet took about 20 minutes to ...",
+            "sitelinks": [
+                {
+                    "title": "Re: New Game Launcher is now live. For me on the new launcher. Was not told in advance i was \"selected\". The update on my internet took about 20 minutes to ...",
+                    "link": "https://forums.ea.com/discussions/-/-/11004929#:~:text=Re%3A%20New%20Game%20Launcher%20is,took%20about%2020%20minutes%20to"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "GAME LAUNCHER WON'T UPDATE BECAUSE IT STAES ...",
+            "link": "https://forums.ea.com/discussions/-/-/8321631",
+            "snippet": "Re: GAME LAUNCHER WON'T UPDATE BECAUSE IT STAES IT'S UP TO DATE. @Mamaredd4559 Where do you see this error message, and what are you trying to do at the time ...",
+            "sitelinks": [
+                {
+                    "title": "Re: GAME LAUNCHER WON'T UPDATE BECAUSE IT STAES IT'S UP TO DATE. @Mamaredd4559 Where do you see this error message, and what are you trying to do at the time ...",
+                    "link": "https://forums.ea.com/discussions/-/-/8321631#:~:text=Re%3A%20GAME%20LAUNCHER%20WON'T%20UPDATE,to%20do%20at%20the%20time"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Re: New Game Launcher is now live",
+            "link": "https://answers.ea.com/t5/General-Discussion-Technical/New-Game-Launcher-is-now-live/m-p/11920436?dest_url=https%3A%2F%2Fanswers.ea.com%2Ft5%2FGeneral-Discussion-Technical%2FNew-Game-Launcher-is-now-live%2Fm-p%2F11920436",
+            "snippet": "Re: New Game Launcher is now live. @EA_Charlie So when can I expect a check from EA? We're all being forced (without consent) to do something you'd normally ...",
+            "sitelinks": [
+                {
+                    "title": "Re: New Game Launcher is now live. @EA_Charlie So when can I expect a check from EA? We're all being forced (without consent) to do something you'd normally ...",
+                    "link": "https://answers.ea.com/t5/General-Discussion-Technical/New-Game-Launcher-is-now-live/m-p/11920436?dest_url=https://answers.ea.com/t5/General-Discussion-Technical/New-Game-Launcher-is-now-live/m-p/11920436#:~:text=Re%3A%20New%20Game%20Launcher%20is,to%20do%20something%20you'd%20normally"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Game Launcher | EA Forums - 5023548",
+            "link": "https://forums.ea.com/discussions/the-sims-3-en/game-launcher/5023548",
+            "snippet": "Game Launcher. I read the latest version is 1.70, but I could be wrong. If it is, how do you update it? I currently have 1.69. discussion · pc.",
+            "date": "Nov 21, 2024",
+            "sitelinks": [
+                {
+                    "title": "Game Launcher. I read the latest version is 1.70, but I could be wrong. If it is, how do you update it? I currently have 1.69. discussion · pc.",
+                    "link": "https://forums.ea.com/discussions/the-sims-3-en/game-launcher/5023548#:~:text=Game%20Launcher,pc"
+                },
+                {
+                    "title": "6 answers",
+                    "link": "https://forums.ea.com/discussions/the-sims-3-en/game-launcher/5023548/replies/5024297"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "Error with game launcher",
+            "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/error-with-game-launcher/12245759",
+            "snippet": "Error with game launcher. can't open The Sims 3 because I keep getting an error with the launcher and every time it says I need Origin to play it while I ...",
+            "sitelinks": [
+                {
+                    "title": "Error with game launcher. can't open The Sims 3 because I keep getting an error with the launcher and every time it says I need Origin to play it while I ...",
+                    "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/error-with-game-launcher/12245759#:~:text=Error%20with%20game%20launcher,to%20play%20it%20while%20I"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "Re: Play with ea game launcher | EA Forums - 11821938",
+            "link": "https://forums.ea.com/discussions/-/-/11821938",
+            "snippet": "Re: Play with ea game launcher. Hey there @zorolys. It sounds like you may need to have the base game re-added to your account so you can access that again ...",
+            "sitelinks": [
+                {
+                    "title": "Re: Play with ea game launcher. Hey there @zorolys. It sounds like you may need to have the base game re-added to your account so you can access that again ...",
+                    "link": "https://forums.ea.com/discussions/-/-/11821938#:~:text=Re%3A%20Play%20with%20ea%20game,you%20can%20access%20that%20again"
+                }
+            ],
+            "position": 7
+        },
+        {
+            "title": "Re: New Game Launcher is now live",
+            "link": "https://forums.ea.com/discussions/-/-/11005091",
+            "snippet": "Re: New Game Launcher is now live. YES, I KNOW THERE IS A NEW LAUNCHER - Please, Dear God, Stop telling me!!! I KNOW!!! I KNOW!!! I KNOW!!! I KNOW!!! I KNOW ...",
+            "sitelinks": [
+                {
+                    "title": "Re: New Game Launcher is now live. YES, I KNOW THERE IS A NEW LAUNCHER - Please, Dear God, Stop telling me!!! I KNOW!!! I KNOW!!! I KNOW!!! I KNOW!!! I KNOW ...",
+                    "link": "https://forums.ea.com/discussions/-/-/11005091#:~:text=Re%3A%20New%20Game%20Launcher%20is,KNOW!!!%20I%20KNOW!!!%20I%20KNOW"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Re: EA Desktop App won't Launch",
+            "link": "https://forums.ea.com/discussions/-/-/7514588",
+            "snippet": "Game pass ultimate is meant to launch tomorrow on PC through the EA desktop App. I don't know how these companies are expecting people to pay for their ...",
+            "sitelinks": [
+                {
+                    "title": "Game pass ultimate is meant to launch tomorrow on PC through the EA desktop App. I don't know how these companies are expecting people to pay for their ...",
+                    "link": "https://forums.ea.com/discussions/-/-/7514588#:~:text=Game%20pass%20ultimate%20is%20meant,people%20to%20pay%20for%20their"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Re: [EA app] Game Launcher Looping After Clicking Start",
+            "link": "https://forums.ea.com/discussions/-/-/9201970",
+            "snippet": "I used a community mod to remove built-in, in-game launcher so that it facilitates my selection of the game faster without the risk of rebooting loop error.",
+            "sitelinks": [
+                {
+                    "title": "I used a community mod to remove built-in, in-game launcher so that it facilitates my selection of the game faster without the risk of rebooting loop error.",
+                    "link": "https://forums.ea.com/discussions/-/-/9201970#:~:text=I%20used%20a%20community%20mod,risk%20of%20rebooting%20loop%20error."
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

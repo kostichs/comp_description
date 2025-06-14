@@ -1,0 +1,51 @@
+{
+  "session_id": "crit_20250614_165518",
+  "saved_at": "2025-06-14T16:56:11.960626",
+  "total_results": 20,
+  "batch_size": 20,
+  "progress": {
+    "session_id": "crit_20250614_165518",
+    "created_at": "2025-06-14T16:55:20.452910",
+    "updated_at": "2025-06-14T16:56:11.959626",
+    "status": "processing",
+    "current_product_index": 0,
+    "current_company_index": 20,
+    "current_product": null,
+    "current_company": "Square Enix",
+    "current_audience": null,
+    "current_stage": "general_criteria",
+    "total_products": 5,
+    "total_companies": 20,
+    "processed_companies": 20,
+    "failed_companies": 0,
+    "total_criteria": 0,
+    "processed_criteria": 0,
+    "passed_criteria": 0,
+    "failed_criteria": 0,
+    "nd_criteria": 0,
+    "criteria_breakdown": {
+      "general": {
+        "total": 0,
+        "processed": 0,
+        "passed": 0
+      },
+      "qualification": {
+        "total": 0,
+        "processed": 0,
+        "passed": 0
+      },
+      "mandatory": {
+        "total": 0,
+        "processed": 0,
+        "passed": 0
+      },
+      "nth": {
+        "total": 0,
+        "processed": 0,
+        "passed": 0
+      }
+    },
+    "circuit_breaker_events": [],
+    "last_circuit_breaker_event": null
+  }
+}

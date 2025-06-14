@@ -1,0 +1,80 @@
+{
+    "searchParameters": {
+        "q": "site:ea.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "The all new EA app for Windows",
+            "link": "https://www.ea.com/news/ea-app",
+            "snippet": "The EA app is our fastest and lightest PC client to date. With the new streamlined design you will easily find the games and content you're looking for.",
+            "position": 1
+        },
+        {
+            "title": "GAME LAUNCHER WON'T UPDATE BECAUSE IT STAES ...",
+            "link": "https://forums.ea.com/discussions/-/-/8321631",
+            "snippet": "Re: GAME LAUNCHER WON'T UPDATE BECAUSE IT STAES IT'S UP TO DATE. @Mamaredd4559 Where do you see this error message, and what are you trying to do at the time ...",
+            "position": 2
+        },
+        {
+            "title": "Re: New Game Launcher is now live | EA Forums - 11004929",
+            "link": "https://forums.ea.com/discussions/-/-/11004929",
+            "snippet": "Re: New Game Launcher is now live. For me on the new launcher. Was not told in advance i was \"selected\". The update on my internet took about 20 minutes to ...",
+            "position": 3
+        },
+        {
+            "title": "Game Launcher | EA Forums - 5023548",
+            "link": "https://forums.ea.com/discussions/the-sims-3-en/game-launcher/5023548",
+            "snippet": "Game Launcher. I read the latest version is 1.70, but I could be wrong. If it is, how do you update it? I currently have 1.69. discussion · pc.",
+            "date": "Nov 21, 2024",
+            "sitelinks": [
+                {
+                    "title": "6 answers",
+                    "link": "https://forums.ea.com/discussions/the-sims-3-en/game-launcher/5023548/replies/5024297"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "Re: New Game Launcher is now live",
+            "link": "https://answers.ea.com/t5/General-Discussion-Technical/New-Game-Launcher-is-now-live/m-p/11920436?dest_url=https%3A%2F%2Fanswers.ea.com%2Ft5%2FGeneral-Discussion-Technical%2FNew-Game-Launcher-is-now-live%2Fm-p%2F11920436",
+            "snippet": "Re: New Game Launcher is now live. @EA_Charlie So when can I expect a check from EA? We're all being forced (without consent) to do something you'd normally ...",
+            "position": 5
+        },
+        {
+            "title": "Re: Play with ea game launcher | EA Forums - 11821938",
+            "link": "https://forums.ea.com/discussions/-/-/11821938",
+            "snippet": "Re: Play with ea game launcher. Hey there @zorolys. It sounds like you may need to have the base game re-added to your account so you can access that again ...",
+            "position": 6
+        },
+        {
+            "title": "Error with game launcher",
+            "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/error-with-game-launcher/12245759",
+            "snippet": "Error with game launcher. can't open The Sims 3 because I keep getting an error with the launcher and every time it says I need Origin to play it while I ...",
+            "position": 7
+        },
+        {
+            "title": "Re: [EA app] Game Launcher Looping After Clicking Start",
+            "link": "https://forums.ea.com/discussions/-/-/9201970",
+            "snippet": "I used a community mod to remove built-in, in-game launcher so that it facilitates my selection of the game faster without the risk of rebooting loop error.",
+            "position": 8
+        },
+        {
+            "title": "Re: EA Desktop App won't Launch",
+            "link": "https://forums.ea.com/discussions/-/-/7514588",
+            "snippet": "Game pass ultimate is meant to launch tomorrow on PC through the EA desktop App. I don't know how these companies are expecting people to pay for their ...",
+            "position": 9
+        },
+        {
+            "title": "Game launcher opens but returns to ea app when loading ...",
+            "link": "https://forums.ea.com/discussions/the-sims-3-technical-issues-en/re-game-launcher-opens-but-returns-to-ea-app-when-loading-game/8325613/replies/8325615",
+            "snippet": "Re: Game launcher opens but returns to ea app when loading game. Hello there @puzzlezaddict ! First, thanks for helping everyone out for this long. If you ...",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

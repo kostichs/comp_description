@@ -1,0 +1,37 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "lost planet. - extreme condition e",
+            "link": "http://static.capcom.com/lostplanet/LostPlanet_PC_manual.pdf",
+            "snippet": "file to start the game launcher. 3 When the setup process begins, select a language from the displayed list, then click OK. A Welcome Screen will appear ...",
+            "position": 1
+        },
+        {
+            "title": "Table of Contents",
+            "link": "http://static.capcom.com/neopets/manuals/pc_Neopetsmanual.pdf",
+            "snippet": "exe file to start the game launcher. 3 Read the terms of usage, check I agree to the Terms of Usage, and then click. Next. (The game will not install if you ...",
+            "position": 2
+        },
+        {
+            "title": "PC_MotoGp08Manual.pdf",
+            "link": "http://static.capcom.com/motogp/manuals/PC_MotoGp08Manual.pdf",
+            "snippet": "game launcher. 3 Read the terms of usage, check I agree to the. Terms of Usage, and click Next. (The game will not install if you do not agree to the terms.",
+            "position": 3
+        },
+        {
+            "title": "PC_DMC4Manual.pdf",
+            "link": "http://static.capcom.com/devilmaycry/manuals/PC_DMC4Manual.pdf",
+            "snippet": "... game launcher. 3 Read the terms of usage, check I agree to the Terms of Usage, and click Next. (The game will not install if you do not agree to the terms ...",
+            "position": 4
+        }
+    ],
+    "credits": 1
+}

@@ -1,11 +1,12 @@
 """
-Criteria Analysis Domain
+Criteria Analysis API Module
 
-This module contains all functionality related to criteria analysis:
-- Company criteria evaluation
-- File management for criteria
-- Session-based analysis
-- Results processing and export
+Модульная архитектура для анализа критериев:
+- analysis: запуск анализа
+- sessions: управление сессиями  
+- results: получение результатов
+- files: управление файлами критериев
+- management: утилиты и мониторинг
 """
 
 from .routes import router

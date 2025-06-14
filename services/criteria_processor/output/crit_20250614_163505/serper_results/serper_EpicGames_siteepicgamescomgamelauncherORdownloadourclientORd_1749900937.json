@@ -1,0 +1,80 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Lesson-04-What is Epic Game Launcher and how to setup ...",
+            "link": "https://dev.epicgames.com/community/learning/tutorials/XYW4/unreal-engine-lesson-04-what-is-epic-game-launcher-and-how-to-setup",
+            "snippet": "Epic Game Launcher is a standalone application with the help which you can download unreal engine and manage your Unreal Projects.",
+            "date": "May 28, 2025",
+            "position": 1
+        },
+        {
+            "title": "Lesson-05-Features of Epic Game Launcher ( हिंदी में सीखें )",
+            "link": "https://dev.epicgames.com/community/learning/tutorials/443R/unreal-engine-lesson-05-features-of-epic-game-launcher",
+            "snippet": "Epic Game Launcher is a standalone application with the help which you can download unreal engine and manage your Unreal Projects.",
+            "date": "May 28, 2025",
+            "position": 2
+        },
+        {
+            "title": "How to get your Dev Build to appear on Epic Game Launcher",
+            "link": "https://eoshelp.epicgames.com/s/question/0D54z00008dQ6VrCAK/guide-how-to-get-your-dev-build-to-appear-on-epic-game-launcher?language=en_US",
+            "snippet": "DB_Vlad (Customer) asked a question. January 10, 2023 at 4:09 PM. Guide: How to get your Dev Build to appear on Epic Game Launcher. Hi! This is more of an ...",
+            "position": 3
+        },
+        {
+            "title": "Get Launcher Support for Epic Games",
+            "link": "https://www.epicgames.com/help/en-US/c-Category_EpicGamesStore/c-EpicGamesStore_LauncherSupport",
+            "snippet": "Why does the Epic Game Launcher keep asking for my password? What if a product I recently purchased from the Epic Games Store goes on sale? How do I log out ...",
+            "position": 4
+        },
+        {
+            "title": "My Game won't launch with the Epic Game Launcher",
+            "link": "https://www.epicgames.com/help/en-US/c-Category_EpicGamesStore/c-ThirdPartyGameAndAppSupport/my-game-won-t-launch-with-the-epic-game-launcher-a000086545",
+            "snippet": "If you are having trouble launching a game though Epic Game Launcher try adding the following command line to the Epic Games Launcher: Launch Epic Games ...",
+            "position": 5
+        },
+        {
+            "title": "Patcher X - Game Launcher",
+            "link": "http://marketplace-website-node-launcher-prod.ol.epicgames.com/ue/marketplace/zh-CN/product/patcher-x",
+            "snippet": "5.0. (10). 起始价格. $14.99. 游戏系统. AI Doll - Horror. 4.8. (8). 起始价格. $7.99. 游戏系统. avatar. Risecode. Patcher X - Game Launcher. 游戏系统 · 玩法功能.",
+            "rating": 4.9,
+            "ratingCount": 8,
+            "position": 6
+        },
+        {
+            "title": "Epic Game Launcher",
+            "link": "https://eoshelp.epicgames.com/s/topic/0TO2L000000LNjbWAG/epic-game-launcher?language=en_US",
+            "snippet": "Join our community, grow your knowledge and learn from others! Sign In. Don't have an Epic Games account? Sign up.",
+            "position": 7
+        },
+        {
+            "title": "CreateLauncher | Unreal Engine 5.5 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Developer/LauncherServices/ILauncherServicesModule/CreateLauncher",
+            "snippet": "Creates a game launcher. A new game launcher. Ask questions and help your peers Developer Forums. Write your own tutorials or read those from others Learning ...",
+            "position": 8
+        },
+        {
+            "title": "Why does the Epic Game Launcher keep asking for my ...",
+            "link": "https://www.epicgames.com/help/en-US/c-Category_EpicGamesStore/c-EpicGamesStore_LauncherSupport/why-does-the-epic-game-launcher-keep-asking-for-my-password-a000085756",
+            "snippet": "Why does the Epic Game Launcher keep asking for my password? This can happen if there are connection problems with the internet. To ensure that you aren't ...",
+            "position": 9
+        },
+        {
+            "title": "Dalesi Game Launcher (Patcher/News)",
+            "link": "http://marketplace-website-node-launcher-prod.ol.epicgames.com/ue/marketplace/en-US/product/dalesi-game-launcher-patcher-news",
+            "snippet": "Dalesi Game Launcher is an Unreal Engine project that contains everything you need to start a develop your own Launcher.",
+            "date": "Aug 30, 2023",
+            "currency": "$",
+            "price": 94.99,
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

@@ -1,0 +1,117 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"DDoS protection\" OR \"DDoS mitigation\" OR \"protected against DDoS\" OR \"attack prevention\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "FDDoSStateConfig::ApplyAdjustedState | Unreal Engine 5.5 ...",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/NetCore/Net/Core/Misc/FDDoSStateConfig/ApplyAdjustedState",
+            "snippet": "Applies only the per-frame adjusted state (based on expected vs actual framerate), to active DDoS protection. ApplyState should be called, first. Ask questions ...",
+            "position": 1
+        },
+        {
+            "title": "FDDoSStateConfig | Unreal Engine 5.5 Documentation",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/API/Runtime/NetCore/Net/Core/Misc/FDDoSStateConfig",
+            "snippet": "Applies only the per-frame adjusted state (based on expected vs actual framerate), to active DDoS protection. Public function, void. ApplyState ( FDDoSState ...",
+            "position": 2
+        },
+        {
+            "title": "How to Defend Your Organization Against Card Testing ...",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/how-to-defend-your-organization-against-a-card-testing-attack.html",
+            "snippet": "Contact Sales · Sign UpLog In · ← Back to Blog. Attack Prevention. How to Defend Your Organization Against Card Testing Attacks. March 1, 2025. Share. eCommerce ...",
+            "position": 3
+        },
+        {
+            "title": "Using Steam Sockets in Unreal Engine",
+            "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/using-steam-sockets-in-unreal-engine",
+            "snippet": "... DDoS protection, end-to-end encryption, and NAT traversal. Steam Sockets also provides ping calculation for listen servers, which can be used by matchmaking ...",
+            "sitelinks": [
+                {
+                    "title": "Protocol",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/using-steam-sockets-in-unreal-engine#:~:text=Any%20builds%20targeting,UE4's%20standard%20network%20protocol."
+                },
+                {
+                    "title": "Features",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/using-steam-sockets-in-unreal-engine#:~:text=Using%20Steam%20Sockets,functionality.%20OnlineSubsystemSteam.bUseSteamNetworking%20controls%20whether"
+                },
+                {
+                    "title": "Software platform",
+                    "link": "https://dev.epicgames.com/documentation/en-us/unreal-engine/using-steam-sockets-in-unreal-engine#:~:text=If%20you%20are,be%20incorrectly%20set%20for"
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "hCaptcha vs. reCAPTCHA | Blog",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/hcaptcha-vs-recaptcha",
+            "snippet": "Here's how we did it. June 13, 2025 · Attack Prevention. How to Defend Your Organization Against Card Testing Attacks. eCommerce has ...",
+            "position": 5
+        },
+        {
+            "title": "Surviving Cloudflare Outages (hCaptcha Engineering Blog)",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/surviving-cloudflare-outages-hcaptcha-engineering-blog.html",
+            "snippet": "We use them for DDoS protection, load balancing, and smart routing via their Argo Tunnel service. ... Attack Prevention. How to Defend Your ...",
+            "date": "Jan 24, 2019",
+            "position": 6
+        },
+        {
+            "title": "Blog",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com:2087/blog.html",
+            "snippet": "Attack Prevention. How to Defend Your Organization Against Card Testing Attacks. March 1, 2025. Research. Attack Prevention. Security Strategy. Preparing for AI ...",
+            "position": 7
+        },
+        {
+            "title": "An Edgegap guide to launching, scaling your multiplayer game",
+            "link": "https://onlineservices.epicgames.com/en-US/news/launch-and-scale-your-multiplayer-game-with-epic-online-services-and-edgegap",
+            "snippet": "Fully managed and cross-compatible game servers, battle-tested rapid-scaling up to 14M CCU in only 60 minutes3, instant DDoS protection ...",
+            "date": "Feb 7, 2024",
+            "position": 8
+        },
+        {
+            "title": "Bots, Botkits, and Botnets – Know Your Enemy | Blog",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/bots-botkits-and-botnets-know-your-enemy.html",
+            "snippet": "Attack Prevention. Bots, Botkits, and Botnets – Know Your Enemy. June ... Attack Prevention. How to Defend Your Organization Against Card ...",
+            "sitelinks": [
+                {
+                    "title": "Issues",
+                    "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/bots-botkits-and-botnets-know-your-enemy.html#:~:text=The%20rampant%20availability,of%20bad%20bots%20trafficking"
+                },
+                {
+                    "title": "Symptom search",
+                    "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/bots-botkits-and-botnets-know-your-enemy.html#:~:text=The%20rampant%20availability,of%20bad%20bots%20trafficking"
+                },
+                {
+                    "title": "Purchase products",
+                    "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/bots-botkits-and-botnets-know-your-enemy.html#:~:text=Bots%20are%20extensively,and%20news%20aggregators.%20Unfortunately"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "How Credential Stuffing Can Derail Your Business and ...",
+            "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/how-credential-stuffing-can-derail-your-business-and-what-to-do-about-it-2",
+            "snippet": "Attack Prevention. How Credential Stuffing Can Derail Your Business ... Attack Prevention. How to Defend Your Organization Against Card ...",
+            "sitelinks": [
+                {
+                    "title": "Detection",
+                    "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/how-credential-stuffing-can-derail-your-business-and-what-to-do-about-it-2#:~:text=They%20also%20need,solutions%20to%20spot%20suspicious"
+                },
+                {
+                    "title": "Explanation",
+                    "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/how-credential-stuffing-can-derail-your-business-and-what-to-do-about-it-2#:~:text=What%20Is%20the,of%20a%20public%20awareness"
+                },
+                {
+                    "title": "Symptom search",
+                    "link": "https://hcaptcha-api.ecosec.on.epicgames.com/post/how-credential-stuffing-can-derail-your-business-and-what-to-do-about-it-2#:~:text=What%20Is%20the,of%20a%20public%20awareness"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

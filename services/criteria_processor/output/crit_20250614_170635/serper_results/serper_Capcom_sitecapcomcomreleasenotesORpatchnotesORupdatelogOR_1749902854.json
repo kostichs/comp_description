@@ -1,0 +1,32 @@
+{
+    "searchParameters": {
+        "q": "site:capcom.com (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Resident Evil 4 - Quest VR Games",
+            "link": "https://game.capcom.com/residentevil/ja/news-1648.html",
+            "snippet": "Version + release notes. 2.3. Developer. Armature Studio. Publisher. Oculus Studios. Website. https://www.oculus.com/resident-evil-4/. Release date. October 21, ...",
+            "rating": 4.7,
+            "ratingCount": 12952,
+            "currency": "$",
+            "price": 39.99,
+            "position": 1
+        },
+        {
+            "title": "Resident Evil 4 17+ - App Store",
+            "link": "https://game.capcom.com/residentevil/en/news-3781.html?ref=news_link_right",
+            "snippet": "What's New. Version History. Apr 8, 2025. Version 1.0.5. Minor bug ...",
+            "date": "Dec 22, 2023",
+            "rating": 4.1,
+            "ratingCount": 609,
+            "position": 2
+        }
+    ],
+    "credits": 1
+}

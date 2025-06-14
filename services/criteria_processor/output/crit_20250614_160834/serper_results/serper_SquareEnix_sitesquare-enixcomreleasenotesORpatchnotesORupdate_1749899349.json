@@ -1,0 +1,111 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Patch 7.2 Notes (Preliminary)",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_2_Preliminary",
+            "snippet": "We present the preliminary patch notes for Patch 7.2─Seekers of Eternity. Additions have been made to the patch 7.2 notes, which can now be viewed in their ...",
+            "date": "Mar 21, 2025",
+            "position": 1
+        },
+        {
+            "title": "Update to FINAL FANTASY XVI",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXVI&l=patch-notes",
+            "snippet": "corrects some minor text issues. ×. Version History. Choose a date below to view a previously published version of this document. CONNECT WITH ...",
+            "date": "Oct 17, 2024",
+            "sitelinks": [
+                {
+                    "title": "April 18th, 2024",
+                    "link": "https://weblet.square-enix.com/geojmp.php?d=FFXVI&l=patch-notes#:~:text=April%2018th%2C%202024"
+                },
+                {
+                    "title": "Version 1.31",
+                    "link": "https://weblet.square-enix.com/geojmp.php?d=FFXVI&l=patch-notes#:~:text=Version%201.31"
+                },
+                {
+                    "title": "Version 1.21",
+                    "link": "https://weblet.square-enix.com/geojmp.php?d=FFXVI&l=patch-notes#:~:text=Version%201.21"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Patch Notes - FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/forums/140",
+            "snippet": "Welcome to Forum: Patch Notes! Started by Gildrein , 03-03-2011 07:28 PM 0 Sticky: Transferring of the Threads within the UPDATES category.",
+            "position": 3
+        },
+        {
+            "title": "Patch 7.1 Notes (Preliminary)",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_1_Preliminary",
+            "snippet": "We are pleased to present the preliminary patch notes for Patch 7.1─Crossroads. Additions have been made to the patch 7.1 notes, which can now be viewed in ...",
+            "date": "Nov 8, 2024",
+            "position": 4
+        },
+        {
+            "title": "Patch 7.11 Notes | FINAL FANTASY XIV, The Lodestone",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_11",
+            "snippet": "... patch notes: These additions and adjustments require the purchase and registration of FINAL FANTASY XIV: A Realm Reborn, FINAL FANTASY XIV ...",
+            "date": "Nov 25, 2024",
+            "sitelinks": [
+                {
+                    "title": "The High-End Duty Futures...",
+                    "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_11#:~:text=The%20high%2Dend%20duty%20Futures%20Rewritten%20%28Ultimate%29%20has%20been%20added."
+                },
+                {
+                    "title": "Pvp",
+                    "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_11#:~:text=PvP,-The%20following%20adjustments%20have%20been"
+                },
+                {
+                    "title": "Resolved Issues",
+                    "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_11#:~:text=Resolved%20Issues,-The%20following%20issues%20have%20been"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "Patch 7.25 Notes | FINAL FANTASY XIV, The Lodestone",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_25",
+            "snippet": "... patch notes: These additions and adjustments require the purchase and registration of FINAL FANTASY XIV: A Realm Reborn, FINAL FANTASY XIV ...",
+            "date": "May 27, 2025",
+            "position": 6
+        },
+        {
+            "title": "Patch 7.21 Notes | FINAL FANTASY XIV, The Lodestone",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFXIVTopics&l=PatchNotes_7_21",
+            "snippet": "... patch notes: These additions and adjustments require the purchase and registration of FINAL FANTASY XIV: A Realm Reborn, FINAL FANTASY XIV ...",
+            "date": "Apr 21, 2025",
+            "position": 7
+        },
+        {
+            "title": "Notice regarding updates to FINAL FANTASY VII REBIRTH",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=FFVIIREBIRTH&l=1030update",
+            "snippet": "Improvements to overall game stability. ×. Version History. Choose a date below to view a previously published version of this document ...",
+            "date": "Mar 5, 2025",
+            "position": 8
+        },
+        {
+            "title": "DRAGON QUEST III HD-2D Remake Update Notice",
+            "link": "https://weblet.square-enix.com/geojmp.php?d=DQIII&l=Patch",
+            "snippet": "Miscellaneous fixes for minor bugs. ×. Version History. Choose a date below to view a previously published version of this document. CONNECT ...",
+            "date": "May 23, 2025",
+            "position": 9
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release notes patch notes update log version history reddit"
+        },
+        {
+            "query": "Release notes patch notes update log version history ps5"
+        }
+    ],
+    "credits": 1
+}
