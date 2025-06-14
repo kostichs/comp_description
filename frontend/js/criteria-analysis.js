@@ -23,6 +23,9 @@ class CriteriaAnalysis {
             this.displayCriteriaFiles();
         });
         this.initLatestSessionCheckbox();
+        
+        // Регистрируем обработчик события завершения сессии
+        window.addEventListener('sessionCompleted', this.handleSessionCompleted.bind(this));
     }
 
     bindEvents() {
@@ -1600,12 +1603,15 @@ class CriteriaAnalysis {
             // Найти последнюю завершенную сессию
             const completedSessions = sessions.filter(s => s.status === 'completed');
             
+            // Сортируем по времени создания в убывающем порядке (самые новые первыми)
+            completedSessions.sort((a, b) => new Date(b.timestamp_created) - new Date(a.timestamp_created));
+            
             const latestSessionInfoEl = document.getElementById('latest-session-info');
             const checkbox = document.getElementById('use-latest-session');
             
             if (completedSessions.length > 0) {
-                const latestSession = completedSessions[0]; // Уже отсортированы по времени создания
-                const sessionDate = new Date(latestSession.created_time).toLocaleString();
+                const latestSession = completedSessions[0]; // Теперь действительно самая последняя
+                const sessionDate = new Date(latestSession.timestamp_created).toLocaleString();
                 const companiesCount = latestSession.total_companies || 0;
                 
                 latestSessionInfoEl.textContent = `Latest session: ${latestSession.session_id} (${sessionDate}, ${companiesCount} companies)`;
@@ -1638,6 +1644,12 @@ class CriteriaAnalysis {
         setTimeout(() => {
             this.loadLatestSessionInfo();
         }, 1000);
+    }
+
+    // Обработчик события завершения сессии
+    handleSessionCompleted(event) {
+        console.log('🔄 Received sessionCompleted event:', event.detail);
+        this.refreshLatestSessionInfo();
     }
 
     toggleLatestSessionMode(useLatestSession) {

@@ -504,12 +504,20 @@ document.addEventListener('DOMContentLoaded', () => {
                         updateProgressBar(finalCount, finalCount, true, sessionData);
                         
                         // 🔄 ОБНОВЛЯЕМ информацию о последней сессии на второй вкладке
+                        console.log('🔄 Session completed, checking for criteria analysis object...');
+                        console.log('🔄 window.criteriaAnalysis exists:', !!window.criteriaAnalysis);
+                        console.log('🔄 refreshLatestSessionInfo method exists:', !!(window.criteriaAnalysis && typeof window.criteriaAnalysis.refreshLatestSessionInfo === 'function'));
+                        
                         if (window.criteriaAnalysis && typeof window.criteriaAnalysis.refreshLatestSessionInfo === 'function') {
                             console.log('🔄 Triggering latest session update on criteria tab...');
                             window.criteriaAnalysis.refreshLatestSessionInfo();
                         } else if (typeof window.refreshLatestSessionInfo === 'function') {
                             console.log('🔄 Using global function to refresh latest session info...');
                             window.refreshLatestSessionInfo();
+                        } else {
+                            console.log('🔄 No criteria analysis object found, trying to trigger update anyway...');
+                            // Попробуем обновить через событие
+                            window.dispatchEvent(new CustomEvent('sessionCompleted', { detail: { sessionId: sessionId } }));
                         }
                     }
                     ensureResultsControlsAvailable();

@@ -1,0 +1,12 @@
+{
+    "searchParameters": {
+        "q": "site:segasammy.co.jp (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [],
+    "credits": 1
+}
