@@ -1,0 +1,117 @@
+{
+    "searchParameters": {
+        "q": "site:riotgames.com (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Dev",
+            "link": "https://www.riotgames.com/en/work-with-us/disciplines/data/total-recall-or-that-time-we-disabled-ranked",
+            "snippet": "More. Game · Champions; News; Patch Notes; Discover; Esports · Universe · Shop · Support · PBE.",
+            "position": 1
+        },
+        {
+            "title": "News",
+            "link": "https://www.riotgames.com/en/work-with-us/disciplines/player-support/players-design-world-saving-champs",
+            "snippet": "More. Game · Champions; News; Patch Notes; Discover; Esports · Universe · Shop · Support · PBE.",
+            "position": 2
+        },
+        {
+            "title": "Search",
+            "link": "https://www.riotgames.com/en/search?q=10%20rupees%20rape%20%7C%20rummy.78229&filter=news",
+            "snippet": "Wild Rift Patch Notes 6.1b. May 21, 2025. Wild Rift Patch Notes 6.1c. Game Updates. Wild Rift Patch Notes 6.1c. May 28, 2025. Patch 25.12 Notes. Game Updates ...",
+            "sitelinks": [
+                {
+                    "title": "Wild Rift Patch Notes 6.1b. May 21, 2025. Wild Rift Patch Notes 6.1c. Game Updates. Wild Rift Patch Notes 6.1c. May 28, 2025. Patch 25.12 Notes. Game Updates ...",
+                    "link": "https://www.riotgames.com/en/search?q=10+rupees+rape+%7C+rummy.78229&filter=news#:~:text=Wild%20Rift%20Patch%20Notes%206.1b,Game%20Updates"
+                }
+            ],
+            "position": 3
+        },
+        {
+            "title": "Riot Mobile Features - League of Legends Support",
+            "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/4407680309395-Riot-Mobile-Features",
+            "snippet": "News. Pro interviews, patch notes, champion showcases… For every huge play you make in-game, there's just as much happening outside of it.",
+            "date": "Apr 24, 2025",
+            "sitelinks": [
+                {
+                    "title": "News. Pro interviews, patch notes, champion showcases… For every huge play you make in-game, there's just as much happening outside of it.",
+                    "link": "https://support-leagueoflegends.riotgames.com/hc/en-us/articles/4407680309395-Riot-Mobile-Features#:~:text=News,much%20happening%20outside%20of%20it."
+                }
+            ],
+            "position": 4
+        },
+        {
+            "title": "gold bracelet for ladies designs | rummy.28661",
+            "link": "https://www.riotgames.com/en/search?q=gold%20bracelet%20for%20ladies%20designs%20%7C%20rummy.28661",
+            "snippet": "VALORANT Patch Notes 10.08. Game Updates · Apr 29, 2025 ; Spirit Blossom Fan Art Contest. Community · Apr 21, 2025 ; Patch 25.10 Notes. Game Updates · May 13, 2025.",
+            "sitelinks": [
+                {
+                    "title": "VALORANT Patch Notes 10.08. Game Updates · Apr 29, 2025 ; Spirit Blossom Fan Art Contest. Community · Apr 21, 2025 ; Patch 25.10 Notes. Game Updates · May 13, 2025.",
+                    "link": "https://www.riotgames.com/en/search?q=gold+bracelet+for+ladies+designs+%7C+rummy.28661#:~:text=Game%20Updates&text=Apr%2029%2C%202025&text=Community&text=Apr%2021%2C%202025&text=Game%20Updates&text=May%2013%2C%202025"
+                }
+            ],
+            "position": 5
+        },
+        {
+            "title": "The Riot Games Tech Blog",
+            "link": "https://technology.riotgames.com/node?page=10",
+            "snippet": "We've been rolling out a new implementation of missiles in the past few months (as mentioned in recent patch notes). If we did our jobs right, you didn't ...",
+            "sitelinks": [
+                {
+                    "title": "We've been rolling out a new implementation of missiles in the past few months (as mentioned in recent patch notes). If we did our jobs right, you didn't ...",
+                    "link": "https://technology.riotgames.com/node?page=10#:~:text=We've%20been%20rolling%20out%20a,our%20jobs%20right%2C%20you%20didn't"
+                }
+            ],
+            "position": 6
+        },
+        {
+            "title": "League Displays",
+            "link": "https://displays.riotgames.com/",
+            "snippet": "Patch Notes; Discover; Esports · Universe · Shop · Support ... Patch NotesDiscover. Esports · Universe · Shop · Support. SIGN IN. PLAY NOW. SIGN IN. PLAY NOW.",
+            "position": 7
+        },
+        {
+            "title": "bpo girl gang rape crime petrol | rummy.14284",
+            "link": "https://www.riotgames.com/en/search?q=bpo%20girl%20gang%20rape%20crime%20petrol%20%7C%20rummy.14284",
+            "snippet": "News (90) ; Into the Arcane Overview · Nov 13, 2024 ; Wild Rift Patch Notes 5.3 · Oct 16, 2024 ; Patch 14.18 Notes · Sep 10, 2024 ; Patch 14.17 Notes · Aug 27, 2024.",
+            "sitelinks": [
+                {
+                    "title": "News (90) ; Into the Arcane Overview · Nov 13, 2024 ; Wild Rift Patch Notes 5.3 · Oct 16, 2024 ; Patch 14.18 Notes · Sep 10, 2024 ; Patch 14.17 Notes · Aug 27, 2024.",
+                    "link": "https://www.riotgames.com/en/search?q=bpo+girl+gang+rape+crime+petrol+%7C+rummy.14284#:~:text=News%20(90)&text=Nov%2013%2C%202024&text=Oct%2016%2C%202024&text=Sep%2010%2C%202024&text=Aug%2027%2C%202024"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "Vanguard FAQ for Third Party Applications",
+            "link": "https://www.riotgames.com/en/DevRel/vanguard-faq",
+            "snippet": "Vanguard is currently planned to be live for all regions other than China with patch 14.9 on April 30, 2024. Please follow the patch notes for ...",
+            "date": "Apr 1, 2024",
+            "sitelinks": [
+                {
+                    "title": "Vanguard is currently planned to be live for all regions other than China with patch 14.9 on April 30, 2024. Please follow the patch notes for ...",
+                    "link": "https://www.riotgames.com/en/DevRel/vanguard-faq#:~:text=Vanguard%20is%20currently%20planned%20to,follow%20the%20patch%20notes%20for"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "Search",
+            "link": "https://www.riotgames.com/en/search?q=indian%20milf%20feet%20%7C%20rummy.29468",
+            "snippet": "Wild Rift Patch Notes 6.1. Game Updates. Wild Rift Patch Notes 6.1. Apr 16, 2025. Patch 25.S1.2 Notes. Game Updates. Patch 25.S1.2 Notes. Jan 22, 2025. Patch ...",
+            "sitelinks": [
+                {
+                    "title": "Wild Rift Patch Notes 6.1. Game Updates. Wild Rift Patch Notes 6.1. Apr 16, 2025. Patch 25.S1.2 Notes. Game Updates. Patch 25.S1.2 Notes. Jan 22, 2025. Patch ...",
+                    "link": "https://www.riotgames.com/en/search?q=indian+milf+feet+%7C+rummy.29468#:~:text=Game%20Updates,Jan%2022%2C%202025"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

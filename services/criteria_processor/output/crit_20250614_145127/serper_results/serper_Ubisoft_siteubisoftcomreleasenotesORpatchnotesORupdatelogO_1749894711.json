@@ -1,0 +1,89 @@
+{
+    "searchParameters": {
+        "q": "site:ubisoft.com (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Y10S2.1 Patch Notes",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/6d9GuIXMWRbgoPQZYdUVip/y10s21-patch-notes",
+            "snippet": "Y10S2.0 PATCH NOTES ADDENDUM. Updates and fixes made over the course of the Y10S2 Season Test Server. Read More.",
+            "date": "2 days ago",
+            "position": 1
+        },
+        {
+            "title": "Y10S2.0 PATCH NOTES ADDENDUM",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/ixjnXu9g80eFVW3X7cNFF/y10s20-patch-notes-addendum",
+            "snippet": "You can find here the updates and fixes made over the course of the Y10S2 Season Test Server. For the full Operation Daybreak Patch Notes, ...",
+            "date": "4 days ago",
+            "position": 2
+        },
+        {
+            "title": "AC Shadows Title Update 1.0.5 - Release Notes",
+            "link": "https://www.ubisoft.com/en-us/game/assassins-creed/news/3hJ2jNQEK4AXQGMg79pm2h/ac-shadows-title-update-105-release-notes",
+            "snippet": "AC Shadows Title Update 1.0.5 - Release Notes · PATCH SIZES: PS5: ~3.31 GB · PATCH HIGHLIGHTS · \"Thrown to the Dogs\" Quest Unlocked · SPECIAL ...",
+            "date": "May 26, 2025",
+            "position": 3
+        },
+        {
+            "title": "[May 20th, 2025] Y10S2 Test Server Patch Notes - Day 1",
+            "link": "https://redirection.ubisoft.com/site/entrance?entrance=rainbow6.com/daybreak_bugfixes_reddit",
+            "snippet": "DAY 1 BUG FIXES Operation Daybreak season Patch Notes: Please bear in mind that all changes made in the TS are for testing purposes and do ...",
+            "date": "May 20, 2025",
+            "position": 4
+        },
+        {
+            "title": "Patch Notes, Updates & News - For Honor",
+            "link": "https://www.ubisoft.com/en-gb/game/for-honor/news-updates",
+            "snippet": "23 January, 20253 Min Read. Patch Notes 2.57.0. PS: 1.7Gb, XB: 2.1Gb, PC: 2.1G. Read More. Filter By. MOST RECENT, COMMUNITY, GAME UPDATES, PATCH NOTES.",
+            "position": 5
+        },
+        {
+            "title": "News | Tom Clancy's Rainbow Six Siege | Ubisoft (EU / UK)",
+            "link": "https://www.ubisoft.com/en-gb/game/rainbow-six/siege/news-updates",
+            "snippet": "Y10S2.1 Patch Notes ... See the upcoming changes to Rainbow Six Siege with the release of Y10S2.1. Read More Black arrow pointing right.",
+            "position": 6
+        },
+        {
+            "title": "Y10S1.3 PATCH NOTES",
+            "link": "https://www.ubisoft.com/en-ca/game/rainbow-six/siege/news-updates/3adVE0FPbli42OBNXPdrr3/y10s13-patch-notes",
+            "snippet": "Y10S1.3 PATCH NOTES. See the upcoming changes to Rainbow Six Siege with the release of Y10S1.3. BUG FIXES. GAMEPLAY.",
+            "date": "Apr 15, 2025",
+            "position": 7
+        },
+        {
+            "title": "[February18th, 2025] Y10S1 TEST SERVER PATCH NOTES",
+            "link": "https://redirection.ubisoft.com/site/entrance?entrance=rainbow6.com/prepphase_bugfixes_reddit",
+            "snippet": "[February18th, 2025] Y10S1 TEST SERVER PATCH NOTES - DAY 1. Patch Notes. Operation Prep Phase season Patch Notes: https://rainbow6.com/prepphase.",
+            "date": "Feb 18, 2025",
+            "position": 8
+        },
+        {
+            "title": "Y9S1.3 PATCH NOTES",
+            "link": "https://www.ubisoft.com/en-us/game/rainbow-six/siege/news-updates/6ZsfBMeGT0Anuu0IHjDQ0P/y9s13-patch-notes",
+            "snippet": "Y10S2.0 PATCH NOTES ADDENDUM. Updates and fixes made over the course of the Y10S2 Season Test Server. Read More.",
+            "date": "May 2, 2024",
+            "position": 9
+        },
+        {
+            "title": "Patch Notes 2.60.1 - FOR HONOR",
+            "link": "https://www.ubisoft.com/en-us/game/for-honor/news-updates/1uyGJ38RqfLbgGnZBHC0wr/patch-notes-2601-for-honor",
+            "snippet": "Patch Notes 2.60.1 - FOR HONOR ; IMPROVEMENT ; Menus - Heros page. It's now possible to change the loadout preview directly from the character ...",
+            "date": "2 days ago",
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release notes patch notes update log version history xbox"
+        },
+        {
+            "query": "Release notes patch notes update log version history ps5"
+        }
+    ],
+    "credits": 1
+}

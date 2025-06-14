@@ -1,0 +1,92 @@
+{
+    "searchParameters": {
+        "q": "site:ubisoft.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Ubisoft Connect - Downloading...",
+            "link": "https://www.ubisoft.com/en-us/ubisoft-connect/download",
+            "snippet": "Accessible through our desktop app and directly from your games on both PC and console, Ubisoft Connect is a free service that only requires a Ubisoft account.",
+            "position": 1
+        },
+        {
+            "title": "Ubisoft Connect | Ubisoft (US)",
+            "link": "https://www.ubisoft.com/en-us/ubisoft-connect",
+            "snippet": "Accessible through our desktop app and directly from your games on both PC and console, Ubisoft Connect is a free service that only requires a Ubisoft account.",
+            "sitelinks": [
+                {
+                    "title": "Ubisoft (CA)",
+                    "link": "https://www.ubisoft.com/en-ca/ubisoft-connect"
+                },
+                {
+                    "title": "Ubisoft account",
+                    "link": "https://account.ubisoft.com/.Login"
+                },
+                {
+                    "title": "Downloading...",
+                    "link": "https://www.ubisoft.com/en-us/ubisoft-connect/download"
+                },
+                {
+                    "title": "Assassin’s Creed Shadows...",
+                    "link": "https://www.ubisoft.com/en-us/game/assassins-creed/news/3rJiU861lAyWTYpvH3cfmY/assassins-creed-shadows-post-launch-roadmap-update-a-first-look-at-whats-coming-next"
+                }
+            ],
+            "position": 2
+        },
+        {
+            "title": "Installing or re-installing Ubisoft Connect PC | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/connectivity-and-performance/article/installing-or-re-installing-ubisoft-connect-pc/000063173",
+            "snippet": "By default, the folder can be found in C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher. ... desktop app may cause login issues. Reinstalling Ubisoft ...",
+            "position": 3
+        },
+        {
+            "title": "Error message \"Unable to start game ...",
+            "link": "https://www.ubisoft.com/en-gb/help/connectivity-and-performance/article/error-message-unable-to-start-game-unable-to-locate-game-when-launching-a-game-in-ubisoft-connect-pc/000065844",
+            "snippet": "Update Ubisoft Connect PC to the latest version An outdated version of the desktop app may cause issues with game downloads. Try reinstalling Ubisoft Connect PC ...",
+            "position": 4
+        },
+        {
+            "title": "Saved games compatibility for Ubisoft+ games",
+            "link": "https://www.ubisoft.com/help/article/000064712",
+            "snippet": "... Game Launcher\\savegames\\<UbisoftConnectID>\\2853730Ubisoft Connect PCC ... Game Launcher\\savegame\\<UbisoftConnectID>\\437 Ubisoft Connect PC C:\\Program ...",
+            "position": 5
+        },
+        {
+            "title": "Article",
+            "link": "https://www.ubisoft.com/en-us/help/article/000064731",
+            "snippet": "Update Ubisoft Connect PC to the latest version An outdated version of the desktop app may cause issues with game downloads. ... Delete the \"Ubisoft Game Launcher ...",
+            "position": 6
+        },
+        {
+            "title": "\"Unable to start download\" error in Ubisoft Connect PC",
+            "link": "https://www.ubisoft.com/en-gb/help/connectivity-and-performance/article/unable-to-start-download-error-in-ubisoft-connect-pc/000064366",
+            "snippet": "An outdated version of the desktop app may cause issues with game downloads. Try reinstalling Ubisoft Connect PC before downloading the game again. If the above ...",
+            "position": 7
+        },
+        {
+            "title": "Locating your Ubisoft Connect PC log files",
+            "link": "https://www.ubisoft.com/en-us/help/connectivity-and-performance/article/locating-your-ubisoft-connect-pc-log-files/000065542",
+            "snippet": "Ubisoft Games are installed in the following folder by default: C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher\\games To find the exact installation ...",
+            "position": 8
+        },
+        {
+            "title": "Restoring save files for Ubisoft games on PC",
+            "link": "https://www.ubisoft.com/en-gb/help/connectivity-and-performance/article/restoring-save-files-for-ubisoft-games-on-pc/000060537",
+            "snippet": "... Game Launcher.• Follow the installation steps above to install Ubisoft ... desktop app may resolve temporary issues which are preventing the game from launching.",
+            "position": 9
+        },
+        {
+            "title": "Emptying the cache of Ubisoft Connect PC | Ubisoft Help",
+            "link": "https://www.ubisoft.com/en-us/help/connectivity-and-performance/article/emptying-the-cache-of-ubisoft-connect-pc/000061966",
+            "snippet": "By default, you can find the installation folder following this access path: C:\\Program Files (x86)\\Ubisoft\\Ubisoft Game Launcher.",
+            "date": "May 8, 2025",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

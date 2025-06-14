@@ -1,0 +1,129 @@
+{
+    "searchParameters": {
+        "q": "site:epicgames.com (\"release notes\" OR \"patch notes\" OR \"update log\" OR \"version history\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "v9.00 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v9-00",
+            "snippet": "00 Patch Notes. Jump To. Battle Royale. Jump To. Creative. Jump To. Save The World. Battle Royale. What's New? Season 9 - Battle Pass New Season, new Battle ...",
+            "position": 1
+        },
+        {
+            "title": "30.20 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite",
+            "snippet": "We've combined Patch Notes and Release Notes into one document! Now you can read all about the updates and changes right here on the Epic Developer ...",
+            "position": 2
+        },
+        {
+            "title": "v5.30 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v5-30",
+            "snippet": "30 Patch Notes. Jump To. Battle Royale. Jump To. Save The World. Jump in,. Open Rifts on-the-go in Battle Royale and take on the new Horde Challenge in Save the ...",
+            "position": 3
+        },
+        {
+            "title": "v8.10 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v8-10",
+            "snippet": "Missing in previous patch notes in 8.00 - Added wall version of Speed Boost. Great for elevators. Added Team Settings to Checkpoint device. Added limiting ...",
+            "position": 4
+        },
+        {
+            "title": "v10.40.1 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v10-40-1-patch-notes",
+            "snippet": "v10.40.1 Patch Notes · Battle Royale · Creative · Save The World · General · One more step.",
+            "position": 5
+        },
+        {
+            "title": "v6.00 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v6-00",
+            "snippet": "00 Patch Notes. Jump To. Battle Royale. Jump To. Save The World. Fortnite Fans,. Season 6 arrives in Battle Royale and brings new goodies with it! Uncover ...",
+            "position": 6
+        },
+        {
+            "title": "v4.3 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v4-3",
+            "snippet": "3 Patch Notes. Players, start your Carts! Jump To. Battle Royale. Jump To. Save The World. 3...2...1,. Players, start your Carts! Patch v4.3 introduces Shopping ...",
+            "position": 7
+        },
+        {
+            "title": "v10.20 Patch Notes",
+            "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v10-20-patch-notes",
+            "snippet": "10 Patch Notes. Storm phase 1. Increased the maximum number of B.R.U.T.E. spawns from 5 to 6. Reduced the chance for 0 B.R.U.T.E.s to spawn from 29% ...",
+            "sitelinks": [
+                {
+                    "title": "Creative",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v10-20-patch-notes#:~:text=Creative,-What%27s%20New%3F"
+                },
+                {
+                    "title": "Devices",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v10-20-patch-notes#:~:text=Devices,-Added%20Random%20Number%20Generator%20device"
+                },
+                {
+                    "title": "Save The World",
+                    "link": "https://www.epicgames.com/fortnite/en-US/patch-notes/v10-20-patch-notes#:~:text=Save%20The%20World,-What%27s%20New%3F"
+                }
+            ],
+            "position": 8
+        },
+        {
+            "title": "34.30 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes",
+            "snippet": "34.30 Fortnite Ecosystem Updates and Release Notes in Creative, Unreal Editor for Fortnite, and Verse. ... The v34.30 update gives more control over matchmaking ...",
+            "sitelinks": [
+                {
+                    "title": "Item Spawner Device Updates",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes#:~:text=Item%20Spawner%20Device%20Updates,-True%20dual%20weapons%20can%20now"
+                },
+                {
+                    "title": "Reboot Van Device Updates",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes#:~:text=Reboot%20Van%20Device%20Updates,-Creators%20can%20utilize%20the%20new"
+                },
+                {
+                    "title": "Uefn Updates And Fixes",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/34-30-fortnite-ecosystem-updates-and-release-notes#:~:text=UEFN%20Updates%20and%20Fixes,-New%3A"
+                }
+            ],
+            "position": 9
+        },
+        {
+            "title": "36.00 Fortnite Ecosystem Updates and Release Notes",
+            "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes",
+            "snippet": "Find out what's new with the 36.00 release of Fortnite on June 7, 2025! 36.00 Fortnite Ecosystem Updates and Release Notes. On this page.",
+            "sitelinks": [
+                {
+                    "title": "Scene Graph Beta Launch!",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes#:~:text=Scene%20Graph%20Beta%20Launch%21,-Scene%20Graph%20is%20a%20new"
+                },
+                {
+                    "title": "Device Updates And Fixes",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes#:~:text=Device%20Updates%20and%20Fixes,-New%3A"
+                },
+                {
+                    "title": "Uefn Updates And Fixes",
+                    "link": "https://dev.epicgames.com/documentation/en-us/fortnite/36-00-fortnite-ecosystem-updates-and-release-notes#:~:text=UEFN%20Updates%20and%20Fixes,-New%3A"
+                }
+            ],
+            "position": 10
+        }
+    ],
+    "relatedSearches": [
+        {
+            "query": "Release notes patch notes update log version history reddit"
+        },
+        {
+            "query": "Release notes patch notes update log version history xbox"
+        },
+        {
+            "query": "Release notes patch notes update log version history ps5"
+        },
+        {
+            "query": "Release notes patch notes update log version history ps4"
+        }
+    ],
+    "credits": 1
+}
