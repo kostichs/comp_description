@@ -30,7 +30,7 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent.parent  # backend/api/session
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_DIR
-from backend.processing_runner import run_session_pipeline
+from backend.services import run_session_pipeline
 
 # Global variable for tracking active tasks
 # TODO: Move this to TaskService in future refactoring
