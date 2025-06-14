@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Cancelling active session: ${currentSessionId}`);
             showLoading(); // Показываем индикатор загрузки
             try {
-                const response = await fetch(`/api/sessions/${currentSessionId}/cancel`, {
+                const response = await fetch(`/api/descriptions/${currentSessionId}/cancel`, {
                     method: 'POST'
                 });
                 if (response.ok) {
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                const response = await fetch('/api/sessions', {
+                const response = await fetch('/api/descriptions', {
                     method: 'POST',
                     body: formData
                 });
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         showLoading();
         try {
-            const response = await fetch(`/api/sessions/${currentSessionId}/start`, {
+            const response = await fetch(`/api/descriptions/${currentSessionId}/start`, {
                 method: 'POST'
             });
 
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchSessions() {
         showLoading();
         try {
-            const response = await fetch('/api/sessions');
+            const response = await fetch('/api/descriptions');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const sessions = await response.json();
             populateSessionSelect(sessions);
@@ -307,9 +307,9 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchSessionData(sessionId) {
         if (!sessionId) return;
         showLoading();
-        try {
-            const response = await fetch(`/api/sessions/${sessionId}`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            try {
+        const response = await fetch(`/api/descriptions/${sessionId}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const sessionData = await response.json();
             showCurrentSessionUI(sessionId); // Это скроет sessionControls
             updateStatus(`Status: ${sessionData.status}`);
@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`fetchAndDisplayResults вызвана для сессии: ${sessionId}`);
         showLoading();
         try {
-            const response = await fetch(`/api/sessions/${sessionId}/results`);
+            const response = await fetch(`/api/descriptions/${sessionId}/results`);
             console.log(`Статус ответа для /results: ${response.status}, Content-Type: ${response.headers.get('Content-Type')}`);
 
             if (!response.ok) {
@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         pollingInterval = setInterval(async () => {
             try {
-                const response = await fetch(`/api/sessions/${sessionId}`);
+                const response = await fetch(`/api/descriptions/${sessionId}`);
                 if (!response.ok) return;
                 const sessionData = await response.json(); // Получаем свежие данные о сессии
                 updateStatus(`Status: ${sessionData.status}`);
@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         
         try {
-            const response = await fetch(`/api/sessions/${sessionId}/start`, {
+            const response = await fetch(`/api/descriptions/${sessionId}/start`, {
                 method: 'POST'
             });
             if (!response.ok) {
@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         console.log(`Attempting to download archive for session: ${sessionId}`);
         // Используем window.location.href для простого инициирования скачивания
-        window.location.href = `/api/sessions/${sessionId}/download_archive`;
+        window.location.href = `/api/descriptions/${sessionId}/download_archive`;
     }
     // --- End Function to Download Session Archive ---
 
@@ -636,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             try {
-                const response = await fetch(`/api/sessions/${currentSessionId}/results`);
+                const response = await fetch(`/api/descriptions/${currentSessionId}/results`);
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.detail || 'Failed to fetch results for download');
@@ -669,7 +669,7 @@ document.addEventListener('DOMContentLoaded', () => {
         viewLogsBtn.onclick = async () => {
             if (!currentSessionId) return;
             try {
-                const response = await fetch(`/api/sessions/${currentSessionId}/logs/pipeline`);
+                const response = await fetch(`/api/descriptions/${currentSessionId}/logs/pipeline`);
                 if (!response.ok) throw new Error('Failed to download log');
                 const logText = await response.text();
                 const blob = new Blob([logText], { type: 'text/plain' });

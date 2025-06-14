@@ -1593,7 +1593,7 @@ class CriteriaAnalysis {
 
     async loadLatestSessionInfo() {
         try {
-            const response = await fetch('/api/sessions');
+            const response = await fetch('/api/descriptions');
             const sessions = await response.json();
             
             if (!response.ok) {

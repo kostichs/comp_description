@@ -36,9 +36,10 @@ from src.data_io import load_session_metadata, save_session_metadata, SESSIONS_D
 # --- Import background task runner --- 
 from .processing_runner import run_session_pipeline
 
-# --- Import routers ---
-from .api.routes.sessions import router as sessions_router  # NEW: Improved sessions router
-from .routers import criteria  # Импортируем роутер критериев
+# --- Import domain routers ---
+from .api.descriptions import router as descriptions_router
+from .api.criteria import router as criteria_router
+from .api.integrations.clay.routes import router as clay_router
 
 # Configure basic logging if not already configured elsewhere
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -69,9 +70,10 @@ app.add_middleware(
     allow_headers=["*"],    # Allow all headers
 )
 
-# --- Регистрируем роутеры ---
-app.include_router(sessions_router)  # NEW: Sessions API with /api/sessions prefix
-app.include_router(criteria.router, prefix="/api")
+# --- Регистрируем доменные роутеры ---
+app.include_router(descriptions_router, prefix="/api")  # /api/descriptions/* (генерация описаний)
+app.include_router(criteria_router, prefix="/api")      # /api/criteria/* (анализ по критериям)
+app.include_router(clay_router, prefix="/api")          # /api/clay/* (Clay интеграция)
 
 # Монтируем статические файлы
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
