@@ -1,0 +1,82 @@
+{
+    "searchParameters": {
+        "q": "site:square-enix.com (\"game launcher\" OR \"download our client\" OR \"dedicated platform\" OR \"desktop app\")",
+        "gl": "us",
+        "hl": "en",
+        "type": "search",
+        "num": 10,
+        "engine": "google"
+    },
+    "organic": [
+        {
+            "title": "Can't Start Game, Launcher Zoomed In",
+            "link": "https://forum.square-enix.com/ffxiv/threads/407918",
+            "snippet": "Can't Start Game, Launcher Zoomed In. Hello, My launcher won't let me log in, since the update my launcher has been zoomed in and there is ...",
+            "date": "Oct 30, 2019",
+            "position": 1
+        },
+        {
+            "title": "A Steam game launcher fix",
+            "link": "https://forum.square-enix.com/ffxiv/threads/457394",
+            "snippet": "A Steam game launcher fix. TL;DR: Navigate to the steam install folder (example. C:\\Program Files (x86)\\Steam\\steamapps\\ ...",
+            "date": "Mar 9, 2022",
+            "position": 2
+        },
+        {
+            "title": "Windows Update broke game launcher",
+            "link": "https://forum.square-enix.com/ffxiv/threads/325473",
+            "snippet": "TL;DR: Updated windows last night and it broke the game launcher. Copy-pasted some DLL files, reinstalled, directx shenanigans, couldn't fix it.",
+            "date": "May 23, 2017",
+            "position": 3
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum - steam deck 7.25",
+            "link": "https://forum.square-enix.com/ffxiv/threads/518701",
+            "snippet": "After update I get a message \"Platform Error'' ''The game launcher cannot be accessed on your current paltform\"",
+            "date": "May 26, 2025",
+            "position": 4
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/457434",
+            "snippet": "Unable to complete version update 30437. After launching the game launcher through steam and then I log in and click play I get this error:",
+            "date": "Mar 10, 2022",
+            "position": 5
+        },
+        {
+            "title": "FFXIV Launcher Script Error",
+            "link": "https://forum.square-enix.com/ffxiv/threads/471688",
+            "snippet": "It seems that the game launcher is having trouble loading up properly. I would recommend trying out the following troubleshooting to see if it may help with ...",
+            "date": "Sep 12, 2022",
+            "position": 6
+        },
+        {
+            "title": "FINAL FANTASY VII",
+            "link": "https://support.na.square-enix.com/faqarticle.php?kid=64263&id=444&la=1&ret=faq&pv=10&page=1&c=0&sc=0&so=0",
+            "snippet": "[Q64263] I'm having problems logging into the game launcher. ... In order to play the game, you will need to enter the username or the email address associated ...",
+            "position": 7
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/420561",
+            "snippet": "Have you tried changing any settings in the game launcher itself? Thank you for visiting the Final Fantasy IV Technical Support Forums.",
+            "date": "Jun 16, 2020",
+            "position": 8
+        },
+        {
+            "title": "FINAL FANTASY XIV Forum",
+            "link": "https://forum.square-enix.com/ffxiv/threads/457377",
+            "snippet": "Does anyone know a way for me to install the full game launcher without having to completely reinstall the entire game? Edit: I uninstalled ...",
+            "date": "Mar 9, 2022",
+            "position": 9
+        },
+        {
+            "title": "ffxiv game launcher Tiny login textboxes",
+            "link": "https://forum.square-enix.com/ffxiv/threads/518251",
+            "snippet": "Steps: 1. When I logging into the game in the game launcher the text boxes for user login, password, check box if u want user name to ...",
+            "date": "May 12, 2025",
+            "position": 10
+        }
+    ],
+    "credits": 1
+}

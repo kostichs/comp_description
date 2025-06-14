@@ -132,4 +132,50 @@ def clean_for_json(obj):
     elif isinstance(obj, np.floating):
         return float(obj) if not pd.isna(obj) else None
     else:
-        return obj 
+        return obj
+
+def cleanup_metadata_file(max_sessions: int = 50) -> None:
+    """
+    Очистка файла sessions_metadata.json - оставляет только последние max_sessions записей
+    
+    Args:
+        max_sessions: Максимальное количество сессий для хранения
+    """
+    try:
+        import json
+        
+        metadata_file = PROJECT_ROOT / "sessions_metadata.json"
+        
+        if not metadata_file.exists():
+            logger.info("Metadata file does not exist, skipping cleanup")
+            return
+        
+        # Загружаем текущие метаданные
+        with open(metadata_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        original_count = len(data)
+        
+        if original_count <= max_sessions:
+            logger.info(f"Metadata file has {original_count} sessions, no cleanup needed (max: {max_sessions})")
+            return
+        
+        # Создаем бэкап перед очисткой
+        backup_file = PROJECT_ROOT / "sessions_metadata_backup.json"
+        with open(backup_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+        
+        # Оставляем только последние max_sessions записей
+        filtered_data = data[-max_sessions:]
+        
+        # Сохраняем очищенные метаданные
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(filtered_data, f, indent=2, ensure_ascii=False)
+        
+        new_count = len(filtered_data)
+        removed_count = original_count - new_count
+        
+        logger.info(f"Metadata cleanup completed: removed {removed_count} old sessions, kept {new_count} sessions")
+        
+    except Exception as e:
+        logger.error(f"Error in cleanup_metadata_file: {e}") 

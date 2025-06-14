@@ -58,6 +58,9 @@ async def create_new_session(
     4. Validates file format and content
     5. Creates session metadata
     """
+    # Очищаем старые метаданные перед созданием новой сессии
+    cleanup_metadata_file(max_sessions=50)
+    
     # Basic validation for filename/extension
     if not file.filename:
         raise HTTPException(status_code=400, detail="No filename provided.")
